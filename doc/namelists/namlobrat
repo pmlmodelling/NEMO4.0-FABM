@@ -1,0 +1,7 @@
+!-----------------------------------------------------------------------
+&namlobrat     !   general coefficients
+!-----------------------------------------------------------------------
+   rcchl   = 60.       ! Carbone/Chlorophyl ratio                     [mgC.mgChla-1]
+   redf    = 6.56       ! redfield ratio (C:N) for phyto
+   reddom  = 6.56       ! redfield ratio (C:N) for DOM
+/

@@ -1,0 +1,9 @@
+!------------------------------------------------------------------------------
+&namitd         !   Ice discretization
+!------------------------------------------------------------------------------
+   ln_cat_hfn       = .true.          !  ice categories are defined by a function following rn_himean**(-0.05)
+      rn_himean     =   2.0           !  expected domain-average ice thickness (m)
+   ln_cat_usr       = .false.         !  ice categories are defined by rn_catbnd below (m)
+      rn_catbnd     =   0.,0.45,1.1,2.1,3.7,6.0  
+   rn_himin         =   0.1           !  minimum ice thickness (m) used in remapping
+/

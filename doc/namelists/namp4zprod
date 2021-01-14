@@ -1,0 +1,16 @@
+!-----------------------------------------------------------------------
+&namp4zprod    !   parameters for phytoplankton growth for PISCES std  - ln_p4z
+!-----------------------------------------------------------------------
+   pislopen   =  2.       ! P-I slope
+   pisloped   =  2.       ! P-I slope  for diatoms
+   xadap      =  0.       ! Adaptation factor to low light
+   excretn    =  0.05     ! excretion ratio of phytoplankton
+   excretd    =  0.05     ! excretion ratio of diatoms
+   bresp      =  0.033    ! Basal respiration rate
+   chlcnm     =  0.033    ! Maximum Chl/C in nanophytoplankton
+   chlcdm     =  0.05     ! Maximum Chl/C in diatoms
+   chlcmin    =  0.004    ! Minimum Chl/c in phytoplankton
+   fecnm      =  40E-6    ! Maximum Fe/C in nanophytoplankton
+   fecdm      =  40E-6    ! Maximum Fe/C in diatoms
+   grosip     =  0.159    ! mean Si/C ratio
+/

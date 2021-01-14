@@ -1,0 +1,9 @@
+!-----------------------------------------------------------------------
+&nampismod     !  Model used 
+!-----------------------------------------------------------------------
+  ln_p2z    = .false.        !  LOBSTER model used
+  ln_p4z    = .true.         !  PISCES model used
+  ln_p5z    = .false.        !  PISCES QUOTA model used
+  ln_ligand = .false.        !  Enable  organic ligands
+  ln_sediment = .false.      !  Enable sediment module
+/

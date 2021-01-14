@@ -1,0 +1,14 @@
+!-----------------------------------------------------------------------
+&namtrc_run      !   run information
+!-----------------------------------------------------------------------
+   nn_dttrc      =  1        !  time step frequency for passive sn_tracers
+   ln_top_euler  = .false.   !  use Euler time-stepping for TOP
+   ln_rsttr      = .false.   !  start from a restart file (T) or not (F)
+   nn_rsttr      =   0       !  restart control = 0 initial time step is not compared to the restart file value
+                             !                  = 1 do not use the value in the restart file
+                             !                  = 2 calendar parameters read in the restart file
+   cn_trcrst_in  = "restart_trc"   !  suffix of pass. sn_tracer restart name (input)
+   cn_trcrst_indir = "."           !  directory from which to read input passive tracer restarts
+   cn_trcrst_out = "restart_trc"   !  suffix of pass. sn_tracer restart name (output)
+   cn_trcrst_outdir = "."          !  directory to which to write output passive tracer restarts
+/

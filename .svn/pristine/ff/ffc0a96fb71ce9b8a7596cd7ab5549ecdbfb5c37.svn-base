@@ -1,0 +1,9 @@
+!-----------------------------------------------------------------------
+&nambbl        !   bottom boundary layer scheme                         (default: OFF)
+!-----------------------------------------------------------------------
+   ln_trabbl   = .false.   !  Bottom Boundary Layer parameterisation flag
+      nn_bbl_ldf  =  1        !  diffusive bbl (=1)   or not (=0)
+      nn_bbl_adv  =  0        !  advective bbl (=1/2) or not (=0)
+      rn_ahtbbl   =  1000.    !  lateral mixing coefficient in the bbl  [m2/s]
+      rn_gambbl   =  10.      !  advective bbl coefficient                 [s]
+/

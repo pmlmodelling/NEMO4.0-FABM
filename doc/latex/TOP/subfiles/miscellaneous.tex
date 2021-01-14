@@ -1,0 +1,70 @@
+\documentclass[../main/TOP_manual]{subfiles}
+
+\begin{document}
+
+\chapter{Miscellaneous}
+
+\section{TOP synthetic Workflow}
+
+\subsection{Model initialization}
+
+\subsection{Time marching procedure}
+
+\section{Coupling an external BGC model using NEMO framework}
+
+The coupling with an external BGC model through the NEMO compilation framework can be achieved in different ways according to the degree of coding complexity of the Biogeochemical model, like e.g., the whole code is made only by one file or it has multiple modules and interfaces spread across several subfolders.\\ \\
+Beside the 6 core files of MY\_TRC module, see (see \label{Mytrc}, let's assume an external BGC model named \textit{"MYBGC"} and constituted by a rather essential coding structure, likely few Fortran files. The new coupled configuration name is NEMO\_MYBGC. \\ \\
+The best solution is to have all files (the modified MY\_TRC routines and the BGC model ones) placed in a unique folder with root \path{<MYBGCPATH>} and to use the \textit{makenemo} external readdressing of MY\_SRC folder. \\ \\
+The coupled configuration listed in \textbf{cfg.txt}  will look like
+
+\begin{minted}{bash}
+   NEMO_MYBGC OPA_SRC TOP_SRC
+\end{minted}
+and the related cpp\_MYBGC.fcm content will be
+%
+\begin{minted}{bash}
+    bld::tool::fppkeys   key_iomput key_mpp_mpi key_top
+\end{minted}
+
+the compilation with \textit{makenemo} will be executed through the following syntax
+
+\begin{minted}{bash}
+   makenemo -n NEMO_MYBGC -m <arch_my_machine> -j 8 -e <MYBGCPATH>
+\end{minted}
+%The makenemo feature ?-e? was introduced to readdress at compilation time the standard MY_SRC folder (usually found in NEMO configurations) with a user defined external one.
+%
+%
+%The compilation of more articulated BGC model code & infrastructure, like in the case of BFM (?BFM-NEMO coupling manual), requires some additional features.
+%
+%As before, let?s assume a coupled configuration name NEMO_MYBGC, but in this case MYBGC model root becomes <MYBGCPATH> that contains 4 different subfolders for biogeochemistry, named initialization, pelagic, and benthic, and a separate one named nemo_coupling including the modified MY_SRC routines. The latter folder containing the modified NEMO coupling interface will be still linked using the makenemo ?-e? option.
+%
+%In order to include the BGC model subfolders in the compilation of NEMO code, it will be necessary to extend the configuration cpp_NEMO_MYBGC.fcm file to include the specific paths of MYBGC folders, as in the following example
+%
+\begin{minted}{bash}
+   bld::tool::fppkeys   key_iomput key_mpp_mpi key_top
+
+   src::MYBGC::initialization         <MYBGCPATH>/initialization
+   src::MYBGC::pelagic                <MYBGCPATH>/pelagic
+   src::MYBGC::benthic                <MYBGCPATH>/benthic
+
+   bld::pp::MYBGC      1
+   bld::tool::fppflags::MYBGC   %FPPFLAGS
+   bld::tool::fppkeys   %bld::tool::fppkeys MYBGC_MACROS
+\end{minted}
+
+%where MYBGC_MACROS is the space delimited list of macros used in MYBGC model for selecting/excluding specific parts of the code. The BGC model code will be preprocessed in the configuration BLD folder as for NEMO, but with an independent path, like NEMO_MYBGC/BLD/MYBGC/<subforlders>.
+%
+%The compilation will be performed similarly to in the previous case with the following
+%
+%makenemo -n NEMO_MYBGC -m <arch_my_machine> -j 8 -e <MYBGCPATH>/nemo_coupling
+%Note that, the additional lines specific for the BGC model source and build paths, can be written into a separate file, e.g. named MYBGC.fcm, and then simply included in the cpp_NEMO_MYBGC.fcm as follow
+%
+%bld::tool::fppkeys  key_zdftke key_dynspg_ts key_iomput key_mpp_mpi key_top
+%inc <MYBGCPATH>/MYBGC.fcm
+%This will enable a more portable compilation structure for all MYBGC related configurations.
+%
+%Important: the coupling interface contained in nemo_coupling cannot be added using the FCM syntax, as the same files already exists in NEMO and they are overridden only with the readdressing of MY_SRC contents to avoid compilation conflicts due to duplicate routines.
+%
+%All modifications illustrated above, can be easily implemented using shell or python scripting to edit the NEMO configuration cpp.fcm file and to create the BGC model specific FCM compilation file with code paths.
+
+\end{document}

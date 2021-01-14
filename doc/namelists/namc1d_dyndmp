@@ -1,0 +1,5 @@
+!-----------------------------------------------------------------------
+&namc1d_dyndmp !   U & V newtonian damping                              ("key_c1d" default: OFF)
+!-----------------------------------------------------------------------
+   ln_dyndmp   =  .false.  !  add a damping term (T) or not (F)
+/

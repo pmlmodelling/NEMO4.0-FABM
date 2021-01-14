@@ -1,0 +1,1181 @@
+\documentclass[../main/NEMO_manual]{subfiles}
+
+%% Local cmds
+\newcommand{\rML}[1][i]{\ensuremath{_{\mathrm{ML}\,#1}}}
+\newcommand{\rMLt}[1][i]{\tilde{r}_{\mathrm{ML}\,#1}}
+%% Move to ../../global/new_cmds.tex to avoid error with \listoffigures
+%\newcommand{\triad}[6][]{\ensuremath{{}_{#2}^{#3}{\mathbb{#4}_{#1}}_{#5}^{\,#6}}
+\newcommand{\triadd}[5]{\ensuremath{{}_{#1}^{#2}{\mathbb{#3}}_{#4}^{\,#5}}}
+\newcommand{\triadt}[5]{\ensuremath{{}_{#1}^{#2}{\tilde{\mathbb{#3}}}_{#4}^{\,#5}}}
+\newcommand{\rtriad}[2][]{\ensuremath{\triad[#1]{i}{k}{#2}{i_p}{k_p}}}
+\newcommand{\rtriadt}[1]{\ensuremath{\triadt{i}{k}{#1}{i_p}{k_p}}}
+
+\begin{document}
+
+\chapter{Iso-Neutral Diffusion and Eddy Advection using Triads}
+\label{apdx:TRIADS}
+
+\thispagestyle{plain}
+
+\chaptertoc
+
+\paragraph{Changes record} ~\\
+
+{\footnotesize
+  \begin{tabularx}{\textwidth}{l||X|X}
+    Release & Author(s) & Modifications \\
+    \hline
+    {\em   4.0} & {\em ...} & {\em ...} \\
+    {\em   3.6} & {\em ...} & {\em ...} \\
+    {\em   3.4} & {\em ...} & {\em ...} \\
+    {\em <=3.4} & {\em ...} & {\em ...}
+  \end{tabularx}
+}
+
+\clearpage
+
+%% =================================================================================================
+\section[Choice of \forcode{namtra\_ldf} namelist parameters]{Choice of \protect\nam{tra_ldf}{tra\_ldf} namelist parameters}
+
+Two scheme are available to perform the iso-neutral diffusion.
+If the namelist logical \np{ln_traldf_triad}{ln\_traldf\_triad} is set true,
+\NEMO\ updates both active and passive tracers using the Griffies triad representation of iso-neutral diffusion and
+the eddy-induced advective skew (GM) fluxes.
+If the namelist logical \np{ln_traldf_iso}{ln\_traldf\_iso} is set true,
+the filtered version of Cox's original scheme (the Standard scheme) is employed (\autoref{sec:LDF_slp}).
+In the present implementation of the Griffies scheme,
+the advective skew fluxes are implemented even if \np{ln_traldf_eiv}{ln\_traldf\_eiv} is false.
+
+Values of iso-neutral diffusivity and GM coefficient are set as described in \autoref{sec:LDF_coef}.
+Note that when GM fluxes are used, the eddy-advective (GM) velocities are output for diagnostic purposes using XIOS,
+even though the eddy advection is accomplished by means of the skew fluxes.
+
+The options specific to the Griffies scheme include:
+\begin{description}
+\item [{\np{ln_triad_iso}{ln\_triad\_iso}}] See \autoref{sec:TRIADS_taper}.
+  If this is set false (the default),
+  then `iso-neutral' mixing is accomplished within the surface mixed-layer along slopes linearly decreasing with
+  depth from the value immediately below the mixed-layer to zero (flat) at the surface (\autoref{sec:TRIADS_lintaper}).
+  This is the same treatment as used in the default implementation
+  \autoref{subsec:LDF_slp_iso}; \autoref{fig:LDF_eiv_slp}.
+  Where \np{ln_triad_iso}{ln\_triad\_iso} is set true,
+  the vertical skew flux is further reduced to ensure no vertical buoyancy flux,
+  giving an almost pure horizontal diffusive tracer flux within the mixed layer.
+  This is similar to the tapering suggested by \citet{gerdes.koberle.ea_CD91}. See \autoref{subsec:TRIADS_Gerdes-taper}
+\item [{\np{ln_botmix_triad}{ln\_botmix\_triad}}] See \autoref{sec:TRIADS_iso_bdry}.
+  If this is set false (the default) then the lateral diffusive fluxes
+  associated with triads partly masked by topography are neglected.
+  If it is set true, however, then these lateral diffusive fluxes are applied,
+  giving smoother bottom tracer fields at the cost of introducing diapycnal mixing.
+\item [{\np{rn_sw_triad}{rn\_sw\_triad}}] blah blah to be added....
+\end{description}
+The options shared with the Standard scheme include:
+\begin{description}
+\item [{\np{ln_traldf_msc}{ln\_traldf\_msc}}] blah blah to be added
+\item [{\np{rn_slpmax}{rn\_slpmax}}]          blah blah to be added
+\end{description}
+
+%% =================================================================================================
+\section{Triad formulation of iso-neutral diffusion}
+\label{sec:TRIADS_iso}
+
+We have implemented into \NEMO\ a scheme inspired by \citet{griffies.gnanadesikan.ea_JPO98},
+but formulated within the \NEMO\ framework, using scale factors rather than grid-sizes.
+
+%% =================================================================================================
+\subsection{Iso-neutral diffusion operator}
+
+The iso-neutral second order tracer diffusive operator for small angles between
+iso-neutral surfaces and geopotentials is given by \autoref{eq:TRIADS_iso_tensor_1}:
+\begin{subequations}
+  \label{eq:TRIADS_iso_tensor_1}
+  \begin{equation}
+    D^{lT}=-\nabla \cdot\vect{f}^{lT}\equiv
+    -\frac{1}{e_1e_2e_3}\left[\pd{i}\left (f_1^{lT}e_2e_3\right) +
+      \pd{j}\left (f_2^{lT}e_2e_3\right) + \pd{k}\left (f_3^{lT}e_1e_2\right)\right],
+  \end{equation}
+  where the diffusive flux per unit area of physical space
+  \begin{equation}
+    \vect{f}^{lT}=-{A^{lT}}\Re\cdot\nabla T,
+  \end{equation}
+  \begin{equation}
+    \label{eq:TRIADS_iso_tensor_2}
+    \mbox{with}\quad \;\;\Re =
+    \begin{pmatrix}
+      1   &  0   & -r_1           \rule[-.9 em]{0pt}{1.79 em} \\
+      0   &  1   & -r_2           \rule[-.9 em]{0pt}{1.79 em} \\
+      -r_1 & -r_2 &  r_1 ^2+r_2 ^2 \rule[-.9 em]{0pt}{1.79 em}
+    \end{pmatrix}
+    \quad \text{and} \quad\nabla T=
+    \begin{pmatrix}
+      \frac{1}{e_1} \pd[T]{i} \rule[-.9 em]{0pt}{1.79 em} \\
+      \frac{1}{e_2} \pd[T]{j} \rule[-.9 em]{0pt}{1.79 em} \\
+      \frac{1}{e_3} \pd[T]{k} \rule[-.9 em]{0pt}{1.79 em}
+    \end{pmatrix}
+    .
+  \end{equation}
+\end{subequations}
+% \left( {{\begin{array}{*{20}c}
+%  1 \hfill & 0 \hfill & {-r_1 } \hfill \\
+%  0 \hfill & 1 \hfill & {-r_2 } \hfill \\
+%  {-r_1 } \hfill & {-r_2 } \hfill & {r_1 ^2+r_2 ^2} \hfill \\
+% \end{array} }} \right)
+Here \autoref{eq:MB_iso_slopes}
+\begin{align*}
+  r_1 &=-\frac{e_3 }{e_1 } \left( \frac{\partial \rho }{\partial i}
+        \right)
+        \left( {\frac{\partial \rho }{\partial k}} \right)^{-1} \\
+      &=-\frac{e_3 }{e_1 } \left( -\alpha\frac{\partial T }{\partial i} +
+        \beta\frac{\partial S }{\partial i} \right) \left(
+        -\alpha\frac{\partial T }{\partial k} + \beta\frac{\partial S
+        }{\partial k} \right)^{-1}
+\end{align*}
+is the $i$-component of the slope of the iso-neutral surface relative to the computational surface,
+and $r_2$ is the $j$-component.
+
+We will find it useful to consider the fluxes per unit area in $i,j,k$ space; we write
+\[
+  % \label{eq:TRIADS_Fijk}
+  \vect{F}_{\mathrm{iso}}=\left(f_1^{lT}e_2e_3, f_2^{lT}e_1e_3, f_3^{lT}e_1e_2\right).
+\]
+Additionally, we will sometimes write the contributions towards the fluxes $\vect{f}$ and
+$\vect{F}_{\mathrm{iso}}$ from the component $R_{ij}$ of $\Re$ as $f_{ij}$, $F_{\mathrm{iso}\: ij}$,
+with $f_{ij}=R_{ij}e_i^{-1}\partial T/\partial x_i$ (no summation) etc.
+
+The off-diagonal terms of the small angle diffusion tensor
+\autoref{eq:TRIADS_iso_tensor_1}, \autoref{eq:TRIADS_iso_tensor_2} produce skew-fluxes along
+the $i$- and $j$-directions resulting from the vertical tracer gradient:
+\begin{align}
+  \label{eq:TRIADS_i13c}
+  f_{13}=&+{A^{lT}} r_1\frac{1}{e_3}\frac{\partial T}{\partial k},\qquad f_{23}=+{A^{lT}} r_2\frac{1}{e_3}\frac{\partial T}{\partial k}\\
+  \intertext{and in the k-direction resulting from the lateral tracer gradients}
+  \label{eq:TRIADS_i31c}
+  f_{31}+f_{32}=& {A^{lT}} r_1\frac{1}{e_1}\frac{\partial T}{\partial i}+{A^{lT}} r_2\frac{1}{e_1}\frac{\partial T}{\partial i}
+\end{align}
+
+The vertical diffusive flux associated with the $_{33}$ component of the small angle diffusion tensor is
+\begin{equation}
+  \label{eq:TRIADS_i33c}
+  f_{33}=-{A^{lT}}(r_1^2 +r_2^2) \frac{1}{e_3}\frac{\partial T}{\partial k}.
+\end{equation}
+
+Since there are no cross terms involving $r_1$ and $r_2$ in the above,
+we can consider the iso-neutral diffusive fluxes separately in the $i$-$k$ and $j$-$k$ planes,
+just adding together the vertical components from each plane.
+The following description will describe the fluxes on the $i$-$k$ plane.
+
+There is no natural discretization for the $i$-component of the skew-flux, \autoref{eq:TRIADS_i13c},
+as although it must be evaluated at $u$-points,
+it involves vertical gradients (both for the tracer and the slope $r_1$), defined at $w$-points.
+Similarly, the vertical skew flux, \autoref{eq:TRIADS_i31c},
+is evaluated at $w$-points but involves horizontal gradients defined at $u$-points.
+
+%% =================================================================================================
+\subsection{Standard discretization}
+
+The straightforward approach to discretize the lateral skew flux
+\autoref{eq:TRIADS_i13c} from tracer cell $i,k$ to $i+1,k$, introduced in 1995 into OPA,
+\autoref{eq:TRA_ldf_iso}, is to calculate a mean vertical gradient at the $u$-point from
+the average of the four surrounding vertical tracer gradients, and multiply this by a mean slope at the $u$-point,
+calculated from the averaged surrounding vertical density gradients.
+The total area-integrated skew-flux (flux per unit area in $ijk$ space) from tracer cell $i,k$ to $i+1,k$,
+noting that the $e_{{3}_{i+1/2}^k}$ in the area $e{_{3}}_{i+1/2}^k{e_{2}}_{i+1/2}i^k$ at the $u$-point cancels out with
+the $1/{e_{3}}_{i+1/2}^k$ associated with the vertical tracer gradient, is then \autoref{eq:TRA_ldf_iso}
+\[
+  \left(F_u^{13} \right)_{i+\frac{1}{2}}^k = {A}_{i+\frac{1}{2}}^k
+  {e_{2}}_{i+1/2}^k \overline{\overline
+    r_1} ^{\,i,k}\,\overline{\overline{\delta_k T}}^{\,i,k},
+\]
+where
+\[
+  \overline{\overline
+    r_1} ^{\,i,k} = -\frac{{e_{3u}}_{i+1/2}^k}{{e_{1u}}_{i+1/2}^k}
+  \frac{\delta_{i+1/2} [\rho]}{\overline{\overline{\delta_k \rho}}^{\,i,k}},
+\]
+and here and in the following we drop the $^{lT}$ superscript from ${A^{lT}}$ for simplicity.
+Unfortunately the resulting combination $\overline{\overline{\delta_k\bullet}}^{\,i,k}$ of a $k$ average and
+a $k$ difference of the tracer reduces to $\bullet_{k+1}-\bullet_{k-1}$,
+so two-grid-point oscillations are invisible to this discretization of the iso-neutral operator.
+These \emph{computational modes} will not be damped by this operator, and may even possibly be amplified by it.
+Consequently, applying this operator to a tracer does not guarantee the decrease of its global-average variance.
+To correct this, we introduced a smoothing of the slopes of the iso-neutral surfaces (see \autoref{chap:LDF}).
+This technique works for $T$ and $S$ in so far as they are active tracers
+(\ie\ they enter the computation of density), but it does not work for a passive tracer.
+
+%% =================================================================================================
+\subsection{Expression of the skew-flux in terms of triad slopes}
+
+\citep{griffies.gnanadesikan.ea_JPO98} introduce a different discretization of the off-diagonal terms that
+nicely solves the problem.
+% Instead of multiplying the mean slope calculated at the $u$-point by
+% the mean vertical gradient at the $u$-point,
+\begin{figure}[tb]
+  \centering
+  \includegraphics[width=0.66\textwidth]{TRIADS_GRIFF_triad_fluxes}
+  \caption[Triads arrangement and tracer gradients to give lateral and vertical tracer fluxes]{
+    (a) Arrangement of triads $S_i$ and tracer gradients to
+    give lateral tracer flux from box $i,k$ to $i+1,k$
+    (b) Triads $S'_i$ and tracer gradients to give vertical tracer flux from
+    box $i,k$ to $i,k+1$.}
+  \label{fig:TRIADS_ISO_triad}
+\end{figure}
+They get the skew flux from the products of the vertical gradients at each $w$-point surrounding the $u$-point with
+the corresponding `triad' slope calculated from the lateral density gradient across the $u$-point divided by
+the vertical density gradient at the same $w$-point as the tracer gradient.
+See \autoref{fig:TRIADS_ISO_triad}a, where the thick lines denote the tracer gradients,
+and the thin lines the corresponding triads, with slopes $s_1, \dotsc s_4$.
+The total area-integrated skew-flux from tracer cell $i,k$ to $i+1,k$
+\begin{multline}
+  \label{eq:TRIADS_i13}
+  \left( F_u^{13}  \right)_{i+\frac{1}{2}}^k = {A}_{i+1}^k a_1 s_1
+  \delta_{k+\frac{1}{2}} \left[ T^{i+1}
+  \right]/e_{{3w}_{i+1}}^{k+\frac{1}{2}}  + {A} _i^k a_2 s_2 \delta
+  _{k+\frac{1}{2}} \left[ T^i
+  \right]/e_{{3w}_{i+1}}^{k+\frac{1}{2}} \\
+  +{A} _{i+1}^k a_3 s_3 \delta_{k-\frac{1}{2}} \left[ T^{i+1}
+  \right]/e_{{3w}_{i+1}}^{k+\frac{1}{2}}  +{A} _i^k a_4 s_4 \delta
+  _{k-\frac{1}{2}} \left[ T^i \right]/e_{{3w}_{i+1}}^{k+\frac{1}{2}},
+\end{multline}
+where the contributions of the triad fluxes are weighted by areas $a_1, \dotsc a_4$,
+and ${A}$ is now defined at the tracer points rather than the $u$-points.
+This discretization gives a much closer stencil, and disallows the two-point computational modes.
+
+The vertical skew flux \autoref{eq:TRIADS_i31c} from tracer cell $i,k$ to $i,k+1$ at
+the $w$-point $i,k+\frac{1}{2}$ is constructed similarly (\autoref{fig:TRIADS_ISO_triad}b) by
+multiplying lateral tracer gradients from each of the four surrounding $u$-points by the appropriate triad slope:
+\begin{multline}
+  \label{eq:TRIADS_i31}
+  \left( F_w^{31} \right) _i ^{k+\frac{1}{2}} =  {A}_i^{k+1} a_{1}'
+  s_{1}' \delta_{i-\frac{1}{2}} \left[ T^{k+1} \right]/{e_{3u}}_{i-\frac{1}{2}}^{k+1}
+  +{A}_i^{k+1} a_{2}' s_{2}' \delta_{i+\frac{1}{2}} \left[ T^{k+1} \right]/{e_{3u}}_{i+\frac{1}{2}}^{k+1} \\
+  + {A}_i^k a_{3}' s_{3}' \delta_{i-\frac{1}{2}} \left[ T^k\right]/{e_{3u}}_{i-\frac{1}{2}}^k
+  +{A}_i^k a_{4}' s_{4}' \delta_{i+\frac{1}{2}} \left[ T^k \right]/{e_{3u}}_{i+\frac{1}{2}}^k.
+\end{multline}
+
+We notate the triad slopes $s_i$ and $s'_i$ in terms of the `anchor point' $i,k$
+(appearing in both the vertical and lateral gradient),
+and the $u$- and $w$-points $(i+i_p,k)$, $(i,k+k_p)$ at the centres of the `arms' of the triad as follows
+(see also \autoref{fig:TRIADS_ISO_triad}):
+\begin{equation}
+  \label{eq:TRIADS_R}
+  _i^k \mathbb{R}_{i_p}^{k_p}
+  =-\frac{ {e_{3w}}_{\,i}^{\,k+k_p}} { {e_{1u}}_{\,i+i_p}^{\,k}}
+  \
+  \frac
+  { \alpha_i^k  \ \delta_{i+i_p}[T^k] - \beta_i^k \ \delta_{i+i_p}[S^k] }
+  { \alpha_i^k  \ \delta_{k+k_p}[T^i] - \beta_i^k \ \delta_{k+k_p}[S^i] }.
+\end{equation}
+In calculating the slopes of the local neutral surfaces,
+the expansion coefficients $\alpha$ and $\beta$ are evaluated at the anchor points of the triad,
+while the metrics are calculated at the $u$- and $w$-points on the arms.
+
+\begin{figure}[tb]
+  \centering
+  \includegraphics[width=0.66\textwidth]{TRIADS_GRIFF_qcells}
+  \caption[Triad notation for quarter cells]{
+    Triad notation for quarter cells.
+    $T$-cells are inside boxes,
+    while the $i+\fractext{1}{2},k$ $u$-cell is shaded in green and
+    the $i,k+\fractext{1}{2}$ $w$-cell is shaded in pink.}
+  \label{fig:TRIADS_qcells}
+\end{figure}
+
+Each triad $\{_i^{k}\:_{i_p}^{k_p}\}$ is associated (\autoref{fig:TRIADS_qcells}) with the quarter cell that is
+the intersection of the $i,k$ $T$-cell, the $i+i_p,k$ $u$-cell and the $i,k+k_p$ $w$-cell.
+Expressing the slopes $s_i$ and $s'_i$ in \autoref{eq:TRIADS_i13} and \autoref{eq:TRIADS_i31} in this notation,
+we have \eg\ \ $s_1=s'_1={\:}_i^k \mathbb{R}_{1/2}^{1/2}$.
+Each triad slope $_i^k\mathbb{R}_{i_p}^{k_p}$ is used once (as an $s$) to
+calculate the lateral flux along its $u$-arm, at $(i+i_p,k)$,
+and then again as an $s'$ to calculate the vertical flux along its $w$-arm at $(i,k+k_p)$.
+Each vertical area $a_i$ used to calculate the lateral flux and horizontal area $a'_i$ used to
+calculate the vertical flux can also be identified as the area across the $u$- and $w$-arms of a unique triad,
+and we notate these areas, similarly to the triad slopes,
+as $_i^k{\mathbb{A}_u}_{i_p}^{k_p}$, $_i^k{\mathbb{A}_w}_{i_p}^{k_p}$,
+where \eg\ in \autoref{eq:TRIADS_i13} $a_{1}={\:}_i^k{\mathbb{A}_u}_{1/2}^{1/2}$,
+and in \autoref{eq:TRIADS_i31} $a'_{1}={\:}_i^k{\mathbb{A}_w}_{1/2}^{1/2}$.
+
+%% =================================================================================================
+\subsection{Full triad fluxes}
+
+A key property of iso-neutral diffusion is that it should not affect the (locally referenced) density.
+In particular there should be no lateral or vertical density flux.
+The lateral density flux disappears so long as the area-integrated lateral diffusive flux from
+tracer cell $i,k$ to $i+1,k$ coming from the $_{11}$ term of the diffusion tensor takes the form
+\begin{equation}
+  \label{eq:TRIADS_i11}
+  \left( F_u^{11} \right) _{i+\frac{1}{2}} ^{k} =
+  - \left( {A}_i^{k+1} a_{1} + {A}_i^{k+1} a_{2} + {A}_i^k
+    a_{3} + {A}_i^k a_{4} \right)
+  \frac{\delta_{i+1/2} \left[ T^k\right]}{{e_{1u}}_{\,i+1/2}^{\,k}},
+\end{equation}
+where the areas $a_i$ are as in \autoref{eq:TRIADS_i13}.
+In this case, separating the total lateral flux, the sum of \autoref{eq:TRIADS_i13} and \autoref{eq:TRIADS_i11},
+into triad components, a lateral tracer flux
+\begin{equation}
+  \label{eq:TRIADS_latflux-triad}
+  _i^k {\mathbb{F}_u}_{i_p}^{k_p} (T) = - {A}_i^k{ \:}_i^k{\mathbb{A}_u}_{i_p}^{k_p}
+  \left(
+    \frac{ \delta_{i+ i_p}[T^k] }{ {e_{1u}}_{\,i + i_p}^{\,k} }
+    -\ {_i^k\mathbb{R}_{i_p}^{k_p}} \
+    \frac{ \delta_{k+k_p} [T^i] }{{e_{3w}}_{\,i}^{\,k+k_p} }
+  \right)
+\end{equation}
+can be identified with each triad.
+Then, because the same metric factors ${e_{3w}}_{\,i}^{\,k+k_p}$ and ${e_{1u}}_{\,i+i_p}^{\,k}$ are employed for both
+the density gradients in $ _i^k \mathbb{R}_{i_p}^{k_p}$ and the tracer gradients,
+the lateral density flux associated with each triad separately disappears.
+\begin{equation}
+  \label{eq:TRIADS_latflux-rho}
+  {\mathbb{F}_u}_{i_p}^{k_p} (\rho)=-\alpha _i^k {\:}_i^k {\mathbb{F}_u}_{i_p}^{k_p} (T) + \beta_i^k {\:}_i^k {\mathbb{F}_u}_{i_p}^{k_p} (S)=0
+\end{equation}
+Thus the total flux $\left( F_u^{31} \right) ^i _{i,k+\frac{1}{2}} + \left( F_u^{11} \right) ^i _{i,k+\frac{1}{2}}$ from
+tracer cell $i,k$ to $i+1,k$ must also vanish since it is a sum of four such triad fluxes.
+
+The squared slope $r_1^2$ in the expression \autoref{eq:TRIADS_i33c} for the $_{33}$ component is also expressed in
+terms of area-weighted squared triad slopes,
+so the area-integrated vertical flux from tracer cell $i,k$ to $i,k+1$ resulting from the $r_1^2$ term is
+\begin{equation}
+  \label{eq:TRIADS_i33}
+  \left( F_w^{33} \right) _i^{k+\frac{1}{2}} =
+  - \left( {A}_i^{k+1} a_{1}' s_{1}'^2
+    + {A}_i^{k+1} a_{2}' s_{2}'^2
+    + {A}_i^k a_{3}' s_{3}'^2
+    + {A}_i^k a_{4}' s_{4}'^2 \right)\delta_{k+\frac{1}{2}} \left[ T^{i+1} \right],
+\end{equation}
+where the areas $a'$ and slopes $s'$ are the same as in \autoref{eq:TRIADS_i31}.
+Then, separating the total vertical flux, the sum of \autoref{eq:TRIADS_i31} and \autoref{eq:TRIADS_i33},
+into triad components, a vertical flux
+\begin{align}
+  \label{eq:TRIADS_vertflux-triad}
+  _i^k {\mathbb{F}_w}_{i_p}^{k_p} (T)
+  &= {A}_i^k{\: }_i^k{\mathbb{A}_w}_{i_p}^{k_p}
+    \left(
+    {_i^k\mathbb{R}_{i_p}^{k_p}}\frac{ \delta_{i+ i_p}[T^k] }{ {e_{1u}}_{\,i + i_p}^{\,k} }
+    -\ \left({_i^k\mathbb{R}_{i_p}^{k_p}}\right)^2 \
+    \frac{ \delta_{k+k_p} [T^i] }{{e_{3w}}_{\,i}^{\,k+k_p} }
+    \right) \\
+  &= - \left(\left.{ }_i^k{\mathbb{A}_w}_{i_p}^{k_p}\right/{ }_i^k{\mathbb{A}_u}_{i_p}^{k_p}\right)
+    {_i^k\mathbb{R}_{i_p}^{k_p}}{\: }_i^k{\mathbb{F}_u}_{i_p}^{k_p} (T) \label{eq:TRIADS_vertflux-triad2}
+\end{align}
+may be associated with each triad.
+Each vertical density flux $_i^k {\mathbb{F}_w}_{i_p}^{k_p} (\rho)$ associated with a triad then
+separately disappears (because the lateral flux $_i^k{\mathbb{F}_u}_{i_p}^{k_p} (\rho)$ disappears).
+Consequently the total vertical density flux
+$\left( F_w^{31} \right)_i ^{k+\frac{1}{2}} + \left( F_w^{33} \right)_i^{k+\frac{1}{2}}$ from
+tracer cell $i,k$ to $i,k+1$ must also vanish since it is a sum of four such triad fluxes.
+
+We can explicitly identify (\autoref{fig:TRIADS_qcells}) the triads associated with the $s_i$, $a_i$,
+and $s'_i$, $a'_i$ used in the definition of the $u$-fluxes and $w$-fluxes in \autoref{eq:TRIADS_i31},
+\autoref{eq:TRIADS_i13}, \autoref{eq:TRIADS_i11} \autoref{eq:TRIADS_i33} and \autoref{fig:TRIADS_ISO_triad} to write out
+the iso-neutral fluxes at $u$- and $w$-points as sums of the triad fluxes that cross the $u$- and $w$-faces:
+%(\autoref{fig:TRIADS_ISO_triad}):
+\begin{flalign}
+  \label{eq:TRIADS_iso_flux} \vect{F}_{\mathrm{iso}}(T) &\equiv
+  \sum_{\substack{i_p,\,k_p}}
+  \begin{pmatrix}
+    {_{i+1/2-i_p}^k {\mathbb{F}_u}_{i_p}^{k_p} } (T) \\ \\
+    {_i^{k+1/2-k_p} {\mathbb{F}_w}_{i_p}^{k_p} } (T) \\
+  \end{pmatrix}.
+\end{flalign}
+
+%% =================================================================================================
+\subsection{Ensuring the scheme does not increase tracer variance}
+\label{subsec:TRIADS_variance}
+
+We now require that this operator should not increase the globally-integrated tracer variance.
+%This changes according to
+% \begin{align*}
+% &\int_D  D_l^T \; T \;dv \equiv  \sum_{i,k} \left\{ T \ D_l^T \ b_T \right\}    \\
+% &\equiv + \sum_{i,k} \sum_{\substack{i_p,\,k_p}} \left\{
+% 		\delta_{i} \left[{_{i+1/2-i_p}^k {\mathbb{F}_u }_{i_p}^{k_p}} \right]
+% 	     + \delta_{k} \left[ {_i^{k+1/2-k_p} {\mathbb{F}_w}_{i_p}^{k_p}} \right]  \ T \right\}    \\
+% &\equiv  - \sum_{i,k} \sum_{\substack{i_p,\,k_p}} \left\{
+%                 {_{i+1/2-i_p}^k {\mathbb{F}_u }_{i_p}^{k_p}} \ \delta_{i+1/2} [T]
+%              + {_i^{k+1/2-k_p} {\mathbb{F}_w}_{i_p}^{k_p}}  \ \delta_{k+1/2} [T]   \right\}      \\
+% \end{align*}
+Each triad slope $_i^k\mathbb{R}_{i_p}^{k_p}$ drives a lateral flux $_i^k{\mathbb{F}_u}_{i_p}^{k_p} (T)$ across
+the $u$-point $i+i_p,k$ and a vertical flux $_i^k{\mathbb{F}_w}_{i_p}^{k_p} (T)$ across the $w$-point $i,k+k_p$.
+The lateral flux drives a net rate of change of variance,
+summed over the two $T$-points $i+i_p-\fractext{1}{2},k$ and $i+i_p+\fractext{1}{2},k$, of
+\begin{multline}
+  {b_T}_{i+i_p-1/2}^k\left(\frac{\partial T}{\partial t}T\right)_{i+i_p-1/2}^k+
+  \quad {b_T}_{i+i_p+1/2}^k\left(\frac{\partial T}{\partial
+      t}T\right)_{i+i_p+1/2}^k \\
+  \begin{aligned}
+    &= -T_{i+i_p-1/2}^k{\;} _i^k{\mathbb{F}_u}_{i_p}^{k_p} (T) \quad + \quad  T_{i+i_p+1/2}^k
+    {\;}_i^k{\mathbb{F}_u}_{i_p}^{k_p} (T) \\
+    &={\;} _i^k{\mathbb{F}_u}_{i_p}^{k_p} (T)\,\delta_{i+ i_p}[T^k], \label{eq:TRIADS_dvar_iso_i}
+  \end{aligned}
+\end{multline}
+while the vertical flux similarly drives a net rate of change of variance summed over
+the $T$-points $i,k+k_p-\fractext{1}{2}$ (above) and $i,k+k_p+\fractext{1}{2}$ (below) of
+\begin{equation}
+  \label{eq:TRIADS_dvar_iso_k}
+  _i^k{\mathbb{F}_w}_{i_p}^{k_p} (T) \,\delta_{k+ k_p}[T^i].
+\end{equation}
+The total variance tendency driven by the triad is the sum of these two.
+Expanding $_i^k{\mathbb{F}_u}_{i_p}^{k_p} (T)$ and $_i^k{\mathbb{F}_w}_{i_p}^{k_p} (T)$ with
+\autoref{eq:TRIADS_latflux-triad} and \autoref{eq:TRIADS_vertflux-triad}, it is
+\begin{multline*}
+  -{A}_i^k\left \{
+    { } _i^k{\mathbb{A}_u}_{i_p}^{k_p}
+    \left(
+      \frac{ \delta_{i+ i_p}[T^k] }{ {e_{1u}}_{\,i + i_p}^{\,k} }
+      - {_i^k\mathbb{R}_{i_p}^{k_p}} \
+      \frac{ \delta_{k+k_p} [T^i] }{{e_{3w}}_{\,i}^{\,k+k_p} }\right)\,\delta_{i+ i_p}[T^k] \right.\\
+  - \left. { } _i^k{\mathbb{A}_w}_{i_p}^{k_p}
+    \left(
+      \frac{ \delta_{i+ i_p}[T^k] }{ {e_{1u}}_{\,i + i_p}^{\,k} }
+      -{\:}_i^k\mathbb{R}_{i_p}^{k_p}
+      \frac{ \delta_{k+k_p} [T^i] }{{e_{3w}}_{\,i}^{\,k+k_p} }
+    \right) {\,}_i^k\mathbb{R}_{i_p}^{k_p}\delta_{k+ k_p}[T^i]
+  \right \}.
+\end{multline*}
+The key point is then that if we require $_i^k{\mathbb{A}_u}_{i_p}^{k_p}$ and $_i^k{\mathbb{A}_w}_{i_p}^{k_p}$ to
+be related to a triad volume $_i^k\mathbb{V}_{i_p}^{k_p}$ by
+\begin{equation}
+  \label{eq:TRIADS_V-A}
+  _i^k\mathbb{V}_{i_p}^{k_p}
+  ={\;}_i^k{\mathbb{A}_u}_{i_p}^{k_p}\,{e_{1u}}_{\,i + i_p}^{\,k}
+  ={\;}_i^k{\mathbb{A}_w}_{i_p}^{k_p}\,{e_{3w}}_{\,i}^{\,k + k_p},
+\end{equation}
+the variance tendency reduces to the perfect square
+\begin{equation}
+  \label{eq:TRIADS_perfect-square}
+  -{A}_i^k{\:} _i^k\mathbb{V}_{i_p}^{k_p}
+  \left(
+    \frac{ \delta_{i+ i_p}[T^k] }{ {e_{1u}}_{\,i + i_p}^{\,k} }
+    -{\:}_i^k\mathbb{R}_{i_p}^{k_p}
+    \frac{ \delta_{k+k_p} [T^i] }{{e_{3w}}_{\,i}^{\,k+k_p} }
+  \right)^2\leq 0.
+\end{equation}
+Thus, the constraint \autoref{eq:TRIADS_V-A} ensures that the fluxes
+(\autoref{eq:TRIADS_latflux-triad}, \autoref{eq:TRIADS_vertflux-triad}) associated with
+a given slope triad $_i^k\mathbb{R}_{i_p}^{k_p}$ do not increase the net variance.
+Since the total fluxes are sums of such fluxes from the various triads, this constraint, applied to all triads,
+is sufficient to ensure that the globally integrated variance does not increase.
+
+The expression \autoref{eq:TRIADS_V-A} can be interpreted as a discretization of the global integral
+\begin{equation}
+  \label{eq:TRIADS_cts-var}
+  \frac{\partial}{\partial t}\int\!\fractext{1}{2} T^2\, dV =
+  \int\!\mathbf{F}\cdot\nabla T\, dV,
+\end{equation}
+where, within each triad volume $_i^k\mathbb{V}_{i_p}^{k_p}$, the lateral and vertical fluxes/unit area
+\[
+  \mathbf{F}=\left(
+    \left.{}_i^k{\mathbb{F}_u}_{i_p}^{k_p} (T)\right/{}_i^k{\mathbb{A}_u}_{i_p}^{k_p},
+    \left.{\:}_i^k{\mathbb{F}_w}_{i_p}^{k_p} (T)\right/{}_i^k{\mathbb{A}_w}_{i_p}^{k_p}
+  \right)
+\]
+and the gradient
+\[
+  \nabla T = \left(
+    \left.\delta_{i+ i_p}[T^k] \right/ {e_{1u}}_{\,i + i_p}^{\,k},
+    \left.\delta_{k+ k_p}[T^i] \right/ {e_{3w}}_{\,i}^{\,k + k_p}
+  \right)
+\]
+
+%% =================================================================================================
+\subsection{Triad volumes in Griffes's scheme and in \NEMO}
+
+To complete the discretization we now need only specify the triad volumes $_i^k\mathbb{V}_{i_p}^{k_p}$.
+\citet{griffies.gnanadesikan.ea_JPO98} identifies these $_i^k\mathbb{V}_{i_p}^{k_p}$ as the volumes of the quarter cells,
+defined in terms of the distances between $T$, $u$,$f$ and $w$-points.
+This is the natural discretization of \autoref{eq:TRIADS_cts-var}.
+The \NEMO\ model, however, operates with scale factors instead of grid sizes,
+and scale factors for the quarter cells are not defined.
+Instead, therefore we simply choose
+\begin{equation}
+  \label{eq:TRIADS_V-NEMO}
+  _i^k\mathbb{V}_{i_p}^{k_p}=\fractext{1}{4} {b_u}_{i+i_p}^k,
+\end{equation}
+as a quarter of the volume of the $u$-cell inside which the triad quarter-cell lies.
+This has the nice property that when the slopes $\mathbb{R}$ vanish,
+the lateral flux from tracer cell $i,k$ to $i+1,k$ reduces to the classical form
+\begin{equation}
+  \label{eq:TRIADS_lat-normal}
+  -\overline{A}_{\,i+1/2}^k\;
+  \frac{{b_u}_{i+1/2}^k}{{e_{1u}}_{\,i + i_p}^{\,k}}
+  \;\frac{\delta_{i+ 1/2}[T^k] }{{e_{1u}}_{\,i + i_p}^{\,k}}
+  = -\overline{A}_{\,i+1/2}^k\;\frac{{e_{1w}}_{\,i + 1/2}^{\,k}\:{e_{1v}}_{\,i + 1/2}^{\,k}\;\delta_{i+ 1/2}[T^k]}{{e_{1u}}_{\,i + 1/2}^{\,k}}.
+\end{equation}
+In fact if the diffusive coefficient is defined at $u$-points,
+so that we employ ${A}_{i+i_p}^k$ instead of  ${A}_i^k$ in the definitions of the triad fluxes
+\autoref{eq:TRIADS_latflux-triad} and \autoref{eq:TRIADS_vertflux-triad},
+we can replace $\overline{A}_{\,i+1/2}^k$ by $A_{i+1/2}^k$ in the above.
+
+%% =================================================================================================
+\subsection{Summary of the scheme}
+
+The iso-neutral fluxes at $u$- and $w$-points are the sums of the triad fluxes that
+cross the $u$- and $w$-faces \autoref{eq:TRIADS_iso_flux}:
+\begin{subequations}
+  % \label{eq:TRIADS_alltriadflux}
+  \begin{flalign*}
+    % \label{eq:TRIADS_vect_isoflux}
+    \vect{F}_{\mathrm{iso}}(T) &\equiv
+    \sum_{\substack{i_p,\,k_p}}
+    \begin{pmatrix}
+      {_{i+1/2-i_p}^k {\mathbb{F}_u}_{i_p}^{k_p} } (T) \\ \\
+      {_i^{k+1/2-k_p} {\mathbb{F}_w}_{i_p}^{k_p} } (T)
+    \end{pmatrix},
+  \end{flalign*}
+  where \autoref{eq:TRIADS_latflux-triad}:
+  \begin{align}
+    \label{eq:TRIADS_triadfluxu}
+    _i^k {\mathbb{F}_u}_{i_p}^{k_p} (T) &= - {A}_i^k{
+                                          \:}\frac{{{}_i^k\mathbb{V}}_{i_p}^{k_p}}{{e_{1u}}_{\,i + i_p}^{\,k}}
+                                          \left(
+                                          \frac{ \delta_{i+ i_p}[T^k] }{ {e_{1u}}_{\,i + i_p}^{\,k} }
+                                          -\ {_i^k\mathbb{R}_{i_p}^{k_p}} \
+                                          \frac{ \delta_{k+k_p} [T^i] }{{e_{3w}}_{\,i}^{\,k+k_p} }
+                                          \right),\\
+    \intertext{and}
+    _i^k {\mathbb{F}_w}_{i_p}^{k_p} (T)
+                                        &= {A}_i^k{\: }\frac{{{}_i^k\mathbb{V}}_{i_p}^{k_p}}{{e_{3w}}_{\,i}^{\,k+k_p}}
+                                          \left(
+                                          {_i^k\mathbb{R}_{i_p}^{k_p}}\frac{ \delta_{i+ i_p}[T^k] }{ {e_{1u}}_{\,i + i_p}^{\,k} }
+                                          -\ \left({_i^k\mathbb{R}_{i_p}^{k_p}}\right)^2 \
+                                          \frac{ \delta_{k+k_p} [T^i] }{{e_{3w}}_{\,i}^{\,k+k_p} }
+                                          \right),\label{eq:TRIADS_triadfluxw}
+  \end{align}
+  with \autoref{eq:TRIADS_V-NEMO}
+  \[
+    % \label{eq:TRIADS_V-NEMO2}
+    _i^k{\mathbb{V}}_{i_p}^{k_p}=\fractext{1}{4} {b_u}_{i+i_p}^k.
+  \]
+\end{subequations}
+
+The divergence of the expression \autoref{eq:TRIADS_iso_flux} for the fluxes gives the iso-neutral diffusion tendency at
+each tracer point:
+\[
+  % \label{eq:TRIADS_iso_operator}
+  D_l^T = \frac{1}{b_T}
+  \sum_{\substack{i_p,\,k_p}} \left\{ \delta_{i} \left[{_{i+1/2-i_p}^k
+        {\mathbb{F}_u }_{i_p}^{k_p}} \right] + \delta_{k} \left[
+      {_i^{k+1/2-k_p} {\mathbb{F}_w}_{i_p}^{k_p}} \right] \right\}
+\]
+where $b_T= e_{1T}\,e_{2T}\,e_{3T}$ is the volume of $T$-cells.
+The diffusion scheme satisfies the following six properties:
+
+\begin{description}
+\item [Horizontal diffusion] The discretization of the diffusion operator recovers the traditional five-point Laplacian
+  \autoref{eq:TRIADS_lat-normal} in the limit of flat iso-neutral direction:
+  \[
+    % \label{eq:TRIADS_iso_property0}
+    D_l^T = \frac{1}{b_T} \
+    \delta_{i} \left[ \frac{e_{2u}\,e_{3u}}{e_{1u}} \;
+      \overline{A}^{\,i} \; \delta_{i+1/2}[T] \right] \qquad
+    \text{when} \quad { _i^k \mathbb{R}_{i_p}^{k_p} }=0
+  \]
+\item [Implicit treatment in the vertical] Only tracer values associated with a single water column appear in the expression \autoref{eq:TRIADS_i33} for
+  the $_{33}$ fluxes, vertical fluxes driven by vertical gradients.
+  This is of paramount importance since it means that a time-implicit algorithm can be used to
+  solve the vertical diffusion equation.
+  This is necessary since the vertical eddy diffusivity associated with this term,
+  \[
+    \frac{1}{b_w}\sum_{\substack{i_p, \,k_p}} \left\{
+      {\:}_i^k\mathbb{V}_{i_p}^{k_p} \: {A}_i^k \: \left(_i^k \mathbb{R}_{i_p}^{k_p}\right)^2
+    \right\}  =
+    \frac{1}{4b_w}\sum_{\substack{i_p, \,k_p}} \left\{
+      {b_u}_{i+i_p}^k\: {A}_i^k \: \left(_i^k \mathbb{R}_{i_p}^{k_p}\right)^2
+    \right\},
+  \]
+  (where $b_w= e_{1w}\,e_{2w}\,e_{3w}$ is the volume of $w$-cells) can be quite large.
+\item [Pure iso-neutral operator] The iso-neutral flux of locally referenced potential density is zero.
+  See \autoref{eq:TRIADS_latflux-rho} and \autoref{eq:TRIADS_vertflux-triad2}.
+\item [Conservation of tracer] The iso-neutral diffusion conserves tracer content, \ie
+  \[
+    % \label{eq:TRIADS_iso_property1}
+    \sum_{i,j,k} \left\{ D_l^T \      b_T \right\} = 0
+  \]
+  This property is trivially satisfied since the iso-neutral diffusive operator is written in flux form.
+\item [No increase of tracer variance] The iso-neutral diffusion does not increase the tracer variance, \ie
+  \[
+    % \label{eq:TRIADS_iso_property2}
+    \sum_{i,j,k} \left\{ T \ D_l^T      \ b_T \right\} \leq 0
+  \]
+  The property is demonstrated in \autoref{subsec:TRIADS_variance} above.
+  It is a key property for a diffusion term.
+  It means that it is also a dissipation term,
+  \ie\ it dissipates the square of the quantity on which it is applied.
+  It therefore ensures that, when the diffusivity coefficient is large enough,
+  the field on which it is applied becomes free of grid-point noise.
+\item [Self-adjoint operator] The iso-neutral diffusion operator is self-adjoint, \ie
+  \begin{equation}
+    \label{eq:TRIADS_iso_property3}
+    \sum_{i,j,k} \left\{ S \ D_l^T \ b_T \right\} = \sum_{i,j,k} \left\{ D_l^S \ T \ b_T \right\}
+  \end{equation}
+  In other word, there is no need to develop a specific routine from the adjoint of this operator.
+  We just have to apply the same routine.
+  This property can be demonstrated similarly to the proof of the `no increase of tracer variance' property.
+  The contribution by a single triad towards the left hand side of \autoref{eq:TRIADS_iso_property3},
+  can be found by replacing $\delta[T]$ by $\delta[S]$ in \autoref{eq:TRIADS_dvar_iso_i} and \autoref{eq:TRIADS_dvar_iso_k}.
+  This results in a term similar to \autoref{eq:TRIADS_perfect-square},
+  \[
+    % \label{eq:TRIADS_TScovar}
+    - {A}_i^k{\:} _i^k\mathbb{V}_{i_p}^{k_p}
+    \left(
+      \frac{ \delta_{i+ i_p}[T^k] }{ {e_{1u}}_{\,i + i_p}^{\,k} }
+      -{\:}_i^k\mathbb{R}_{i_p}^{k_p}
+      \frac{ \delta_{k+k_p} [T^i] }{{e_{3w}}_{\,i}^{\,k+k_p} }
+    \right)
+    \left(
+      \frac{ \delta_{i+ i_p}[S^k] }{ {e_{1u}}_{\,i + i_p}^{\,k} }
+      -{\:}_i^k\mathbb{R}_{i_p}^{k_p}
+      \frac{ \delta_{k+k_p} [S^i] }{{e_{3w}}_{\,i}^{\,k+k_p} }
+    \right).
+  \]
+This is symmetrical in $T $ and $S$, so exactly the same term arises from
+the discretization of this triad's contribution towards the RHS of \autoref{eq:TRIADS_iso_property3}.
+\end{description}
+
+%% =================================================================================================
+\subsection{Treatment of the triads at the boundaries}
+\label{sec:TRIADS_iso_bdry}
+
+The triad slope can only be defined where both the grid boxes centred at the end of the arms exist.
+Triads that would poke up through the upper ocean surface into the atmosphere,
+or down into the ocean floor, must be masked out.
+See \autoref{fig:TRIADS_bdry_triads}.
+Surface layer triads \triad{i}{1}{R}{1/2}{-1/2} (magenta) and \triad{i+1}{1}{R}{-1/2}{-1/2} (blue) that
+require density to be specified above the ocean surface are masked (\autoref{fig:TRIADS_bdry_triads}a):
+this ensures that lateral tracer gradients produce no flux through the ocean surface.
+However, to prevent surface noise, it is customary to retain the $_{11}$ contributions towards
+the lateral triad fluxes \triad[u]{i}{1}{F}{1/2}{-1/2} and \triad[u]{i+1}{1}{F}{-1/2}{-1/2};
+this drives diapycnal tracer fluxes.
+Similar comments apply to triads that would intersect the ocean floor (\autoref{fig:TRIADS_bdry_triads}b).
+Note that both near bottom triad slopes \triad{i}{k}{R}{1/2}{1/2} and \triad{i+1}{k}{R}{-1/2}{1/2} are masked when
+either of the $i,k+1$ or $i+1,k+1$ tracer points is masked, \ie\ the $i,k+1$ $u$-point is masked.
+The associated lateral fluxes (grey-black dashed line) are masked if \np[=.false.]{ln_botmix_triad}{ln\_botmix\_triad},
+but left unmasked, giving bottom mixing, if \np[=.true.]{ln_botmix_triad}{ln\_botmix\_triad}.
+
+The default option \np[=.false.]{ln_botmix_triad}{ln\_botmix\_triad} is suitable when the bbl mixing option is enabled
+(\np[=.true.]{ln_trabbl}{ln\_trabbl}, with \np[=1]{nn_bbl_ldf}{nn\_bbl\_ldf}), or for simple idealized problems.
+For setups with topography without bbl mixing, \np[=.true.]{ln_botmix_triad}{ln\_botmix\_triad} may be necessary.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.66\textwidth]{TRIADS_GRIFF_bdry_triads}
+  \caption[Boundary triads]{
+    (a) Uppermost model layer $k=1$ with $i,1$ and $i+1,1$ tracer points (black dots),
+    and $i+1/2,1$ $u$-point (blue square).
+    Triad slopes \triad{i}{1}{R}{1/2}{-1/2} (magenta) and
+    \triad{i+1}{1}{R}{-1/2}{-1/2} (blue) poking through the ocean surface are masked
+    (faded in figure).
+    However,
+    the lateral $_{11}$ contributions towards \triad[u]{i}{1}{F}{1/2}{-1/2} and
+    \triad[u]{i+1}{1}{F}{-1/2}{-1/2} (yellow line) are still applied,
+    giving diapycnal diffusive fluxes.
+    \newline
+    (b) Both near bottom triad slopes \triad{i}{k}{R}{1/2}{1/2} and
+    \triad{i+1}{k}{R}{-1/2}{1/2} are masked when
+    either of the $i,k+1$ or $i+1,k+1$ tracer points is masked,
+    \ie\ the $i,k+1$ $u$-point is masked.
+    The associated lateral fluxes (grey-black dashed line) are masked if
+    \protect\np[=.false.]{ln_botmix_triad}{ln\_botmix\_triad}, but left unmasked,
+    giving bottom mixing, if \protect\np[=.true.]{ln_botmix_triad}{ln\_botmix\_triad}}
+  \label{fig:TRIADS_bdry_triads}
+\end{figure}
+
+%% =================================================================================================
+\subsection{ Limiting of the slopes within the interior}
+\label{sec:TRIADS_limit}
+
+As discussed in \autoref{subsec:LDF_slp_iso},
+iso-neutral slopes relative to geopotentials must be bounded everywhere,
+both for consistency with the small-slope approximation and for numerical stability \citep{cox_OM87, griffies_bk04}.
+The bound chosen in \NEMO\ is applied to each component of the slope separately and
+has a value of $1/100$ in the ocean interior.
+%, ramping linearly down above 70~m depth to zero at the surface
+It is of course relevant to the iso-neutral slopes $\tilde{r}_i=r_i+\sigma_i$ relative to geopotentials
+(here the $\sigma_i$ are the slopes of the coordinate surfaces relative to geopotentials)
+\autoref{eq:MB_slopes_eiv} rather than the slope $r_i$ relative to coordinate surfaces, so we require
+\[
+  |\tilde{r}_i|\leq \tilde{r}_\mathrm{max}=0.01.
+\]
+and then recalculate the slopes $r_i$ relative to coordinates.
+Each individual triad slope
+\begin{equation}
+  \label{eq:TRIADS_Rtilde}
+  _i^k\tilde{\mathbb{R}}_{i_p}^{k_p} = {}_i^k\mathbb{R}_{i_p}^{k_p}  + \frac{\delta_{i+i_p}[z_T^k]}{{e_{1u}}_{\,i + i_p}^{\,k}}
+\end{equation}
+is limited like this and then the corresponding $_i^k\mathbb{R}_{i_p}^{k_p} $ are recalculated and
+combined to form the fluxes.
+Note that where the slopes have been limited, there is now a non-zero iso-neutral density flux that
+drives dianeutral mixing.
+In particular this iso-neutral density flux is always downwards,
+and so acts to reduce gravitational potential energy.
+
+%% =================================================================================================
+\subsection{Tapering within the surface mixed layer}
+\label{sec:TRIADS_taper}
+
+Additional tapering of the iso-neutral fluxes is necessary within the surface mixed layer.
+When the Griffies triads are used, we offer two options for this.
+
+%% =================================================================================================
+\subsubsection{Linear slope tapering within the surface mixed layer}
+\label{sec:TRIADS_lintaper}
+
+This is the option activated by the default choice \np[=.false.]{ln_triad_iso}{ln\_triad\_iso}.
+Slopes $\tilde{r}_i$ relative to geopotentials are tapered linearly from their value immediately below
+the mixed layer to zero at the surface, as described in option (c) of \autoref{fig:LDF_eiv_slp}, to values
+\begin{equation}
+  \label{eq:TRIADS_rmtilde}
+  \rMLt = -\frac{z}{h}\left.\tilde{r}_i\right|_{z=-h}\quad \text{ for  } z>-h,
+\end{equation}
+and then the $r_i$ relative to vertical coordinate surfaces are appropriately adjusted to
+\[
+  % \label{eq:TRIADS_rm}
+  \rML =\rMLt -\sigma_i \quad \text{ for  } z>-h.
+\]
+Thus the diffusion operator within the mixed layer is given by:
+\[
+  % \label{eq:TRIADS_iso_tensor_ML}
+  D^{lT}=\nabla {\mathrm {\mathbf .}}\left( {A^{lT}\;\Re \;\nabla T} \right) \qquad
+  \mbox{with}\quad \;\;\Re =\left( {{
+        \begin{array}{*{20}c}
+          1 \hfill & 0 \hfill & {-\rML[1]}\hfill \\
+          0 \hfill & 1 \hfill & {-\rML[2]} \hfill \\
+          {-\rML[1]}\hfill &   {-\rML[2]} \hfill & {\rML[1]^2+\rML[2]^2} \hfill
+        \end{array}
+      }} \right)
+\]
+
+This slope tapering gives a natural connection between tracer in the mixed-layer and
+in isopycnal layers immediately below, in the thermocline.
+It is consistent with the way the $\tilde{r}_i$ are tapered within the mixed layer
+(see \autoref{sec:TRIADS_taperskew} below) so as to ensure a uniform GM eddy-induced velocity throughout the mixed layer.
+However, it gives a downwards density flux and so acts so as to reduce potential energy in the same way as
+does the slope limiting discussed above in \autoref{sec:TRIADS_limit}.
+
+As in \autoref{sec:TRIADS_limit} above, the tapering \autoref{eq:TRIADS_rmtilde} is applied separately to
+each triad $_i^k\tilde{\mathbb{R}}_{i_p}^{k_p}$, and the $_i^k\mathbb{R}_{i_p}^{k_p}$ adjusted.
+For clarity, we assume $z$-coordinates in the following;
+the conversion from $\mathbb{R}$ to $\tilde{\mathbb{R}}$ and back to $\mathbb{R}$ follows exactly as
+described above by \autoref{eq:TRIADS_Rtilde}.
+\begin{enumerate}
+\item Mixed-layer depth is defined so as to avoid including regions of weak vertical stratification in
+  the slope definition.
+  At each $i,j$ (simplified to $i$ in \autoref{fig:TRIADS_MLB_triad}),
+  we define the mixed-layer by setting the vertical index of the tracer point immediately below the mixed layer,
+  $k_{\mathrm{ML}}$, as the maximum $k$ (shallowest tracer point) such that
+  the potential density ${\rho_0}_{i,k}>{\rho_0}_{i,k_{10}}+\Delta\rho_c$,
+  where $i,k_{10}$ is the tracer gridbox within which the depth reaches 10~m.
+  See the left side of \autoref{fig:TRIADS_MLB_triad}.
+  We use the $k_{10}$-gridbox instead of the surface gridbox to avoid problems \eg\ with thin daytime mixed-layers.
+  Currently we use the same $\Delta\rho_c=0.01\;\mathrm{kg\:m^{-3}}$ for ML triad tapering as is used to
+  output the diagnosed mixed-layer depth $h_{\mathrm{ML}}=|z_{W}|_{k_{\mathrm{ML}}+1/2}$,
+  the depth of the $w$-point above the $i,k_{\mathrm{ML}}$ tracer point.
+\item We define `basal' triad slopes ${\:}_i{\mathbb{R}_{\mathrm{base}}}_{\,i_p}^{k_p}$ as
+  the slopes of those triads whose vertical `arms' go down from the $i,k_{\mathrm{ML}}$ tracer point to
+  the $i,k_{\mathrm{ML}}-1$ tracer point below.
+  This is to ensure that the vertical density gradients associated with
+  these basal triad slopes ${\:}_i{\mathbb{R}_{\mathrm{base}}}_{\,i_p}^{k_p}$ are representative of the thermocline.
+  The four basal triads defined in the bottom part of \autoref{fig:TRIADS_MLB_triad} are then
+  \begin{align*}
+    {\:}_i{\mathbb{R}_{\mathrm{base}}}_{\,i_p}^{k_p} &=
+                                                       {\:}^{k_{\mathrm{ML}}-k_p-1/2}_i{\mathbb{R}_{\mathrm{base}}}_{\,i_p}^{k_p},
+                                                       % \label{eq:TRIADS_Rbase}
+    \\
+    \intertext{with \eg\ the green triad}
+    {\:}_i{\mathbb{R}_{\mathrm{base}}}_{1/2}^{-1/2}&=
+                                                     {\:}^{k_{\mathrm{ML}}}_i{\mathbb{R}_{\mathrm{base}}}_{\,1/2}^{-1/2}.
+  \end{align*}
+The vertical flux associated with each of these triads passes through
+the $w$-point $i,k_{\mathrm{ML}}-1/2$ lying \emph{below} the $i,k_{\mathrm{ML}}$ tracer point, so it is this depth
+\[
+  % \label{eq:TRIADS_zbase}
+  {z_\mathrm{base}}_{\,i}={z_{w}}_{k_\mathrm{ML}-1/2}
+\]
+one gridbox deeper than the diagnosed ML depth $z_{\mathrm{ML}})$ that sets the $h$ used to taper the slopes in
+\autoref{eq:TRIADS_rmtilde}.
+\item Finally, we calculate the adjusted triads ${\:}_i^k{\mathbb{R}_{\mathrm{ML}}}_{\,i_p}^{k_p}$ within
+  the mixed layer, by multiplying the appropriate ${\:}_i{\mathbb{R}_{\mathrm{base}}}_{\,i_p}^{k_p}$ by
+  the ratio of the depth of the $w$-point ${z_w}_{k+k_p}$ to ${z_{\mathrm{base}}}_{\,i}$.
+  For instance the green triad centred on $i,k$
+  \begin{align*}
+    {\:}_i^k{\mathbb{R}_{\mathrm{ML}}}_{\,1/2}^{-1/2} &=
+                                                        \frac{{z_w}_{k-1/2}}{{z_{\mathrm{base}}}_{\,i}}{\:}_i{\mathbb{R}_{\mathrm{base}}}_{\,1/2}^{-1/2} \\
+    \intertext{and more generally}
+    {\:}_i^k{\mathbb{R}_{\mathrm{ML}}}_{\,i_p}^{k_p} &=
+                                                       \frac{{z_w}_{k+k_p}}{{z_{\mathrm{base}}}_{\,i}}{\:}_i{\mathbb{R}_{\mathrm{base}}}_{\,i_p}^{k_p}.
+                                                       % \label{eq:TRIADS_RML}
+  \end{align*}
+\end{enumerate}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.66\textwidth]{TRIADS_GRIFF_MLB_triads}
+  \caption[Definition of mixed-layer depth and calculation of linearly tapered triads]{
+    Definition of mixed-layer depth and calculation of linearly tapered triads.
+    The figure shows a water column at a given $i,j$ (simplified to $i$),
+    with the ocean surface at the top.
+    Tracer points are denoted by bullets, and black lines the edges of the tracer cells;
+    $k$ increases upwards.
+    \newline
+    We define the mixed-layer by setting the vertical index of the tracer point immediately below
+    the mixed layer, $k_{\mathrm{ML}}$, as the maximum $k$ (shallowest tracer point) such that
+    ${\rho_0}_{i,k}>{\rho_0}_{i,k_{10}}+\Delta\rho_c$,
+    where $i,k_{10}$ is the tracer gridbox within which the depth reaches 10~m.
+    We calculate the triad slopes within the mixed layer by linearly tapering them from zero
+    (at the surface) to the `basal' slopes,
+    the slopes of the four triads passing through the $w$-point $i,k_{\mathrm{ML}}-1/2$ (blue square),
+    ${\:}_i{\mathbb{R}_{\mathrm{base}}}_{\,i_p}^{k_p}$.
+    Triads with different $i_p,k_p$, denoted by different colours,
+    (\eg\ the green triad $i_p=1/2,k_p=-1/2$) are tapered to the appropriate basal triad.}
+  \label{fig:TRIADS_MLB_triad}
+\end{figure}
+
+%% =================================================================================================
+\subsubsection{Additional truncation of skew iso-neutral flux components}
+\label{subsec:TRIADS_Gerdes-taper}
+
+The alternative option is activated by setting \np{ln_triad_iso}{ln\_triad\_iso} = true.
+This retains the same tapered slope $\rML$  described above for the calculation of the $_{33}$ term of
+the iso-neutral diffusion tensor (the vertical tracer flux driven by vertical tracer gradients),
+but replaces the $\rML$ in the skew term by
+\begin{equation}
+  \label{eq:TRIADS_rm*}
+  \rML^*=\left.\rMLt^2\right/\tilde{r}_i-\sigma_i,
+\end{equation}
+giving a ML diffusive operator
+\[
+  % \label{eq:TRIADS_iso_tensor_ML2}
+  D^{lT}=\nabla {\mathrm {\mathbf .}}\left( {A^{lT}\;\Re \;\nabla T} \right) \qquad
+  \mbox{with}\quad \;\;\Re =\left( {{
+        \begin{array}{*{20}c}
+          1 \hfill & 0 \hfill & {-\rML[1]^*}\hfill \\
+          0 \hfill & 1 \hfill & {-\rML[2]^*} \hfill \\
+          {-\rML[1]^*}\hfill &   {-\rML[2]^*} \hfill & {\rML[1]^2+\rML[2]^2} \hfill \\
+        \end{array}
+      }} \right).
+\]
+This operator
+\footnote{
+  To ensure good behaviour where horizontal density gradients are weak,
+  we in fact follow \citet{gerdes.koberle.ea_CD91} and
+  set $\rML^*=\mathrm{sgn}(\tilde{r}_i)\min(|\rMLt^2/\tilde{r}_i|,|\tilde{r}_i|)-\sigma_i$.
+}
+then has the property it gives no vertical density flux, and so does not change the potential energy.
+This approach is similar to multiplying the iso-neutral diffusion coefficient by
+$\tilde{r}_{\mathrm{max}}^{-2}\tilde{r}_i^{-2}$ for steep slopes,
+as suggested by \citet{gerdes.koberle.ea_CD91} (see also \citet{griffies_bk04}).
+Again it is applied separately to each triad $_i^k\mathbb{R}_{i_p}^{k_p}$
+
+In practice, this approach gives weak vertical tracer fluxes through the mixed-layer,
+as well as vanishing density fluxes.
+While it is theoretically advantageous that it does not change the potential energy,
+it may give a discontinuity between the fluxes within the mixed-layer (purely horizontal) and
+just below (along iso-neutral surfaces).
+% This may give strange looking results,
+% particularly where the mixed-layer depth varies strongly laterally.
+%% =================================================================================================
+\section{Eddy induced advection formulated as a skew flux}
+\label{sec:TRIADS_skew-flux}
+
+%% =================================================================================================
+\subsection{Continuous skew flux formulation}
+\label{sec:TRIADS_continuous-skew-flux}
+
+When Gent and McWilliams's [1990] diffusion is used, an additional advection term is added.
+The associated velocity is the so called eddy induced velocity,
+the formulation of which depends on the slopes of iso-neutral surfaces.
+Contrary to the case of iso-neutral mixing, the slopes used here are referenced to the geopotential surfaces,
+\ie\ \autoref{eq:LDF_slp_geo} is used in $z$-coordinate,
+and the sum \autoref{eq:LDF_slp_geo} + \autoref{eq:LDF_slp_iso} in $z^*$ or $s$-coordinates.
+
+The eddy induced velocity is given by:
+\begin{subequations}
+  % \label{eq:TRIADS_eiv}
+  \begin{equation}
+    \label{eq:TRIADS_eiv_v}
+    \begin{split}
+      u^* & = - \frac{1}{e_{3}}\;          \partial_i\psi_1,  \\
+      v^* & = - \frac{1}{e_{3}}\;          \partial_j\psi_2,    \\
+      w^* & =    \frac{1}{e_{1}e_{2}}\; \left\{ \partial_i  \left( e_{2} \, \psi_1\right)
+        + \partial_j  \left( e_{1} \, \psi_2\right) \right\},
+    \end{split}
+  \end{equation}
+  where the streamfunctions $\psi_i$ are given by
+  \begin{equation}
+    \label{eq:TRIADS_eiv_psi}
+    \begin{split}
+      \psi_1 & = A_{e} \; \tilde{r}_1,   \\
+      \psi_2 & = A_{e} \; \tilde{r}_2,
+    \end{split}
+  \end{equation}
+\end{subequations}
+with $A_{e}$ the eddy induced velocity coefficient,
+and $\tilde{r}_1$ and $\tilde{r}_2$ the slopes between the iso-neutral and the geopotential surfaces.
+
+The traditional way to implement this additional advection is to add it to the Eulerian velocity prior to
+computing the tracer advection.
+This is implemented if \texttt{traldf\_eiv?} is set in the default implementation,
+where \np{ln_traldf_triad}{ln\_traldf\_triad} is set false.
+This allows us to take advantage of all the advection schemes offered for the tracers
+(see \autoref{sec:TRA_adv}) and not just a $2^{nd}$ order advection scheme.
+This is particularly useful for passive tracers where
+\emph{positivity} of the advection scheme is of paramount importance.
+
+However, when \np{ln_traldf_triad}{ln\_traldf\_triad} is set true,
+\NEMO\ instead implements eddy induced advection according to the so-called skew form \citep{griffies_JPO98}.
+It is based on a transformation of the advective fluxes using the non-divergent nature of the eddy induced velocity.
+For example in the (\textbf{i},\textbf{k}) plane,
+the tracer advective fluxes per unit area in $ijk$ space can be transformed as follows:
+\begin{flalign*}
+  \begin{split}
+    \textbf{F}_{\mathrm{eiv}}^T =
+    \begin{pmatrix}
+      {e_{2}\,e_{3}\;  u^*} \\
+ 		{e_{1}\,e_{2}\; w^*}
+    \end{pmatrix}   \;   T
+    &=
+    \begin{pmatrix}
+      { - \partial_k \left( e_{2} \,\psi_1 \right) \; T \;} \\
+ 		{+ \partial_i  \left( e_{2} \, \psi_1 \right) \; T \;}
+    \end{pmatrix} 			\\
+    &=
+    \begin{pmatrix}
+      { - \partial_k \left( e_{2} \, \psi_1  \; T \right) \;} \\
+ 		{+ \partial_i  \left( e_{2} \,\psi_1 \; T \right) \;}
+    \end{pmatrix}
+    +
+    \begin{pmatrix}
+      {+ e_{2} \, \psi_1  \; \partial_k T} \\
+ 		{ - e_{2} \, \psi_1  \; \partial_i  T}
+    \end{pmatrix}
+  \end{split}
+\end{flalign*}
+and since the eddy induced velocity field is non-divergent,
+we end up with the skew form of the eddy induced advective fluxes per unit area in $ijk$ space:
+\begin{equation}
+  \label{eq:TRIADS_eiv_skew_ijk}
+  \textbf{F}_\mathrm{eiv}^T =
+  \begin{pmatrix}
+    {+ e_{2} \, \psi_1  \; \partial_k T}   \\
+    { - e_{2} \, \psi_1  \; \partial_i  T}
+  \end{pmatrix}
+\end{equation}
+The total fluxes per unit physical area are then
+\begin{equation}
+  \label{eq:TRIADS_eiv_skew_physical}
+  \begin{split}
+    f^*_1 & = \frac{1}{e_{3}}\; \psi_1 \partial_k T   \\
+    f^*_2 & = \frac{1}{e_{3}}\; \psi_2 \partial_k T   \\
+    f^*_3 & =  -\frac{1}{e_{1}e_{2}}\; \left\{ e_{2} \psi_1 \partial_i T + e_{1} \psi_2 \partial_j T \right\}.
+\end{split}
+\end{equation}
+Note that \autoref{eq:TRIADS_eiv_skew_physical} takes the same form whatever the vertical coordinate,
+though of course the slopes $\tilde{r}_i$ which define the $\psi_i$ in \autoref{eq:TRIADS_eiv_psi} are relative to
+geopotentials.
+The tendency associated with eddy induced velocity is then simply the convergence of the fluxes
+(\autoref{eq:TRIADS_eiv_skew_ijk}, \autoref{eq:TRIADS_eiv_skew_physical}), so
+\[
+  % \label{eq:TRIADS_skew_eiv_conv}
+  \frac{\partial T}{\partial t}= -\frac{1}{e_1 \, e_2 \, e_3 }      \left[
+    \frac{\partial}{\partial i} \left( e_2 \psi_1 \partial_k T\right)
+    + \frac{\partial}{\partial j} \left( e_1  \;
+      \psi_2 \partial_k T\right)
+    -  \frac{\partial}{\partial k} \left( e_{2} \psi_1 \partial_i T
+      + e_{1} \psi_2 \partial_j T \right)  \right]
+\]
+It naturally conserves the tracer content, as it is expressed in flux form.
+Since it has the same divergence as the advective form it also preserves the tracer variance.
+
+%% =================================================================================================
+\subsection{Discrete skew flux formulation}
+
+The skew fluxes in (\autoref{eq:TRIADS_eiv_skew_physical}, \autoref{eq:TRIADS_eiv_skew_ijk}),
+like the off-diagonal terms (\autoref{eq:TRIADS_i13c}, \autoref{eq:TRIADS_i31c}) of the small angle diffusion tensor,
+are best expressed in terms of the triad slopes, as in \autoref{fig:TRIADS_ISO_triad} and
+(\autoref{eq:TRIADS_i13}, \autoref{eq:TRIADS_i31});
+but now in terms of the triad slopes $\tilde{\mathbb{R}}$ relative to geopotentials instead of
+the $\mathbb{R}$ relative to coordinate surfaces.
+The discrete form of \autoref{eq:TRIADS_eiv_skew_ijk} using the slopes \autoref{eq:TRIADS_R} and
+defining $A_e$ at $T$-points is then given by:
+
+\begin{subequations}
+  % \label{eq:TRIADS_allskewflux}
+  \begin{flalign*}
+    % \label{eq:TRIADS_vect_skew_flux}
+    \vect{F}_{\mathrm{eiv}}(T) &\equiv    \sum_{\substack{i_p,\,k_p}}
+    \begin{pmatrix}
+      {_{i+1/2-i_p}^k {\mathbb{S}_u}_{i_p}^{k_p} } (T)      \\      \\
+      {_i^{k+1/2-k_p} {\mathbb{S}_w}_{i_p}^{k_p} } (T)      \\
+    \end{pmatrix},
+  \end{flalign*}
+  where the skew flux in the $i$-direction associated with a given triad is (\autoref{eq:TRIADS_latflux-triad},
+  \autoref{eq:TRIADS_triadfluxu}):
+  \begin{align}
+    \label{eq:TRIADS_skewfluxu}
+    _i^k {\mathbb{S}_u}_{i_p}^{k_p} (T) &= + \fractext{1}{4} {A_e}_i^k{
+                                          \:}\frac{{b_u}_{i+i_p}^k}{{e_{1u}}_{\,i + i_p}^{\,k}}
+                                          \ {_i^k\tilde{\mathbb{R}}_{i_p}^{k_p}} \
+                                          \frac{ \delta_{k+k_p} [T^i] }{{e_{3w}}_{\,i}^{\,k+k_p} }, \\
+    \intertext{
+    and \autoref{eq:TRIADS_triadfluxw} in the $k$-direction, changing the sign
+    to be consistent with \autoref{eq:TRIADS_eiv_skew_ijk}:
+    }
+    _i^k {\mathbb{S}_w}_{i_p}^{k_p} (T)
+                                        &= -\fractext{1}{4} {A_e}_i^k{\: }\frac{{b_u}_{i+i_p}^k}{{e_{3w}}_{\,i}^{\,k+k_p}}
+                                          {_i^k\tilde{\mathbb{R}}_{i_p}^{k_p}}\frac{ \delta_{i+ i_p}[T^k] }{ {e_{1u}}_{\,i + i_p}^{\,k} }.\label{eq:TRIADS_skewfluxw}
+  \end{align}
+\end{subequations}
+
+Such a discretisation is consistent with the iso-neutral operator as it uses the same definition for the slopes.
+It also ensures the following two key properties.
+
+%% =================================================================================================
+\subsubsection{No change in tracer variance}
+
+The discretization conserves tracer variance, \ie\ it does not include a diffusive component but is a `pure' advection term.
+This can be seen %either from Appendix \autoref{apdx:eiv_skew} or
+by considering the fluxes associated with a given triad slope $_i^k{\mathbb{R}}_{i_p}^{k_p} (T)$.
+For, following \autoref{subsec:TRIADS_variance} and \autoref{eq:TRIADS_dvar_iso_i},
+the associated horizontal skew-flux $_i^k{\mathbb{S}_u}_{i_p}^{k_p} (T)$ drives a net rate of change of variance,
+summed over the two $T$-points $i+i_p-\fractext{1}{2},k$ and $i+i_p+\fractext{1}{2},k$, of
+\begin{equation}
+  \label{eq:TRIADS_dvar_eiv_i}
+  _i^k{\mathbb{S}_u}_{i_p}^{k_p} (T)\,\delta_{i+ i_p}[T^k],
+\end{equation}
+while the associated vertical skew-flux gives a variance change summed over
+the $T$-points $i,k+k_p-\fractext{1}{2}$ (above) and $i,k+k_p+\fractext{1}{2}$ (below) of
+\begin{equation}
+  \label{eq:TRIADS_dvar_eiv_k}
+  _i^k{\mathbb{S}_w}_{i_p}^{k_p} (T) \,\delta_{k+ k_p}[T^i].
+\end{equation}
+Inspection of the definitions (\autoref{eq:TRIADS_skewfluxu}, \autoref{eq:TRIADS_skewfluxw}) shows that
+these two variance changes (\autoref{eq:TRIADS_dvar_eiv_i}, \autoref{eq:TRIADS_dvar_eiv_k}) sum to zero.
+Hence the two fluxes associated with each triad make no net contribution to the variance budget.
+
+%% =================================================================================================
+\subsubsection{Reduction in gravitational PE}
+
+The vertical density flux associated with the vertical skew-flux always has the same sign as
+the vertical density gradient;
+thus, so long as the fluid is stable (the vertical density gradient is negative)
+the vertical density flux is negative (downward) and hence reduces the gravitational PE.
+
+For the change in gravitational PE driven by the $k$-flux is
+\begin{align}
+  \label{eq:TRIADS_vert_densityPE}
+  g {e_{3w}}_{\,i}^{\,k+k_p}{\mathbb{S}_w}_{i_p}^{k_p} (\rho)
+  &=g {e_{3w}}_{\,i}^{\,k+k_p}\left[-\alpha _i^k {\:}_i^k
+    {\mathbb{S}_w}_{i_p}^{k_p} (T) + \beta_i^k {\:}_i^k
+    {\mathbb{S}_w}_{i_p}^{k_p} (S) \right]. \notag \\
+  \intertext{Substituting  ${\:}_i^k {\mathbb{S}_w}_{i_p}^{k_p}$ from \autoref{eq:TRIADS_skewfluxw}, gives}
+  % and separating out
+  % $\rtriadt{R}=\rtriad{R} + \delta_{i+i_p}[z_T^k]$,
+  % gives two terms. The
+  % first $\rtriad{R}$ term (the only term for $z$-coordinates) is:
+  &=-\fractext{1}{4} g{A_e}_i^k{\: }{b_u}_{i+i_p}^k {_i^k\tilde{\mathbb{R}}_{i_p}^{k_p}}
+    \frac{ -\alpha _i^k\delta_{i+ i_p}[T^k]+ \beta_i^k\delta_{i+ i_p}[S^k]} { {e_{1u}}_{\,i + i_p}^{\,k} } \notag \\
+  &=+\fractext{1}{4} g{A_e}_i^k{\: }{b_u}_{i+i_p}^k
+    \left({_i^k\mathbb{R}_{i_p}^{k_p}}+\frac{\delta_{i+i_p}[z_T^k]}{{e_{1u}}_{\,i + i_p}^{\,k}}\right) {_i^k\mathbb{R}_{i_p}^{k_p}}
+    \frac{-\alpha_i^k \delta_{k+ k_p}[T^i]+ \beta_i^k\delta_{k+ k_p}[S^i]} {{e_{3w}}_{\,i}^{\,k+k_p}},
+\end{align}
+using the definition of the triad slope $\rtriad{R}$, \autoref{eq:TRIADS_R} to
+express $-\alpha _i^k\delta_{i+ i_p}[T^k]+\beta_i^k\delta_{i+ i_p}[S^k]$ in terms of
+$-\alpha_i^k \delta_{k+ k_p}[T^i]+ \beta_i^k\delta_{k+ k_p}[S^i]$.
+
+Where the coordinates slope, the $i$-flux gives a PE change
+\begin{multline}
+  \label{eq:TRIADS_lat_densityPE}
+  g \delta_{i+i_p}[z_T^k]
+  \left[
+    -\alpha _i^k {\:}_i^k {\mathbb{S}_u}_{i_p}^{k_p} (T) + \beta_i^k {\:}_i^k {\mathbb{S}_u}_{i_p}^{k_p} (S)
+  \right] \\
+  = +\fractext{1}{4} g{A_e}_i^k{\: }{b_u}_{i+i_p}^k
+  \frac{\delta_{i+i_p}[z_T^k]}{{e_{1u}}_{\,i + i_p}^{\,k}}
+  \left({_i^k\mathbb{R}_{i_p}^{k_p}}+\frac{\delta_{i+i_p}[z_T^k]}{{e_{1u}}_{\,i + i_p}^{\,k}}\right)
+  \frac{-\alpha_i^k \delta_{k+ k_p}[T^i]+ \beta_i^k\delta_{k+ k_p}[S^i]} {{e_{3w}}_{\,i}^{\,k+k_p}},
+\end{multline}
+(using \autoref{eq:TRIADS_skewfluxu}) and so the total PE change \autoref{eq:TRIADS_vert_densityPE} +
+\autoref{eq:TRIADS_lat_densityPE} associated with the triad fluxes is
+\begin{multline*}
+  % \label{eq:TRIADS_tot_densityPE}
+  g{e_{3w}}_{\,i}^{\,k+k_p}{\mathbb{S}_w}_{i_p}^{k_p} (\rho) +
+  g\delta_{i+i_p}[z_T^k] {\:}_i^k {\mathbb{S}_u}_{i_p}^{k_p} (\rho) \\
+  = +\fractext{1}{4} g{A_e}_i^k{\: }{b_u}_{i+i_p}^k
+  \left({_i^k\mathbb{R}_{i_p}^{k_p}}+\frac{\delta_{i+i_p}[z_T^k]}{{e_{1u}}_{\,i + i_p}^{\,k}}\right)^2
+  \frac{-\alpha_i^k \delta_{k+ k_p}[T^i]+ \beta_i^k\delta_{k+ k_p}[S^i]} {{e_{3w}}_{\,i}^{\,k+k_p}}.
+\end{multline*}
+Where the fluid is stable, with $-\alpha_i^k \delta_{k+ k_p}[T^i]+
+\beta_i^k\delta_{k+ k_p}[S^i]<0$, this PE change is negative.
+
+%% =================================================================================================
+\subsection{Treatment of the triads at the boundaries}
+\label{sec:TRIADS_skew_bdry}
+
+Triad slopes \rtriadt{R} used for the calculation of the eddy-induced skew-fluxes are masked at the boundaries
+in exactly the same way as are the triad slopes \rtriad{R} used for the iso-neutral diffusive fluxes,
+as described in \autoref{sec:TRIADS_iso_bdry} and \autoref{fig:TRIADS_bdry_triads}.
+Thus surface layer triads $\triadt{i}{1}{R}{1/2}{-1/2}$ and $\triadt{i+1}{1}{R}{-1/2}{-1/2}$ are masked,
+and both near bottom triad slopes $\triadt{i}{k}{R}{1/2}{1/2}$ and $\triadt{i+1}{k}{R}{-1/2}{1/2}$ are masked when
+either of the $i,k+1$ or $i+1,k+1$ tracer points is masked, \ie\ the $i,k+1$ $u$-point is masked.
+The namelist parameter \np{ln_botmix_triad}{ln\_botmix\_triad} has no effect on the eddy-induced skew-fluxes.
+
+%% =================================================================================================
+\subsection{Limiting of the slopes within the interior}
+\label{sec:TRIADS_limitskew}
+
+Presently, the iso-neutral slopes $\tilde{r}_i$ relative to geopotentials are limited to be less than $1/100$,
+exactly as in calculating the iso-neutral diffusion, \S \autoref{sec:TRIADS_limit}.
+Each individual triad \rtriadt{R} is so limited.
+
+%% =================================================================================================
+\subsection{Tapering within the surface mixed layer}
+\label{sec:TRIADS_taperskew}
+
+The slopes $\tilde{r}_i$ relative to geopotentials (and thus the individual triads \rtriadt{R})
+are always tapered linearly from their value immediately below the mixed layer to zero at the surface
+\autoref{eq:TRIADS_rmtilde}, as described in \autoref{sec:TRIADS_lintaper}.
+This is option (c) of \autoref{fig:LDF_eiv_slp}.
+This linear tapering for the slopes used to calculate the eddy-induced fluxes is unaffected by
+the value of \np{ln_triad_iso}{ln\_triad\_iso}.
+
+The justification for this linear slope tapering is that, for $A_e$ that is constant or varies only in
+the horizontal (the most commonly used options in \NEMO: see \autoref{sec:LDF_coef}),
+it is equivalent to a horizontal eiv (eddy-induced velocity) that is uniform within the mixed layer
+\autoref{eq:TRIADS_eiv_v}.
+This ensures that the eiv velocities do not restratify the mixed layer \citep{treguier.held.ea_JPO97,danabasoglu.ferrari.ea_JC08}.
+Equivantly, in terms of the skew-flux formulation we use here,
+the linear slope tapering within the mixed-layer gives a linearly varying vertical flux,
+and so a tracer convergence uniform in depth
+(the horizontal flux convergence is relatively insignificant within the mixed-layer).
+
+%% =================================================================================================
+\subsection{Streamfunction diagnostics}
+\label{sec:TRIADS_sfdiag}
+
+Where the namelist parameter \np[=.true.]{ln_traldf_gdia}{ln\_traldf\_gdia},
+diagnosed mean eddy-induced velocities are output.
+Each time step, streamfunctions are calculated in the $i$-$k$ and $j$-$k$ planes at
+$uw$ (integer +1/2 $i$, integer $j$, integer +1/2 $k$) and $vw$ (integer $i$, integer +1/2 $j$, integer +1/2 $k$)
+points (see Table \autoref{tab:DOM_cell}) respectively.
+We follow \citep{griffies_bk04} and calculate the streamfunction at a given $uw$-point from
+the surrounding four triads according to:
+\[
+  % \label{eq:TRIADS_sfdiagi}
+  {\psi_1}_{i+1/2}^{k+1/2}={\fractext{1}{4}}\sum_{\substack{i_p,\,k_p}}
+  {A_e}_{i+1/2-i_p}^{k+1/2-k_p}\:\triadd{i+1/2-i_p}{k+1/2-k_p}{R}{i_p}{k_p}.
+\]
+The streamfunction $\psi_1$ is calculated similarly at $vw$ points.
+The eddy-induced velocities are then calculated from the straightforward discretisation of \autoref{eq:TRIADS_eiv_v}:
+\[
+  % \label{eq:TRIADS_eiv_v_discrete}
+  \begin{split}
+    {u^*}_{i+1/2}^{k} & = - \frac{1}{{e_{3u}}_{i}^{k}}\left({\psi_1}_{i+1/2}^{k+1/2}-{\psi_1}_{i+1/2}^{k+1/2}\right),   \\
+    {v^*}_{j+1/2}^{k} & = - \frac{1}{{e_{3v}}_{j}^{k}}\left({\psi_2}_{j+1/2}^{k+1/2}-{\psi_2}_{j+1/2}^{k+1/2}\right),   \\
+    {w^*}_{i,j}^{k+1/2} & =    \frac{1}{e_{1t}e_{2t}}\; \left\{
+      {e_{2u}}_{i+1/2}^{k+1/2} \,{\psi_1}_{i+1/2}^{k+1/2} -
+      {e_{2u}}_{i-1/2}^{k+1/2} \,{\psi_1}_{i-1/2}^{k+1/2} \right. + \\
+    \phantom{=} & \qquad\qquad\left. {e_{2v}}_{j+1/2}^{k+1/2} \,{\psi_2}_{j+1/2}^{k+1/2} - {e_{2v}}_{j-1/2}^{k+1/2} \,{\psi_2}_{j-1/2}^{k+1/2} \right\},
+  \end{split}
+\]
+
+\subinc{\input{../../global/epilogue}}
+
+\end{document}

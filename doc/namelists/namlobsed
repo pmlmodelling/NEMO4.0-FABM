@@ -1,0 +1,8 @@
+!-----------------------------------------------------------------------
+&namlobsed     !   parameters from aphotic layers to sediment
+!-----------------------------------------------------------------------
+   sedlam     = 3.86e-7    ! time coefficient of POC remineralization in sediments [s-1]
+   sedlostpoc = 0.         ! mass of POC lost in sediments
+   vsed       = 3.47e-5    ! detritus sedimentation speed                   [m/s]
+   xhr        = -0.858     ! coeff for martin''s remineralisation profile
+/

@@ -1,0 +1,338 @@
+\documentclass[../main/NEMO_manual]{subfiles}
+
+\begin{document}
+
+\chapter{Invariants of the Primitive Equations}
+\label{chap:CONS}
+
+\thispagestyle{plain}
+
+\chaptertoc
+
+\paragraph{Changes record} ~\\
+
+{\footnotesize
+  \begin{tabularx}{\textwidth}{l||X|X}
+    Release & Author(s) & Modifications \\
+    \hline
+    {\em   4.0} & {\em ...} & {\em ...} \\
+    {\em   3.6} & {\em ...} & {\em ...} \\
+    {\em   3.4} & {\em ...} & {\em ...} \\
+    {\em <=3.4} & {\em ...} & {\em ...}
+  \end{tabularx}
+}
+
+\clearpage
+
+The continuous equations of motion have many analytic properties.
+Many quantities (total mass, energy, enstrophy, etc.) are strictly conserved in the inviscid and unforced limit,
+while ocean physics conserve the total quantities on which they act (momentum, temperature, salinity) but
+dissipate their total variance (energy, enstrophy, etc.).
+Unfortunately, the finite difference form of these equations is not guaranteed to
+retain all these important properties.
+In constructing the finite differencing schemes, we wish to ensure that
+certain integral constraints will be maintained.
+In particular, it is desirable to construct the finite difference equations so that
+horizontal kinetic energy and/or potential enstrophy of horizontally non-divergent flow,
+and variance of temperature and salinity will be conserved in the absence of dissipative effects and forcing.
+\citet{arakawa_JCP66} has first pointed out the advantage of this approach.
+He showed that if integral constraints on energy are maintained,
+the computation will be free of the troublesome "non linear" instability originally pointed out by
+\citet{phillips_TAMS59}.
+A consistent formulation of the energetic properties is also extremely important in carrying out
+long-term numerical simulations for an oceanographic model.
+Such a formulation avoids systematic errors that accumulate with time \citep{bryan_JCP97}.
+
+The general philosophy of OPA which has led to the discrete formulation presented in {\S}II.2 and II.3 is to
+choose second order non-diffusive scheme for advective terms for both dynamical and tracer equations.
+At this level of complexity, the resulting schemes are dispersive schemes.
+Therefore, they require the addition of a diffusive operator to be stable.
+The alternative is to use diffusive schemes such as upstream or flux corrected schemes.
+This last option was rejected because we prefer a complete handling of the model diffusion,
+\ie\ of the model physics rather than letting the advective scheme produces its own implicit diffusion without
+controlling the space and time structure of this implicit diffusion.
+Note that in some very specific cases as passive tracer studies, the positivity of the advective scheme is required.
+In that case, and in that case only, the advective scheme used for passive tracer is a flux correction scheme
+\citep{Marti1992?, Levy1996?, Levy1998?}.
+
+%% =================================================================================================
+\section{Conservation properties on ocean dynamics}
+\label{sec:CONS_Invariant_dyn}
+
+The non linear term of the momentum equations has been split into a vorticity term,
+a gradient of horizontal kinetic energy and a vertical advection term.
+Three schemes are available for the former (see {\S}~II.2) according to the CPP variable defined
+(default option\textbf{?}or \textbf{key{\_}vorenergy} or \textbf{key{\_}vorcombined} defined).
+They differ in their conservative properties (energy or enstrophy conserving scheme).
+The two latter terms preserve the total kinetic energy:
+the large scale kinetic energy is also preserved in practice.
+The remaining non-diffusive terms of the momentum equation
+(namely the hydrostatic and surface pressure gradient terms) also preserve the total kinetic energy and
+have no effect on the vorticity of the flow.
+
+\textbf{* relative, planetary and total vorticity term:}
+
+Let us define as either the relative, planetary and total potential vorticity, \ie, ?, and ?, respectively.
+The continuous formulation of the vorticity term satisfies following integral constraints:
+\[
+  % \label{eq:CONS_vor_vorticity}
+  \int_D {{\textbf {k}}\cdot \frac{1}{e_3 }\nabla \times \left( {\varsigma
+        \;{\mathrm {\mathbf k}}\times {\textbf {U}}_h } \right)\;dv} =0
+\]
+
+\[
+  % \label{eq:CONS_vor_enstrophy}
+  if\quad \chi =0\quad \quad \int\limits_D {\varsigma \;{\textbf{k}}\cdot
+    \frac{1}{e_3 }\nabla \times \left( {\varsigma {\textbf{k}}\times {\textbf{U}}_h } \right)\;dv} =-\int\limits_D {\frac{1}{2}\varsigma ^2\,\chi \;dv}
+  =0
+\]
+
+\[
+  % \label{eq:CONS_vor_energy}
+  \int_D {{\textbf{U}}_h \times \left( {\varsigma \;{\textbf{k}}\times {\textbf{U}}_h } \right)\;dv} =0
+\]
+where $dv = e_1\, e_2\, e_3\, di\, dj\, dk$ is the volume element.
+(II.4.1a) means that $\varsigma $ is conserved. (II.4.1b) is obtained by an integration by part.
+It means that $\varsigma^2$ is conserved for a horizontally non-divergent flow.
+(II.4.1c) is even satisfied locally since the vorticity term is orthogonal to the horizontal velocity.
+It means that the vorticity term has no contribution to the evolution of the total kinetic energy.
+(II.4.1a) is obviously always satisfied, but (II.4.1b) and (II.4.1c) cannot be satisfied simultaneously with
+a second order scheme.
+Using the symmetry or anti-symmetry properties of the operators (Eqs II.1.10 and 11),
+it can be shown that the scheme (II.2.11) satisfies (II.4.1b) but not (II.4.1c),
+while scheme (II.2.12) satisfies (II.4.1c) but not (II.4.1b) (see appendix C).
+Note that the enstrophy conserving scheme on total vorticity has been chosen as the standard discrete form of
+the vorticity term.
+
+\textbf{* Gradient of kinetic energy / vertical advection}
+
+In continuous formulation, the gradient of horizontal kinetic energy has no contribution to the evolution of
+the vorticity as the curl of a gradient is zero.
+This property is satisfied locally with the discrete form of both the gradient and the curl operator we have made
+(property (II.1.9)~).
+Another continuous property is that the change of horizontal kinetic energy due to
+vertical advection is exactly balanced by the change of horizontal kinetic energy due to
+the horizontal gradient of horizontal kinetic energy:
+
+\begin{equation} \label{eq:CONS_keg_zad}
+\int_D {{\textbf{U}}_h \cdot \nabla _h \left( {1/2\;{\textbf{U}}_h ^2} \right)\;dv} =-\int_D {{\textbf{U}}_h \cdot \frac{w}{e_3 }\;\frac{\partial
+{\textbf{U}}_h }{\partial k}\;dv}
+\end{equation}
+
+Using the discrete form given in {\S}II.2-a and the symmetry or anti-symmetry properties of
+the mean and difference operators, \autoref{eq:CONS_keg_zad} is demonstrated in the Appendix C.
+The main point here is that satisfying \autoref{eq:CONS_keg_zad} links the choice of the discrete forms of
+the vertical advection and of the horizontal gradient of horizontal kinetic energy.
+Choosing one imposes the other.
+The discrete form of the vertical advection given in {\S}II.2-a is a direct consequence of
+formulating the horizontal kinetic energy as $1/2 \left( \overline{u^2}^i + \overline{v^2}^j \right) $ in
+the gradient term.
+
+\textbf{* hydrostatic pressure gradient term}
+
+In continuous formulation, a pressure gradient has no contribution to the evolution of the vorticity as
+the curl of a gradient is zero.
+This properties is satisfied locally with the choice of discretization we have made (property (II.1.9)~).
+In addition, when the equation of state is linear
+(\ie\ when an advective-diffusive equation for density can be derived from those of temperature and salinity)
+the change of horizontal kinetic energy due to the work of pressure forces is balanced by the change of
+potential energy due to buoyancy forces:
+
+\[
+  % \label{eq:CONS_hpg_pe}
+  \int_D {-\frac{1}{\rho_o }\left. {\nabla p^h} \right|_z \cdot {\textbf {U}}_h \;dv} \;=\;\int_D {\nabla .\left( {\rho \,{\textbf{U}}} \right)\;g\;z\;\;dv}
+\]
+
+Using the discrete form given in {\S}~II.2-a and the symmetry or anti-symmetry properties of
+the mean and difference operators, (II.4.3) is demonstrated in the Appendix C.
+The main point here is that satisfying (II.4.3) strongly constraints the discrete expression of the depth of
+$T$-points and of the term added to the pressure gradient in $s-$coordinates: the depth of a $T$-point, $z_T$,
+is defined as the sum the vertical scale factors at $w$-points starting from the surface.
+
+\textbf{* surface pressure gradient term}
+
+In continuous formulation, the surface pressure gradient has no contribution to the evolution of vorticity.
+This properties is trivially satisfied locally as (II.2.3)
+(the equation verified by $\psi$ has been derived from the discrete formulation of the momentum equations,
+vertical sum and curl).
+Nevertheless, the $\psi$-equation is solved numerically by an iterative solver (see {\S}~III.5),
+thus the property is only satisfied with the accuracy required on the solver.
+In addition, with the rigid-lid approximation, the change of horizontal kinetic energy due to the work of
+surface pressure forces is exactly zero:
+\[
+  % \label{eq:CONS_spg}
+  \int_D {-\frac{1}{\rho_o }\nabla _h } \left( {p_s } \right)\cdot {\textbf{U}}_h \;dv=0
+\]
+
+(II.4.4) is satisfied in discrete form only if
+the discrete barotropic streamfunction time evolution equation is given by (II.2.3) (see appendix C).
+This shows that (II.2.3) is the only way to compute the streamfunction,
+otherwise there is no guarantee that the surface pressure force work vanishes.
+
+%% =================================================================================================
+\section{Conservation properties on ocean thermodynamics}
+\label{sec:CONS_Invariant_tra}
+
+In continuous formulation, the advective terms of the tracer equations conserve the tracer content and
+the quadratic form of the tracer, \ie
+\[
+  % \label{eq:CONS_tra_tra2}
+  \int_D {\nabla .\left( {T\;{\textbf{U}}} \right)\;dv} =0
+  \;\text{and}
+  \int_D {T\;\nabla .\left( {T\;{\textbf{U}}} \right)\;dv} =0
+\]
+
+The numerical scheme used ({\S}II.2-b) (equations in flux form, second order centred finite differences) satisfies
+(II.4.5) (see appendix C).
+Note that in both continuous and discrete formulations, there is generally no strict conservation of mass,
+since the equation of state is non linear with respect to $T$ and $S$.
+In practice, the mass is conserved with a very good accuracy.
+
+%% =================================================================================================
+\subsection{Conservation properties on momentum physics}
+\label{subsec:CONS_Invariant_dyn_physics}
+
+\textbf{* lateral momentum diffusion term}
+
+The continuous formulation of the horizontal diffusion of momentum satisfies the following integral constraints~:
+\[
+  % \label{eq:CONS_dynldf_dyn}
+  \int\limits_D {\frac{1}{e_3 }{\mathrm {\mathbf k}}\cdot \nabla \times \left[ {\nabla
+        _h \left( {A^{lm}\;\chi } \right)-\nabla _h \times \left( {A^{lm}\;\zeta
+            \;{\mathrm {\mathbf k}}} \right)} \right]\;dv} =0
+\]
+
+\[
+  % \label{eq:CONS_dynldf_div}
+  \int\limits_D {\nabla _h \cdot \left[ {\nabla _h \left( {A^{lm}\;\chi }
+        \right)-\nabla _h \times \left( {A^{lm}\;\zeta \;{\mathrm {\mathbf k}}} \right)}
+    \right]\;dv} =0
+\]
+
+\[
+  % \label{eq:CONS_dynldf_curl}
+  \int_D {{\mathrm {\mathbf U}}_h \cdot \left[ {\nabla _h \left( {A^{lm}\;\chi }
+        \right)-\nabla _h \times \left( {A^{lm}\;\zeta \;{\mathrm {\mathbf k}}} \right)}
+    \right]\;dv} \leqslant 0
+\]
+
+\[
+  % \label{eq:CONS_dynldf_curl2}
+  \mbox{if}\quad A^{lm}=cste\quad \quad \int_D {\zeta \;{\mathrm {\mathbf k}}\cdot
+    \nabla \times \left[ {\nabla _h \left( {A^{lm}\;\chi } \right)-\nabla _h
+        \times \left( {A^{lm}\;\zeta \;{\mathrm {\mathbf k}}} \right)} \right]\;dv}
+  \leqslant 0
+\]
+
+\[
+  % \label{eq:CONS_dynldf_div2}
+  \mbox{if}\quad A^{lm}=cste\quad \quad \int_D {\chi \;\nabla _h \cdot \left[
+      {\nabla _h \left( {A^{lm}\;\chi } \right)-\nabla _h \times \left(
+          {A^{lm}\;\zeta \;{\mathrm {\mathbf k}}} \right)} \right]\;dv} \leqslant 0
+\]
+
+(II.4.6a) and (II.4.6b) means that the horizontal diffusion of momentum conserve both the potential vorticity and
+the divergence of the flow, while Eqs (II.4.6c) to (II.4.6e) mean that it dissipates the energy, the enstrophy and
+the square of the divergence.
+The two latter properties are only satisfied when the eddy coefficients are horizontally uniform.
+
+Using (II.1.8) and (II.1.9), and the symmetry or anti-symmetry properties of the mean and difference operators,
+it is shown that the discrete form of the lateral momentum diffusion given in
+{\S}II.2-c satisfies all the integral constraints (II.4.6) (see appendix C).
+In particular, when the eddy coefficients are horizontally uniform,
+a complete separation of vorticity and horizontal divergence fields is ensured,
+so that diffusion (dissipation) of vorticity (enstrophy) does not generate horizontal divergence
+(variance of the horizontal divergence) and \textit{vice versa}.
+When the vertical curl of the horizontal diffusion of momentum (discrete sense) is taken,
+the term associated to the horizontal gradient of the divergence is zero locally.
+When the horizontal divergence of the horizontal diffusion of momentum (discrete sense) is taken,
+the term associated to the vertical curl of the vorticity is zero locally.
+The resulting term conserves $\chi$ and dissipates $\chi^2$ when the eddy coefficient is horizontally uniform.
+
+\textbf{* vertical momentum diffusion term}
+
+As for the lateral momentum physics, the continuous form of the vertical diffusion of
+momentum satisfies following integral constraints~:
+
+conservation of momentum, dissipation of horizontal kinetic energy
+
+\[
+  % \label{eq:CONS_dynzdf_dyn}
+  \begin{aligned}
+    & \int_D {\frac{1}{e_3 }}  \frac{\partial }{\partial k}\left( \frac{A^{vm}}{e_3 }\frac{\partial {\textbf{U}}_h }{\partial k} \right) \;dv = \overrightarrow{\textbf{0}} \\
+    & \int_D \textbf{U}_h \cdot \frac{1}{e_3} \frac{\partial}{\partial k} \left( {\frac{A^{vm}}{e_3 }}{\frac{\partial \textbf{U}_h }{\partial k}} \right) \;dv \leq 0 \\
+  \end{aligned}
+\]
+conservation of vorticity, dissipation of enstrophy
+\[
+  % \label{eq:CONS_dynzdf_vor}
+  \begin{aligned}
+    & \int_D {\frac{1}{e_3 }{\mathrm {\mathbf k}}\cdot \nabla \times \left( {\frac{1}{e_3
+          }\frac{\partial }{\partial k}\left( {\frac{A^{vm}}{e_3 }\frac{\partial {\mathrm
+                  {\mathbf U}}_h }{\partial k}} \right)} \right)\;dv} =0 \\
+    & \int_D {\zeta \,{\mathrm {\mathbf k}}\cdot \nabla \times \left( {\frac{1}{e_3
+          }\frac{\partial }{\partial k}\left( {\frac{A^{vm}}{e_3 }\frac{\partial {\mathrm
+                  {\mathbf U}}_h }{\partial k}} \right)} \right)\;dv} \leq 0 \\
+  \end{aligned}
+\]
+conservation of horizontal divergence, dissipation of square of the horizontal divergence
+\[
+  % \label{eq:CONS_dynzdf_div}
+  \begin{aligned}
+    &\int_D {\nabla \cdot \left( {\frac{1}{e_3 }\frac{\partial }{\partial
+            k}\left( {\frac{A^{vm}}{e_3 }\frac{\partial {\mathrm {\mathbf U}}_h }{\partial k}}
+          \right)} \right)\;dv} =0 \\
+    & \int_D {\chi \;\nabla \cdot \left( {\frac{1}{e_3 }\frac{\partial }{\partial
+            k}\left( {\frac{A^{vm}}{e_3 }\frac{\partial {\mathrm {\mathbf U}}_h }{\partial k}}
+          \right)} \right)\;dv} \leq 0 \\
+  \end{aligned}
+\]
+
+In discrete form, all these properties are satisfied in $z$-coordinate (see Appendix C).
+In $s$-coordinates, only first order properties can be demonstrated,
+\ie\ the vertical momentum physics conserve momentum, potential vorticity, and horizontal divergence.
+
+%% =================================================================================================
+\subsection{Conservation properties on tracer physics}
+\label{subsec:CONS_Invariant_tra_physics}
+
+The numerical schemes used for tracer subgridscale physics are written in such a way that
+the heat and salt contents are conserved (equations in flux form, second order centred finite differences).
+As a form flux is used to compute the temperature and salinity,
+the quadratic form of these quantities (\ie\ their variance) globally tends to diminish.
+As for the advective term, there is generally no strict conservation of mass even if,
+in practice, the mass is conserved with a very good accuracy.
+
+\textbf{* lateral physics: }conservation of tracer, dissipation of tracer
+variance, i.e.
+
+\[
+  % \label{eq:CONS_traldf_t_t2}
+  \begin{aligned}
+    &\int_D \nabla\, \cdot\, \left( A^{lT} \,\Re \,\nabla \,T \right)\;dv = 0 \\
+    &\int_D \,T\, \nabla\, \cdot\, \left( A^{lT} \,\Re \,\nabla \,T \right)\;dv \leq 0 \\
+  \end{aligned}
+\]
+
+\textbf{* vertical physics: }conservation of tracer, dissipation of tracer variance, \ie
+
+\[
+  % \label{eq:CONS_trazdf_t_t2}
+  \begin{aligned}
+    & \int_D \frac{1}{e_3 } \frac{\partial }{\partial k}\left( \frac{A^{vT}}{e_3 }  \frac{\partial T}{\partial k}  \right)\;dv = 0 \\
+    & \int_D \,T \frac{1}{e_3 } \frac{\partial }{\partial k}\left( \frac{A^{vT}}{e_3 }  \frac{\partial T}{\partial k}  \right)\;dv \leq 0 \\
+  \end{aligned}
+\]
+
+Using the symmetry or anti-symmetry properties of the mean and difference operators,
+it is shown that the discrete form of tracer physics given in {\S}~II.2-c satisfies all the integral constraints
+(II.4.8) and (II.4.9) except the dissipation of the square of the tracer when non-geopotential diffusion is used
+(see appendix C).
+A discrete form of the lateral tracer physics can be derived which satisfies these last properties.
+Nevertheless, it requires a horizontal averaging of the vertical component of the lateral physics that
+prevents the use of implicit resolution in the vertical.
+It has not been implemented.
+
+\subinc{\input{../../global/epilogue}}
+
+\end{document}

@@ -1,0 +1,13 @@
+!------------------------------------------------------------------------------
+&namthd_pnd     !   Melt ponds
+!------------------------------------------------------------------------------
+   ln_pnd            = .false.        !  activate melt ponds or not
+      ln_pnd_LEV     = .false.        !  level ice melt ponds (from Flocco et al 2007,2010 & Holland et al 2012)
+         rn_apnd_min =   0.15         !     minimum ice fraction that contributes to melt pond. range: 0.0 -- 0.15 ??
+         rn_apnd_max =   0.85         !     maximum ice fraction that contributes to melt pond. range: 0.7 -- 0.85 ??
+      ln_pnd_CST     = .false.        !  constant  melt ponds
+         rn_apnd     =   0.2          !     prescribed pond fraction, at Tsu=0 degC
+         rn_hpnd     =   0.05         !     prescribed pond depth,    at Tsu=0 degC
+      ln_pnd_lids    = .true.         !  frozen lids on top of the ponds (only for ln_pnd_LEV)
+      ln_pnd_alb     = .true.         !  effect of melt ponds on ice albedo
+/

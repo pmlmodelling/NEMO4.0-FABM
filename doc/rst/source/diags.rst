@@ -1,0 +1,1 @@
+../../../cfgs/SHARED/README.rst

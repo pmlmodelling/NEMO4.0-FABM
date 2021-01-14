@@ -1,0 +1,80 @@
+    <!-- 
+============================================================================================================
+=                                           output files definition                                        =
+=                                            Define your own files                                         =
+=                                         put the variables you want...                                    =
+============================================================================================================
+    -->
+ <file_definition type="multiple_file" name="PATH_OUT/@expname@_@freq@" sync_freq="1d" min_digits="4">
+
+    <file_group id="1d" output_freq="1d"  split_freq="1d" output_level="10" enabled=".TRUE."> <!-- 1d files -->
+
+       <file id="file1" name_suffix="_gcrsT" description="ocean T grid variables" >
+          <field field_ref="e3t"          name="e3t"       />
+          <field field_ref="toce"         name="votemper"  operation="instant" freq_op="1d" > @toce_e3t / @e3t </field>
+          <field field_ref="soce"         name="vosaline"  operation="instant" freq_op="1d" > @soce_e3t / @e3t </field>
+          <field field_ref="mldkz5"       name="somixhgt"  />
+       </file>
+
+       <file id="file2" name_suffix="_gcrsU" description="ocean T grid variables" >
+          <field field_ref="e3u"       name="e3u"           />
+          <field field_ref="uoce"      name="uo"       operation="instant" freq_op="1d" > @uoce_e3u / @e3u </field>
+       </file>
+
+       <file id="file3" name_suffix="_gcrsV" description="ocean T grid variables" >
+          <field field_ref="e3v"       name="e3v"           />
+          <field field_ref="voce"      name="vo"       operation="instant" freq_op="1d" > @voce_e3v / @e3v </field>
+       </file>
+
+       <file id="file4" name_suffix="_gcrsW" description="ocean T grid variables" >
+          <field field_ref="woce"        name="woce"        />
+          <field field_ref="avt"         name="difvho"   />
+       </file>
+
+       <file id="file5" name_suffix="_gcrsC" description="ocean T grid variables" >
+          <field field_ref="Alkalini" operation="instant" freq_op="1d" > @Alkalini_E3T / @e3t </field>
+          <field field_ref="O2"       operation="instant" freq_op="1d" > @O2_E3T / @e3t </field>
+          <field field_ref="Si"       operation="instant" freq_op="1d" > @Si_E3T / @e3t </field>
+          <field field_ref="PHY"      operation="instant" freq_op="1d" > @PHY_E3T / @e3t </field>
+          <field field_ref="ZOO"      operation="instant" freq_op="1d" > @ZOO_E3T / @e3t </field>
+          <field field_ref="DOC"      operation="instant" freq_op="1d" > @DOC_E3T / @e3t </field>
+          <field field_ref="NCHL"     operation="instant" freq_op="1d" > @NCHL_E3T / @e3t </field>
+          <field field_ref="DCHL"     operation="instant" freq_op="1d" > @DCHL_E3T / @e3t </field>
+          <field field_ref="NO3"      operation="instant" freq_op="1d" > @NO3_E3T / @e3t </field>
+       </file>
+
+    </file_group>
+
+    <file_group id="1mo" output_freq="1mo"  split_freq="1mo" output_level="10" enabled=".TRUE."> <!-- 1d files -->
+
+       <file id="file6" name_suffix="_gcrsC" description="ocean T grid variables" >
+          <field field_ref="DIC"      operation="instant" freq_op="1mo" > @DIC_E3T / @e3t </field>
+          <field field_ref="Alkalini" operation="instant" freq_op="1mo" > @Alkalini_E3T / @e3t </field>
+          <field field_ref="O2"       operation="instant" freq_op="1mo" > @O2_E3T / @e3t </field>
+          <field field_ref="CaCO3"    operation="instant" freq_op="1mo" > @CaCO3_E3T / @e3t </field>
+          <field field_ref="PO4"      operation="instant" freq_op="1mo" > @PO4_E3T / @e3t </field>
+          <field field_ref="POC"      operation="instant" freq_op="1mo" > @POC_E3T / @e3t </field>
+          <field field_ref="Si"       operation="instant" freq_op="1mo" > @Si_E3T / @e3t </field>
+          <field field_ref="PHY"      operation="instant" freq_op="1mo" > @PHY_E3T / @e3t </field>
+          <field field_ref="ZOO"      operation="instant" freq_op="1mo" > @ZOO_E3T / @e3t </field>
+          <field field_ref="DOC"      operation="instant" freq_op="1mo" > @DOC_E3T / @e3t </field>
+          <field field_ref="PHY2"     operation="instant" freq_op="1mo" > @PHY2_E3T / @e3t </field>
+          <field field_ref="ZOO2"     operation="instant" freq_op="1mo" > @ZOO2_E3T / @e3t </field>
+          <field field_ref="DSi"      operation="instant" freq_op="1mo" > @DSi_E3T / @e3t </field>
+          <field field_ref="Fer"      operation="instant" freq_op="1mo" > @Fer_E3T / @e3t </field>
+          <field field_ref="BFe"      operation="instant" freq_op="1mo" > @BFe_E3T / @e3t </field>
+          <field field_ref="GOC"      operation="instant" freq_op="1mo" > @GOC_E3T / @e3t </field>
+          <field field_ref="SFe"      operation="instant" freq_op="1mo" > @SFe_E3T / @e3t </field>
+          <field field_ref="DFe"      operation="instant" freq_op="1mo" > @DFe_E3T / @e3t </field>
+          <field field_ref="GSi"      operation="instant" freq_op="1mo" > @GSi_E3T / @e3t </field>
+          <field field_ref="NFe"      operation="instant" freq_op="1mo" > @NFe_E3T / @e3t </field>
+          <field field_ref="NCHL"     operation="instant" freq_op="1mo" > @NCHL_E3T / @e3t </field>
+          <field field_ref="DCHL"     operation="instant" freq_op="1mo" > @DCHL_E3T / @e3t </field>
+          <field field_ref="NO3"      operation="instant" freq_op="1mo" > @NO3_E3T / @e3t </field>
+          <field field_ref="NH4"      operation="instant" freq_op="1mo" > @NH4_E3T / @e3t </field>
+       </file>
+
+    </file_group>
+
+
+ </file_definition>

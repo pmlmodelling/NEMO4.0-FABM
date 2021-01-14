@@ -1,0 +1,15 @@
+!------------------------------------------------------------------------------
+&namthd_sal     !   Ice salinity
+!------------------------------------------------------------------------------
+   nn_icesal        =   2             !  ice salinity option
+                                      !     1: constant ice salinity (S=rn_icesal)
+                                      !     2: varying salinity parameterization S(z,t)
+                                      !     3: prescribed salinity profile S(z) (Schwarzacher 1959)
+   rn_icesal        =   4.            !      (nn_icesal=1) ice salinity (g/kg)
+   rn_sal_gd        =   5.            !      (nn_icesal=2) restoring ice salinity, gravity drainage (g/kg)
+   rn_time_gd       =   1.73e+6       !      (nn_icesal=2) restoring time scale,   gravity drainage  (s)
+   rn_sal_fl        =   2.            !      (nn_icesal=2) restoring ice salinity, flushing (g/kg)
+   rn_time_fl       =   8.64e+5       !      (nn_icesal=2) restoring time scale,   flushing (s)
+   rn_simax         =  20.            !  maximum tolerated ice salinity (g/kg)
+   rn_simin         =   0.1           !  minimum tolerated ice salinity (g/kg)
+/

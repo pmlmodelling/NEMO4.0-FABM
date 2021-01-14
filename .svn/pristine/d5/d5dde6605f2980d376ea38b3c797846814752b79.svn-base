@@ -1,0 +1,25 @@
+!-----------------------------------------------------------------------
+&namctl        !   Control prints                                       (default: OFF)
+!-----------------------------------------------------------------------
+   ln_ctl = .FALSE.                 ! Toggle all report printing on/off (T/F); Ignored if sn_cfctl%l_config is T
+     sn_cfctl%l_config = .TRUE.     ! IF .true. then control which reports are written with the following
+       sn_cfctl%l_runstat = .FALSE. ! switches and which areas produce reports with the proc integer settings.
+       sn_cfctl%l_trcstat = .FALSE. ! The default settings for the proc integers should ensure
+       sn_cfctl%l_oceout  = .FALSE. ! that  all areas report.
+       sn_cfctl%l_layout  = .FALSE. !
+       sn_cfctl%l_mppout  = .FALSE. !
+       sn_cfctl%l_mpptop  = .FALSE. !
+       sn_cfctl%procmin   = 0       ! Minimum area number for reporting [default:0]
+       sn_cfctl%procmax   = 1000000 ! Maximum area number for reporting [default:1000000]
+       sn_cfctl%procincr  = 1       ! Increment for optional subsetting of areas [default:1]
+       sn_cfctl%ptimincr  = 1       ! Timestep increment for writing time step progress info
+   nn_print    =    0      !  level of print (0 no extra print)
+   nn_ictls    =    0      !  start i indice of control sum (use to compare mono versus
+   nn_ictle    =    0      !  end   i indice of control sum        multi processor runs
+   nn_jctls    =    0      !  start j indice of control               over a subdomain)
+   nn_jctle    =    0      !  end   j indice of control
+   nn_isplt    =    1      !  number of processors in i-direction
+   nn_jsplt    =    1      !  number of processors in j-direction
+   ln_timing   = .false.   !  timing by routine write out in timing.output file
+   ln_diacfl   = .false.   !  CFL diagnostics write out in cfl_diagnostics.ascii
+/

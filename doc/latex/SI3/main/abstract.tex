@@ -1,0 +1,25 @@
+%% ================================================================
+%% Abstract
+%% ================================================================
+
+%% Common part between NEMO-SI3-TOP
+``Sea Ice Modelling Integrated Initiative'' (\SIcube) is the sea ice engine of
+the \NEMO\ ocean model (``Nucleus for European Modelling of the Ocean'').
+It is intended to be a flexible tool for studying the sea ice dynamics and thermodynamics,
+brine inclusions and subgrid-scale thickness variations (``white ocean''),
+as well as its interactions with the other components of the Earth climate system over
+a wide range of space and time scales.
+\SIcube\ is interfaced with the \NEMO\ ocean engine, and,
+via the \href{http://portal.enes.org/oasis}{OASIS} coupler,
+with several atmospheric general circulation models.
+It also supports two-way grid embedding by means of the \href{http://agrif.imag.fr}{AGRIF} software.
+
+%% Specific part
+Designed for global to regional applications up to $~$10 km of effective resolution,
+\SIcube\ is a curvilinear grid, finite-difference implementation of the classical AIDJEX model
+(Arctic Ice Dynamics Joint EXperiment),
+combining the conservation of momentum for viscous-plastic continuum,
+energy and salt-conserving halo-thermodynamics,
+an explicit representation of subgrid-scale ice thickness variations, snow and melt ponds.
+An option to switch back to the \textit{single-category} (or \textit{2-level}) framework provides
+a cheap sea ice modelling solution.

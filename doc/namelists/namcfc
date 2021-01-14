@@ -1,0 +1,9 @@
+!-----------------------------------------------------------------------
+&namcfc     !   CFC 
+!-----------------------------------------------------------------------
+   ndate_beg  = 300101    !  datedeb1
+   nyear_res  = 1932      !  iannee1
+   !
+   ! Formatted file of annual hemisperic CFCs concentration in the atmosphere (ppt)
+   clname     = 'CFCs_CDIAC.dat'
+/

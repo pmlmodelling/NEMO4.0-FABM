@@ -1,0 +1,65 @@
+\documentclass[../main/SI3_manual]{subfiles}
+
+\begin{document}
+
+% ================================================================
+% Chapter 9 - Outputs and diagnostics
+% ================================================================
+
+\chapter{Output and diagnostics}
+\label{chap:DIA}
+\chaptertoc
+
+\newpage
+$\ $\newline    % force a new line
+
+\section{SIMIP diagnostics}
+
+The SIMIP protocol \citep{notz_2016} was designed for CMIP6, to standardize sea ice model outputs in climate simulations. We tried to follow the data request as closely as possible. Outputs are in most cases directly managed with XIOS2 in \textbf{limwri.F90}, but not always. In the code, output fields keep their native LIM reference name. 
+
+A corresponding entry exists in \textbf{field\_def\_nemo-lim.xml}, where fields are given their SIMIP specifications (standard name, long name, units). At the end of the file the fields are gathered in the field groups \textbf{SIday\_fields}, \textbf{SImon\_fields} and \textbf{SImon\_scalar} for separation of the daily (SIday) and monthly (SImon) requests. 
+
+In \textbf{file\_def\_nemo-lim.xml}, the daily, monthly and scalar output files are created.
+
+In the reference xml files, the largest possible SIMIP-based diagnostics with LIM are distributed among the field groups. If some fields are to be discarded, the best way to do so is to remove them from the field groups in  field\_def\_nemo-lim.xml.
+
+\subsection{Missing SIMIP fields}
+
+About 90\% of the SIMIP fields can be output. Below is the list of the missing fields and why they are missing. \\
+
+\textbf{1. Fields that are not part of the sea ice representation in LIM3.6}
+\begin{itemize}
+\item sisnconc (snow area fraction), siitdsnconc (snow area fractions in thickness categories);
+\item simpconc (meltpond area fraction), simpmass (melt pond mass per area), simprefrozen (thickness of refrozen ice on ponds);
+\item sirdgconc (ridged ice area fraction), sirdgmass (ridged ice thickness);
+\item sidmasslat (lateral sea ice melt rate);
+\item sndmasswindrif (snow mass change through wind drift of snow);
+\end{itemize}
+
+\textbf{2. Fields which value is trivial}
+\begin{itemize}
+\item sipr (rainfall over sea ice): all rain falls in open water;
+\item sidragtop (atmospheric drag over sea ice): namelist parameter;
+\item sidragbot (oceanic drag over sea ice): namelist parameter
+\end{itemize}
+
+\textbf{3. Fields that belong to the atmospheric component}
+\begin{itemize}
+\item siflswdtop, siflswutop, siflswdbot, sifllwdtop, sifllwutop, siflsenstop, sifllatstop (surface energy budget components)
+\end{itemize}
+
+Ice thickness and snow depth were masked below 5\% ice concentration, because below this value, they become meaninglessly large in LIM. This is notably because of the Prather advection scheme. We hope to fix these issues for our next release. For similar reasons, the ice age is masked below 15\% concentration.
+
+Fluxes through straits and passages were not directly implemented. Instead, ice mass, snow mass, and ice area transports were implemented as 2D arrays, for x- and y- directions. A python script is available to derive the fluxes through straits and passages from full 2D arrays for ORCA2 and eORCA1 grids.
+
+\subsection{Links}
+
+\begin{itemize}
+\item \textcolor{blue}{\href{http://www.geosci-model-dev.net/9/3427/2016/}{Paper of Notz et al}};
+\item \textcolor{blue}{\href{http://clipc-services.ceda.ac.uk/dreq/u/SIMIP.html}{SIMIP CMIP6 data request page}};
+\item \textcolor{blue}{\href{http://www.climate-cryosphere.org/activities/targeted/simip}{SIMIP description on CliC website}}.
+\end{itemize}
+
+\section{Conservation checks}
+
+\end{document}

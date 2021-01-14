@@ -1,0 +1,14 @@
+!-----------------------------------------------------------------------
+&namc1d_uvd    !   data: U & V currents                                 ("key_c1d" default: OFF)
+!-----------------------------------------------------------------------
+   !                       !  =T read U-V fields for:
+   ln_uvd_init   = .false.       !  ocean initialisation
+   ln_uvd_dyndmp = .false.       !  U-V restoring
+
+   cn_dir      = './'      !  root directory for the U-V data location
+   !___________!_________________________!___________________!___________!_____________!________!___________!__________________!__________!_______________!
+   !           !  file name              ! frequency (hours) ! variable  ! time interp.!  clim  ! 'yearly'/ ! weights filename ! rotation ! land/sea mask !
+   !           !                         !  (if <0  months)  !   name    !   (logical) !  (T/F) ! 'monthly' !                  ! pairing  !    filename   !
+   sn_ucur     = 'ucurrent'              ,         -1.       ,'u_current',   .false.   , .true. , 'monthly' ,  ''              ,  'Ume'   , ''
+   sn_vcur     = 'vcurrent'              ,         -1.       ,'v_current',   .false.   , .true. , 'monthly' ,  ''              ,  'Vme'   , ''
+/

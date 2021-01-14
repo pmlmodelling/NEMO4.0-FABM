@@ -1,0 +1,18 @@
+\documentclass[../main/SI3_manual]{subfiles}
+
+\begin{document}
+
+% ================================================================
+% Chapter 12 -Miscellaneous
+% ================================================================
+
+\chapter{Miscellaneous topics}
+\label{chap:MIS}
+\chaptertoc
+
+\newpage
+$\ $\newline    % force a new line
+
+getting started, namelists, configs, ...
+
+\end{document}

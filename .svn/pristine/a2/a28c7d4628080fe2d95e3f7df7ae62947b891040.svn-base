@@ -1,0 +1,69 @@
+%% Global custom commands: \newcommand{<name>}[<args>][<first argument value>]{<code>}
+%% ==============================================================================
+
+%% Same slanted font for NEMO and its core engines
+\newcommand{\NEMO  }{\textsl{NEMO}}
+\newcommand{\OPA   }{\textsl{OPA}}
+\newcommand{\SIcube}{\textsl{SI$^3$}}
+\newcommand{\TOP   }{\textsl{TOP}}
+\newcommand{\PISCES}{\textsl{PISCES}}
+\newcommand{\NEMOVAR}{\textsl{NEMOVAR}}
+
+%% Links for external components
+\newcommand{\AGRIF}{\href{http://agrif.imag.fr}{AGRIF}}
+\newcommand{\CICE }{\href{http://github.com/CICE-Consortium/CICE}{CICE}}
+\newcommand{\OASIS}{\href{http://portal.enes.org/oasis}{OASIS}}
+\newcommand{\XIOS }{\href{http://forge.ipsl.jussieu.fr/ioserver}{XIOS}}
+
+%% Fortran in small capitals
+\newcommand{\fortran}{\textsc{Fortran}}
+\newcommand{\fninety}{\textsc{Fortran 90}}
+
+%% Common aliases
+\renewcommand{\deg}[1][]{\ensuremath{^{\circ}#1}}
+\newcommand{\zstar }{\ensuremath{z^\star}}
+\newcommand{\sstar }{\ensuremath{s^\star}}
+\newcommand{\ztilde}{\ensuremath{\tilde z}}
+\newcommand{\stilde}{\ensuremath{\tilde s}}
+\newcommand{\ie}{\ensuremath{i.e.}}
+\newcommand{\eg}{\ensuremath{e.g.}}
+
+%% Inline maths
+\newcommand{\fractext}[2]{\textstyle \frac{#1}{#2}}
+\newcommand{\rdt}{\Delta t}
+
+%% Gurvan's comments
+\newcommand{\cmtgm}[1]{}
+
+%% Maths
+\newcommand{\lt}{\left}
+\newcommand{\rt}{\right}
+\newcommand{\vect}[1]{\ensuremath{ \mathbf{#1} }}
+\newcommand{\pd}[2][]{\ensuremath{\frac{\partial #1}{\partial #2}}}
+
+%% Convert chapter/section headings to lowercase
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{#1}{}}
+
+%% Retrieve month name
+\renewcommand{\today}{
+  \ifcase \month\or January\or February\or March\or
+                    April\or   May\or      June\or
+                    July\or    August\or   September\or
+                    October\or November\or December
+  \fi, \number \year
+}
+
+%% Link to orcid profile
+\newcommand{\orcid}[1]{\href{http://orcid.org/#1}{\textcolor{orcidcolor}\aiOrcidSquare}}
+
+%% Workaround for \listoffigures
+\DeclareRobustCommand{\triad}[6][]{\ensuremath{ {}_{#2}^{#3} { \mathbb{#4}_{#1} }_{#5}^{\,#6} }}
+
+%% New command for ToC
+\newcommand{\chaptertoc}[1][Table of contents]{%
+  \thispagestyle{empty}
+  \etocsettocstyle{\addsec*{#1}}{}%
+  \localtableofcontents%
+  \vfill
+}

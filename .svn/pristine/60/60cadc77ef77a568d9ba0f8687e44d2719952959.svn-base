@@ -1,0 +1,17 @@
+!------------------------------------------------------------------------------
+&namdyn         !   Ice dynamics
+!------------------------------------------------------------------------------
+   ln_dynALL        = .true.          !  dyn.: full ice dynamics                  (rheology + advection + ridging/rafting + correction)
+   ln_dynRHGADV     = .false.         !  dyn.: no ridge/raft & no corrections     (rheology + advection)
+   ln_dynADV1D      = .false.         !  dyn.: only advection 1D                  (Schar & Smolarkiewicz 1996 test case)
+   ln_dynADV2D      = .false.         !  dyn.: only advection 2D w prescribed vel.(rn_uvice + advection)
+      rn_uice       =   0.5           !        prescribed ice u-velocity
+      rn_vice       =   0.5           !        prescribed ice v-velocity
+   rn_ishlat        =   2.            !  lbc : free slip (0) ; partial slip (0-2) ; no slip (2) ; strong slip (>2)
+   ln_landfast_L16  = .false.         !  landfast: parameterization from Lemieux 2016
+      rn_lf_depfra  =   0.125         !        fraction of ocean depth that ice must reach to initiate landfast
+                                      !          recommended range: [0.1 ; 0.25]
+      rn_lf_bfr     =  15.            !        maximum bottom stress per unit volume [N/m3]
+      rn_lf_relax   =   1.e-5         !        relaxation time scale to reach static friction [s-1]
+      rn_lf_tensile =   0.05          !        isotropic tensile strength [0-0.5??]
+/

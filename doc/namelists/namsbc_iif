@@ -1,0 +1,9 @@
+!-----------------------------------------------------------------------
+&namsbc_iif    !   Ice-IF : use observed ice cover                      (nn_ice = 1)
+!-----------------------------------------------------------------------
+   cn_dir      = './'      !  root directory for the ice cover data location
+   !___________!_________________________!___________________!___________!_____________!________!___________!__________________!__________!_______________!
+   !           !  file name              ! frequency (hours) ! variable  ! time interp.!  clim  ! 'yearly'/ ! weights filename ! rotation ! land/sea mask !
+   !           !                         !  (if <0  months)  !   name    !   (logical) !  (T/F) ! 'monthly' !                  ! pairing  !    filename   !
+   sn_ice      ='ice_cover_clim.nc'      ,        -12.       ,'ice_cover',   .true.    , .true.  , 'yearly'  ,   ''            ,   ''     ,   ''
+/

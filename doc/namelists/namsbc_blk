@@ -1,0 +1,35 @@
+!-----------------------------------------------------------------------
+&namsbc_blk    !   namsbc_blk  generic Bulk formula                     (ln_blk =T)
+!-----------------------------------------------------------------------
+   !                    !  bulk algorithm :
+   ln_NCAR     = .false.   ! "NCAR"      algorithm   (Large and Yeager 2008)
+   ln_COARE_3p0 = .false.   ! "COARE 3.0" algorithm   (Fairall et al. 2003)
+   ln_COARE_3p5 = .false.   ! "COARE 3.5" algorithm   (Edson et al. 2013)
+   ln_ECMWF    = .false.   ! "ECMWF"     algorithm   (IFS cycle 31)
+      !
+      rn_zqt      = 10.       !  Air temperature & humidity reference height (m)
+      rn_zu       = 10.       !  Wind vector reference height (m)
+      ln_Cd_L12   = .false.   !  air-ice drags = F(ice concentration) (Lupkes et al. 2012)
+      ln_Cd_L15   = .false.   !  air-ice drags = F(ice concentration) (Lupkes et al. 2015)
+      ln_taudif   = .false.   !  HF tau contribution: use "mean of stress module - module of the mean stress" data
+      rn_pfac     = 1.        !  multiplicative factor for precipitation (total & snow)
+      rn_efac     = 1.        !  multiplicative factor for evaporation (0. or 1.)
+      rn_vfac     = 0.        !  multiplicative factor for ocean & ice velocity used to
+      !                       !  calculate the wind stress (0.=absolute or 1.=relative winds)
+
+   cn_dir      = './'      !  root directory for the bulk data location
+   !___________!_________________________!___________________!___________!_____________!________!___________!______________________________________!__________!_______________!
+   !           !  file name              ! frequency (hours) ! variable  ! time interp.!  clim  ! 'yearly'/ !       weights filename               ! rotation ! land/sea mask !
+   !           !                         !  (if <0  months)  !   name    !   (logical) !  (T/F) ! 'monthly' !                                      ! pairing  !    filename   !
+   sn_wndi     = 'u_10.15JUNE2009_fill'       ,    6.        , 'U_10_MOD',   .false.   , .true. , 'yearly'  , 'weights_core_orca2_bicubic_noc.nc'  , 'Uwnd'   , ''
+   sn_wndj     = 'v_10.15JUNE2009_fill'       ,    6.        , 'V_10_MOD',   .false.   , .true. , 'yearly'  , 'weights_core_orca2_bicubic_noc.nc'  , 'Vwnd'   , ''
+   sn_qsr      = 'ncar_rad.15JUNE2009_fill'   ,   24.        , 'SWDN_MOD',   .false.   , .true. , 'yearly'  , 'weights_core_orca2_bilinear_noc.nc' , ''       , ''
+   sn_qlw      = 'ncar_rad.15JUNE2009_fill'   ,   24.        , 'LWDN_MOD',   .false.   , .true. , 'yearly'  , 'weights_core_orca2_bilinear_noc.nc' , ''       , ''
+   sn_tair     = 't_10.15JUNE2009_fill'       ,    6.        , 'T_10_MOD',   .false.   , .true. , 'yearly'  , 'weights_core_orca2_bilinear_noc.nc' , ''       , ''
+   sn_humi     = 'q_10.15JUNE2009_fill'       ,    6.        , 'Q_10_MOD',   .false.   , .true. , 'yearly'  , 'weights_core_orca2_bilinear_noc.nc' , ''       , ''
+   sn_prec     = 'ncar_precip.15JUNE2009_fill',   -1.        , 'PRC_MOD1',   .false.   , .true. , 'yearly'  , 'weights_core_orca2_bilinear_noc.nc' , ''       , ''
+   sn_snow     = 'ncar_precip.15JUNE2009_fill',   -1.        , 'SNOW'    ,   .false.   , .true. , 'yearly'  , 'weights_core_orca2_bilinear_noc.nc' , ''       , ''
+   sn_slp      = 'slp.15JUNE2009_fill'        ,    6.        , 'SLP'     ,   .false.   , .true. , 'yearly'  , 'weights_core_orca2_bilinear_noc.nc' , ''       , ''
+   sn_cc       = 'NOT USED'                   ,   24         , 'CC'      ,   .false.   , .true. , 'yearly'  , 'weights_core_orca2_bilinear_noc.nc' , ''       , ''
+   sn_tdif     = 'taudif_core'                ,   24         , 'taudif'  ,   .false.   , .true. , 'yearly'  , 'weights_core_orca2_bilinear_noc.nc' , ''       , ''
+/

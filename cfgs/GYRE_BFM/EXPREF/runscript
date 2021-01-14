@@ -1,0 +1,40 @@
+#! /bin/sh 
+### This is an example of a runscript for the LSF queueing system
+#BSUB -a poe
+#BSUB -J GYRE_BFM         # Name of the job.
+#BSUB -o GYRE_BFM_%J.out  # Appends std output to file %J.out.
+#BSUB -e GYRE_BFM_%J.err  # Appends std error to file %J.out.
+#BSUB -P nemo
+#BSUB -q poe_short    # queue
+#BSUB -n 4            # Number of CPUs
+
+set -evx
+
+export MP_WAIT_MODE=poll
+export MP_POLLING_INTERVAL=30000000
+export MP_SHARED_MEMORY=yes
+export MP_EUILIB=us
+export MP_EUIDEVICE=sn_all
+export LDR_CNTRL=TEXTPSIZE=64K@STACKPSIZE=64K@DATAPSIZE=64K
+export MP_TASK_AFFINITY=core
+
+EXP="EXP00"
+
+workdir="TO_BE_SET_BY_USER"
+execdir=`pwd`
+
+if [ ! -d ${workdir} ] ; then
+  mkdir -p ${workdir}
+fi
+
+cd ${workdir}
+rm -rf *
+# Copy files to exp folder
+cp ${execdir}/opa ./opa.x
+cp ${execdir}/* ./
+
+# Launch the model
+
+mpirun.lsf opa.x 
+
+

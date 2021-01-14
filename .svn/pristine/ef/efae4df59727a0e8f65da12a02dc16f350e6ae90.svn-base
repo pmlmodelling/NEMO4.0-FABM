@@ -1,0 +1,8 @@
+!-----------------------------------------------------------------------
+&namtrc_ice      !    Representation of sea ice growth & melt effects
+!-----------------------------------------------------------------------
+   nn_ice_tr     =  -1       !  tracer concentration in sea ice 
+                             !    =-1 (no vvl: identical cc in ice and ocean / vvl: cc_ice = 0)
+                             !    = 0 (no vvl: cc_ice = zero / vvl: cc_ice = )
+                             !    = 1 prescribed to a namelist value (implemented in pisces only)
+/

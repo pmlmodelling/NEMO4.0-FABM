@@ -1,0 +1,90 @@
+-----------------------------------------------------------------------
+Coupling with the Biogeochemical Flux Model (BFM)
+-----------------------------------------------------------------------
+Author: M. Vichi, BFM system team and NEMO system team
+INFO HELPDESK: info@bfm-community.eu
+WEB SITE: www.bfm-community.eu
+REVISION DATE: October 2013
+
+Please address any technical query to the BFM System Team 
+bfm_st@lists.cmcc.it
+-----------------------------------------------------------------------
+
+-----------------------------------------------------------------------
+What is the BFM?
+-----------------------------------------------------------------------
+The Biogeochemical Flux Model (BFM) is a numerical model for the 
+simulation of the dynamics of major biogeochemical properties 
+in marine ecosystems.  The BFM is open source software freely available 
+under the GNU Public License. The model can be used in standalone mode 
+to simulate a 0-D system or coupled with other OGCM.
+The coupling with NEMO is maintained by CMCC as part of the 
+NEMO system team activity
+
+-----------------------------------------------------------------------
+How to get the BFM code
+-----------------------------------------------------------------------
+The code can be downloaded from http://www.bfm-community.eu after
+the registration of a new user. Follow the instructions on how to 
+install the code. It is recommended to run the STANDALONE test cases 
+before using the NEMO-BFM coupled system.
+
+-----------------------------------------------------------------------
+Compile NEMO with the BFM 
+-----------------------------------------------------------------------
+NEMO-BFM is compiled from the BFM configuration script relying on the
+NEMO FCM compilation environment. This is done to allow BFM users to
+use new configurations in NEMO that are not part of the NEMO
+standard distribution code.
+The BFM configuration shipped with NEMO is GYRE_BFM (see next section)
+
+Make sure that the BFMDIR variable is defined in your environment
+and define the variable NEMODIR pointing to the root of NEMO source code
+It is assumed here that you have expanded the bfm in /home/user/bfm
+and the root of this NEMO directory in /home/user/nemo then
+and that you have already adjusted the appropriate ARCHFILE that
+is used for the NEMO compilation with makenemo in ../../ARCH
+
+Execute the following commands:
+>> export BFMDIR=/home/user/bfm
+>> export NEMODIR=/home/user/nemo
+>> cd $BFMDIR/build
+>> ./bfm_config.sh -gcd -p GYRE_BFM
+
+The script will generate (-g) the BFM code, then launch 
+makenemo for compilation (-c) and create the run directory
+(-d) in $BFMDIR/run.
+
+to get information on how to use the BFM configuration script run
+>> ./bfm_config.sh -h
+
+-----------------------------------------------------------------------
+Standard test case
+-----------------------------------------------------------------------
+The distributed standard test case is GYRE_BFM, a version of GYRE
+with a full-blown BFM. It is a demnstration simulation and it is not
+meant to produce any published result. 
+GYRE_BFM runs with analytical input data only.
+The namelists for the BFM are not distributed with NEMO but are 
+generated directly by the BFM, in directory $BFMDIR/run/gyre_bfm. 
+The generation of the BFM namelist also copy the required NEMO
+namelist and namelist_top files to this directory. 
+This is why there are no namelist files found in the standard 
+run directory $NEMODIR/NEMOGCM/CONFIG/GYRE_BFM/EXP00 
+
+Note for expert users:
+If a user prefers to work in the NEMO directory than she has to
+copy the generated namelists there 
+>> cp $BFMDIR/run/gyre_bfm/* $NEMODIR/NEMOGCM/CONFIG/GYRE_BFM/EXP00
+Once the BFM code has been generated the first time, the code can be 
+also rebuilt with the standard NEMO command:
+>> ./makenemo -n GYRE_BFM -m ARCHFILE -e $BFMDIR/src/nemo 
+
+-----------------------------------------------------------------------
+Other examples
+-----------------------------------------------------------------------
+Other couplings with NEMO are available in $BFMDIR/build/configurations.
+Run the command 
+>> ./bfm_config.sh -P
+to get a list of available presets
+Please refer to the README file in each directory for more information.

@@ -1,0 +1,44 @@
+!-----------------------------------------------------------------------
+&nampisice     !   Prescribed sea ice tracers
+!-----------------------------------------------------------------------
+!========================================================================
+! constant ocean tracer concentrations are defined in trcice_pisces.F90 
+!                               (Global, Arctic, Antarctic and Baltic)
+! trc_ice_ratio  : >=0 & <=1 => prescribed ice/ocean tracer concentration ratio
+!                :  = -1     => the ice-ocean tracer concentration ratio
+!                               follows the ice-ocean salinity ratio
+!                :  = -2     => tracer concentration in sea ice is prescribed
+!                               and trc_ice_prescr is used
+! trc_ice_prescr : prescribed tracer concentration. used only if 
+!                  trc_ice_ratio = -2. equals -99 if not used.
+! cn_trc_o       :  = 'GL'   => use global ocean values making the Baltic 
+!                               distinction only
+!                :  = 'AA'   => use specific Arctic/Antarctic/Baltic values
+!========================================================================
+!    sn_tri_ ! trc_ice_ratio ! trc_ice_prescr !     cn_trc_o
+   sn_tri_dic =           -1.,           -99.,          'AA'
+   sn_tri_doc =            0.,           -99.,          'AA'
+   sn_tri_tal =           -1.,           -99.,          'AA'
+   sn_tri_oxy =           -1.,           -99.,          'AA'
+   sn_tri_cal =            0.,           -99.,          'AA'
+   sn_tri_po4 =           -1.,           -99.,          'AA'
+   sn_tri_poc =            0.,           -99.,          'AA'
+   sn_tri_goc =            0.,           -99.,          'AA'
+   sn_tri_bfe =            0.,           -99.,          'AA'
+   sn_tri_num =            0.,           -99.,          'AA'
+   sn_tri_sil =           -1.,           -99.,          'AA'
+   sn_tri_dsi =            0.,           -99.,          'AA'
+   sn_tri_gsi =            0.,           -99.,          'AA'
+   sn_tri_phy =            0.,           -99.,          'AA'
+   sn_tri_dia =            0.,           -99.,          'AA'
+   sn_tri_zoo =            0.,           -99.,          'AA'
+   sn_tri_mes =            0.,           -99.,          'AA'
+   sn_tri_fer =           -2.,          15E-9,          'AA'
+   sn_tri_sfe =            0.,           -99.,          'AA'
+   sn_tri_dfe =            0.,           -99.,          'AA'
+   sn_tri_nfe =            0.,           -99.,          'AA'
+   sn_tri_nch =            0.,           -99.,          'AA'
+   sn_tri_dch =            0.,           -99.,          'AA'
+   sn_tri_no3 =           -1.,           -99.,          'AA'
+   sn_tri_nh4 =            1.,           -99.,          'AA'
+/

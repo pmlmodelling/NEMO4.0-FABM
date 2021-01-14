@@ -1,0 +1,6 @@
+!-----------------------------------------------------------------------
+&namlobdet     !   biological parameters for detritus
+!-----------------------------------------------------------------------
+   taudn   = 5.80e-7    ! detritus breakdown rate                        [0.1/86400 s-1=10 days]
+   fdetlab = 0.         ! NH4 fraction of detritus dissolution           
+/

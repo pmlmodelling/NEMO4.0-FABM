@@ -1,0 +1,6 @@
+!-----------------------------------------------------------------------
+&namage          !   AGE 
+!-----------------------------------------------------------------------
+   rn_age_depth      = 10            ! depth over which age tracer reset to zero
+   rn_age_kill_rate  = -0.000138888  !  = -1/7200 recip of relaxation timescale (s) for  age tracer shallower than age_depth
+/

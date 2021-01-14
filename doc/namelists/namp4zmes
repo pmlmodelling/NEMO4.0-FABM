@@ -1,0 +1,23 @@
+!-----------------------------------------------------------------------
+&namp4zmes     !   parameters for mesozooplankton for PISCES std       - ln_p4z
+!-----------------------------------------------------------------------
+   part2      =  0.75     ! part of calcite not dissolved in mesozoo guts
+   grazrat2   =  0.75     ! maximal mesozoo grazing rate
+   resrat2    =  0.005    ! exsudation rate of mesozooplankton
+   mzrat2     =  0.03     ! mesozooplankton mortality rate
+   xpref2d    =  1.       ! mesozoo preference for diatoms
+   xpref2n    =  0.3      ! mesozoo preference for nanophyto.
+   xpref2z    =  1.       ! mesozoo preference for microzoo.
+   xpref2c    =  0.3      ! mesozoo preference for poc
+   xthresh2zoo = 1E-8     ! zoo feeding threshold for mesozooplankton 
+   xthresh2dia = 1E-8     ! diatoms feeding threshold for mesozooplankton 
+   xthresh2phy = 1E-8     ! nanophyto feeding threshold for mesozooplankton 
+   xthresh2poc = 1E-8     ! poc feeding threshold for mesozooplankton 
+   xthresh2   =  3E-7     ! Food threshold for grazing
+   xkgraz2    =  20.E-6   ! half saturation constant for meso grazing
+   epsher2    =  0.35     ! Efficicency of Mesozoo growth
+   epsher2min =  0.35     ! Minimum efficiency of mesozoo growth
+   sigma2     =  0.6      ! Fraction of mesozoo excretion as DOM
+   unass2     =  0.3      ! non assimilated fraction of P by mesozoo
+   grazflux   =  3.e3     ! flux-feeding rate
+/

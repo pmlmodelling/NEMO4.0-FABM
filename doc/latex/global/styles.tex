@@ -1,0 +1,85 @@
+
+%% Styles
+%% ==============================================================================
+
+%% Colors
+\setmanualcolor
+\colorlet{manualcolorshaded}{manualcolor!60}
+\definecolor{orcidcolor}{HTML}{A6CE39}
+
+%% Page layout
+\pagestyle{scrheadings}
+\addtokomafont{pagehead}{  \sffamily              }
+\addtokomafont{pagefoot}{  \sffamily \footnotesize}
+\addtokomafont{pagenumber}{\sffamily \slshape     }
+\addtokomafont{chapter}{\color{white}}
+\ohead{} \ofoot{}   %% Clear defaults
+
+%% Caption
+\captionsetup{font = footnotesize, justification = justified}
+
+%% Footnote
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+%% Bibliography
+\bibliographystyle{../../global/ametsoc}
+\renewcommand{\bibfont}{\small}
+\renewcommand{\bibpreamble }{\begin{multicols}{2}}
+\renewcommand{\bibpostamble}{  \end{multicols}   }
+
+%% Catcodes
+\makeatletter
+
+%% Prevent error with tikz and namelist inclusion
+\global\let\tikz@ensure@dollar@catcode=\relax
+
+%% First page
+\backgroundsetup{
+  firstpage = true,
+  scale = 1, angle = 0, opacity = 1,
+  contents = {
+    \begin{tikzpicture}[remember picture, overlay]
+      \path [fill = manualcolor] (-0.5\paperwidth, 7) rectangle (0.5\paperwidth, 10);
+    \end{tikzpicture}
+  }
+}
+
+%% Apply engine color for chapter headings: tweaking snippets from fncychap.sty
+\renewcommand{\DOCH}{%
+  \settowidth{\py}{\CNoV\thechapter}
+  \addtolength{\py}{-10pt}      % Amount of space by which the
+%                                  % number is shifted right
+  \fboxsep=0pt%
+  \colorbox{manualcolor}{\rule{0pt}{40pt}\parbox[b]{\textwidth}{\hfill}}%
+  \kern-\py\raise20pt%
+  \hbox{\color{manualcolorshaded}\CNoV\thechapter}\\%
+}
+\renewcommand{\DOTI}[1]{%
+  \nointerlineskip\raggedright%
+  \fboxsep=\myhi%
+  \vskip-1ex%
+  \colorbox{manualcolor}{\parbox[t]{\mylen}{\color{white}\CTV\FmTi{#1}}}\par\nobreak%
+  \vskip 40\p@%
+}
+\renewcommand{\DOTIS}[1]{%
+  \fboxsep=0pt
+  \colorbox{manualcolor}{\rule{0pt}{40pt}\parbox[b]{\textwidth}{\hfill}}\\%
+  \nointerlineskip\raggedright%
+  \fboxsep=\myhi%
+  \vskip-1ex% Remove white 1pt line
+  \colorbox{manualcolor}{\parbox[t]{\mylen}{\color{white}\CTV\FmTi{#1}}}\par\nobreak%
+  \vskip 40\p@%
+}
+
+%% Temporary fix
+\def\set@curr@file#1{%
+  \begingroup
+    \escapechar\m@ne
+    \xdef\@curr@file{\expandafter\string\csname #1\endcsname}%
+  \endgroup
+}
+\def\quote@name#1{"\quote@@name#1\@gobble""}
+\def\quote@@name#1"{#1\quote@@name}
+\def\unquote@name#1{\quote@@name#1\@gobble"}
+
+\makeatother

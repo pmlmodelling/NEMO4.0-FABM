@@ -1,0 +1,13 @@
+!-----------------------------------------------------------------------
+&namtra_mle    !   mixed layer eddy parametrisation (Fox-Kemper)       (default: OFF)
+!-----------------------------------------------------------------------
+   ln_mle      = .false.   ! (T) use the Mixed Layer Eddy (MLE) parameterisation
+   rn_ce       = 0.06      ! magnitude of the MLE (typical value: 0.06 to 0.08)
+   nn_mle      = 1         ! MLE type: =0 standard Fox-Kemper ; =1 new formulation
+   rn_lf       = 5.e+3     ! typical scale of mixed layer front (meters)                      (case rn_mle=0)
+   rn_time     = 172800.   ! time scale for mixing momentum across the mixed layer (seconds)  (case rn_mle=0)
+   rn_lat      = 20.       ! reference latitude (degrees) of MLE coef.                        (case rn_mle=1)
+   nn_mld_uv   = 0         ! space interpolation of MLD at u- & v-pts (0=min,1=averaged,2=max)
+   nn_conv     = 0         ! =1 no MLE in case of convection ; =0 always MLE
+   rn_rho_c_mle = 0.01      ! delta rho criterion used to calculate MLD for FK
+/

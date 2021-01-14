@@ -1,0 +1,88 @@
+
+%% =================================================================================================
+%% Template structure for reference manuals
+%% =================================================================================================
+
+%% NEMO release version
+\def \version{4.0-HEAD}
+
+%% Preamble
+%% =================================================================================================
+
+%% Document layout
+\documentclass[fontsize = 10pt, twoside, abstract]{scrreprt}
+
+%% Load manual configuration
+\input{../../global/prologue}
+
+%% End of common preamble between main and sub-files
+%% Override custom cmds for full manual compilation
+\newcommand{\subinc}[1]{#1}
+\newcommand{\subexc}[1]{}
+
+\begin{document}
+
+\renewcommand{\subinc}[1]{}
+\renewcommand{\subexc}[1]{#1}
+
+
+%% Frontmatter
+%% =================================================================================================
+
+\pagenumbering{gobble}   %% Disable page numbering temporarily
+
+%% Title page
+\input{../../global/frontpage}
+
+%% Footer for introductory parts (no header by cleaning default)
+\ofoot[]{\engine\ Reference Manual} \ifoot[]{\pagemark}
+
+%% Information page (2nd page)
+\input{../../global/info_page}
+
+\listoffigures
+\listoflistings
+\listoftables
+
+\clearpage
+
+\pagenumbering{roman}
+\ofoot[]{\engine\ Reference Manual} \ifoot[]{\pagemark}
+
+\input{introduction}
+
+%% Table of Contents
+\tableofcontents
+
+\clearpage
+
+
+%% Mainmatter
+%% =================================================================================================
+
+%% Headings for document body
+\pagenumbering{arabic}
+\lohead{Chap.\ \thechapter\ \leftmark} \rehead{Sect.\ \thesection\ \rightmark}
+\ifoot[]{Page\ \pagemark\ of \pageref*{LastPage}}
+
+\include{chapters}
+
+
+%% Appendix
+%% =================================================================================================
+
+\appendix   %% Chapter numbering with letters by now
+\lohead{Apdx\ \thechapter\ \leftmark}
+\include{appendices}
+
+%% Append coding rules for every manual
+\input{../../global/coding_rules}
+
+
+%% Backmatter
+%% =================================================================================================
+
+%% Bibliography and indexes
+\input{../../global/epilogue}
+
+\end{document}

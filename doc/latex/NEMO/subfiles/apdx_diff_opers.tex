@@ -1,0 +1,425 @@
+\documentclass[../main/NEMO_manual]{subfiles}
+
+\begin{document}
+
+\chapter{Diffusive Operators}
+\label{apdx:DIFFOPERS}
+
+\thispagestyle{plain}
+
+\chaptertoc
+
+\paragraph{Changes record} ~\\
+
+{\footnotesize
+  \begin{tabularx}{\textwidth}{l||X|X}
+    Release & Author(s) & Modifications \\
+    \hline
+    {\em   4.0} & {\em ...} & {\em ...} \\
+    {\em   3.6} & {\em ...} & {\em ...} \\
+    {\em   3.4} & {\em ...} & {\em ...} \\
+    {\em <=3.4} & {\em ...} & {\em ...}
+  \end{tabularx}
+}
+
+\clearpage
+
+%% =================================================================================================
+\section{Horizontal/Vertical $2^{nd}$ order tracer diffusive operators}
+\label{sec:DIFFOPERS_1}
+
+%% =================================================================================================
+\subsubsection*{In z-coordinates}
+
+In $z$-coordinates, the horizontal/vertical second order tracer diffusion operator is given by:
+\begin{align}
+  \label{eq:DIFFOPERS_1}
+  &D^T = \frac{1}{e_1 \, e_2}      \left[
+    \left. \frac{\partial}{\partial i} \left( 	\frac{e_2}{e_1}A^{lT} \;\left. \frac{\partial T}{\partial i} \right|_z   \right)   \right|_z      \right.
+    \left.
+    + \left. \frac{\partial}{\partial j} \left(  \frac{e_1}{e_2}A^{lT} \;\left. \frac{\partial T}{\partial j} \right|_z   \right)   \right|_z      \right]
+    + \frac{\partial }{\partial z}\left( {A^{vT} \;\frac{\partial T}{\partial z}} \right)
+\end{align}
+
+%% =================================================================================================
+\subsubsection*{In generalized vertical coordinates}
+
+In $s$-coordinates, we defined the slopes of $s$-surfaces, $\sigma_1$ and $\sigma_2$ by \autoref{eq:SCOORD_s_slope} and
+the vertical/horizontal ratio of diffusion coefficient by $\epsilon = A^{vT} / A^{lT}$.
+The diffusion operator is given by:
+
+\begin{equation}
+  \label{eq:DIFFOPERS_2}
+  D^T = \left. \nabla \right|_s \cdot
+  \left[ A^{lT} \;\Re \cdot \left. \nabla \right|_s T  \right] \\
+  \;\;\text{where} \;\Re =\left( {{
+        \begin{array}{*{20}c}
+          1 \hfill & 0 \hfill & {-\sigma_1 } \hfill \\
+          0 \hfill & 1 \hfill & {-\sigma_2 } \hfill \\
+          {-\sigma_1 } \hfill & {-\sigma_2 } \hfill & {\varepsilon +\sigma_1
+                                                      ^2+\sigma_2 ^2} \hfill \\
+        \end{array}
+      }} \right)
+\end{equation}
+or in expanded form:
+\begin{align*}
+  {
+  \begin{array}{*{20}l}
+    D^T= \frac{1}{e_1\,e_2\,e_3 } & \left\{ \quad \quad \frac{\partial }{\partial i}  \left. \left[  e_2\,e_3 \, A^{lT}
+                               \left( \  \frac{1}{e_1}\; \left. \frac{\partial T}{\partial i} \right|_s
+                                       -\frac{\sigma_1 }{e_3 } \; \frac{\partial T}{\partial s} \right) \right]  \right|_s  \right. \\
+        &  \quad \  +   \            \left.   \frac{\partial }{\partial j}  \left. \left[  e_1\,e_3 \, A^{lT}
+                               \left( \ \frac{1}{e_2 }\; \left. \frac{\partial T}{\partial j} \right|_s
+                                       -\frac{\sigma_2 }{e_3 } \; \frac{\partial T}{\partial s} \right) \right]  \right|_s  \right. \\
+        &  \quad \  +   \           \left.  e_1\,e_2\, \frac{\partial }{\partial s}  \left[ A^{lT} \; \left(
+	                  -\frac{\sigma_1 }{e_1 } \; \left. \frac{\partial T}{\partial i} \right|_s
+	                  -\frac{\sigma_2 }{e_2 } \; \left. \frac{\partial T}{\partial j} \right|_s
+                          +\left( \varepsilon +\sigma_1^2+\sigma_2 ^2 \right) \; \frac{1}{e_3 } \; \frac{\partial T}{\partial s} \right) \; \right] \;  \right\} .
+  \end{array}
+          }
+\end{align*}
+
+\autoref{eq:DIFFOPERS_2} is obtained from \autoref{eq:DIFFOPERS_1} without any additional assumption.
+Indeed, for the special case $k=z$ and thus $e_3 =1$,
+we introduce an arbitrary vertical coordinate $s = s (i,j,z)$ as in \autoref{apdx:SCOORD} and
+use \autoref{eq:SCOORD_s_slope} and \autoref{eq:SCOORD_s_chain_rule1}.
+Since no cross horizontal derivative $\partial _i \partial _j $ appears in \autoref{eq:DIFFOPERS_1},
+the ($i$,$z$) and ($j$,$z$) planes are independent.
+The derivation can then be demonstrated for the ($i$,$z$)~$\to$~($j$,$s$) transformation without
+any loss of generality:
+
+\begin{align*}
+  {
+  \begin{array}{*{20}l}
+    D^T&=\frac{1}{e_1\,e_2} \left. {\frac{\partial }{\partial i}\left( {\frac{e_2}{e_1}A^{lT}\;\left. {\frac{\partial T}{\partial i}} \right|_z } \right)} \right|_z
+         +\frac{\partial }{\partial z}\left( {A^{vT}\;\frac{\partial T}{\partial z}} \right) \\ \\
+         %
+       &=\frac{1}{e_1\,e_2 }\left[ {\left. {\;\frac{\partial }{\partial i}\left( {\frac{e_2}{e_1}A^{lT}\;\left( {\left. {\frac{\partial T}{\partial i}} \right|_s
+         -\frac{e_1\,\sigma_1 }{e_3 }\frac{\partial T}{\partial s}} \right)} \right)} \right|_s } \right. \\
+       & \qquad \qquad \left. { -\frac{e_1\,\sigma_1 }{e_3 }\frac{\partial }{\partial s}\left( {\frac{e_2 }{e_1 }A^{lT}\;\left. {\left( {\left. {\frac{\partial T}{\partial i}} \right|_s -\frac{e_1 \,\sigma_1 }{e_3 }\frac{\partial T}{\partial s}} \right)} \right|_s } \right)\;} \right]
+         \shoveright{ +\frac{1}{e_3 }\frac{\partial }{\partial s}\left[ {\frac{A^{vT}}{e_3 }\;\frac{\partial T}{\partial s}} \right]}  \qquad \qquad \qquad \\ \\
+         %
+       &=\frac{1}{e_1 \,e_2 \,e_3 }\left[ {\left. {\;\;\frac{\partial }{\partial i}\left( {\frac{e_2 \,e_3 }{e_1 }A^{lT}\;\left. {\frac{\partial T}{\partial i}} \right|_s } \right)} \right|_s -\left. {\frac{e_2 }{e_1}A^{lT}\;\frac{\partial e_3 }{\partial i}} \right|_s \left. {\frac{\partial T}{\partial i}} \right|_s } \right. \\
+       &  \qquad \qquad \quad \left. {-e_3 \frac{\partial }{\partial i}\left( {\frac{e_2 \,\sigma_1 }{e_3 }A^{lT}\;\frac{\partial T}{\partial s}} \right)} \right|_s -e_1 \,\sigma_1 \frac{\partial }{\partial s}\left( {\frac{e_2 }{e_1 }A^{lT}\;\left. {\frac{\partial T}{\partial i}} \right|_s } \right) \\
+       &  \qquad \qquad \quad \shoveright{ -e_1 \,\sigma_1 \frac{\partial }{\partial s}\left( {-\frac{e_2 \,\sigma_1 }{e_3 }A^{lT}\;\frac{\partial T}{\partial s}} \right)\;\,\left. {+\frac{\partial }{\partial s}\left( {\frac{e_1 \,e_2 }{e_3 }A^{vT}\;\frac{\partial T}{\partial s}} \right)\quad} \right] }\\
+  \end{array}
+  } 		\\
+  %
+  {
+  \begin{array}{*{20}l}
+    \intertext{Noting that $\frac{1}{e_1} \left. \frac{\partial e_3 }{\partial i} \right|_s = \frac{\partial \sigma_1 }{\partial s}$, this becomes:}
+    %
+    D^T & =\frac{1}{e_1\,e_2\,e_3 }\left[ {\left. {\;\;\;\frac{\partial }{\partial i}\left( {\frac{e_2\,e_3 }{e_1}\,A^{lT}\;\left. {\frac{\partial T}{\partial i}} \right|_s } \right)} \right|_s \left. -\, {e_3 \frac{\partial }{\partial i}\left( {\frac{e_2 \,\sigma_1 }{e_3 }A^{lT}\;\frac{\partial T}{\partial s}} \right)} \right|_s } \right. \\
+    & \qquad \qquad \quad -e_2 A^{lT}\;\frac{\partial \sigma_1 }{\partial s}\left. {\frac{\partial T}{\partial i}} \right|_s -e_1 \,\sigma_1 \frac{\partial }{\partial s}\left( {\frac{e_2 }{e_1 }A^{lT}\;\left. {\frac{\partial T}{\partial i}} \right|_s } \right) \\
+    & \qquad \qquad \quad\shoveright{ \left. { +e_1 \,\sigma_1 \frac{\partial }{\partial s}\left( {\frac{e_2 \,\sigma_1 }{e_3 }A^{lT}\;\frac{\partial T}{\partial s}} \right)+\frac{\partial }{\partial s}\left( {\frac{e_1 \,e_2 }{e_3 }A^{vT}\;\frac{\partial T}{\partial s}} \right)\;\;\;} \right] }\\
+    \\
+    &=\frac{1}{e_1 \,e_2 \,e_3 } \left[ {\left. {\;\;\;\frac{\partial }{\partial i} \left( {\frac{e_2 \,e_3 }{e_1 }A^{lT}\;\left. {\frac{\partial T}{\partial i}} \right|_s } \right)} \right|_s \left. {-\frac{\partial }{\partial i}\left( {e_2 \,\sigma_1 A^{lT}\;\frac{\partial T}{\partial s}} \right)} \right|_s } \right. \\
+    & \qquad \qquad \quad \left. {+\frac{e_2 \,\sigma_1 }{e_3}A^{lT}\;\frac{\partial T}{\partial s} \;\frac{\partial e_3 }{\partial i}}  \right|_s -e_2 A^{lT}\;\frac{\partial \sigma_1 }{\partial s}\left. {\frac{\partial T}{\partial i}} \right|_s \\
+    & \qquad \qquad \quad-e_2 \,\sigma_1 \frac{\partial}{\partial s}\left( {A^{lT}\;\left. {\frac{\partial T}{\partial i}} \right|_s } \right)+\frac{\partial }{\partial s}\left( {\frac{e_1 \,e_2 \,\sigma_1 ^2}{e_3 }A^{lT}\;\frac{\partial T}{\partial s}} \right) \\
+    & \qquad \qquad \quad\shoveright{ \left. {-\frac{\partial \left( {e_1 \,e_2 \,\sigma_1 } \right)}{\partial s} \left( {\frac{\sigma_1 }{e_3}A^{lT}\;\frac{\partial T}{\partial s}} \right) + \frac{\partial }{\partial s}\left( {\frac{e_1 \,e_2 }{e_3 }A^{vT}\;\frac{\partial T}{\partial s}} \right)\;\;\;} \right]} .
+  \end{array}
+      } \\
+  {
+  \begin{array}{*{20}l}
+    %
+    \intertext{Using the same remark as just above, $D^T$ becomes:}
+    %
+   D^T &= \frac{1}{e_1 \,e_2 \,e_3 } \left[ {\left. {\;\;\;\frac{\partial }{\partial i} \left( {\frac{e_2 \,e_3 }{e_1 }A^{lT}\;\left. {\frac{\partial T}{\partial i}} \right|_s -e_2 \,\sigma_1 A^{lT}\;\frac{\partial T}{\partial s}} \right)} \right|_s } \right.\;\;\; \\
+    & \qquad \qquad \quad+\frac{e_1 \,e_2 \,\sigma_1 }{e_3 }A^{lT}\;\frac{\partial T}{\partial s}\;\frac{\partial \sigma_1 }{\partial s} - \frac {\sigma_1 }{e_3} A^{lT} \;\frac{\partial \left( {e_1 \,e_2 \,\sigma_1 } \right)}{\partial s}\;\frac{\partial T}{\partial s} \\
+    & \qquad \qquad \quad-e_2 \left( {A^{lT}\;\frac{\partial \sigma_1 }{\partial s}\left. {\frac{\partial T}{\partial i}} \right|_s +\frac{\partial }{\partial s}\left( {\sigma_1 A^{lT}\;\left. {\frac{\partial T}{\partial i}} \right|_s } \right)-\frac{\partial \sigma_1 }{\partial s}\;A^{lT}\;\left. {\frac{\partial T}{\partial i}} \right|_s } \right) \\
+    & \qquad \qquad \quad\shoveright{\left. {+\frac{\partial }{\partial s}\left( {\frac{e_1 \,e_2 \,\sigma_1 ^2}{e_3 }A^{lT}\;\frac{\partial T}{\partial s}+\frac{e_1 \,e_2}{e_3 }A^{vT}\;\frac{\partial T}{\partial s}} \right)\;\;\;} \right] . }
+  \end{array}
+      } \\
+  {
+  \begin{array}{*{20}l}
+    %
+    \intertext{Since the horizontal scale factors do not depend on the vertical coordinate,
+    the two terms on the second line cancel, while
+    the third line reduces to a single vertical derivative, so it becomes:}
+  %
+    D^T & =\frac{1}{e_1 \,e_2 \,e_3 }\left[ {\left. {\;\;\;\frac{\partial }{\partial i}\left( {\frac{e_2 \,e_3 }{e_1 }A^{lT}\;\left. {\frac{\partial T}{\partial i}} \right|_s -e_2 \,\sigma_1 \,A^{lT}\;\frac{\partial T}{\partial s}} \right)} \right|_s } \right. \\
+    & \qquad \qquad \quad \shoveright{ \left. {+\frac{\partial }{\partial s}\left( {-e_2 \,\sigma_1 \,A^{lT}\;\left. {\frac{\partial T}{\partial i}} \right|_s +A^{lT}\frac{e_1 \,e_2 }{e_3 }\;\left( {\varepsilon +\sigma_1 ^2} \right)\frac{\partial T}{\partial s}} \right)\;\;\;} \right]} \\
+    %
+    \intertext{In other words, the horizontal/vertical Laplacian operator in the ($i$,$s$) plane takes the following form:}
+  \end{array}
+  } \\
+  %
+  {\frac{1}{e_1\,e_2\,e_3}}
+  \left( {{
+  \begin{array}{*{30}c}
+    {\left. {\frac{\partial \left( {e_2 e_3 \bullet } \right)}{\partial i}} \right|_s } \hfill \\
+    {\frac{\partial \left( {e_1 e_2 \bullet } \right)}{\partial s}} \hfill \\
+  \end{array}}}
+  \right)
+  \cdot \left[ {A^{lT}
+  \left( {{
+  \begin{array}{*{30}c}
+    {1} \hfill & {-\sigma_1 } \hfill \\
+    {-\sigma_1} \hfill & {\varepsilon + \sigma_1^2} \hfill \\
+  \end{array}
+  }} \right)
+  \cdot
+  \left( {{
+  \begin{array}{*{30}c}
+    {\frac{1}{e_1 }\;\left. {\frac{\partial \bullet }{\partial i}} \right|_s } \hfill \\
+    {\frac{1}{e_3 }\;\frac{\partial \bullet }{\partial s}} \hfill \\
+  \end{array}
+  }}       \right) \left( T \right)} \right]
+\end{align*}
+%\addtocounter{equation}{-2}
+
+%% =================================================================================================
+\section{Iso/Diapycnal $2^{nd}$ order tracer diffusive operators}
+\label{sec:DIFFOPERS_2}
+
+%% =================================================================================================
+\subsubsection*{In z-coordinates}
+
+The iso/diapycnal diffusive tensor $\textbf {A}_{\textbf I}$ expressed in
+the ($i$,$j$,$k$) curvilinear coordinate system in which
+the equations of the ocean circulation model are formulated,
+takes the following form \citep{redi_JPO82}:
+
+\begin{equation}
+  \label{eq:DIFFOPERS_3}
+  \textbf {A}_{\textbf I} = \frac{A^{lT}}{\left( {1+a_1 ^2+a_2 ^2} \right)}
+  \left[ {{
+        \begin{array}{*{20}c}
+          {1+a_2 ^2 +\varepsilon a_1 ^2} \hfill & {-a_1 a_2 (1-\varepsilon)} \hfill & {-a_1 (1-\varepsilon) } \hfill \\
+          {-a_1 a_2 (1-\varepsilon) } \hfill & {1+a_1 ^2 +\varepsilon a_2 ^2} \hfill & {-a_2 (1-\varepsilon)} \hfill \\
+          {-a_1 (1-\varepsilon)} \hfill & {-a_2 (1-\varepsilon)} \hfill & {\varepsilon +a_1 ^2+a_2 ^2} \hfill \\
+        \end{array}
+      }} \right]
+\end{equation}
+where ($a_1$, $a_2$) are $(-1) \times$ the isopycnal slopes in
+($\textbf{i}$, $\textbf{j}$) directions, relative to geopotentials (or
+equivalently the slopes of the geopotential surfaces in the isopycnal
+coordinate framework):
+\[
+  a_1 =\frac{e_3 }{e_1 }\left( {\frac{\partial \rho }{\partial i}} \right)\left( {\frac{\partial \rho }{\partial k}} \right)^{-1}
+  \qquad , \qquad
+  a_2 =\frac{e_3 }{e_2 }\left( {\frac{\partial \rho }{\partial j}}
+  \right)\left( {\frac{\partial \rho }{\partial k}} \right)^{-1}
+\]
+and, as before, $\epsilon = A^{vT} / A^{lT}$.
+
+In practice, $\epsilon$ is small and isopycnal slopes are generally less than $10^{-2}$ in the ocean,
+so $\textbf {A}_{\textbf I}$ can be simplified appreciably \citep{cox_OM87}. Keeping leading order terms\footnote{Apart from the (1,0)
+and (0,1) elements which are set to zero. See \citet{griffies_bk04}, section 14.1.4.1 for a discussion of this point.}:
+\begin{subequations}
+  \label{eq:DIFFOPERS_4}
+  \begin{equation}
+    \label{eq:DIFFOPERS_4a}
+    {\textbf{A}_{\textbf{I}}} \approx A^{lT}\;\Re\;\text{where} \;\Re =
+    \left[ {{
+          \begin{array}{*{20}c}
+            1 \hfill & 0 \hfill & {-a_1 } \hfill \\
+            0 \hfill & 1 \hfill & {-a_2 } \hfill \\
+            {-a_1 } \hfill & {-a_2 } \hfill & {\varepsilon +a_1 ^2+a_2 ^2} \hfill \\
+          \end{array}
+        }} \right],
+  \end{equation}
+  and the iso/dianeutral diffusive operator in $z$-coordinates is then
+  \begin{equation}
+    \label{eq:DIFFOPERS_4b}
+    D^T = \left. \nabla \right|_z \cdot
+    \left[ A^{lT} \;\Re \cdot \left. \nabla \right|_z T  \right]. \\
+  \end{equation}
+\end{subequations}
+
+Physically, the full tensor \autoref{eq:DIFFOPERS_3} represents strong isoneutral diffusion on a plane parallel to
+the isoneutral surface and weak dianeutral diffusion perpendicular to this plane.
+However,
+the approximate `weak-slope' tensor \autoref{eq:DIFFOPERS_4a} represents strong diffusion along the isoneutral surface,
+with weak \emph{vertical} diffusion -- the principal axes of the tensor are no longer orthogonal.
+This simplification also decouples the ($i$,$z$) and ($j$,$z$) planes of the tensor.
+The weak-slope operator therefore takes the same form, \autoref{eq:DIFFOPERS_4}, as \autoref{eq:DIFFOPERS_2},
+the diffusion operator for geopotential diffusion written in non-orthogonal $i,j,s$-coordinates.
+Written out explicitly,
+
+\begin{multline}
+  \label{eq:DIFFOPERS_ldfiso}
+  D^T=\frac{1}{e_1 e_2 }\left\{
+    {\;\frac{\partial }{\partial i}\left[ {A_h \left( {\frac{e_2}{e_1}\frac{\partial T}{\partial i}-a_1 \frac{e_2}{e_3}\frac{\partial T}{\partial k}} \right)} \right]}
+    {+\frac{\partial}{\partial j}\left[ {A_h \left( {\frac{e_1}{e_2}\frac{\partial T}{\partial j}-a_2 \frac{e_1}{e_3}\frac{\partial T}{\partial k}} \right)} \right]\;} \right\} \\
+  \shoveright{+\frac{1}{e_3 }\frac{\partial }{\partial k}\left[ {A_h \left( {-\frac{a_1 }{e_1 }\frac{\partial T}{\partial i}-\frac{a_2 }{e_2 }\frac{\partial T}{\partial j}+\frac{\left( {a_1 ^2+a_2 ^2+\varepsilon} \right)}{e_3 }\frac{\partial T}{\partial k}} \right)} \right]}. \\
+\end{multline}
+
+The isopycnal diffusion operator \autoref{eq:DIFFOPERS_4},
+\autoref{eq:DIFFOPERS_ldfiso} conserves tracer quantity and dissipates its square.
+As \autoref{eq:DIFFOPERS_4} is the divergence of a flux, the demonstration of the first property is trivial, providing that the flux normal to the boundary is zero
+(as it is when $A_h$ is zero at the boundary). Let us demonstrate the second one:
+\[
+  \iiint\limits_D T\;\nabla .\left( {\textbf{A}}_{\textbf{I}} \nabla T \right)\,dv
+  = -\iiint\limits_D \nabla T\;.\left( {\textbf{A}}_{\textbf{I}} \nabla T \right)\,dv,
+\]
+and since
+\begin{align*}
+  {
+  \begin{array}{*{20}l}
+    \nabla T\;.\left( {{\mathrm {\mathbf A}}_{\mathrm {\mathbf I}} \nabla T}
+    \right)&=A^{lT}\left[ {\left( {\frac{\partial T}{\partial i}} \right)^2-2a_1
+             \frac{\partial T}{\partial i}\frac{\partial T}{\partial k}+\left(
+             {\frac{\partial T}{\partial j}} \right)^2} \right. \\
+           &\qquad \qquad \qquad
+             { \left. -\,{2a_2 \frac{\partial T}{\partial j}\frac{\partial T}{\partial k}+\left( {a_1 ^2+a_2 ^2+\varepsilon} \right)\left( {\frac{\partial T}{\partial k}} \right)^2} \right]} \\
+           &=A_h \left[ {\left( {\frac{\partial T}{\partial i}-a_1 \frac{\partial
+             T}{\partial k}} \right)^2+\left( {\frac{\partial T}{\partial
+             j}-a_2 \frac{\partial T}{\partial k}} \right)^2}
+             +\varepsilon \left(\frac{\partial T}{\partial k}\right) ^2\right]      \\
+           & \geq 0 .
+  \end{array}
+             }
+\end{align*}
+%\addtocounter{equation}{-1}
+the property becomes obvious.
+
+%% =================================================================================================
+\subsubsection*{In generalized vertical coordinates}
+
+Because the weak-slope operator \autoref{eq:DIFFOPERS_4},
+\autoref{eq:DIFFOPERS_ldfiso} is decoupled in the ($i$,$z$) and ($j$,$z$) planes,
+it may be transformed into generalized $s$-coordinates in the same way as
+\autoref{sec:DIFFOPERS_1} was transformed into \autoref{sec:DIFFOPERS_2}.
+The resulting operator then takes the simple form
+
+\begin{equation}
+  \label{eq:DIFFOPERS_ldfiso_s}
+  D^T = \left. \nabla \right|_s \cdot
+  \left[ A^{lT} \;\Re \cdot \left. \nabla \right|_s T  \right] \\
+  \;\;\text{where} \;\Re =\left( {{
+        \begin{array}{*{20}c}
+          1 \hfill & 0 \hfill & {-r _1 } \hfill \\
+          0 \hfill & 1 \hfill & {-r _2 } \hfill \\
+          {-r _1 } \hfill & {-r _2 } \hfill & {\varepsilon +r _1
+                                              ^2+r _2 ^2} \hfill \\
+        \end{array}
+      }} \right),
+\end{equation}
+
+where ($r_1$, $r_2$) are $(-1)\times$ the isopycnal slopes in ($\textbf{i}$, $\textbf{j}$) directions,
+relative to $s$-coordinate surfaces (or equivalently the slopes of the
+$s$-coordinate surfaces in the isopycnal coordinate framework):
+\[
+  r_1 =\frac{e_3 }{e_1 }\left( {\frac{\partial \rho }{\partial i}} \right)\left( {\frac{\partial \rho }{\partial s}} \right)^{-1}
+  \qquad , \qquad
+  r_2 =\frac{e_3 }{e_2 }\left( {\frac{\partial \rho }{\partial j}}
+  \right)\left( {\frac{\partial \rho }{\partial s}} \right)^{-1}.
+\]
+
+To prove \autoref{eq:DIFFOPERS_ldfiso_s} by direct re-expression of \autoref{eq:DIFFOPERS_ldfiso} is straightforward, but laborious.
+An easier way is first to note (by reversing the derivation of \autoref{sec:DIFFOPERS_2} from \autoref{sec:DIFFOPERS_1} ) that
+the weak-slope operator may be \emph{exactly} reexpressed in non-orthogonal $i,j,\rho$-coordinates as
+
+\begin{equation}
+  \label{eq:DIFFOPERS_5}
+  D^T = \left. \nabla \right|_\rho \cdot
+  \left[ A^{lT} \;\Re \cdot \left. \nabla \right|_\rho T  \right] \\
+  \;\;\text{where} \;\Re =\left( {{
+        \begin{array}{*{20}c}
+          1 \hfill & 0 \hfill &0 \hfill \\
+          0 \hfill & 1 \hfill & 0 \hfill \\
+          0 \hfill & 0 \hfill & \varepsilon \hfill \\
+        \end{array}
+      }} \right).
+\end{equation}
+Then direct transformation from $i,j,\rho$-coordinates to $i,j,s$-coordinates gives
+\autoref{eq:DIFFOPERS_ldfiso_s} immediately.
+
+Note that the weak-slope approximation is only made in transforming from
+the (rotated,orthogonal) isoneutral axes to the non-orthogonal $i,j,\rho$-coordinates.
+The further transformation into $i,j,s$-coordinates is exact, whatever the steepness of the $s$-surfaces,
+in the same way as the transformation of horizontal/vertical Laplacian diffusion in $z$-coordinates in
+\autoref{sec:DIFFOPERS_1} onto $s$-coordinates is exact, however steep the $s$-surfaces.
+
+%% =================================================================================================
+\section{Lateral/Vertical momentum diffusive operators}
+\label{sec:DIFFOPERS_3}
+
+The second order momentum diffusion operator (Laplacian) in $z$-coordinates is found by
+applying \autoref{eq:MB_lap_vector}, the expression for the Laplacian of a vector,
+to the horizontal velocity vector:
+\begin{align*}
+  \Delta {\textbf{U}}_h
+  &=\nabla \left( {\nabla \cdot {\textbf{U}}_h } \right)-
+    \nabla \times \left( {\nabla \times {\textbf{U}}_h } \right) \\ \\
+  &=\left( {{
+    \begin{array}{*{20}c}
+      {\frac{1}{e_1 }\frac{\partial \chi }{\partial i}} \hfill \\
+      {\frac{1}{e_2 }\frac{\partial \chi }{\partial j}} \hfill \\
+      {\frac{1}{e_3 }\frac{\partial \chi }{\partial k}} \hfill \\
+    \end{array}
+  }} \right)
+  -\left( {{
+  \begin{array}{*{20}c}
+    {\frac{1}{e_2 }\frac{\partial \zeta }{\partial j}-\frac{1}{e_3
+    }\frac{\partial }{\partial k}\left( {\frac{1}{e_3 }\frac{\partial
+    u}{\partial k}} \right)} \hfill \\
+    {\frac{1}{e_3 }\frac{\partial }{\partial k}\left( {-\frac{1}{e_3
+    }\frac{\partial v}{\partial k}} \right)-\frac{1}{e_1 }\frac{\partial \zeta
+    }{\partial i}} \hfill \\
+    {\frac{1}{e_1 e_2 }\left[ {\frac{\partial }{\partial i}\left( {\frac{e_2
+    }{e_3 }\frac{\partial u}{\partial k}} \right)-\frac{\partial }{\partial
+    j}\left( {-\frac{e_1 }{e_3 }\frac{\partial v}{\partial k}} \right)} \right]}
+    \hfill \\
+  \end{array}
+  }} \right) \\ \\
+  &=\left( {{
+    \begin{array}{*{20}c}
+      {\frac{1}{e_1 }\frac{\partial \chi }{\partial i}-\frac{1}{e_2 }\frac{\partial \zeta }{\partial j}} \\
+      {\frac{1}{e_2 }\frac{\partial \chi }{\partial j}+\frac{1}{e_1 }\frac{\partial \zeta }{\partial i}} \\
+      0 \\
+    \end{array}
+  }} \right)
+  +\frac{1}{e_3 }
+  \left( {{
+  \begin{array}{*{20}c}
+    {\frac{\partial }{\partial k}\left( {\frac{1}{e_3 }\frac{\partial u}{\partial k}} \right)} \\
+    {\frac{\partial }{\partial k}\left( {\frac{1}{e_3 }\frac{\partial v}{\partial k}} \right)} \\
+    {\frac{\partial \chi }{\partial k}-\frac{1}{e_1 e_2 }\left( {\frac{\partial ^2\left( {e_2 \,u} \right)}{\partial i\partial k}+\frac{\partial ^2\left( {e_1 \,v} \right)}{\partial j\partial k}} \right)} \\
+  \end{array}
+  }} \right)
+\end{align*}
+Using \autoref{eq:MB_div}, the definition of the horizontal divergence,
+the third component of the second vector is obviously zero and thus :
+\[
+  \Delta {\textbf{U}}_h = \nabla _h \left( \chi \right) - \nabla _h \times \left( \zeta \textbf{k} \right) + \frac {1}{e_3 } \frac {\partial }{\partial k} \left( {\frac {1}{e_3 } \frac{\partial {\textbf{ U}}_h }{\partial k}} \right) .
+\]
+
+Note that this operator ensures a full separation between
+the vorticity and horizontal divergence fields (see \autoref{apdx:INVARIANTS}).
+It is only equal to a Laplacian applied to each component in Cartesian coordinates, not on the sphere.
+
+The horizontal/vertical second order (Laplacian type) operator used to diffuse horizontal momentum in
+the $z$-coordinate therefore takes the following form:
+\begin{equation}
+  \label{eq:DIFFOPERS_Lap_U}
+  {
+    \textbf{D}}^{\textbf{U}} =
+  \nabla _h \left( {A^{lm}\;\chi } \right)
+  - \nabla _h \times \left( {A^{lm}\;\zeta \;{\textbf{k}}} \right)
+  + \frac{1}{e_3 }\frac{\partial }{\partial k}\left( {\frac{A^{vm}\;}{e_3 }
+      \frac{\partial {\mathrm {\mathbf U}}_h }{\partial k}} \right) , \\
+\end{equation}
+that is, in expanded form:
+\begin{align*}
+  D^{\textbf{U}}_u
+  & = \frac{1}{e_1} \frac{\partial \left( {A^{lm}\chi   } \right)}{\partial i}
+    -\frac{1}{e_2} \frac{\partial \left( {A^{lm}\zeta } \right)}{\partial j}
+    +\frac{1}{e_3} \frac{\partial }{\partial k} \left( \frac{A^{vm}}{e_3} \frac{\partial u}{\partial k} \right)   ,   \\
+  D^{\textbf{U}}_v
+  & = \frac{1}{e_2 }\frac{\partial \left( {A^{lm}\chi   } \right)}{\partial j}
+    +\frac{1}{e_1 }\frac{\partial \left( {A^{lm}\zeta } \right)}{\partial i}
+    +\frac{1}{e_3} \frac{\partial }{\partial k} \left( \frac{A^{vm}}{e_3} \frac{\partial v}{\partial k} \right) .
+\end{align*}
+
+Note Bene: introducing a rotation in \autoref{eq:DIFFOPERS_Lap_U} does not lead to
+a useful expression for the iso/diapycnal Laplacian operator in the $z$-coordinate.
+Similarly, we did not found an expression of practical use for
+the geopotential horizontal/vertical Laplacian operator in the $s$-coordinate.
+Generally, \autoref{eq:DIFFOPERS_Lap_U} is used in both $z$- and $s$-coordinate systems,
+that is a Laplacian diffusion is applied on momentum along the coordinate directions.
+
+\subinc{\input{../../global/epilogue}}
+
+\end{document}

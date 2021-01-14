@@ -1,0 +1,9 @@
+!-----------------------------------------------------------------------
+&namdyn_adv    !   formulation of the momentum advection                (default: NO selection)
+!-----------------------------------------------------------------------
+   ln_dynadv_OFF = .false. !  linear dynamics (no momentum advection)
+   ln_dynadv_vec = .false. !  vector form - 2nd centered scheme
+     nn_dynkeg     = 0        ! grad(KE) scheme: =0   C2  ;  =1   Hollingsworth correction
+   ln_dynadv_cen2 = .false. !  flux form - 2nd order centered scheme
+   ln_dynadv_ubs = .false. !  flux form - 3rd order UBS      scheme
+/

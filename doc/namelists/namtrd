@@ -1,0 +1,13 @@
+!-----------------------------------------------------------------------
+&namtrd        !   trend diagnostics                                    (default: OFF)
+!-----------------------------------------------------------------------
+   ln_glo_trd  = .false.   ! (T) global domain averaged diag for T, T^2, KE, and PE
+   ln_dyn_trd  = .false.   ! (T) 3D momentum trend output
+   ln_dyn_mxl  = .false.   ! (T) 2D momentum trends averaged over the mixed layer (not coded yet)
+   ln_vor_trd  = .false.   ! (T) 2D barotropic vorticity trends (not coded yet)
+   ln_KE_trd   = .false.   ! (T) 3D Kinetic   Energy     trends
+   ln_PE_trd   = .false.   ! (T) 3D Potential Energy     trends
+   ln_tra_trd  = .false.   ! (T) 3D tracer trend output
+   ln_tra_mxl  = .false.   ! (T) 2D tracer trends averaged over the mixed layer (not coded yet)
+   nn_trd      = 365       !  print frequency (ln_glo_trd=T) (unit=time step)
+/

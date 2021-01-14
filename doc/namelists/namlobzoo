@@ -1,0 +1,14 @@
+!-----------------------------------------------------------------------
+&namlobzoo     !   biological parameters for zooplankton
+!-----------------------------------------------------------------------
+   rppz    = 0.8        ! zooplankton nominal preference for phytoplancton food  [%]
+   taus    = 9.26E-6    ! specific zooplankton maximal grazing rate              [s-1] 
+!                       ! 0.75/86400 s-1=8.680555E-6    1/86400 = 1.15e-5
+   aks     = 1.         ! half-saturation constant for total zooplankton grazing [mmolN.m-3]
+   rpnaz   = 0.3        ! non-assimilated phytoplankton by zooplancton           [%]
+   rdnaz   = 0.3        ! non-assimilated detritus by zooplankton                [%] 
+   tauzn   = 8.1e-7     ! zooplancton specific excretion rate                    [0.1/86400 s-1=10 days] 
+   fzoolab = 0.5        ! NH4 fraction of zooplankton excretion
+   fdbod   = 0.5        ! zooplankton mortality fraction that goes to detritus
+   tmminz  = 2.31e-6    ! minimal zooplankton mortality rate                     [(mmolN/m3)-1 d-1]
+/

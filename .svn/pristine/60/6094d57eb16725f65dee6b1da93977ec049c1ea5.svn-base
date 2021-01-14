@@ -1,0 +1,7 @@
+!-----------------------------------------------------------------------
+&namc1d        !   1D configuration options                             ("key_c1d" default: PAPA station)
+!-----------------------------------------------------------------------
+   rn_lat1d    =      50   !  Column latitude
+   rn_lon1d    =    -145   !  Column longitude
+   ln_c1d_locpt =  .true.   ! Localization of 1D config in a grid (T) or independant point (F)
+/

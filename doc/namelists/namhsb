@@ -1,0 +1,5 @@
+!-----------------------------------------------------------------------
+&namhsb        !  Heat and salt budgets                                 (default: OFF)
+!-----------------------------------------------------------------------
+   ln_diahsb   = .false.   !  output the heat and salt budgets (T) or not (F)
+/

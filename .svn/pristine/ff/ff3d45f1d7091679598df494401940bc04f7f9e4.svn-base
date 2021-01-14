@@ -1,0 +1,9 @@
+!-----------------------------------------------------------------------
+&namp4zmort    !   parameters for phytoplankton sinks for PISCES std   - ln_p4z
+!-----------------------------------------------------------------------
+   wchl       =  0.01     ! quadratic mortality of phytoplankton
+   wchld      =  0.01     ! maximum quadratic mortality of diatoms
+   wchldm     =  0.03     ! maximum quadratic mortality of diatoms
+   mprat      =  0.01     ! phytoplankton mortality rate
+   mprat2     =  0.01     ! Diatoms mortality rate
+/

@@ -1,0 +1,14 @@
+!------------------------------------------------------------------------------
+&namsbc         !   Ice surface boundary conditions
+!------------------------------------------------------------------------------
+   rn_cio           =   5.0e-03       !  ice-ocean drag coefficient (-)
+   rn_blow_s        =   0.66          !  mesure of snow blowing into the leads
+                                      !     = 1 => no snow blowing, < 1 => some snow blowing
+   nn_flxdist       =  -1             !  Redistribute heat flux over ice categories
+                                      !     =-1  Do nothing (needs N(cat) fluxes)
+                                      !     = 0  Average N(cat) fluxes then apply the average over the N(cat) ice
+                                      !     = 1  Average N(cat) fluxes then redistribute over the N(cat) ice using T-ice and albedo sensitivity
+                                      !     = 2  Redistribute a single flux over categories
+   ln_cndflx        = .false.         !  Use conduction flux as surface boundary conditions (i.e. for Jules coupling)
+      ln_cndemulate = .false.         !     emulate conduction flux (if not provided in the inputs)
+/

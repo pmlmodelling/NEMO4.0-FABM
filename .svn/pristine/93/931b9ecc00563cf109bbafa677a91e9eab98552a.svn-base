@@ -1,0 +1,12 @@
+!-----------------------------------------------------------------------
+&namc14_fcg     !  files & dates
+!               !  For Paleo-historical: specify tyrc14_beg in yr BP
+!               !  For Bomb: tyrc14_beg=0
+!-----------------------------------------------------------------------
+   cfileco2    = 'splco2.dat'  !  atmospheric co2 - Bomb
+   cfilec14    = 'atmc14.dat'  !  atmospheric c14 - Bomb
+   tyrc14_beg  = 0.00          !  starting year of experiment - Bomb
+!   cfileco2    = 'ByrdEdcCO2.txt' !  atmospheric co2 - Paleo
+!   cfilec14    = 'intcal13.14c'   !  atmospheric c14 - Paleo
+!   tyrc14_beg  =  35000.00        !  starting year of experiment - Paleo (yr BP)
+/

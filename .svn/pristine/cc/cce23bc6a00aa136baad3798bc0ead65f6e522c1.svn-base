@@ -1,0 +1,844 @@
+
+\chapter{Coding Rules}
+\label{apdx:CODING}
+
+\chaptertoc
+
+\newpage
+
+A "model life" is more than ten years.
+Its software, composed of a few hundred modules, is used by many people who are scientists or students and
+do not necessarily know every aspect of computing very well.
+Moreover, a well thought-out program is easier to read and understand, less difficult to modify,
+produces fewer bugs and is easier to maintain.
+Therefore, it is essential that the model development follows some rules:
+
+\begin{itemize}
+\item well planned and designed
+\item well written
+\item well documented (both on- and off-line)
+\item maintainable
+\item easily portable
+\item flexible.
+\end{itemize}
+
+To satisfy part of these aims, \NEMO\ is written with a coding standard which is close to the ECMWF rules,
+named DOCTOR \citep{gibson_rpt86}.
+These rules present some advantages like:
+
+\begin{itemize}
+\item to provide a well presented program
+\item to use rules for variable names which allow recognition of their type 	(integer, real, parameter, local or shared variables, etc. ).
+\end{itemize}
+
+This facilitates both the understanding and the debugging of an algorithm.
+
+\section{Introduction}
+
+This document describes conventions used in \NEMO\ coding and suggested for its development.
+The objectives are to offer a guide to all readers of the \NEMO\ code, and to facilitate the work of
+all the developers, including the validation of their developments, and
+eventually the implementation of these developments within the \NEMO\ platform.
+
+A first approach of these rules can be found in the code in \path{./src/OCE/module_example} where
+all the basics coding conventions are illustrated.
+More details can be found below.
+
+This work is based on the coding conventions in use for the Community Climate System Model
+\footnote {\href{http://www.cesm.ucar.edu/working_groups/Software/dev_guide/dev_guide/node7.html}{UCAR conventions}},
+the previous version of this document (``FORTRAN coding standard in the OPA System'') and
+the expertise of the \NEMO\ System Team.
+After a general overview below, this document will describe:
+
+\begin{itemize}
+\item The style rules, $i.e.$ the syntax, appearance and naming conventions chosen to improve readability of the code;
+\item The content rules, $i.e.$ the conventions to improve the reliability of the different parts of the code;
+\item The package rules to go a step further by improving the reliability of the whole and
+	interfaces between routines and modules.
+\end{itemize}
+
+\section{Overview and general conventions}
+
+\NEMO\ has 3 major components: ocean dynamics (\path{./src/OCE}), sea-ice (\path{./src/ICE}) and
+marine biogeochemistry (\path{./src/MBG}).
+%, linear-tangent and adjoint of the dynamics ($TAM$) each of them corresponding to a directory.
+In each directory, one will find some FORTRAN files and/or subdirectories, one per functionality of the code:
+\path{./src/OCE/BDY} (boundaries), \path{./src/OCE/DIA} (diagnostics), \path{./src/OCE/DOM} (domain),
+\path{./src/OCE/DYN} (dynamics), \path{./src/OCE/LDF} (lateral diffusion), etc... \\
+All name are chosen to be as self-explanatory as possible, in English, all prefixes are 3 digits. \\
+English is used for all variables names, comments, and documentation. \\
+Physical units are MKS. The only exception to this is the temperature, which is expressed in degrees Celsius,
+except in bulk formulae and part of SI$^3$ sea-ice model where it is in Kelvin.
+See \path{.src/OCE/DOM/phycst.F90} files for conversions.
+
+\section{Architecture}
+
+Within each directory, organisation of files is driven by orthogonality,
+$i.e.$ one functionality of the code is intended to be in one and only one directory, and
+one module and all its related routines are in one file.
+The functional modules are:
+
+\begin{itemize}
+\item \path{SBC}             surface module
+\item \path{IOM}             management of the I/O
+\item \path{NST}             interface to AGRIF (nesting model) for dynamics and biogeochemistry
+\item \path{OBC}, \path{BDY} management of structured and unstructured open boundaries
+\item \path{C1D}             1D (vertical) configuration for dynamics, sea-ice and biogeochemistry
+\item \path{OFF}             off-line module: passive tracer or biogeochemistry alone
+\item \path{...}
+\end{itemize}
+
+For example, the file \textit{domain.F90} contains the module \texttt{domain} and all the subroutines related to
+this module (\texttt{dom\_init, dom\_nam, dom\_ctl}).
+
+\section{Style rules}
+
+\subsection{Argument list format}
+
+Routine argument lists will contain a maximum 5 variables per line,
+whilst continuation lines can be used.
+This applies both to the calling routine and the dummy argument list in the routine being called.
+The purpose is to simplify matching up the arguments between caller and callee.
+
+\begin{forlines}
+SUBROUTINE tra_adv_eiv( kt, pun, pvn, pwn )
+
+      CALL tra_adv_eiv( kt, zun, zvn, zwn )
+\end{forlines}
+
+\subsection{Array syntax}
+
+Except for long loops (see below), array notation should be used if possible.
+To improve readability the array shape must be shown in brackets, $e.g.$:
+
+\begin{forlines}
+onedarraya(:)   = onedarrayb(:) + onedarrayc(:)
+twodarray (:,:) = scalar * anothertwodarray(:,:)
+\end{forlines}
+
+When accessing sections of arrays, for example in finite difference equations,
+do so by using the triplet notation on the full array, $e.g.$:
+
+\begin{forlines}
+twodarray(:,2:len2) =   scalar                      &
+   &                  * ( twodarray2(:,1:len2-1 )   &
+   &                  -   twodarray2(:,2:len2 ) )
+\end{forlines}
+
+For long, complicated loops, explicitly indexed loops should be preferred.
+In general when using this syntax, the order of the loops indices should reflect the following scheme
+(for best usage of data locality):
+
+\begin{forlines}
+DO jk = 1, jpk
+   DO jj = 1, jpj
+      DO ji = 1, jpi
+         threedarray(ji,jj,jk) = ...
+      END DO
+   END DO
+END DO
+\end{forlines}
+
+\subsection{Case}
+
+All FORTRAN keywords are in capital: \forcode{DIMENSION}, \forcode{WRITE}, \forcode{DO}, \forcode{END DO},
+\forcode{NAMELIST}, ... All other parts of the \NEMO\ code will be written in lower case.
+
+\subsection{Comments}
+
+Comments in the code are useful when reading the code and changing or developing it. \\
+The full documentation and detailed explanations are to be added in the reference manual
+(TeX files, aside from the code itself). \\
+In the code, the comments should explain variable content and describe each computational step. \\
+Comments in the header start with ``!!''.
+For more details on the content of the headers, see Content rules/Headers in this document. \\
+Comments in the code start with ``!''. \\
+All comments are indented (3, 6, or 9 blank spaces). \\
+Short comments may be included on the same line as executable code, and an additional line can be used with
+proper alignment.
+For example:
+
+\begin{forlines}
+zx = zx *zzy   ! Describe what is going on and if it is
+!              ! too long use another ! for proper
+!              ! alignment with automatic indentation
+\end{forlines}
+
+More in-depth comments should be written in the form:
+
+\begin{forlines}
+   !  Check of some namelist values
+\end{forlines}
+
+or
+
+\begin{forlines}
+!
+!     !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+!     !  Bottom boundary condition on tke
+!     !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+!
+\end{forlines}
+
+Key features of this style are
+
+\begin{enumerate}
+\item it starts with a "!" in the column required for proper indentation,
+\item the text is offset above and below by a blank line or a content line built for underlying.
+\end{enumerate}
+
+\subsection{Continuation lines}
+
+Continuation lines can be used with precise alignment for readability. For example:
+
+\begin{forlines}
+avmu(ji,jj,jk) =   avmu(ji,jj,jk) * ( un(ji,jj,jk-1) - un(ji,jj,jk) )   &
+   &                              * ( ub(ji,jj,jk-1) - ub(ji,jj,jk) )   &
+   &             / (   fse3uw_n(ji,jj,jk)                               &
+   &                 * fse3uw_b(ji,jj,jk) )
+\end{forlines}
+
+Code lines, which are continuation lines of assignment statements, must begin to the right of the column of
+the assignment operator.
+Due to the possibility of automatic indentation in some editor (emacs for example),
+use a ``\&'' as first character of the continuing lines to maintain the alignment.
+
+\subsection{Declaration of arguments and local variables}
+
+In a routine, input arguments and local variables are declared 1 per line,
+with a comment field on the same line as the declaration.
+Multiple comment lines describing a single variable are acceptable if needed.
+For example:
+
+\begin{forlines}
+INTEGER             ::   kstp   ! ocean time-step index
+\end{forlines}
+
+\subsection{F90 Standard}
+
+\NEMO\ software adheres to the \fninety language standard and does not rely on any specific language or
+vendor extensions.
+
+\subsection{Free-Form Source}
+
+Free-form source will be used.
+The F90/95 standard allows lines of up to 132 characters, but a self-imposed limit of 80 should enhance readability,
+or print source files with two columns per page.
+Multi-line comments that extend to column 100 are unacceptable.
+
+\subsection{Indentation}
+
+Code as well as comment lines within loops, if-blocks, continuation lines, \forcode{MODULE} or
+\forcode{SUBROUTINE} statements will be indented 3 characters for readability
+(except for \forcode{CONTAINS} that remains at first column).
+
+\begin{forlines}
+MODULE mod1
+   REAL(wp) xx
+CONTAINS
+   SUBROUTINE sub76( px, py, pz, pw, pa,   &
+      &              pb, pc, pd, pe          )
+      <instruction>
+   END SUBROUTINE sub76
+END MODULE mod1
+\end{forlines}
+
+\subsection{Loops}
+
+Loops, if explicit, should be structured with the do-end do construct as opposed to numbered loops.
+Nevertheless non-numeric labels can be used for a big iterative loop of a recursive algorithm.
+In the case of a long loop, a self-descriptive label can be used ($i.e.$ not just a number).
+
+\subsection{Naming Conventions: files}
+
+A file containing a module will have the same name as the module it contains
+(because dependency rules used by "make" programs are based on file names).
+\footnote{
+  For example, if routine A "\forcode{USE}"s module B, then "make" must be told of the dependency relation which
+  requires B to be compiled before A.
+  If one can assume that module B resides in file B.o,
+  building a tool to generate this dependency rule ($e.g.$ A.o: B.o) is quite simple.
+  Put another way, it is difficult (to say nothing of CPU-intensive) to search an entire source tree to
+  find the file in which module B resides for each routine or module which "\forcode{USE}"s B.
+}
+
+\subsection{Naming Conventions: modules}
+
+Use a meaningful English name and the ``3 letters'' naming convention:
+first 3 letters for the code section, and last 3 to describe the module.
+For example, zdftke, where ``zdf'' stands for vertical diffusion, and ``tke'' for turbulent kinetic energy. \\
+Note that by implication multiple modules are not allowed in a single file.
+The use of common blocks is deprecated in \fortran 90 and their use in \NEMO\ is strongly discouraged.
+Modules are a better way to declare static data.
+Among the advantages of modules is the ability to freely mix data of various types, and
+to limit access to contained variables through the use of the \forcode{ONLY} and \forcode{PRIVATE} attributes.
+
+\subsection{Naming Conventions: variables}
+
+All variable should be named as explicitly as possible in English.
+The naming convention concerns prefix letters of these name, in order to identify the variable type and status. \\
+Never use a \fortran keyword as a routine or variable name. \\
+The table below lists the starting letter(s) to be used for variable naming, depending on their type and status:
+%--------------------------------------------------TABLE--------------------------------------------------
+\begin{table}[htbp]
+  \begin{center}
+    \begin{tabular}{|p{50pt}|p{50pt}|p{50pt}|p{50pt}|p{50pt}|p{50pt}|p{50pt}|}
+      \hline
+      Type \par / Status                                                                          &
+      integer                                                                                     &
+      real                                                                                        &
+      logical                                                                                     &
+      character                                                                                   &
+      double \par precision                                                                       &
+      complex                                                                                     \\
+      \hline
+      public \par or \par module variable                                                         &
+      \textbf{m n} \par \textit{but not} \par \textbf{nn\_}                                       &
+      \textbf{a b e f g h o} \textbf{q} \textit{to} \textbf{x} \par but not \par \textbf{fs rn\_} &
+      \textbf{l} \par \textit{but not} \par \textbf{lp ld ll ln\_}                                &
+      \textbf{c} \par \textit{but not} \par \textbf{cp cd cl cn\_}                                &
+      \textbf{d} \par \textit{but not} \par \textbf{dp dd dl dn\_}                                &
+      \textbf{y} \par \textit{but not} \par \textbf{yp yd yl}                                     \\
+      \hline
+      dummy \par argument                                                                         &
+      \textbf{k} \par \textit{but not} \par \textbf{kf}                                           &
+      \textbf{p} \par \textit{but not} \par \textbf{pp pf}                                        &
+      \textbf{ld}                                                                                 &
+      \textbf{cd}                                                                                 &
+      \textbf{dd}                                                                                 &
+      \textbf{yd}                                                                                 \\
+      \hline
+      local \par variable                                                                         &
+      \textbf{i}                                                                                  &
+      \textbf{z}                                                                                  &
+      \textbf{ll}                                                                                 &
+      \textbf{cl}                                                                                 &
+      \textbf{cd}                                                                                 &
+      \textbf{yl}                                                                                 \\
+      \hline
+      loop \par control                                                                           &
+      \textbf{j} \par \textit{but not} \par \textbf{jp}                                           &
+                                                                                                  &
+                                                                                                  &
+                                                                                                  &
+                                                                                                  &
+                                                                                                  \\
+      \hline
+      parameter                                                                                   &
+      \textbf{jp}                                                                                 &
+      \textbf{pp}                                                                                 &
+      \textbf{lp}                                                                                 &
+      \textbf{cp}                                                                                 &
+      \textbf{dp}                                                                                 &
+      \textbf{yp}                                                                                 \\
+      \hline
+      namelist                                                                                    &
+      \textbf{nn\_}                                                                               &
+      \textbf{rn\_}                                                                               &
+      \textbf{ln\_}                                                                               &
+      \textbf{cn\_}                                                                               &
+      \textbf{dn\_}                                                                               &
+                                                                                                  \\
+      \hline
+      CPP \par macro                                                                              &
+      \textbf{kf}                                                                                 &
+      \textbf{sf}                                                                                 &
+                                                                                                  &
+                                                                                                  &
+                                                                                                  &
+                                                                                                  \\
+      \hline
+    \end{tabular}
+    \label{tab1}
+  \end{center}
+\end{table}
+%--------------------------------------------------------------------------------------------------------------
+
+\subsection{Operators}
+
+Use of the operators \texttt{<, >, <=, >=, ==, /=} is strongly recommended instead of their deprecated counterparts
+(\texttt{.lt., .gt., .le., .ge., .eq., .ne.}).
+The motivation is readability.
+In general use the notation: \\
+$<Blank><Operator><Blank>$
+
+\subsection{Pre processor}
+
+Where the use of a language pre-processor is required, it will be the C pre-processor (cpp). \\
+The cpp key is the main feature used, allowing to ignore some useless parts of the code at compilation step. \\
+The advantage is to reduce the memory use; the drawback is that compilation of this part of the code isn't checked. \\
+The cpp key feature should only be used for a few limited options, if it reduces the memory usage.
+In all cases, a logical variable and a FORTRAN \forcode{IF} should be preferred.
+When using a cpp key \textit{key\_optionname},
+a corresponding logical variable \textit{lk\_optionname} should be declared to
+allow FORTRAN \forcode{IF} tests in the code and
+a FORTRAN module with the same name ($i.e.$ \textit{optionname.F90}) should be defined.
+This module is the only place where a \``\#if defined'' command appears, selecting either the whole FORTRAN code or
+a dummy module.
+For example, the TKE vertical physics, the module name is \textit{zdftke.F90},
+the CPP key is \textit{key\_zdftke} and the associated logical is \textit{lk\_zdftke}.
+
+The following syntax:
+
+\begin{forlines}
+#if defined key_optionname
+!! Part of code conditionally compiled if cpp key key_optionname is active
+#endif
+\end{forlines}
+
+Is to be used rather than the \#ifdef abbreviate form since it may have conflicts with some Unix scripts.
+
+Tests on cpp keys included in \NEMO\ at compilation step:
+
+\begin{itemize}
+\item
+  The CPP keys used are compared to the previous list of cpp keys
+  (the compilation will stop if trying to specify a non-existing key)
+\item
+  If a change occurs in the CPP keys used for a given experiment, the whole compilation phase is done again.
+\end{itemize}
+
+\section{Content rules}
+
+\subsection{Configurations}
+
+The configuration defines the domain and the grid on which \NEMO\ is running.
+It may be useful to associate a CPP key and some variables to a given configuration, although
+the part of the code changed under each of those keys should be minimized.
+As an example, the "ORCA2" configuration (global ocean, 2 degrees grid size) is associated with
+the cpp key \texttt{key\_orca2} for which
+
+\begin{forlines}
+cp_cfg = "orca"
+jp_cfg = 2
+\end{forlines}
+
+\subsection{Constants}
+
+Physical constants ($e.g.$ $\pi$, gas constants) must never be hard-wired into the executable portion of a code.
+Instead, a mnemonically named variable or parameter should be set to the appropriate value,
+in the setup routine for the package.
+We realize than many parameterizations rely on empirically derived constants or fudge factors,
+which are not easy to name.
+In these cases it is not forbidden to leave such factors coded as "magic numbers" buried in executable code, but
+comments should be included referring to the source of the empirical formula.
+Hard-coded numbers should never be passed through argument lists.
+
+\subsection{Declaration for variables and constants}
+
+\subsubsection{Rules}
+
+Variables used as constants should be declared with attribute \forcode{PARAMETER} and
+used always without copying to local variables, in order to
+prevent from using different values for the same constant or changing it accidentally.
+
+\begin{itemize}
+\item
+  Usage of the \forcode{DIMENSION} statement or attribute is required in declaration statements
+\item
+  The ``::'' notation is quite useful to show that this program unit declaration part is written in
+  standard FORTRAN syntax, even if there are no attributes to clarify the declaration section.
+  Always use the notation $<$blank$>$::$<$three blanks$>$ to improve readability.
+\item
+  Declare the length of a character variable using the \forcode{CHARACTER} (len=xxx) syntax
+  \footnote {
+    The len specifier is important because it is possible to have several kinds for characters
+    ($e.g.$ Unicode using two bytes per character, or there might be a different kind for Japanese $e.g.$ NEC).
+  }
+\item
+  For all global data (in contrast to module data, that is all data that can be access by other module)
+  must be accompanied with a comment field on the same line
+  \footnote {
+    This allows a easy research of where and how a variable is declared using the unix command:
+    ``grep var *90 | grep !:''.
+  }.
+  For example:
+  \begin{forlines}
+  REAL(wp), DIMENSION(jpi,jpj,jpk) ::  ua   ! i-horizontal velocity (m/s)
+  \end{forlines}
+\end{itemize}
+
+\subsubsection{Implicit None}
+
+All subroutines and functions will include an \forcode{IMPLICIT NONE} statement.
+Thus all variables must be explicitly typed.
+It also allows the compiler to detect typographical errors in variable names.
+For modules, one \forcode{IMPLICIT NONE} statement in the modules definition section is needed.
+This also removes the need to have \forcode{IMPLICIT NONE} statements in
+any routines that are \forcode{CONTAINS}'ed in the module.
+Improper data initialisation is another common source of errors
+\footnote{
+  A variable could contain an initial value you did not expect.
+  This can happen for several reasons, $e.g.$ the variable has never been assigned a value, its value is outdated,
+  memory has been allocated for a pointer but you have forgotten to initialise the variable pointed to.
+}.
+To avoid problems, initialise variables as close as possible to where they are first used.
+
+\subsubsection{Attributes}
+
+\forcode{PRIVATE} / \forcode{PUBLIC}:
+All resources of a module are \forcode{PUBLIC} by default.
+A reason to store multiple routines and their data in a single module is that
+the scope of the data defined in the module can be limited to the routines which are in the same module.
+This is accomplished with the \forcode{PRIVATE} attribute. \\
+\forcode{INTENT}:
+All dummy arguments of a routine must include the \forcode{INTENT} clause in their declaration in order to
+improve control of variables in routine calls.
+
+\subsection{Headers}
+
+Prologues are not used in \NEMO\ for now, although it may become an interesting tool in combination with
+ProTeX auto documentation script in the future.
+Rules to code the headers and layout of a module or a routine are illustrated in the example module available with
+the code: \path{./src/OCE/module_example}
+
+\subsection{Interface blocks}
+
+Explicit interface blocks are required between routines if optional or keyword arguments are to be used.
+They also allow the compiler to check that the type, shape and number of arguments specified in the \forcode{CALL}
+are the same as those specified in the subprogram itself.
+FORTRAN 95 compilers can automatically provide explicit interface blocks for routines contained in a module.
+
+\subsection{I/O Error Conditions}
+
+I/O statements which need to check an error condition will use the \texttt{iostat=<integer variable>} construct
+instead of the outmoded \texttt{end=} and \forcode{err=}. \\
+Note that a 0 value means success, a positive value means an error has occurred, and
+a negative value means the end of record or end of file was encountered.
+
+\subsection{PRINT - ASCII output files}
+
+Output listing and errors are directed to \texttt{numout} logical unit =6 and
+produces a file called \textit{ocean.output} (use \texttt{ln\_prt} to have one output per process in MPP).
+Logical \texttt{lwp} variable allows for less verbose outputs.
+To output an error from a routine, one can use the following template:
+
+\begin{forlines}
+IF( nstop /= 0 .AND. lwp ) THEN   ! error print
+   WRITE(numout,cform_err)
+   WRITE(numout,*) nstop, ' error have been found'
+ENDIF
+\end{forlines}
+
+\subsection{Precision}
+
+Parameterizations should not rely on vendor-supplied flags to supply a default floating point precision or
+integer size.
+The F95 \forcode{KIND} feature should be used instead.
+In order to improve portability between 32 and 64 bit platforms,
+it is necessary to make use of kinds by using a specific module \path{./src/OCE/par_kind.F90}
+declaring the "kind definitions" to obtain the required numerical precision and range as well as
+the size of \forcode{INTEGER}.
+It should be noted that numerical constants need to have a suffix of \texttt{\_kindvalue} to
+have the according size. \\
+Thus \forcode{wp} being the "working precision" as declared in \path{./src/OCE/par_kind.F90},
+declaring real array \forcode{zpc} will take the form:
+
+\begin{forlines}
+REAL(wp), DIMENSION(jpi,jpj,jpk) ::  zpc      ! power consumption
+\end{forlines}
+
+\subsection{Structures}
+
+The \forcode{TYPE} structure allowing to declare some variables is more often used in \NEMO,
+especially in the modules dealing with reading fields, or interfaces.
+For example:
+
+\begin{forlines}
+! Definition of a tracer as a structure
+TYPE PTRACER
+   CHARACTER(len = 20)  :: sname  ! short name
+   CHARACTER(len = 80 ) :: lname  ! long name
+   CHARACTER(len = 20 ) :: unit   ! unit
+   LOGICAL              :: lini   ! read in a file or not
+   LOGICAL              :: lsav   ! ouput the tracer or not
+END TYPE PTRACER
+
+TYPE(PTRACER) , DIMENSION(jptra) :: tracer
+\end{forlines}
+
+Missing rule on structure name??
+
+\section{Packages coding rules}
+
+\subsection{Bounds checking}
+
+\NEMO\ is able to run when an array bounds checking option is enabled
+(provided the cpp key \texttt{key\_vectopt\_loop} is not defined). \\
+Thus, constructs of the following form are disallowed:
+
+\begin{forlines}
+REAL(wp) :: arr(1)
+\end{forlines}
+
+where "arr" is an input argument into which the user wishes to index beyond 1.
+Use of the (*) construct in array dimensioning is forbidden also because
+it effectively disables array bounds checking.
+
+\subsection{Communication}
+
+A package should refer only to its own modules and subprograms and to those intrinsic functions included in
+the Fortran standard. \\
+All communication with the package will be through the argument list or namelist input.
+\footnote{
+  The point behind this rule is that packages should not have to know details of
+  the surrounding model data structures, or the names of variables outside of the package.
+  A notable exception to this rule is model resolution parameters.
+  The reason for the exception is to allow compile-time array sizing inside the package.
+  This is often important for efficiency.
+}
+
+\subsection{Error conditions}
+
+When an error condition occurs inside a package, a message describing what went wrong will be printed
+(see PRINT - ASCII output files).
+The name of the routine in which the error occurred must be included.
+It is acceptable to terminate execution within a package, but
+the developer may instead wish to return an error flag through the argument list,
+see \textit{stpctl.F90}.
+
+\subsection{Memory management}
+
+The main action is to identify and declare which arrays are \forcode{PUBLIC} and which are \forcode{PRIVATE}. \\
+As of version 3.3.1 of \NEMO, the use of static arrays (size fixed at compile time) has been deprecated.
+All module arrays are now declared \forcode{ALLOCATABLE} and
+allocated in either the \texttt{<module\_name>\_alloc()} or \texttt{<module\_name>\_init()} routines.
+The success or otherwise of each \forcode{ALLOCATE} must be checked using
+the \texttt{stat=<integer\ variable>} optional argument. \\
+
+In addition to arrays contained within modules, many routines in \NEMO\ require local, ``workspace'' arrays to
+hold the intermediate results of calculations.
+In previous versions of \NEMO, these arrays were declared in such a way as to be automatically allocated on
+the stack when the routine was called.
+An example of an automatic array is:
+
+\begin{forlines}
+SUBROUTINE sub(n)
+   REAL :: a(n)
+   ...
+END SUBROUTINE sub
+\end{forlines}
+
+The downside of this approach is that the program will crash if it runs out of stack space and
+the reason for the crash might not be obvious to the user.
+
+Therefore, as of version 3.3.1, the use of automatic arrays is deprecated.
+Instead, a new module, \textit{wrk\_nemo.F90}, has been introduced which
+contains 1-,2-,3- and 4-dimensional workspace arrays for use in subroutines.
+These workspace arrays should be used in preference to declaring new, local (allocatable) arrays whenever possible.
+The only exceptions to this are when workspace arrays with lower bounds other than 1 and/or
+with extent(s) greater than those in the \textit{wrk\_nemo.F90} module are required. \\
+
+The 2D, 3D and 4D workspace arrays in \textit{wrk\_nemo.F90} have extents \texttt{jpi}, \texttt{jpj},
+\texttt{jpk} and \texttt{jpts} ($x$, $y$, $z$ and tracers) in the first, second, third and fourth dimensions,
+respectively.
+The 1D arrays are allocated with extent MAX($jpi \times jpj, jpk \times jpj, jpi \times jpk$). \\
+
+The \forcode{REAL (KIND = wp)} workspace arrays in \textit{wrk\_nemo.F90}
+are named $e.g.$ \texttt{wrk\_1d\_1, wrk\_4d\_2} etc. and
+should be accessed by USE'ing the \textit{wrk\_nemo.F90} module.
+Since these arrays are available to any routine,
+some care must be taken that a given workspace array is not already being used somewhere up the call stack.
+To help with this, \textit{wrk\_nemo.F90} also contains some utility routines;
+\texttt{wrk\_in\_use()} and \texttt{wrk\_not\_released()}.
+The former first checks that the requested arrays are not already in use and then sets internal flags to show that
+they are now in use.
+The \texttt{wrk\_not\_released()} routine un-sets those internal flags.
+A subroutine using this functionality for two, 3D workspace arrays named \texttt{zwrk1} and
+\texttt{zwrk2} will look something like:
+
+\begin{forlines}
+SUBROUTINE sub()
+   USE wrk_nemo, ONLY: wrk_in_use, wrk_not_released
+   USE wrk_nemo, ONLY: zwrk1 => wrk_3d_5, zwrk2 => wrk_3d_6
+   !
+   IF(wrk_in_use(3, 5,6)THEN
+      CALL ctl_stop('sub: requested workspace arrays unavailable.')
+      RETURN
+   END IF
+   ...
+   ...
+   IF(wrk_not_released(3, 5,6)THEN
+      CALL ctl_stop('sub: failed to release workspace arrays.')
+   END IF
+   !
+END SUBROUTINE sub
+\end{forlines}
+
+The first argument to each of the utility routines is the dimensionality of the required workspace (1--4).
+Following this there must be one or more integers identifying which workspaces are to be used/released.
+Note that, in the interests of keeping the code as simple as possible,
+there is no use of \forcode{POINTER}s etc. in the \textit{wrk\_nemo.F90} module.
+Therefore it is the responsibility of the developer to ensure that the arguments to \texttt{wrk\_in\_use()} and
+\texttt{wrk\_not\_released()} match the workspace arrays actually being used by the subroutine. \\
+
+If a workspace array is required that has extent(s) less than those of the arrays in
+the \textit{wrk\_nemo.F90} module then the advantages of implicit loops and bounds checking may be retained by
+defining a pointer to a sub-array as follows:
+
+\begin{forlines}
+SUBROUTINE sub()
+   USE wrk_nemo, ONLY: wrk_in_use, wrk_not_released
+   USE wrk_nemo, ONLY: wrk_3d_5
+   !
+   REAL(wp), DIMENSION(:,:,:), POINTER :: zwrk1
+   !
+   IF(wrk_in_use(3, 5)THEN
+      CALL ctl_stop('sub: requested workspace arrays unavailable.')
+      RETURN
+   END IF
+   !
+   zwrk1 => wrk_3d_5(1:10,1:10,1:10)
+   ...
+END SUBROUTINE sub
+\end{forlines}
+
+Here, instead of ``use associating'' the variable \texttt{zwrk1} with the array \texttt{wrk\_3d\_5}
+(as in the first example), it is explicitly declared as a pointer to a 3D array.
+It is then associated with a sub-array of \texttt{wrk\_3d\_5} once the call to
+\texttt{wrk\_in\_use()} has completed successfully.
+Note that in F95 (to which \NEMO\ conforms) it is not possible for either the upper or lower array bounds of
+the pointer object to differ from those of the target array. \\
+
+In addition to the \forcode{REAL (KIND = wp)} workspace arrays,
+\textit{wrk\_nemo.F90} also contains 2D integer arrays and 2D REAL arrays with extent (\texttt{jpi}, \texttt{jpk}),
+$i.e.$ $xz$.
+The utility routines for the integer workspaces are \texttt{iwrk\_in\_use()} and \texttt{iwrk\_not\_released()} while
+those for the $xz$ workspaces are \texttt{wrk\_in\_use\_xz()} and \texttt{wrk\_not\_released\_xz()}.
+
+Should a call to one of the \texttt{wrk\_in\_use()} family of utilities fail,
+an error message is printed along with a table showing which of the workspace arrays are currently in use.
+This should enable the developer to choose alternatives for use in the subroutine being worked on. \\
+
+When compiling \NEMO\ for production runs,
+the calls to {\texttt{wrk\_in\_use()} / \texttt{wrk\_not\_released()} can be reduced to stubs that just
+return \forcode{.false.} by setting the cpp key \texttt{key\_no\_workspace\_check}.
+These stubs may then be in-lined (and thus effectively removed altogether) by setting appropriate compiler flags
+($e.g.$ ``-finline'' for the Intel compiler or ``-Q'' for the IBM compiler).
+
+\subsection{Optimisation}
+
+Considering the new computer architecture, optimisation cannot be considered independently from the computer type.
+In \NEMO, portability is a priority, before any too specific optimisation.
+
+Some tools are available to help: for vector computers, \texttt{key\_vectopt\_loop} allows to unroll a loop
+
+\subsection{Package attribute: \forcode{PRIVATE}, \forcode{PUBLIC}, \forcode{USE}, \forcode{ONLY}}
+
+Module variables and routines should be encapsulated by using the \forcode{PRIVATE} attribute.
+What shall be used outside the module can be declared \forcode{PUBLIC} instead.
+Use \forcode{USE} with the \forcode{ONLY} attribute to specify which of the variables, type definitions etc...
+defined in a module are to be made available to the using routine.
+
+\subsection{Parallelism using MPI}
+
+\NEMO\ is written in order to be able to run on one processor, or on one or more using MPI
+($i.e.$ activating the cpp key $key\_mpp\_mpi$).
+The domain decomposition divides the global domain in cubes (see \NEMO\ reference manual).
+Whilst coding a new development, the MPI compatibility has to be taken in account
+(see \path{./src/LBC/lib_mpp.F90}) and should be tested.
+By default, the $x$-$z$ part of the decomposition is chosen to be as square as possible.
+However, this may be overriden by specifying the number of sub-domains in latitude and longitude in
+the \texttt{nammpp} section of the namelist file.
+
+\section{Features to be avoided}
+
+The code must follow the current standards of FORTRAN and ANSI C.
+In particular, the code should not produce any WARNING at compiling phase, so that
+users can be easily alerted of potential bugs when some appear in their new developments.
+Below is a list of features to avoid:
+\begin{itemize}
+\item \forcode{COMMON} block
+  (use the declaration part of \forcode{MODULE} instead)
+\item \forcode{EQUIVALENCE}
+  (use \forcode{POINTER} or derived data type instead to form data structure)
+\item Assigned and computed \forcode{GOTO}
+  (use the \forcode{CASE} construct instead)
+\item Arithmetic \forcode{IF} statement
+  (use the block \forcode{IF}, \forcode{ELSE}, \forcode{ELSEIF}, \forcode{ENDIF} or
+  \forcode{SELECT CASE} construct instead)
+\item Labelled \forcode{DO} construct
+  (use unlabelled \forcode{END DO} instead)
+\item \forcode{FORMAT} statement
+  (use character parameters or
+  explicit format- specifiers inside the \forcode{READ} or \forcode{WRITE} statement instead)
+\item \forcode{GOTO} and \forcode{CONTINUE} statements
+  (use \forcode{IF}, \forcode{CASE}, \forcode{DO WHILE}, \forcode{EXIT} or \forcode{CYCLE} statements or
+  a contained ?)
+\item \forcode{PAUSE}
+\item \forcode{ENTRY} statement: a sub-program must only have one entry point.
+\item \forcode{RETURN} is obsolete and so not necessary at the end of program units
+\item \forcode{FUNCTION} statement
+\item Avoid functions with side effects.
+  \footnote{
+    First, the code is easier to understand, if you can rely on
+    the rule that functions don't change their arguments.
+    Second, some compilers generate more efficient code for PURE functions
+    (in FORTRAN 95 there are the attributes PURE and ELEMENTAL), because
+    they can store the arguments in different places.
+    This is especially important on massive parallel and as well on vector machines.
+  }
+\item \forcode{DATA} and \forcode{BLOCK DATA}
+  (use initialisers)
+\end{itemize}
+
+%% Imported from introduction
+%%gm    To be put somewhere else ....
+%%nm    We should consider creating a glossary for all this kind of stuff (terms, acronyms and symbols)
+%%      http://en.wikibooks.org/wiki/LaTeX/Glossary
+%\noindent CPP keys and namelists are used as inputs to the code.
+
+%\noindent \index{CPP keys} CPP keys
+
+%Some CPP keys are implemented in the \fortran code to allow code selection at compiling step.
+%This selection of code at compilation time reduces the reliability of the whole platform since
+%it changes the code from one set of CPP keys to the other.
+%It is used only when the addition/suppression of the part of code highly changes the amount of memory at run time.
+%Usual coding looks like:
+
+%\begin{forlines}
+%#if defined key_option1
+%	! This part of the \fortran code will be active
+%	! only if key_option1 is activated at compiling step
+%#endif
+%\end{forlines}
+
+%\noindent \index{Namelist} Namelists
+
+%The namelist allows to input variables (character, logical, real and integer) into the code.
+%There is one namelist file for each component of \NEMO\ (dynamics, sea-ice, biogeochemistry...)
+%containing all the \fortran namelists needed.
+%The implementation in \NEMO\ uses a 2-step process.
+%For each \fortran namelist, two files are read:
+
+%\begin{enumerate}
+%\item
+%  A reference namelist (in \path{./cfgs/SHARED/namelist_ref}) is read first.
+%  This file contains all the namelist variables which are initialised to default values
+%\item
+%  A configuration namelist (in \path{./cfgs/CFG_NAME/EXP00/namelist_cfg}) is read aferwards.
+%  This file contains only the namelist variables which are changed from default values, and overwrites those.
+%\end{enumerate}
+%A template can be found in \path{NEMO/OPA_SRC/module.example}.
+%The effective namelist, taken in account during the run, is stored at execution time in
+%an \texttt{output\_namelist\_dyn} (or \texttt{\_ice} or \texttt{\_top}) file.
+%%gm  end
+
+%%nm: Add some words on the \NEMO\ dependencies
+%The model is implemented in \fninety, with preprocessing (C pre-processor).
+%It runs under UNIX.
+%It is optimized for vector computers and parallelised by domain decomposition with MPI.
+%All input and output is done in NetCDF (Network Common Data Format) with a optional direct access format for output.
+%To ensure the clarity and readability of the code it is necessary to follow coding rules.
+%The coding rules for OPA include conventions for naming variables,
+%with different starting letters for different types of variables (real, integer, parameter\ldots).
+%Those rules are briefly presented in \autoref{apdx:coding} and a more complete document is available .
+
+%The model is organized with a high internal modularity based on physics.
+%For example, each trend (\ie, a term in the RHS of the prognostic equation) for momentum and tracers
+%is computed in a dedicated module.
+%To make it easier for the user to find his way around the code, the module names follow a three-letter rule.
+%For example, \mdl{traldf} is a module related to the TRAcers equation, computing the Lateral DiFfussion.
+%The complete list of module names is presented in \autoref{apdx:coding}.      %====>>>> to be done !
+%Furthermore, modules are organized in a few directories that correspond to their category,
+%as indicated by the first three letters of their name (\autoref{tab:chapters}).

@@ -1,0 +1,32 @@
+!-----------------------------------------------------------------------
+&namdyn_ldf    !   lateral diffusion on momentum                        (default: NO selection)
+!-----------------------------------------------------------------------
+   !                       !  Type of the operator :
+   ln_dynldf_OFF = .false.     !  No operator (i.e. no explicit diffusion)
+   ln_dynldf_lap = .false.     !    laplacian operator
+   ln_dynldf_blp = .false.     !  bilaplacian operator
+   !                       !  Direction of action  :
+   ln_dynldf_lev = .false.     !  iso-level
+   ln_dynldf_hor = .false.     !  horizontal  (geopotential)
+   ln_dynldf_iso = .false.     !  iso-neutral (lap only)
+   !                       !  Coefficient
+   nn_ahm_ijk_t  = 0           !  space/time variation of eddy coefficient :
+      !                             !  =-30  read in eddy_viscosity_3D.nc file
+      !                             !  =-20  read in eddy_viscosity_2D.nc file
+      !                             !  =  0  constant 
+      !                             !  = 10  F(k)=c1d
+      !                             !  = 20  F(i,j)=F(grid spacing)=c2d
+      !                             !  = 30  F(i,j,k)=c2d*c1d
+      !                             !  = 31  F(i,j,k)=F(grid spacing and local velocity)
+      !                             !  = 32  F(i,j,k)=F(local gridscale and deformation rate)
+      !                        !  time invariant coefficients :  ahm = 1/2  Uv*Lv   (lap case) 
+      !                             !                            or  = 1/12 Uv*Lv^3 (blp case)
+      rn_Uv      = 0.1              !  lateral viscous velocity [m/s] (nn_ahm_ijk_t= 0, 10, 20, 30)
+      rn_Lv      = 10.e+3           !  lateral viscous length   [m]   (nn_ahm_ijk_t= 0, 10)
+      !                       !  Smagorinsky settings  (nn_ahm_ijk_t= 32) :
+      rn_csmc       = 3.5         !  Smagorinsky constant of proportionality
+      rn_minfac     = 1.0         !  multiplier of theorectical lower limit
+      rn_maxfac     = 1.0         !  multiplier of theorectical upper limit
+      !                       !  iso-neutral laplacian operator (ln_dynldf_iso=T) :
+      rn_ahm_b      = 0.0         !  background eddy viscosity  [m2/s]
+/

@@ -1,0 +1,619 @@
+
+@Article{	  ahn_2007,
+  author	= {Ahn, Jinho and Brook, Edward J.},
+  title		= {Atmospheric CO2and climate from 65 to 30 ka B.P.},
+  year		= 2007,
+  volume	= 34,
+  number	= 10,
+  month		= {May},
+  issn		= {0094-8276},
+  doi		= {10.1029/2007gl029551},
+  url		= {http://dx.doi.org/10.1029/2007GL029551},
+  journal	= {Geophysical Research Letters},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  ahn_2008,
+  author	= {Ahn, J. and Brook, E. J.},
+  title		= {Atmospheric CO2 and Climate on Millennial Time Scales
+		  During the Last Glacial Period},
+  year		= 2008,
+  volume	= 322,
+  number	= 5898,
+  month		= {Oct},
+  pages		= {83–85},
+  issn		= {1095-9203},
+  doi		= {10.1126/science.1160832},
+  url		= {http://dx.doi.org/10.1126/science.1160832},
+  journal	= {Science},
+  publisher	= {American Association for the Advancement of Science
+		  (AAAS)}
+}
+
+@Article{	  armstrong_2001,
+  author	= {Armstrong, Robert A. and Lee, Cindy and Hedges, John I.
+		  and Honjo, Susumu and Wakeham, Stuart G.},
+  title		= {A new, mechanistic model for organic carbon fluxes in the
+		  ocean based on the quantitative association of POC with
+		  ballast minerals},
+  year		= 2001,
+  volume	= 49,
+  number	= {1-3},
+  month		= {Jan},
+  pages		= {219–236},
+  issn		= {0967-0645},
+  doi		= {10.1016/s0967-0645(01)00101-1},
+  url		= {http://dx.doi.org/10.1016/S0967-0645(01)00101-1},
+  journal	= {Deep Sea Research Part II: Topical Studies in
+		  Oceanography},
+  publisher	= {Elsevier BV}
+}
+
+@Article{	  aumont_2015,
+  author	= {Aumont, O. and Ethé, C. and Tagliabue, A. and Bopp, L.
+		  and Gehlen, M.},
+  title		= {PISCES-v2: an ocean biogeochemical model for carbon and
+		  ecosystem studies},
+  year		= 2015,
+  volume	= 8,
+  number	= 8,
+  month		= {Aug},
+  pages		= {2465–2513},
+  issn		= {1991-9603},
+  doi		= {10.5194/gmd-8-2465-2015},
+  url		= {http://dx.doi.org/10.5194/gmd-8-2465-2015},
+  journal	= {Geoscientific Model Development},
+  publisher	= {Copernicus GmbH}
+}
+
+@Article{	  bacastow_1990,
+  author	= {Bacastow, R and Maier-Reimer, E},
+  title		= {Ocean-circulation model of the carbon cycle},
+  year		= 1990,
+  volume	= 4,
+  number	= 2,
+  month		= {Apr},
+  pages		= {95–125},
+  issn		= {1432-0894},
+  doi		= {10.1007/bf00208905},
+  url		= {http://dx.doi.org/10.1007/bf00208905},
+  journal	= {Climate Dynamics},
+  publisher	= {Springer Nature}
+}
+
+@Misc{		  bullister_2017,
+  author	= {Bullister, J.L.},
+  title		= {Atmospheric Histories (1765-2015) for CFC-11, CFC-12,
+		  CFC-113, CCl4, SF6 and N2O (NCEI Accession 0164584)},
+  year		= 2017,
+  doi		= {10.3334/cdiac/otg.cfc\_atm\_hist\_2015},
+  url		= {https://accession.nodc.noaa.gov/0164584},
+  publisher	= {NOAA National Centers for Environmental Information}
+}
+
+@Article{	  butzin_2005,
+  author	= {BUTZIN, M and PRANGE, M and LOHMANN, G},
+  title		= {Radiocarbon simulations for the glacial ocean: The effects
+		  of wind stress, Southern Ocean sea ice and Heinrich
+		  events},
+  year		= 2005,
+  volume	= 235,
+  number	= {1-2},
+  month		= {Jun},
+  pages		= {45–61},
+  issn		= {0012-821X},
+  doi		= {10.1016/j.epsl.2005.03.003},
+  url		= {http://dx.doi.org/10.1016/j.epsl.2005.03.003},
+  journal	= {Earth and Planetary Science Letters},
+  publisher	= {Elsevier BV}
+}
+
+@Article{	  danabasoglu_2014,
+  author	= {Danabasoglu, Gokhan and Yeager, Steve G. and Bailey, David
+		  and Behrens, Erik and Bentsen, Mats and Bi, Daohua and
+		  Biastoch, Arne and Böning, Claus and Bozec, Alexandra and
+		  Canuto, Vittorio M. and et al.},
+  title		= {North Atlantic simulations in Coordinated Ocean-ice
+		  Reference Experiments phase II (CORE-II). Part I: Mean
+		  states},
+  year		= 2014,
+  volume	= 73,
+  month		= {Jan},
+  pages		= {76–107},
+  issn		= {1463-5003},
+  doi		= {10.1016/j.ocemod.2013.10.005},
+  url		= {http://dx.doi.org/10.1016/j.ocemod.2013.10.005},
+  journal	= {Ocean Modelling},
+  publisher	= {Elsevier BV}
+}
+
+@Article{	  dutay_2002,
+  author	= {Dutay, J.-C and Bullister, J.L and Doney, S.C and Orr, J.C
+		  and Najjar, R and Caldeira, K and Campin, J.-M and Drange,
+		  H and Follows, M and Gao, Y and et al.},
+  title		= {Evaluation of ocean model ventilation with CFC-11:
+		  comparison of 13 global ocean models},
+  year		= 2002,
+  volume	= 4,
+  number	= 2,
+  month		= {Jan},
+  pages		= {89–120},
+  issn		= {1463-5003},
+  doi		= {10.1016/s1463-5003(01)00013-0},
+  url		= {http://dx.doi.org/10.1016/S1463-5003(01)00013-0},
+  journal	= {Ocean Modelling},
+  publisher	= {Elsevier BV}
+}
+
+@Article{	  enting_1994,
+  author	= {G Enting, I and M L Wigley, T and Heimann, Martin},
+  year		= {1994},
+  month		= {01},
+  pages		= {},
+  title		= {Future Emissions and Concentrations of Carbon Dioxide: Key
+		  Ocean/Atmosphere/Land Analyses},
+  volume	= {31},
+  journal	= {CSIRO Division Atmospheric Research Technical Paper}
+}
+
+@Article{	  fiadeiro_1982,
+  author	= {Fiadeiro, M.E.},
+  year		= {1982},
+  month		= {01},
+  pages		= {537-550},
+  title		= {Three-dimensional modeling of tracers in the deep Pacific
+		  Ocean II. Radiocarbon and the circulation},
+  volume	= {40},
+  journal	= {J. Mar. Res.}
+}
+
+@Article{	  fluckiger_2002,
+  author	= {Flückiger, Jacqueline and Monnin, Eric and Stauffer,
+		  Bernhard and Schwander, Jakob and Stocker, Thomas F. and
+		  Chappellaz, Jérôme and Raynaud, Dominique and Barnola,
+		  Jean-Marc},
+  title		= {High-resolution Holocene N2O ice core record and its
+		  relationship with CH4and CO2},
+  year		= 2002,
+  volume	= 16,
+  number	= 1,
+  month		= {Feb},
+  pages		= {10–1–10–8},
+  issn		= {0886-6236},
+  doi		= {10.1029/2001gb001417},
+  url		= {http://dx.doi.org/10.1029/2001GB001417},
+  journal	= {Global Biogeochemical Cycles},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  haine_2006,
+  author	= {Haine, T. W. N.},
+  title		= {On tracer boundary conditions for geophysical reservoirs:
+		  How to find the boundary concentration from a mixed
+		  condition},
+  year		= 2006,
+  volume	= 111,
+  number	= {C5},
+  issn		= {0148-0227},
+  doi		= {10.1029/2005jc003215},
+  url		= {http://dx.doi.org/10.1029/2005JC003215},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Book{		  honjo_1996,
+  title		= {Fluxes of Particles to the Interior of the Open Oceans},
+  author	= {Honjo, S.},
+  url		= {https://books.google.fr/books?id=FwA6cgAACAAJ},
+  year		= {1996},
+  publisher	= {John Wiley \& Sons}
+}
+
+@Article{	  joos_1997,
+  author	= {Joos, Fortunat and Orr, James C. and Siegenthaler,
+		  Ulrich},
+  title		= {Ocean carbon transport in a box-diffusion versus a general
+		  circulation model},
+  year		= 1997,
+  volume	= 102,
+  number	= {C6},
+  month		= {Jun},
+  pages		= {12367–12388},
+  issn		= {0148-0227},
+  doi		= {10.1029/97jc00470},
+  url		= {http://dx.doi.org/10.1029/97JC00470},
+  journal	= {Journal of Geophysical Research: Oceans},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  key_2004,
+  author	= {Key, R. M. and Kozyr, A. and Sabine, C. L. and Lee, K. and
+		  Wanninkhof, R. and Bullister, J. L. and Feely, R. A. and
+		  Millero, F. J. and Mordy, C. and Peng, T.-H.},
+  title		= {A global ocean carbon climatology: Results from Global
+		  Data Analysis Project (GLODAP)},
+  year		= 2004,
+  volume	= 18,
+  number	= 4,
+  month		= {Dec},
+  pages		= {n/a–n/a},
+  issn		= {0886-6236},
+  doi		= {10.1029/2004gb002247},
+  url		= {http://dx.doi.org/10.1029/2004gb002247},
+  journal	= {Global Biogeochemical Cycles},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  kortzinger_2001,
+  author	= {Körtzinger, Arne and Hedges, John I. and Quay, Paul D.},
+  title		= {Redfield ratios revisited: Removing the biasing effect of
+		  anthropogenic CO2},
+  year		= 2001,
+  volume	= 46,
+  number	= 4,
+  month		= {Jun},
+  pages		= {964–970},
+  issn		= {0024-3590},
+  doi		= {10.4319/lo.2001.46.4.0964},
+  url		= {http://dx.doi.org/10.4319/lo.2001.46.4.0964},
+  journal	= {Limnology and Oceanography},
+  publisher	= {Wiley}
+}
+
+@Manual{	  nemo_manual,
+  author	= {Madec Gurvan and NEMO System Team},
+  title		= {NEMO ocean engine},
+  organization	= {NEMO Consortium},
+  journal	= {Notes du Pôle de modélisation de l\'Institut
+		  Pierre-Simon Laplace (IPSL)},
+  issn		= {1288-1619},
+  number	= {27},
+  publisher	= {Zenodo},
+  doi		= {10.5281/zenodo.1464816},
+  url		= {https://zenodo.org/record/1464816},
+  edition	= {TBD},
+  year		= {TBD}
+}
+
+@Article{	  meunier_2014,
+  author	= {Meunier, Cédric L. and Malzahn, Arne M. and Boersma,
+		  Maarten},
+  title		= {A New Approach to Homeostatic Regulation: Towards a
+		  Unified View of Physiological and Ecological Concepts},
+  year		= 2014,
+  editor	= {Munn, Adam J.Editor},
+  volume	= 9,
+  number	= 9,
+  month		= {Sep},
+  pages		= {e107737},
+  issn		= {1932-6203},
+  doi		= {10.1371/journal.pone.0107737},
+  url		= {http://dx.doi.org/10.1371/journal.pone.0107737},
+  journal	= {PLoS ONE},
+  publisher	= {Public Library of Science (PLoS)}
+}
+
+@Article{	  monnin_2001,
+  author	= {Monnin, E.},
+  title		= {Atmospheric CO2 Concentrations over the Last Glacial
+		  Termination},
+  year		= 2001,
+  volume	= 291,
+  number	= 5501,
+  month		= {Jan},
+  pages		= {112–114},
+  issn		= {1095-9203},
+  doi		= {10.1126/science.291.5501.112},
+  url		= {http://dx.doi.org/10.1126/science.291.5501.112},
+  journal	= {Science},
+  publisher	= {American Association for the Advancement of Science
+		  (AAAS)}
+}
+
+@Article{	  monnin_2004,
+  author	= {Monnin, Eric and Steig, Eric J and Siegenthaler, Urs and
+		  Kawamura, Kenji and Schwander, Jakob and Stauffer, Bernhard
+		  and Stocker, Thomas F and Morse, David L and Barnola,
+		  Jean-Marc and Bellier, Blandine and et al.},
+  title		= {Evidence for substantial accumulation rate variability in
+		  Antarctica during the Holocene, through synchronization of
+		  CO 2 in the Taylor Dome, Dome C and DML ice cores},
+  year		= 2004,
+  volume	= 224,
+  number	= {1-2},
+  month		= {Jul},
+  pages		= {45–54},
+  issn		= {0012-821X},
+  doi		= {10.1016/j.epsl.2004.05.007},
+  url		= {http://dx.doi.org/10.1016/j.epsl.2004.05.007},
+  journal	= {Earth and Planetary Science Letters},
+  publisher	= {Elsevier BV}
+}
+
+@Book{		  monod_1958,
+  title		= {Recherches sur la croissance des cultures
+		  bact{\'e}riennes},
+  author	= {Monod, J.},
+  lccn		= {nlm11031168},
+  series	= {Actualit{\'e}s scientifiques et industrielles},
+  url		= {https://books.google.fr/books?id=yhy6AAAAIAAJ},
+  year		= {1958},
+  publisher	= {Hermann}
+}
+
+@Article{	  mouchet_2013,
+  author	= {Mouchet, Anne},
+  title		= {The Ocean Bomb Radiocarbon Inventory Revisited},
+  year		= 2013,
+  volume	= 55,
+  number	= {3–4},
+  issn		= {0033-8222},
+  doi		= {10.2458/azu\_js\_rc.55.16402},
+  url		= {http://dx.doi.org/10.2458/azu\_js\_rc.55.16402},
+  journal	= {Radiocarbon},
+  publisher	= {Cambridge University Press (CUP)}
+}
+
+@Article{	  naegler_2009,
+  author	= {Naegler, Tobias},
+  title		= {Reconciliation of excess14C-constrained global CO2piston
+		  velocity estimates},
+  year		= 2009,
+  volume	= 61,
+  number	= 2,
+  month		= {Jan},
+  pages		= {372–384},
+  issn		= {1600-0889},
+  doi		= {10.1111/j.1600-0889.2008.00408.x},
+  url		= {http://dx.doi.org/10.1111/j.1600-0889.2008.00408.x},
+  journal	= {Tellus B: Chemical and Physical Meteorology},
+  publisher	= {Informa UK Limited}
+}
+
+@TechReport{	  orr_2000,
+  author	= {Orr, J. and Najjar, R. and Sabine, C. and Joos, F.},
+  title		= {Abiotic-HOWTO. Ocean-Carbon Cycle Model Intercomparison
+		  Project (OCMIP)},
+  url		= {http://ocmip5.ipsl.jussieu.fr/OCMIP/},
+  year		= {2000}
+}
+
+@Article{	  orr_2001,
+  author	= {Orr, James C. and Maier-Reimer, Ernst and Mikolajewicz,
+		  Uwe and Monfray, Patrick and Sarmiento, Jorge L. and
+		  Toggweiler, J. R. and Taylor, Nicholas K. and Palmer,
+		  Jonathan and Gruber, Nicolas and Sabine, Christopher L. and
+		  et al.},
+  title		= {Estimates of anthropogenic carbon uptake from four
+		  three-dimensional global ocean models},
+  year		= 2001,
+  volume	= 15,
+  number	= 1,
+  month		= {Mar},
+  pages		= {43–60},
+  issn		= {0886-6236},
+  doi		= {10.1029/2000gb001273},
+  url		= {http://dx.doi.org/10.1029/2000GB001273},
+  journal	= {Global Biogeochemical Cycles},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  orr_2017,
+  author	= {Orr, James C. and Najjar, Raymond G. and Aumont, Olivier
+		  and Bopp, Laurent and Bullister, John L. and Danabasoglu,
+		  Gokhan and Doney, Scott C. and Dunne, John P. and Dutay,
+		  Jean-Claude and Graven, Heather and et al.},
+  title		= {Biogeochemical protocols and diagnostics for the CMIP6
+		  Ocean Model Intercomparison Project (OMIP)},
+  year		= 2017,
+  volume	= 10,
+  number	= 6,
+  month		= {Jun},
+  pages		= {2169–2199},
+  issn		= {1991-9603},
+  doi		= {10.5194/gmd-10-2169-2017},
+  url		= {http://dx.doi.org/10.5194/gmd-10-2169-2017},
+  journal	= {Geoscientific Model Development},
+  publisher	= {Copernicus GmbH}
+}
+
+@Article{	  palmieri_2015,
+  author	= {Palmiéri, J. and Orr, J. C. and Dutay, J.-C. and
+		  Béranger, K. and Schneider, A. and Beuvier, J. and Somot,
+		  S.},
+  title		= {Simulated anthropogenic CO$_{2}$ storage
+		  and acidification of the Mediterranean Sea},
+  year		= 2015,
+  volume	= 12,
+  number	= 3,
+  month		= {Feb},
+  pages		= {781–802},
+  issn		= {1726-4189},
+  doi		= {10.5194/bg-12-781-2015},
+  url		= {http://dx.doi.org/10.5194/bg-12-781-2015},
+  journal	= {Biogeosciences},
+  publisher	= {Copernicus GmbH}
+}
+
+@Article{	  reimer_2013,
+  author	= {Reimer, Paula J and Bard, Edouard and Bayliss, Alex and
+		  Beck, J Warren and Blackwell, Paul G and Ramsey,
+		  Christopher Bronk and Buck, Caitlin E and Cheng, Hai and
+		  Edwards, R Lawrence and Friedrich, Michael and et al.},
+  title		= {IntCal13 and Marine13 Radiocarbon Age Calibration Curves
+		  0–50,000 Years cal BP},
+  year		= 2013,
+  volume	= 55,
+  number	= 4,
+  pages		= {1869–1887},
+  issn		= {1945-5755},
+  doi		= {10.2458/azu\_js\_rc.55.16947},
+  url		= {http://dx.doi.org/10.2458/azu\_js\_rc.55.16947},
+  journal	= {Radiocarbon},
+  publisher	= {Cambridge University Press (CUP)}
+}
+
+@Article{	  sterner_2003,
+  author	= {Sterner, Robert W. and Elser, James J.},
+  title		= {Ecological Stoichiometry},
+  year		= 2003,
+  month		= {Dec},
+  doi		= {10.1515/9781400885695},
+  url		= {http://dx.doi.org/10.1515/9781400885695},
+  isbn		= 9781400885695,
+  publisher	= {Princeton University Press}
+}
+
+@Article{	  stuiver_1977,
+  author	= {Stuiver, Minze and Polach, Henry A},
+  title		= {Discussion Reporting of 14C Data},
+  year		= 1977,
+  volume	= 19,
+  number	= 03,
+  pages		= {355–363},
+  issn		= {1945-5755},
+  doi		= {10.1017/s0033822200003672},
+  url		= {http://dx.doi.org/10.1017/s0033822200003672},
+  journal	= {Radiocarbon},
+  publisher	= {Cambridge University Press (CUP)}
+}
+
+@Article{	  takahashi_1985,
+  author	= {Takahashi, Taro and Broecker, Wallace S. and Langer,
+		  Sara},
+  title		= {Redfield ratio based on chemical data from isopycnal
+		  surfaces},
+  year		= 1985,
+  volume	= 90,
+  number	= {C4},
+  pages		= 6907,
+  issn		= {0148-0227},
+  doi		= {10.1029/jc090ic04p06907},
+  url		= {http://dx.doi.org/10.1029/jc090ic04p06907},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  toggweiler_1989a,
+  author	= {Toggweiler, J. R. and Dixon, K. and Bryan, K.},
+  title		= {Simulations of radiocarbon in a coarse-resolution world
+		  ocean model: 1. Steady state prebomb distributions},
+  year		= 1989,
+  volume	= 94,
+  number	= {C6},
+  pages		= 8217,
+  issn		= {0148-0227},
+  doi		= {10.1029/jc094ic06p08217},
+  url		= {http://dx.doi.org/10.1029/JC094iC06p08217},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  toggweiler_1989b,
+  author	= {Toggweiler, J. R. and Dixon, K. and Bryan, K.},
+  title		= {Simulations of radiocarbon in a coarse-resolution world
+		  ocean model: 2. Distributions of bomb-produced carbon 14},
+  year		= 1989,
+  volume	= 94,
+  number	= {C6},
+  pages		= 8243,
+  issn		= {0148-0227},
+  doi		= {10.1029/jc094ic06p08243},
+  url		= {http://dx.doi.org/10.1029/JC094iC06p08243},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  wanninkhof_1992,
+  author	= {Wanninkhof, Rik},
+  title		= {Relationship between wind speed and gas exchange over the
+		  ocean},
+  year		= 1992,
+  volume	= 97,
+  number	= {C5},
+  pages		= 7373,
+  issn		= {0148-0227},
+  doi		= {10.1029/92jc00188},
+  url		= {http://dx.doi.org/10.1029/92jc00188},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  wanninkhof_1996,
+  author	= {Wanninkhof, Rik and Knox, Molly},
+  title		= {Chemical enhancement of CO2exchange in natural waters},
+  year		= 1996,
+  volume	= 41,
+  number	= 4,
+  month		= {Jun},
+  pages		= {689–697},
+  issn		= {0024-3590},
+  doi		= {10.4319/lo.1996.41.4.0689},
+  url		= {http://dx.doi.org/10.4319/lo.1996.41.4.0689},
+  journal	= {Limnology and Oceanography},
+  publisher	= {Wiley}
+}
+
+@Article{	  wanninkhof_2014,
+  author	= {Wanninkhof, Rik},
+  title		= {Relationship between wind speed and gas exchange over the
+		  ocean revisited},
+  year		= 2014,
+  volume	= 12,
+  number	= 6,
+  month		= {Jun},
+  pages		= {351–362},
+  issn		= {1541-5856},
+  doi		= {10.4319/lom.2014.12.351},
+  url		= {http://dx.doi.org/10.4319/lom.2014.12.351},
+  journal	= {Limnology and Oceanography: Methods},
+  publisher	= {Wiley}
+}
+
+@Article{	  warner_1985,
+  author	= {Warner, M.J. and Weiss, R.F.},
+  title		= {Solubilities of chlorofluorocarbons 11 and 12 in water and
+		  seawater},
+  year		= 1985,
+  volume	= 32,
+  number	= 12,
+  month		= {Dec},
+  pages		= {1485–1497},
+  issn		= {0198-0149},
+  doi		= {10.1016/0198-0149(85)90099-8},
+  url		= {http://dx.doi.org/10.1016/0198-0149(85)90099-8},
+  journal	= {Deep Sea Research Part A. Oceanographic Research Papers},
+  publisher	= {Elsevier BV}
+}
+
+@Article{	  weiss_1974,
+  author	= {Weiss, R.F.},
+  title		= {Carbon dioxide in water and seawater: the solubility of a
+		  non-ideal gas},
+  year		= 1974,
+  volume	= 2,
+  number	= 3,
+  month		= {Nov},
+  pages		= {203–215},
+  issn		= {0304-4203},
+  doi		= {10.1016/0304-4203(74)90015-2},
+  url		= {http://dx.doi.org/10.1016/0304-4203(74)90015-2},
+  journal	= {Marine Chemistry},
+  publisher	= {Elsevier BV}
+}
+
+@Article{	  woods_2013,
+  author	= {Woods, H. Arthur and Wilson, J. Keaton},
+  title		= {An information hypothesis for the evolution of
+		  homeostasis},
+  year		= 2013,
+  volume	= 28,
+  number	= 5,
+  month		= {May},
+  pages		= {283–289},
+  issn		= {0169-5347},
+  doi		= {10.1016/j.tree.2012.10.021},
+  url		= {http://dx.doi.org/10.1016/j.tree.2012.10.021},
+  journal	= {Trends in Ecology \& Evolution},
+  publisher	= {Elsevier BV}
+}

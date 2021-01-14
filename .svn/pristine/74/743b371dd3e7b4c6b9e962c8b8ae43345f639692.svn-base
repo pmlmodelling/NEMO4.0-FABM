@@ -1,0 +1,7 @@
+!-----------------------------------------------------------------------
+&namlbc        !   lateral momentum boundary condition                  (default: NO selection)
+!-----------------------------------------------------------------------
+   !                       !  free slip  !   partial slip  !   no slip   ! strong slip
+   rn_shlat    =  -9999.   !  shlat = 0  !  0 < shlat < 2  !  shlat = 2  !  2 < shlat
+   ln_vorlat   = .false.   !  consistency of vorticity boundary condition with analytical Eqs.
+/

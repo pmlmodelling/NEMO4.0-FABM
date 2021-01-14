@@ -1,0 +1,62 @@
+!-----------------------------------------------------------------------
+&namtrc_run      !   run information
+!-----------------------------------------------------------------------
+   ln_top_euler = .true.
+/
+!-----------------------------------------------------------------------
+&namtrc          !   tracers definition
+!-----------------------------------------------------------------------
+   jp_bgc        =  0           !  Number of passive tracers of the BGC model
+!
+   ln_pisces     =  .false.     !  Run PISCES BGC model
+   ln_my_trc     =  .false.     !  Run MY_TRC BGC model
+   ln_age        =  .true.      !  Run the sea water age tracer
+   ln_cfc11      =  .true.      !  Run the CFC11 passive tracer
+   ln_cfc12      =  .true.      !  Run the CFC12 passive tracer
+   ln_sf6        =  .true.      !  Run the SF6 passive tracer
+   ln_c14        =  .true.      !  Run the Radiocarbon passive tracer
+/
+!-----------------------------------------------------------------------
+&namage         !   AGE 
+!-----------------------------------------------------------------------
+/
+!-----------------------------------------------------------------------
+&namtrc_dta      !    Initialisation from data input file
+!-----------------------------------------------------------------------
+/
+!-----------------------------------------------------------------------
+&namtrc_adv      !   advection scheme for passive tracer                (default: NO selection)
+!-----------------------------------------------------------------------
+   ln_trcadv_fct =  .true.  !  FCT scheme
+      nn_fct_h   =  2               !  =2/4, horizontal 2nd / 4th order 
+      nn_fct_v   =  2               !  =2/4, vertical   2nd / COMPACT 4th order 
+/
+!-----------------------------------------------------------------------
+&namtrc_ldf      !   lateral diffusion scheme for passive tracer        (default: NO selection)
+!-----------------------------------------------------------------------
+   ln_trcldf_tra   =  .true.     !  use active tracer setting
+/
+!-----------------------------------------------------------------------
+&namtrc_rad      !  treatment of negative concentrations 
+!-----------------------------------------------------------------------
+/
+!-----------------------------------------------------------------------
+&namtrc_dmp      !   passive tracer newtonian damping   
+!-----------------------------------------------------------------------
+/
+!-----------------------------------------------------------------------
+&namtrc_ice      !    Representation of sea ice growth & melt effects
+!-----------------------------------------------------------------------
+/
+!-----------------------------------------------------------------------
+&namtrc_trd      !   diagnostics on tracer trends                       ('key_trdtrc')
+!----------------------------------------------------------------------
+/
+!----------------------------------------------------------------------
+&namtrc_bc       !   data for boundary conditions
+!-----------------------------------------------------------------------
+/
+!----------------------------------------------------------------------
+&namtrc_bdy      !   Setup of tracer boundary conditions
+!-----------------------------------------------------------------------
+/

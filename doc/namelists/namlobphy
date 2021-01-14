@@ -1,0 +1,9 @@
+!-----------------------------------------------------------------------
+&namlobphy     !   biological parameters for phytoplankton
+!-----------------------------------------------------------------------
+   tmumax  =  1.21e-5   ! maximal phytoplankton growth rate            [s-1] 
+   rgamma  =  0.05      ! phytoplankton exudation fraction             [%]
+   fphylab =  0.75      ! NH4 fraction of phytoplankton exsudation     
+   tmminp  =  5.8e-7    ! minimal phytoplancton mortality rate         [0.05/86400 s-1=20 days] 
+   aki     =  33.       ! light photosynthesis half saturation constant[W/m2]
+/

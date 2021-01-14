@@ -1,0 +1,18 @@
+!-----------------------------------------------------------------------
+&namsbc_wave   ! External fields from wave model                        (ln_wave=T)
+!-----------------------------------------------------------------------
+   cn_dir      = './'      !  root directory for the waves data location
+   !___________!_________________________!___________________!___________!_____________!________!___________!__________________!__________!_______________!
+   !           !  file name              ! frequency (hours) ! variable  ! time interp.!  clim  ! 'yearly'/ ! weights filename ! rotation ! land/sea mask !
+   !           !                         !  (if <0  months)  !   name    !   (logical) !  (T/F) ! 'monthly' !                  ! pairing  !    filename   !
+   sn_cdg      =  'sdw_ecwaves_orca2'    ,        6.         , 'drag_coeff' ,  .true.  , .true. , 'yearly'  ,  ''              , ''       , ''
+   sn_usd      =  'sdw_ecwaves_orca2'    ,        6.         , 'u_sd2d'     ,  .true.  , .true. , 'yearly'  ,  ''              , ''       , ''
+   sn_vsd      =  'sdw_ecwaves_orca2'    ,        6.         , 'v_sd2d'     ,  .true.  , .true. , 'yearly'  ,  ''              , ''       , ''
+   sn_hsw      =  'sdw_ecwaves_orca2'    ,        6.         , 'hs'         ,  .true.  , .true. , 'yearly'  ,  ''              , ''       , ''
+   sn_wmp      =  'sdw_ecwaves_orca2'    ,        6.         , 'wmp'        ,  .true.  , .true. , 'yearly'  ,  ''              , ''       , ''
+   sn_wfr      =  'sdw_ecwaves_orca2'    ,        6.         , 'wfr'        ,  .true.  , .true. , 'yearly'  ,  ''              , ''       , ''
+   sn_wnum     =  'sdw_ecwaves_orca2'    ,        6.         , 'wave_num'   ,  .true.  , .true. , 'yearly'  ,  ''              , ''       , ''
+   sn_tauwoc   =  'sdw_ecwaves_orca2'    ,        6.         , 'wave_stress',  .true.  , .true. , 'yearly'  ,  ''              , ''       , ''
+   sn_tauwx    =  'sdw_ecwaves_orca2'    ,        6.         , 'wave_stress',  .true.  , .true. , 'yearly'  ,  ''              , ''       , ''
+   sn_tauwy    =  'sdw_ecwaves_orca2'    ,        6.         , 'wave_stress',  .true.  , .true. , 'yearly'  ,  ''              , ''       , ''
+/

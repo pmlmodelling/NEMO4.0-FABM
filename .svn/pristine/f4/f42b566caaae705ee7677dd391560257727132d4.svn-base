@@ -1,0 +1,18 @@
+{% extends "!layout.html" %}
+{% block extrahead %}
+	<link href="{{ pathto("_static/style.css", True) }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block sidebartitle %}
+
+	<a href="{{ pathto(master_doc) }}">
+		<img src="{{ pathto('_static/NEMO_grey.png', 1) }}" class="logo" alt="Logo"/>
+	</a>
+
+	<p>Community ocean model for multifarious space and time scales</p>
+
+	<div class="version">{{ version }}</div>
+
+	{% include "searchbox.html" %}
+
+{% endblock %}

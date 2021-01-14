@@ -1,0 +1,67 @@
+
+\begin{titlepage}
+%  \newgeometry{hmargin = 1.5cm, vmargin = 3cm}
+  \setlength{\parindent}{0pt}
+
+  \begin{center}
+    \begin{minipage}{0.3\textwidth}
+      \includegraphics[height=1.5cm]{logos/NEMO_grey}
+    \end{minipage}\begin{minipage}{0.6\textwidth}
+      \begin{center}
+      \Large\slshape
+      \textbf{N}ucleus for \textbf{E}uropean \textbf{M}odelling of the \textbf{O}cean \\
+      \medskip
+      \hyperref[resources]{\textcolor{black}{
+          \faWordpress \hspace{0.75cm} \faCodeFork      \hspace{0.75cm}
+          \faGithub    \hspace{0.75cm} \faCloudDownload \hspace{0.75cm} \faEnvelope
+        }
+      }
+      \end{center}
+    \end{minipage}
+  \end{center}
+
+  \spacetop
+  \textcolor{white}{\fontsize{0.8cm}{0.8cm}\selectfont\textbf{\heading}}
+  \ifdef{\subheading}{
+    \medskip
+    \par
+    \textcolor{white}{\Huge \subheading}
+  }{}
+  \spacedown
+
+  \begin{center}
+    \LARGE Version \version\ -\ \today \\
+%    \medskip
+%    \href{http://doi.org/10.5281/zenodo.\zid}{ \includegraphics{badges/zenodo.\zid} }
+  \end{center}
+
+  \vfill
+
+  \begin{minipage}{\authorswidth}
+    \raggedleft
+    \input{authors}
+  \end{minipage}\hspace{15pt}\begin{minipage}{0.02\linewidth}
+    \rule{1pt}{\rulelenght}
+  \end{minipage}\hspace{ 5pt}\begin{minipage}{\abstractwidth}
+    \begin{abstract}
+      \input{abstract}
+    \end{abstract}
+  \end{minipage}
+
+  \vfill
+
+  \begin{center}
+    \Large
+    \href{http://www.cmcc.it          }{ \includegraphics[height=1cm]{logos/CMCC} } \hspace{0.25cm}
+    \href{http://www.cnrs.fr          }{ \includegraphics[height=1cm]{logos/CNRS} } \hspace{0.25cm}
+    \href{http://www.mercator-ocean.fr}{ \includegraphics[height=1cm]{logos/MOI}  } \hspace{0.25cm}
+    \href{http://www.metoffice.gov.uk }{ \includegraphics[height=1cm]{logos/UKMO} } \hspace{0.25cm}
+    \href{http://nerc.ukri.org        }{ \includegraphics[height=1cm]{logos/NERC} } \\
+    \medskip
+    \slshape
+    {C}ommunity \hspace{1.5em} {O}cean \hspace{1.5em} {M}odel \\
+  \end{center}
+
+\end{titlepage}
+
+\restoregeometry

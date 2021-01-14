@@ -1,0 +1,156 @@
+
+\documentclass[../main/SI3_manual]{subfiles}
+
+\begin{document}
+
+% ================================================================
+% Chapter 5 Ñ Ridging and rafting
+% ================================================================
+
+\chapter{Ridging and rafting}
+\label{chap:RDG}
+\chaptertoc
+
+\newpage
+$\ $\newline    % force a new line
+
+This chapter focuses on how LIM solves the red part of the general equation:
+\begin{equation}
+\frac{\partial X}{\partial t} = - \nabla .(\mathbf{u} X)  \color{black} \Theta^X  + \color{red} \Psi^X,
+\label{eq:Xt}
+\end{equation}
+where $X$ refers to any global sea ice state variable.
+
+Divergence and shear open the ice pack and create ice of zero thickness. Convergence and shear consumes thin ice and create thicker ice by mechanical deformation. The redistribution functions $\Psi^X$ describe how opening and mechanical deformation redistribute the global ice state variables into the various ice thickness categories. 
+
+The fundamental redistribution function is $\Psi^g$, which accounts for area redistribution. The other redistribution functions $\Psi^X$ associated with other state variables will derive naturally. The redistribution function $\Psi^g$ should first ensure area conservation. By integrating the evolution equation for $g(h)$ over all thicknesses, recalling that $\int_0^\infty g(h) = 1$, and that the total areal change due to thermodynamics must be zero, e.g. $\int_0^\infty \partial (fg) / \partial h=0$, then the area conservation reads: 
+\begin{equation}
+\int_0^\infty h \Psi^g dh = \nabla \cdot \mathbf{u}.
+\end{equation}
+
+Second, we must say something about volume conservation, and this will be done more specifically later. Following \cite{thorndike_1975}, we separate the $\Psi^X$'s into \textbf{(i)} \textit{dynamical inputs}, \textbf{(ii)} \textit{participation functions}, i.e., how much area of ice with a given thickness participates to mechanical deformation \textbf{(iii)} \textit{transfer functions}, i.e., where in thickness space the ice is transferred after deformation.
+
+\section{Dynamical inputs}
+
+A general expression of $\Psi^g$, the mechanical redistribution function associated to the ice concentration, was proposed by \cite{thorndike_1975}:
+\begin{equation}
+\Psi^g = \vert \dot{\epsilon} \vert [ \alpha_o(\theta) \delta(h) + \alpha_d(\theta) w_d(h,g) ],
+\label{eq:psi}
+\end{equation}
+which is convenient to separate the dependence in $\mathbf{u}$ from those in $g$ and $h$. The first and second terms on the right-hand side correspond to opening and deformation, respectively. $\vert \dot{\epsilon} \vert = (\dot{\epsilon}_{I}^2+ \dot{\epsilon}_{II}^2)^{1/2}$, where $\dot{\epsilon}_{I}=\nabla \cdot \mathbf{u}$ and $\dot{ \epsilon}_{II}$ are the strain rate tensor invariants; $\theta=\textrm{atan}(\dot{\epsilon_{II}} / \dot{\epsilon_{I}} )$. $w_d(h,g)$, the deformation mode will be discussed in the next section. $\vert \dot{\epsilon} \vert \alpha_o$ and $\vert \dot{\epsilon} \vert \alpha_d$ are called the lead opening and closing rates, respectively.
+
+The \textbf{dynamical} inputs of the mechanical redistribution in LIM are:
+\begin{itemize}
+\item $\vert \dot{\epsilon} \vert \alpha_o$, the opening rate,
+\item $\vert \dot{\epsilon} \vert \alpha_d$, the net closing rate.
+\end{itemize}
+Following \cite{thorndike_1975}, we choose $\int_0^\infty w_d(h,g) = - 1$. In order to satisfy area conservation, the relation $\vert \dot{\epsilon} \vert \alpha_o - \vert \dot{\epsilon} \vert \alpha_d = \nabla \cdot \mathbf{u}$ must be verified. In the model, there are two ways to compute the divergence of the velocity field. A first way is to use the velocity components ($\dot{\epsilon}_I = \nabla \cdot \mathbf{u}\vert^{rhg}$) as computed after the rheology (superscript $rhg$). Another way is to derive it from the horizontal transport of ice concentration and open water fraction. In principle, the equality $A^o + \sum_{l=1}^L g^i_L = 1$ should always be verified. However, after ice transport (superscript $trp$), this is not the case, and one can diagnose a velocity divergence using the departure from this equality: $\nabla \cdot \mathbf{u}\vert^{trp} = ( 1 - A^o - \sum_{l=1}^L g^i_L )/ \Delta t$. In general, we will use $\dot{\epsilon}_I$ unless otherwise stated.
+
+The \textbf{net closing rate} is written as a sum of two terms representing the energy dissipation by shear and convergence \citep{flato_1995}:
+\begin{equation}
+\vert \dot{\epsilon} \vert \alpha_d (\theta) = C_s \frac{1}{2} ( \Delta - \vert \dot{\epsilon}_I \vert) - \textrm{min} (\dot{\epsilon}_I,0),
+\end{equation}
+where $\Delta$ is a measure of deformation (defined in the rheology section). The factor $C_s=0.5$ (\textit{Cs} in \textit{namelist\_ice}) is added to allow for energy sinks other than ridge building (e.g., sliding friction) during shear. In case of convergence, the closing rate must be large enough to satisfy area conservation after ridging, so we take:
+\begin{equation}
+\vert \dot{\epsilon} \vert \alpha_d (\theta) = \text{max}(\vert \dot{\epsilon} \vert \alpha_d (\theta), - \nabla \cdot \mathbf{u} \vert^{trp}) \quad \text{if } \nabla \cdot \mathbf{u} < 0.
+\end{equation}
+
+The \textbf{opening rate} is obtained by taking the difference:
+\begin{equation}
+\vert \dot{\epsilon} \vert \alpha_o = \vert \dot{\epsilon} \vert \alpha_d = \nabla \cdot \mathbf{u}\vert^{trp}
+\end{equation}
+
+\section{The two deformation modes: ridging and rafting}
+
+The deformation mode is separated into ridging $w^{ri}$ and rafting $w^{ra}$ modes:
+\begin{equation}
+w^d(h,g) = w^{ri}(g,h) + w^{ra}(g,h).
+\end{equation}
+
+\textbf{Rafting} is the piling of two ice sheets on top of each other. Rafting doubles the participating ice thickness and is a volume-conserving process. \cite{babko_2002} concluded that rafting plays a significant role during initial ice growth in fall, therefore we included it into the model. 
+
+\textbf{Ridging} is the piling of a series of broken ice blocks into pressure ridges. Ridging redistributes participating ice on a various range of thicknesses. Ridging does not conserve ice volume, as pressure ridges are porous. Therefore, the volume of ridged ice is larger than the volume of new ice being ridged. In the model, newly ridged is has a prescribed porosity $p=30\%$ (\textit{ridge\_por} in \textit{namelist\_ice}), following observations \citep{lepparanta_1995,hoyland_2002}. The importance of ridging is now since the early works of \citep{thorndike_1975}.
+
+The deformation modes are formulated using \textbf{participation} and \textbf{transfer} functions with specific contributions from ridging and rafting:
+\begin{equation}
+w_d(h,g) = - [ b^{ra}(h) + b^{ri}(h) ] g(h) + n^{ra}(h)+n^{ri}(h).
+\label{eq:wd}
+\end{equation}
+$b^{ra}(h)$ and $b^{ri}(h)$ are the rafting and ridging participation functions. They determine which regions of the ice thickness space participate in the redistribution. $n^{ra}(h)$ and $n^{ri}(h)$, called transfer functions, specify how thin, deformation ice is redistributed onto thick, deformed ice. Participation and transfer functions are normalized in order to conserve area.
+
+\section{Participation functions}
+
+We assume that the participation of ice in redistribution does not depend upon whether the deformation process is rafting or ridging. Therefore, the participation functions can be written as follows:
+\begin{equation}
+b^{ra}(h)= \beta(h) b(h),
+\label{eq:bra}
+\end{equation}
+\begin{equation}
+b^{ri}(h) = [1-\beta(h)] b(h),
+\label{eq:bri}
+\end{equation}
+where $b(h)$ is an exponential weighting function with an e-folding scale $a*$ \citep{lipscomb_2007} (\textit{astar} in \textit{namelist\_ice}) which preferentially apportions the thinnest available ice to ice deformation:
+\begin{equation}
+b(h) = \frac{\text{exp} [ - G(h) / a^\star ]}{a^\star[1-\text{exp}(-1/a^\star)]} ,
+\end{equation}
+It is numerically more stable than the original version of \cite{thorndike_1975}. This scheme is still present in the code and can be activated using \textit{partfun\_swi} from \textit{namelist\_ice}, with the associated parameter \textit{Gstar}.
+
+$\beta(h)$ partitions deformation ice between rafted and ridged ice. $\beta(h)$ is formulated following \cite{haapala_2000}, using the \cite{parmerter_1975} law, which states that, under a critical participating ice thickness $h_P$, ice rafts, otherwise it ridges:
+\begin{equation}
+\beta(h)= \frac{ \textrm{tanh} [ -C_{ra} (h-h_P) ] + 1 } {2},
+\end{equation}
+where $C_{ra}=5$ m$^{-1}$ (\textit{Craft} in \textit{namelist\_ice})  and $h_P=0.75$ m (\textit{hparmeter} in \textit{namelist\_ice}) \citep{haapala_2000,babko_2002}. The $tanh$ function is used to smooth the transition between ridging and rafting.  If namelist parameter \textit{raftswi} is set to 0, ice only ridges and does not raft. 
+
+\section{Transfer functions}
+
+The rafting transfer function assumes a doubling of ice thickness :
+\begin{equation}
+n^{ra}(h)=\frac{1}{2}\int_0^\infty \delta(h-2h') b(h') g(h') dh,
+\end{equation}
+where $\delta$ is the Dirac delta function. 
+
+The ridging transfer function is :
+\begin{equation}
+n^{ri}(h)=\int_0^\infty \gamma(h',h) (1+p) b(h') g(h') dh.
+\label{eq:nri}
+\end{equation}
+The redistributor $\gamma(h',h)$ specifies how area of thickness $h'$ is redistributed on area of thickness $h$. We follow \citep{hibler_1980} who constructed a rule, based on observations, that forces all ice participating in ridging with thickness $h'$ to be linearly distributed between ice that is between $2h'$ and $2\sqrt{H^*h'}$ thick, where $H^\star=100$ m (\textit{Hstar} in \textit{namelist\_ice}). This in turn determines how to construct the ice volume redistribution function $\Psi^v$. Volumes equal to participating area times thickness are removed from thin ice. They are redistributed following Hibler's rule. The factor $(1+p)$ accounts for initial ridge porosity $p$ (\textit{ridge\_por} in \textit{namelist\_ice}, defined as the fractional volume of seawater initially included into ridges. In many previous models, the initial ridge porosity has been assumed to be 0, which is not the case in reality since newly formed ridges are porous, as indicated by in-situ observations \citep{lepparanta_1995,hoyland_2002}. In other words, LIM3 creates a higher volume of ridged ice with the same participating ice.
+
+For the numerical computation of the integrals, we have to compute several temporary values:
+\begin{itemize}
+\item The thickness of rafted ice $h^{ra}_l = 2 h^i_l$
+\item The mean thickness of ridged ice $h^{ri,mean}_l=\text{max} ( \sqrt{H^\star h^i_l} , h^i_l \cdot 1.1 )$
+\item The minimum thickness of ridged ice $h^{ri,min}_l = \text{min} [ 2*h^i_l, 0.5\cdot(h^{ri,mean}_l+h^i_l) ]$
+\item The maximum thickness of ridged ice $h^{ri,min}_l = 2 h^{ri,mean}_l - h^{ri,min}_l$
+\item The mean rate of thickening of ridged ice $k^{ri}_l = h^{ri,mean}_l / h^{i}_l$
+\end{itemize}
+
+\section{Ridging shift}
+
+%\textit{Subroutine}: \textbf{lim\_itd\_ridgeshift}
+
+The numerical computation of the impact of mechanical redistribution on ice concentration involves:
+\begin{itemize}
+\item A normalization factor that ensures volume conservation (\textit{aksum})
+\item The removal of ice participating in deformation (including the closing of open water)
+\item The addition of deformed ice
+\end{itemize}
+
+For ice concentrations, the numerical procedure reads:
+\begin{equation}
+\Delta g^i_l = C^{net} \Delta t \biggr [ - ( b^{ri}_l + b^{ra}_l) + \sum_{l_2=1}^L \biggr ( f^{ra}_{l,l_2}  \frac{b^{ra}_{l_2}}{k^{ra}} + f^{ri}_{l,l_2} \frac{ b^{ri}_{l_2} }{k^{ri}_{l_2}} \biggr ) \biggr ]
+\end{equation}
+\begin{itemize}
+\item $C^{net}$ is the normalized closing rate ($\vert \dot{\epsilon} \vert \alpha^d/\textit{aksum}$)
+\item $b^{ri}_l$ and $b^{ra}_l$ are the area participating into redistribution for category $l$
+\item $f^{ra}_{l,l_2}$ and $f^{ri}_{l,l_2}$ are the fractions of are of category $l$ being redistributed into category $l_2$
+\item $k^{ra}$ is the rate of thickening of rafted ice (=2)
+\end{itemize}
+
+Because of the nonlinearities involved in the integrals, the ridging procedure has to be iterated until $A^\star = A^{ow} + \sum_{l=1}^L g^i_l = 1$.
+
+\section{Mechanical redistribution for other global ice variables}
+
+The other global ice state variables redistribution functions $\Psi^X$ are computed based on $\Psi^g$ for the ice age content and on $\Psi^{v^i}$ for the remainder (ice enthalpy and salt content, snow volume and enthalpy). The general principles behind this derivation are described in Appendix A of \cite{bitz_2001}. A fraction $f_s=0.5$ (\textit{fsnowrdg} and \textit{fsnowrft} in \textit{namelist\_ice}) of the snow volume and enthalpy is assumed to be lost during ridging and rafting and transferred to the ocean. The contribution of the seawater trapped into the porous ridges is included in the computation of the redistribution of ice enthalpy and salt content (i.e., $\Psi^{e^i}$ and $\Psi^{M^s}$). During this computation, seawater is supposed to be in thermal equilibrium with the surrounding ice blocks. Ridged ice desalination induces an implicit decrease in internal brine volume, and heat supply to the ocean, which accounts for ridge consolidation as described by \cite{hoyland_2002}. The inclusion of seawater in ridges does not imply any net change in ocean salinity. The energy used to cool down the seawater trapped in porous ridges until the seawater freezing point is rejected into the ocean.
+
+\end{document}

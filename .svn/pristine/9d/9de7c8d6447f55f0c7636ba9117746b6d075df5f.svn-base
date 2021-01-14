@@ -1,0 +1,46 @@
+\documentclass[../main/TOP_manual]{subfiles}
+
+\begin{document}
+
+\chapter{ Model Setup}
+
+\section{ Setting up a passive tracer configuration}
+%------------------------------------------namtrc_int----------------------------------------------------
+\nlst{namtrc}
+%-------------------------------------------------------------------------------------------------------------
+
+The usage of TOP is activated
+
+\begin{itemize}
+         \item by including in the configuration definition the component TOP\_SRC
+         \item by adding the macro \textit{key\_top} in the configuration cpp file
+\end{itemize}
+
+As an example, the user can refer to already available configurations in the code, GYRE\_PISCES being the NEMO biogeochemical demonstrator and GYRE\_BFM to see the required configuration elements to couple with an external biogeochemical model (see also section \S\ref{SMS_models}) .
+
+Note that, since version 4.0, TOP interface core functionalities are activated by means of logical keys and all submodules preprocessing macros from previous versions were removed.
+
+There are only three specific keys remaining in TOP
+
+\begin{itemize}
+        \item \textit{key\_top} : to enables passive tracer module
+        \item \textit{key\_trdtrc} and \textit{key\_trdmxl\_trc} : trend computation for tracers
+\end{itemize}
+
+For a remind, the revisited structure of TOP interface now counts for five different modules handled in namelist\_top :
+
+\begin{itemize}
+        \item \textbf{PISCES}, default BGC model
+        \item \textbf{MY\_TRC}, template for creation of new modules couplings (maybe run a single passive tracer)
+        \item \textbf{CFC}, inert carbon tracers dynamics (CFC11,CFC12,SF6) Updated with OMIP-BGC guidelines (Orr et al, 2016)
+        \item \textbf{C14}, radiocarbon passive tracer
+        \item \textbf{AGE}, water age tracking revised implementation
+\end{itemize}
+
+The modular approach was implemented also in the definition of the total number of passive tracers (jptra). This results from to user setting from the namelist \textit{namtrc}
+
+\section{ TOP Tracer Initialisation}
+
+\section{ TOP Boundaries Conditions}
+
+\end{document}

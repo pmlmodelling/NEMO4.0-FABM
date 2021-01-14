@@ -1,0 +1,15 @@
+!-----------------------------------------------------------------------
+&namflo        !   float parameters                                     (default: OFF)
+!-----------------------------------------------------------------------
+   ln_floats   = .false.      ! activate floats or not
+      jpnfl       = 1         !    total number of floats during the run
+      jpnnewflo   = 0         !    number of floats for the restart
+      ln_rstflo   = .false.   !    float restart (T) or not (F)
+      nn_writefl  =      75   !    frequency of writing in float output file
+      nn_stockfl  =    5475   !    frequency of creation of the float restart file
+      ln_argo     = .false.   !    Argo type floats (stay at the surface each 10 days)
+      ln_flork4   = .false.   !    trajectories computed with a 4th order Runge-Kutta (T)
+      !                       !    or computed with Blanke' scheme (F)
+      ln_ariane   = .true.    !    Input with Ariane tool convention(T)
+      ln_flo_ascii= .true.    !    Output with Ariane tool netcdf convention(F) or ascii file (T)
+/

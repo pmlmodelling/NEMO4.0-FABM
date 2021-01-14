@@ -1,0 +1,25 @@
+
+\usepackage{imakeidx}
+
+%% Naming customization
+\renewcommand{\listingname}{namelist}
+\renewcommand{\listlistingname}{List of Namelists}
+
+%% Index entries (italic font for files, preformat for code)
+\newcommand{\hf}[1]{   \index{h90 files!#1}             \textit{#1.h90}          }
+\newcommand{\ifile}[1]{\index{Input NetCDF files!#1.nc} \textit{#1.nc}           }
+\newcommand{\jp}[1]{   \index{Model parameters!#1}      \texttt{#1}              }
+\newcommand{\key}[1]{  \index[keys]{#1@\texttt{\textbf{key\_#1}}} \texttt{\textbf{key\_#1}}}
+\newcommand{\mdl}[1]{  \index[modules]{#1@\textit{#1.F90}}        \textit{#1.F90}          }
+\newcommand{\nam}[2]{  \index[blocks]{#1@\texttt{\&nam#2}}        \forcode{&nam#1} (\autoref{lst:nam#1})}
+\newcommand{\np}[3][]{ \index[parameters]{#3@\texttt{#3}}         \forcode{#2#1}           }
+\newcommand{\rou}[1]{  \index[subroutines]{#1@\texttt{#1}}        \texttt{#1}              }
+
+
+\indexsetup{toclevel=section, othercode=\small}
+
+\makeindex[intoc=true, name=blocks     , title=Namelist blocks      , columns=3]
+\makeindex[intoc=true, name=keys       , title=CPP keys                        ]
+\makeindex[intoc=true, name=modules    , title=\fortran\ modules    , columns=3]
+\makeindex[intoc=true, name=parameters , title=Namelist parameters  , columns=3]
+\makeindex[intoc=true, name=subroutines, title=\fortran\ subroutines           ]

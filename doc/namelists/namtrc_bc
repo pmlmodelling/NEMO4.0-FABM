@@ -1,0 +1,9 @@
+!----------------------------------------------------------------------
+&namtrc_bc       !   data for boundary conditions
+!-----------------------------------------------------------------------
+   cn_dir_sbc    =  './'     !  root directory for the location of SURFACE data files
+   cn_dir_cbc    =  './'     !  root directory for the location of COASTAL data files
+   cn_dir_obc    =  './'     !  root directory for the location of OPEN data files
+   ln_rnf_ctl    = .false.   !  Remove runoff dilution on tracers with absent river load
+   rn_bc_time    =  86400.   !  Time scaling factor for SBC and CBC data (seconds in a day)
+/

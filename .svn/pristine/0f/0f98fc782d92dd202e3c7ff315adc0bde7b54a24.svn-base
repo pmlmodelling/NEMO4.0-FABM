@@ -1,0 +1,53 @@
+!-----------------------------------------------------------------------
+&namsbc_cpl    !   coupled ocean/atmosphere model                       ("key_oasis3")
+!-----------------------------------------------------------------------
+   nn_cplmodel       =     1   !  Maximum number of models to/from which NEMO is potentially sending/receiving data
+   ln_usecplmask     = .false. !  use a coupling mask file to merge data received from several models
+   !                           !   -> file cplmask.nc with the float variable called cplmask (jpi,jpj,nn_cplmodel)
+   ln_scale_ice_flux = .false. !  use ice fluxes that are already "ice weighted" ( i.e. multiplied ice concentration)
+   nn_cats_cpl       =     5   !  Number of sea ice categories over which coupling is to be carried out (if not 1)
+   !_____________!__________________________!____________!_____________!______________________!________!
+   !             !        description       !  multiple  !    vector   !       vector         ! vector !
+   !             !                          ! categories !  reference  !     orientation      ! grids  !
+!***   send    ***
+   sn_snd_temp   =   'weighted oce and ice' ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_snd_alb    =   'weighted ice'         ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_snd_thick  =   'none'                 ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_snd_crt    =   'none'                 ,    'no'    , 'spherical' , 'eastward-northward' ,  'T'
+   sn_snd_co2    =   'coupled'              ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_snd_crtw   =   'none'                 ,    'no'    ,     ''      ,         ''           , 'U,V'
+   sn_snd_ifrac  =   'none'                 ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_snd_wlev   =   'coupled'              ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_snd_cond   =   'weighted ice'         ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_snd_thick1 =   'ice and snow'         ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_snd_mpnd   =   'weighted ice'         ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_snd_sstfrz =   'coupled'              ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_snd_ttilyr =   'weighted ice'         ,    'no'    ,     ''      ,         ''           ,   ''
+!***  receive  ***
+   sn_rcv_w10m   =   'none'                 ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_taumod =   'coupled'              ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_tau    =   'oce only'             ,    'no'    , 'cartesian' , 'eastward-northward' ,  'U,V'
+   sn_rcv_dqnsdt =   'coupled'              ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_qsr    =   'oce and ice'          ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_qns    =   'oce and ice'          ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_emp    =   'conservative'         ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_rnf    =   'coupled'              ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_cal    =   'coupled'              ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_co2    =   'coupled'              ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_hsig   =   'none'                 ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_iceflx =   'none'                 ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_mslp   =   'none'                 ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_phioc  =   'none'                 ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_sdrfx  =   'none'                 ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_sdrfy  =   'none'                 ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_wper   =   'none'                 ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_wnum   =   'none'                 ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_wstrf  =   'none'                 ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_wdrag  =   'none'                 ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_ts_ice =   'none'                 ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_isf    =   'none'                 ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_icb    =   'none'                 ,    'no'    ,     ''      ,         ''           ,   ''
+   sn_rcv_tauwoc =   'none'                 ,    'no'    ,     ''      ,         ''          ,   ''
+   sn_rcv_tauw   =   'none'                 ,    'no'    ,     ''      ,         ''          ,   ''
+   sn_rcv_wdrag  =   'none'                 ,    'no'    ,     ''      ,         ''          ,   ''
+/

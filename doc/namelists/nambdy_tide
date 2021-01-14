@@ -1,0 +1,7 @@
+!-----------------------------------------------------------------------
+&nambdy_tide   !  tidal forcing at open boundaries                      (default: OFF)
+!-----------------------------------------------------------------------
+   filtide          = 'bdydta/amm12_bdytide_'   !  file name root of tidal forcing files
+   ln_bdytide_2ddta = .false.                   !
+   ln_bdytide_conj  = .false.                   ! 
+/

@@ -1,0 +1,27 @@
+
+\documentclass[../main/SI3_manual]{subfiles}
+
+\begin{document}
+
+% ================================================================
+% Chapter 4 Ñ Ice transport
+% ================================================================
+
+\chapter{Ice transport}
+\label{chap:TRP}
+\chaptertoc
+
+\newpage
+$\ $\newline    % force a new line
+
+As soon as ice dynamics are activated (\textit{ln\_dyn\_xxx}), all extensive state variables are to be advected following the horizontal velocity field.
+
+\section{Second order moments conserving (Prather 1986) scheme (\textit{ln\_adv\_Pra})}
+
+The scheme of  \cite{prather_1986} explicitly computes the conservation of second-order moments of the spatial distribution of global sea ice state variables. This scheme preserves positivity of the transported variables and is practically non-diffusive. It is also computationally expensive, however it allows to localize the ice edge quite accurately. As the scheme is conditionally stable, the time step is split into two parts if the ice drift is too fast, based on the CFL criterion. 
+
+State variables per unit grid cell area are first multiplied by grid cell area. Then, for each state variable, the 0$^{th}$ (mean), 1$^{st}$ (x, y) and 2$^{nd}$ (xx, xy, yy) order moments of the spatial distribution are transported. At 1st time step, all moments are zero (if prescribed initial state); or read from a restart file, and then evolve through the course of the run. Therefore, for each global variable, 5 additional tracers have to be kept into memory and written in the restart file, which significantly increases the required memory. Advection following x and y are computed independently. The succession order of x- and y- advection is reversed every day.
+
+\section{5$^{th}$ order flux-corrected transport scheme (UM5)}
+
+\end{document}

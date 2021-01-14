@@ -1,0 +1,11 @@
+!-----------------------------------------------------------------------
+&namdrg_bot    !   BOTTOM friction                                      (ln_drg_OFF =F)
+!-----------------------------------------------------------------------
+   rn_Cd0      =  1.e-3    !  drag coefficient [-]
+   rn_Uc0      =  0.4      !  ref. velocity [m/s] (linear drag=Cd0*Uc0) 
+   rn_Cdmax    =  0.1      !  drag value maximum [-] (logarithmic drag)
+   rn_ke0      =  2.5e-3   !  background kinetic energy  [m2/s2] (non-linear cases)
+   rn_z0       =  3.e-3    !  roughness [m] (ln_loglayer=T)
+   ln_boost    = .false.   !  =T regional boost of Cd0 ; =F constant
+      rn_boost =  50.         !  local boost factor  [-]
+/

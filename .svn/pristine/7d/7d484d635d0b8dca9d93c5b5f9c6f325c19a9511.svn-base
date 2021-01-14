@@ -1,0 +1,11 @@
+!------------------------------------------------------------------------------
+&namthd_da      !   Ice lateral melting
+!------------------------------------------------------------------------------
+   rn_beta          =   1.0           !  coef. beta for lateral melting param. Recommended range=[0.8-1.2]
+                                      !   => decrease = more melt and melt peaks toward higher concentration (A~0.5 for beta=1 ; A~0.8 for beta=0.2)
+                                      !      0.3 = best fit for western Fram Strait and Antarctica
+                                      !      1.4 = best fit for eastern Fram Strait      
+   rn_dmin          =   8.            !  minimum floe diameter for lateral melting param. Recommended range=[6-10]
+                                      !   => 6  vs 8m = +40% melting at the peak (A~0.5)
+                                      !      10 vs 8m = -20% melting
+/

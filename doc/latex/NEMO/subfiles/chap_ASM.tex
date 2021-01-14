@@ -1,0 +1,198 @@
+\documentclass[../main/NEMO_manual]{subfiles}
+
+\begin{document}
+
+\chapter{Apply Assimilation Increments (ASM)}
+\label{chap:ASM}
+
+%    {\em 4.0} & {\em D. J. Lea} & {\em \NEMO\ 4.0 updates}  \\
+%    {\em 3.4} & {\em D. J. Lea, M. Martin, K. Mogensen, A. Weaver} & {\em Initial version}  \\
+
+\thispagestyle{plain}
+
+\chaptertoc
+
+\paragraph{Changes record} ~\\
+
+{\footnotesize
+  \begin{tabularx}{\textwidth}{l||X|X}
+    Release & Author(s) & Modifications \\
+    \hline
+    {\em   4.0} & {\em ...} & {\em ...} \\
+    {\em   3.6} & {\em ...} & {\em ...} \\
+    {\em   3.4} & {\em ...} & {\em ...} \\
+    {\em <=3.4} & {\em ...} & {\em ...}
+  \end{tabularx}
+}
+
+\clearpage
+
+The ASM code adds the functionality to apply increments to the model variables: temperature, salinity,
+sea surface height, velocity and sea ice concentration.
+These are read into the model from a NetCDF file which may be produced by separate data assimilation code.
+The code can also output model background fields which are used as an input to data assimilation code.
+This is all controlled by the namelist \nam{_asminc}{\_asminc}.
+There is a brief description of all the namelist options provided.
+To build the ASM code \key{asminc} must be set.
+
+%% =================================================================================================
+\section{Direct initialization}
+\label{sec:ASM_DI}
+
+Direct initialization (DI) refers to the instantaneous correction of the model background state using
+the analysis increment.
+DI is used when \np{ln_asmdin}{ln\_asmdin} is set to true.
+
+%% =================================================================================================
+\section{Incremental analysis updates}
+\label{sec:ASM_IAU}
+
+Rather than updating the model state directly with the analysis increment,
+it may be preferable to introduce the increment gradually into the ocean model in order to
+minimize spurious adjustment processes.
+This technique is referred to as Incremental Analysis Updates (IAU) \citep{bloom.takacs.ea_MWR96}.
+IAU is a common technique used with 3D assimilation methods such as 3D-Var or OI.
+IAU is used when \np{ln_asmiau}{ln\_asmiau} is set to true.
+
+With IAU, the model state trajectory ${\mathbf x}$ in the assimilation window ($t_{0} \leq t_{i} \leq t_{N}$)
+is corrected by adding the analysis increments for temperature, salinity, horizontal velocity and SSH as
+additional tendency terms to the prognostic equations:
+\begin{align*}
+  % \label{eq:ASM_wa_traj_iau}
+  {\mathbf x}^{a}(t_{i}) = M(t_{i}, t_{0})[{\mathbf x}^{b}(t_{0})] \; + \; F_{i} \delta \tilde{\mathbf x}^{a}
+\end{align*}
+where $F_{i}$ is a weighting function for applying the increments $\delta\tilde{\mathbf x}^{a}$ defined such that
+$\sum_{i=1}^{N} F_{i}=1$.
+${\mathbf x}^b$ denotes the model initial state and ${\mathbf x}^a$ is the model state after the increments are applied.
+To control the adjustment time of the model to the increment,
+the increment can be applied over an arbitrary sub-window, $t_{m} \leq t_{i} \leq t_{n}$,
+of the main assimilation window, where $t_{0} \leq t_{m} \leq t_{i}$ and $t_{i} \leq t_{n} \leq t_{N}$.
+Typically the increments are spread evenly over the full window.
+In addition, two different weighting functions have been implemented.
+The first function (namelist option \np{niaufn}{niaufn}=0) employs constant weights,
+\begin{align}
+  \label{eq:ASM_F1_i}
+  F^{(1)}_{i}
+  =\left\{
+  \begin{array}{ll}
+    0     &    {\mathrm if} \; \; \; t_{i} < t_{m}                \\
+    1/M &    {\mathrm if} \; \; \; t_{m} < t_{i} \leq t_{n} \\
+    0     &    {\mathrm if} \; \; \; t_{i} > t_{n}
+  \end{array}
+            \right.
+\end{align}
+where $M = m-n$.
+The second function (namelist option \np{niaufn}{niaufn}=1) employs peaked hat-like weights in order to give maximum weight in the centre of the sub-window,
+with the weighting reduced linearly to a small value at the window end-points:
+\begin{align}
+  \label{eq:ASM_F2_i}
+  F^{(2)}_{i}
+  =\left\{
+  \begin{array}{ll}
+    0                           &    {\mathrm if} \; \; \; t_{i}       <     t_{m}                        \\
+    \alpha \, i               &    {\mathrm if} \; \; \; t_{m}    \leq t_{i}    \leq   t_{M/2}   \\
+    \alpha \, (M - i +1) &    {\mathrm if} \; \; \; t_{M/2}  <    t_{i}    \leq   t_{n}       \\
+    0                            &   {\mathrm if} \; \; \; t_{i}        >    t_{n}
+  \end{array}
+                                   \right.
+\end{align}
+where $\alpha^{-1} = \sum_{i=1}^{M/2} 2i$ and $M$ is assumed to be even.
+The weights described by \autoref{eq:ASM_F2_i} provide a smoother transition of the analysis trajectory from
+one assimilation cycle to the next than that described by \autoref{eq:ASM_F1_i}.
+
+%% =================================================================================================
+\section{Divergence damping initialisation}
+\label{sec:ASM_div_dmp}
+
+It is quite challenging for data assimilation systems to provide non-divergent velocity increments.
+Applying divergent velocity increments will likely cause spurious vertical velocities in the model. This section describes a method to take velocity increments provided to \NEMO\ ($u^0_I$ and $v^0_I$) and adjust them by the iterative application of a divergence damping operator. The method is also described in \citet{dobricic.pinardi.ea_OS07}.
+
+In iteration step $n$ (starting at $n=1$) new estimates of velocity increments $u^{n}_I$ and $v^{n}_I$ are updated by:
+
+\begin{equation}
+  \label{eq:ASM_dmp}
+  \left\{
+    \begin{aligned}
+      u^{n}_I = u^{n-1}_I + \frac{1}{e_{1u} } \delta_{i+1/2} \left( {A_D
+          \;\chi^{n-1}_I } \right) \\ \\
+      v^{n}_I = v^{n-1}_I + \frac{1}{e_{2v} } \delta_{j+1/2} \left( {A_D
+          \;\chi^{n-1}_I } \right) \\
+    \end{aligned}
+  \right.,
+\end{equation}
+
+where the divergence is defined as
+
+\[
+  % \label{eq:ASM_div}
+  \chi^{n-1}_I = \frac{1}{e_{1t}\,e_{2t}\,e_{3t} }
+  \left( {\delta_i \left[ {e_{2u}\,e_{3u}\,u^{n-1}_I} \right]
+      +\delta_j \left[ {e_{1v}\,e_{3v}\,v^{n-1}_I} \right]} \right).
+\]
+
+By the application of \autoref{eq:ASM_dmp} the divergence is filtered in each iteration,
+and the vorticity is left unchanged.
+In the presence of coastal boundaries with zero velocity increments perpendicular to the coast
+the divergence is strongly damped.
+This type of the initialisation reduces the vertical velocity magnitude and
+alleviates the problem of the excessive unphysical vertical mixing in the first steps of the model integration
+\citep{talagrand_JAS72, dobricic.pinardi.ea_OS07}.
+Diffusion coefficients are defined as $A_D = \alpha e_{1t} e_{2t}$, where $\alpha = 0.2$.
+The divergence damping is activated by assigning to \np{nn_divdmp}{nn\_divdmp} in the \nam{_asminc}{\_asminc} namelist
+a value greater than zero.
+This specifies the number of iterations of the divergence damping. Setting a value of the order of 100 will result in a significant reduction in the vertical velocity induced by the increments.
+
+%% =================================================================================================
+\section{Implementation details}
+\label{sec:ASM_details}
+
+Here we show an example \nam{_asminc}{\_asminc} namelist and the header of an example assimilation increments file on
+the ORCA2 grid.
+
+\begin{listing}
+  \nlst{nam_asminc}
+  \caption{\forcode{&nam_asminc}}
+  \label{lst:nam_asminc}
+\end{listing}
+
+The header of an assimilation increments file produced using the NetCDF tool
+\mbox{\textit{ncdump~-h}} is shown below
+
+\begin{clines}
+netcdf assim_background_increments {
+dimensions:
+        x = 182 ;
+        y = 149 ;
+        z = 31 ;
+        t = UNLIMITED ; // (1 currently)
+variables:
+        float nav_lon(y, x) ;
+        float nav_lat(y, x) ;
+        float nav_lev(z) ;
+        double time_counter(t) ;
+        double time ;
+        double z_inc_dateb ;
+        double z_inc_datef ;
+        double bckint(t, z, y, x) ;
+        double bckins(t, z, y, x) ;
+        double bckinu(t, z, y, x) ;
+        double bckinv(t, z, y, x) ;
+        double bckineta(t, y, x) ;
+
+// global attributes:
+                :DOMAIN_number_total = 1 ;
+                :DOMAIN_number = 0 ;
+                :DOMAIN_dimensions_ids = 1, 2 ;
+                :DOMAIN_size_global = 182, 149 ;
+                :DOMAIN_size_local = 182, 149 ;
+                :DOMAIN_position_first = 1, 1 ;
+                :DOMAIN_position_last = 182, 149 ;
+                :DOMAIN_halo_size_start = 0, 0 ;
+                :DOMAIN_halo_size_end = 0, 0 ;
+                :DOMAIN_type = "BOX" ;
+}
+\end{clines}
+
+\subinc{\input{../../global/epilogue}}
+
+\end{document}

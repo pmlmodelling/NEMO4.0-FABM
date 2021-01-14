@@ -1,0 +1,18 @@
+!-----------------------------------------------------------------------
+&nampisbio     !   biological parameters
+!-----------------------------------------------------------------------
+   nrdttrc    =  1        ! time step frequency for biology
+   wsbio      =  2.       ! POC sinking speed
+   xkmort     =  2.E-7    ! half saturation constant for mortality
+   ferat3     =  10.E-6   ! Fe/C in zooplankton 
+   wsbio2     =  50.      ! Big particles sinking speed
+   wsbio2max  =  50.      ! Big particles maximum sinking speed
+   wsbio2scale =  5000.    ! Big particles length scale of sinking
+!                         !  ln_ligand enabled
+   ldocp      =  1.E-4    ! Phyto ligand production per unit doc 
+   ldocz      =  1.E-4    ! Zoo ligand production per unit doc 
+   lthet      =  1.0      ! Proportional loss of ligands due to Fe uptake 
+!                         !  ln_p5z enabled
+   no3rat3    =  0.182    ! N/C ratio in zooplankton
+   po4rat3    =  0.0094   ! P/C ratio in zooplankton
+/

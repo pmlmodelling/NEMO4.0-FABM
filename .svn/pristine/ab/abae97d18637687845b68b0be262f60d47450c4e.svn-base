@@ -1,0 +1,76 @@
+
+\thispagestyle{plain}
+
+%% ================================================================
+%% Disclaimer
+%% ================================================================
+\subsubsection*{Disclaimer}
+
+Like all components of the modelling framework,
+the \engine\ core engine is developed under the \href{http://www.cecill.info}{CECILL license},
+which is a French adaptation of the GNU GPL (\textbf{G}eneral \textbf{P}ublic \textbf{L}icense).
+Anyone may use it freely for research purposes, and is encouraged to
+communicate back to the development team its own developments and improvements.
+
+The model and the present document have been made available as a service to the community.
+We cannot certify that the code and its manual are free of errors.
+Bugs are inevitable and some have undoubtedly survived the testing phase.
+Users are encouraged to bring them to our attention.
+
+The authors assume no responsibility for problems, errors, or incorrect usage of \NEMO.
+
+%% ================================================================
+%% External resources
+%% ================================================================
+\subsubsection*{Other resources}
+\label{resources}
+
+Additional information can be found on:
+\begin{itemize}
+\item \faWordpress\ the \href{http://www.nemo-ocean.eu}{website} of the project detailing several
+  associated applications and an exhaustive users bibliography
+\item \faCodeFork\ the \href{http://forge.ipsl.jussieu.fr/nemo}{development platform} of
+  the model with the code repository for the shared reference and some main resources
+  (wiki, ticket system, forums, \ldots) \\
+  \faGithub\ the \href{http://github.com/NEMO-ocean/NEMO-examples}
+  {repository of the demonstration cases} for research or training
+\item \faCloudDownload\ the \href{http://zenodo.org/communities/nemo-ocean}{online archive}
+  delivering the publications issued by the consortium (manuals, reports, datasets, \ldots)
+\item \faEnvelope\ two mailing lists:
+  the \href{http://listes.ipsl.fr/sympa/info/nemo-newsletter}{newsletter} for
+  top-down communications from the project
+  (announcements, calls, job opportunities, \ldots)
+  and the \href{http://listes.ipsl.fr/sympa/info/nemo-forge}{forge updates}
+  (commits, tickets and forums)
+\end{itemize}
+
+%% ================================================================
+%% Citation
+%% ================================================================
+\subsubsection*{Citation}
+
+Reference for papers and other publications is as follows:
+
+\medskip
+
+\begin{sloppypar}
+  ``{\bfseries \heading}\ifdef{\subheading}{ -- \subheading}{}'',
+  {\em Scientific Notes of Climate Modelling Center}, \textbf{\ipslnum} --- ISSN 1288-1619,
+  Institut Pierre-Simon Laplace (IPSL),
+  \href{https://doi.org/10.5281/zenodo.\zid}{doi:10.5281/zenodo.\zid}
+\end{sloppypar}
+
+\begin{figure}[b]
+  \begin{minipage}[c]{0.7\textwidth}
+    \small
+    \ttfamily{
+      Scientific Notes of Climate Modelling Center \\
+      ISSN 1288-1619                               \\
+      Institut Pierre-Simon Laplace (IPSL)
+    }
+  \end{minipage}
+  \hfill
+  \begin{minipage}[c]{0.25\textwidth}
+    \href{http://www.cmc.ipsl.fr}{\includegraphics[width=\textwidth]{logos/IPSL_upright}}
+  \end{minipage}
+\end{figure}

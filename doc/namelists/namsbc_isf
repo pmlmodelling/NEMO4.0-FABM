@@ -1,0 +1,34 @@
+!-----------------------------------------------------------------------
+&namsbc_isf    !  Top boundary layer (ISF)                              (ln_isfcav =T : read (ln_read_cfg=T) 
+!-----------------------------------------------------------------------             or set or usr_def_zgr )
+   !                 ! type of top boundary layer 
+   nn_isf      = 1         !  ice shelf melting/freezing
+                           !  1 = presence of ISF   ;  2 = bg03 parametrisation 
+                           !  3 = rnf file for ISF  ;  4 = ISF specified freshwater flux
+                           !  options 1 and 4 need ln_isfcav = .true. (domzgr)
+      !              !  nn_isf = 1 or 2 cases:
+      rn_gammat0  = 1.e-4     ! gammat coefficient used in blk formula
+      rn_gammas0  = 1.e-4     ! gammas coefficient used in blk formula
+      !              !  nn_isf = 1 or 4 cases:
+      rn_hisf_tbl =  30.      ! thickness of the top boundary layer    (Losh et al. 2008)
+      !                       ! 0 => thickness of the tbl = thickness of the first wet cell
+      !              ! nn_isf = 1 case
+      nn_isfblk   = 1         ! 1 ISOMIP  like: 2 equations formulation (Hunter et al., 2006)
+      !                       ! 2 ISOMIP+ like: 3 equations formulation (Asay-Davis et al., 2015)
+      nn_gammablk = 1         ! 0 = cst Gammat (= gammat/s)
+      !                       ! 1 = velocity dependend Gamma (u* * gammat/s)  (Jenkins et al. 2010)
+      !                       ! 2 = velocity and stability dependent Gamma    (Holland et al. 1999)
+
+   !___________!_____________!___________________!___________!_____________!_________!___________!__________!__________!_______________!
+   !           !  file name  ! frequency (hours) ! variable  ! time interp.!  clim   ! 'yearly'/ ! weights  ! rotation ! land/sea mask !
+   !           !             !  (if <0  months)  !   name    !  (logical)  !  (T/F)  ! 'monthly' ! filename ! pairing  ! filename      !
+!* nn_isf = 4 case
+   sn_fwfisf   = 'rnfisf'    ,         -12.      ,'sowflisf' ,  .false.    , .true.  , 'yearly'  ,    ''    ,   ''     ,    ''
+!* nn_isf = 3 case
+   sn_rnfisf   = 'rnfisf'    ,         -12.      ,'sofwfisf' ,  .false.    , .true.  , 'yearly'  ,    ''    ,   ''     ,    ''
+!* nn_isf = 2 and 3 cases 
+   sn_depmax_isf ='rnfisf'   ,         -12.      ,'sozisfmax',  .false.    , .true.  , 'yearly'  ,    ''    ,   ''     ,    ''
+   sn_depmin_isf ='rnfisf'   ,         -12.      ,'sozisfmin',  .false.    , .true.  , 'yearly'  ,    ''    ,   ''     ,    ''
+!* nn_isf = 2 case
+   sn_Leff_isf = 'rnfisf'    ,         -12.      ,'Leff'     ,  .false.    , .true.  , 'yearly'  ,    ''    ,   ''     ,    ''
+/

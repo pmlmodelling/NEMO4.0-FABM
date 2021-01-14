@@ -1,0 +1,5 @@
+.blue            { color: blue    ; }
+.grey , .greysup { color: grey    ; }
+.green           { color: seagreen; }
+
+.logo { filter: invert(1) !important; }

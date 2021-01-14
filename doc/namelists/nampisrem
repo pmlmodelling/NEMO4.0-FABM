@@ -1,0 +1,17 @@
+!-----------------------------------------------------------------------  
+&nampisrem     !   parameters for remineralization
+!-----------------------------------------------------------------------
+   xremik    =  0.3       ! remineralization rate of DOC
+   nitrif    =  0.05      ! NH4 nitrification rate
+   xsirem    =  0.003     ! remineralization rate of Si
+   xsiremlab =  0.03      ! fast remineralization rate of Si
+   xsilab    =  0.5       ! Fraction of labile biogenic silica
+   feratb    =  10.E-6    ! Fe/C quota in bacteria
+   xkferb    =  3E-10     ! Half-saturation constant for bacteria Fe/C
+!                         ! ln_p5z
+   xremikc   =  0.25      ! remineralization rate of DOC
+   xremikn   =  0.35      ! remineralization rate of DON
+   xremikp   =  0.4       ! remineralization rate of DOP
+!   feratb    =  20E-6     ! Bacterial Fe/C ratio
+!   xkferb    =  3E-10     ! Half-saturation constant for bact. Fe/C
+/

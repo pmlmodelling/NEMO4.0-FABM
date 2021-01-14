@@ -1,0 +1,11 @@
+!----------------------------------------------------------------------
+&namtrc_bdy      !   Setup of tracer boundary conditions
+!-----------------------------------------------------------------------
+   cn_trc_dflt   = 'neumann' !  OBC applied by default to all tracers
+   cn_trc        = 'none'    !  Boundary conditions used for tracers with data files (selected in namtrc)
+
+   nn_trcdmp_bdy = 0         !  Use damping timescales defined in nambdy of namelist
+                             !  = 0 NO damping of tracers at open boudaries
+                             !  = 1 Only for tracers forced with external data
+                             !  = 2 Damping applied to all tracers
+/

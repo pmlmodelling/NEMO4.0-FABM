@@ -1,0 +1,13 @@
+!-----------------------------------------------------------------------
+&namzdf_ric    !   richardson number dependent vertical diffusion       (ln_zdfric =T)
+!-----------------------------------------------------------------------
+   rn_avmri    =  100.e-4  !  maximum value of the vertical viscosity
+   rn_alp      =    5.     !  coefficient of the parameterization
+   nn_ric      =    2      !  coefficient of the parameterization
+   ln_mldw     =  .false.  !  enhanced mixing in the Ekman layer
+      rn_ekmfc    =    0.7    !  Factor in the Ekman depth Equation
+      rn_mldmin   =    1.0    !  minimum allowable mixed-layer depth estimate (m)
+      rn_mldmax   = 1000.0    !  maximum allowable mixed-layer depth estimate (m)
+      rn_wtmix    =   10.0    !  vertical eddy viscosity coeff [m2/s] in the mixed-layer
+      rn_wvmix    =   10.0    !  vertical eddy diffusion coeff [m2/s] in the mixed-layer
+/

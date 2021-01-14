@@ -1,0 +1,677 @@
+
+@Article{	  assur_1958,
+  author	= {Assur, A},
+  year		= {1958},
+  month		= {01},
+  pages		= {106-138},
+  title		= {Composition of sea ice and its tensile strength},
+  volume	= {598},
+  journal	= {Arctic Sea Ice}
+}
+
+@Article{	  babko_2002,
+  author	= {Babko, O.},
+  title		= {Role of rafting in the mechanical redistribution of sea
+		  ice thickness},
+  year		= 2002,
+  volume	= 107,
+  number	= {C8},
+  issn		= {0148-0227},
+  doi		= {10.1029/1999jc000190},
+  url		= {http://dx.doi.org/10.1029/1999JC000190},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  bitz_1999,
+  author	= {Bitz, C. M. and Lipscomb, William H.},
+  title		= {An energy-conserving thermodynamic model of sea ice},
+  year		= 1999,
+  volume	= 104,
+  number	= {C7},
+  month		= {Jul},
+  pages		= {15669–15677},
+  issn		= {0148-0227},
+  doi		= {10.1029/1999jc900100},
+  url		= {http://dx.doi.org/10.1029/1999jc900100},
+  journal	= {Journal of Geophysical Research: Oceans},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  bitz_2001,
+  author	= {Bitz, C. M. and Holland, M. M. and Weaver, A. J. and Eby,
+		  M.},
+  title		= {Simulating the ice-thickness distribution in a coupled
+		  climate model},
+  year		= 2001,
+  volume	= 106,
+  number	= {C2},
+  month		= {Feb},
+  pages		= {2441–2463},
+  issn		= {0148-0227},
+  doi		= {10.1029/1999jc000113},
+  url		= {http://dx.doi.org/10.1029/1999jc000113},
+  journal	= {Journal of Geophysical Research: Oceans},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  bouillon_2013,
+  author	= {Bouillon, Sylvain and Fichefet, Thierry and Legat, Vincent
+		  and Madec, Gurvan},
+  title		= {The elastic–viscous–plastic method revisited},
+  year		= 2013,
+  volume	= 71,
+  month		= {Nov},
+  pages		= {2–12},
+  issn		= {1463-5003},
+  doi		= {10.1016/j.ocemod.2013.05.013},
+  url		= {http://dx.doi.org/10.1016/j.ocemod.2013.05.013},
+  journal	= {Ocean Modelling},
+  publisher	= {Elsevier BV}
+}
+
+@Article{	  brandt_2005,
+  author	= {Brandt, Richard E. and Warren, Stephen G. and Worby,
+		  Anthony P. and Grenfell, Thomas C.},
+  title		= {Surface Albedo of the Antarctic Sea Ice Zone},
+  year		= 2005,
+  volume	= 18,
+  number	= 17,
+  month		= {Sep},
+  pages		= {3606–3622},
+  issn		= {1520-0442},
+  doi		= {10.1175/jcli3489.1},
+  url		= {http://dx.doi.org/10.1175/jcli3489.1},
+  journal	= {Journal of Climate},
+  publisher	= {American Meteorological Society}
+}
+
+@Article{	  coon_1974,
+  author	= {Coon, M.D. and Maykut, G.A. and Pritchard, R.S. and
+		  Rothrock, D.A. and Thorndike, A.S.},
+  year		= {1974},
+  month		= {01},
+  pages		= {1-106},
+  title		= {Modeling the pack ice as an elastic-plastic material},
+  volume	= {24},
+  journal	= {AIDJEX Bull.}
+}
+
+@Article{	  ebert_1993,
+  author	= {Ebert, Elizabeth E. and Curry, Judith A.},
+  title		= {An intermediate one-dimensional thermodynamic sea ice
+		  model for investigating ice-atmosphere interactions},
+  year		= 1993,
+  volume	= 98,
+  number	= {C6},
+  pages		= 10085,
+  issn		= {0148-0227},
+  doi		= {10.1029/93jc00656},
+  url		= {http://dx.doi.org/10.1029/93jc00656},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  fichefet_1997,
+  author	= {Fichefet, T. and Maqueda, M. A. Morales},
+  title		= {Sensitivity of a global sea ice model to the treatment of
+		  ice thermodynamics and dynamics},
+  year		= 1997,
+  volume	= 102,
+  number	= {C6},
+  month		= {Jun},
+  pages		= {12609–12646},
+  issn		= {0148-0227},
+  doi		= {10.1029/97jc00480},
+  url		= {http://dx.doi.org/10.1029/97jc00480},
+  journal	= {Journal of Geophysical Research: Oceans},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  flato_1995,
+  author	= {Flato, Gregory M. and Hibler, William D.},
+  title		= {Ridging and strength in modeling the thickness
+		  distribution of Arctic sea ice},
+  year		= 1995,
+  volume	= 100,
+  number	= {C9},
+  pages		= 18611,
+  issn		= {0148-0227},
+  doi		= {10.1029/95jc02091},
+  url		= {http://dx.doi.org/10.1029/95jc02091},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  girard_2009,
+  author	= {Girard, L. and Weiss, J. and Molines, J. M. and Barnier,
+		  B. and Bouillon, S.},
+  title		= {Evaluation of high-resolution sea ice models on the basis
+		  of statistical and scaling properties of Arctic sea ice
+		  drift and deformation},
+  year		= 2009,
+  volume	= 114,
+  number	= {C8},
+  month		= {Aug},
+  issn		= {0148-0227},
+  doi		= {10.1029/2008jc005182},
+  url		= {http://dx.doi.org/10.1029/2008JC005182},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  grenfell_1977,
+  author	= {Grenfell, Thomas C. and Maykut, Gary A.},
+  title		= {The Optical Properties of Ice and Snow in the Arctic
+		  Basin},
+  year		= 1977,
+  volume	= 18,
+  number	= 80,
+  pages		= {445–463},
+  issn		= {1727-5652},
+  doi		= {10.3189/s0022143000021122},
+  url		= {http://dx.doi.org/10.3189/s0022143000021122},
+  journal	= {Journal of Glaciology},
+  publisher	= {Cambridge University Press (CUP)}
+}
+
+@Article{	  grenfell_2004,
+  author	= {Grenfell, Thomas C.},
+  title		= {Seasonal and spatial evolution of albedo in a
+		  snow-ice-land-ocean environment},
+  year		= 2004,
+  volume	= 109,
+  number	= {C1},
+  issn		= {0148-0227},
+  doi		= {10.1029/2003jc001866},
+  url		= {http://dx.doi.org/10.1029/2003JC001866},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  haapala_2000,
+  author	= {Haapala, Jari},
+  title		= {On the modelling of ice-thickness redistribution},
+  year		= 2000,
+  volume	= 46,
+  number	= 154,
+  pages		= {427–437},
+  issn		= {1727-5652},
+  doi		= {10.3189/172756500781833106},
+  url		= {http://dx.doi.org/10.3189/172756500781833106},
+  journal	= {Journal of Glaciology},
+  publisher	= {Cambridge University Press (CUP)}
+}
+
+@Article{	  hibler_1979,
+  author	= {Hibler, W. D.},
+  title		= {A Dynamic Thermodynamic Sea Ice Model},
+  year		= 1979,
+  volume	= 9,
+  number	= 4,
+  month		= {Jul},
+  pages		= {815–846},
+  issn		= {1520-0485},
+  doi		= {10.1175/1520-0485(1979)009<0815:adtsim>2.0.co;2},
+  url		= {http://dx.doi.org/10.1175/1520-0485(1979)009<0815:adtsim>2.0.co;2},
+  journal	= {Journal of Physical Oceanography},
+  publisher	= {American Meteorological Society}
+}
+
+@Article{	  hibler_1980,
+  author	= {Hibler, W. D.},
+  title		= {Modeling a Variable Thickness Sea Ice Cover},
+  year		= 1980,
+  volume	= 108,
+  number	= 12,
+  month		= {Dec},
+  pages		= {1943–1973},
+  issn		= {1520-0493},
+  doi		= {10.1175/1520-0493(1980)108<1943:mavtsi>2.0.co;2},
+  url		= {http://dx.doi.org/10.1175/1520-0493(1980)108<1943:mavtsi>2.0.co;2},
+  journal	= {Monthly Weather Review},
+  publisher	= {American Meteorological Society}
+}
+
+@Article{	  hoyland_2002,
+  author	= {Høyland, Knut V.},
+  title		= {Consolidation of first-year sea ice ridges},
+  year		= 2002,
+  volume	= 107,
+  number	= {C6},
+  issn		= {0148-0227},
+  doi		= {10.1029/2000jc000526},
+  url		= {http://dx.doi.org/10.1029/2000JC000526},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@techreport{	  kovacs_1996,
+  author	= {Kovacs, Austin},
+  title		= {Sea Ice. Part 1. Bulk Salinity Versus Ice Floe
+		  Thickness,},
+  year		= 1996,
+  month		= {Jun},
+  doi		= {10.21236/ada312027},
+  url		= {http://dx.doi.org/10.21236/ada312027},
+  publisher	= {Defense Technical Information Center}
+}
+
+@Article{	  kreyscher_2000,
+  author	= {Kreyscher, Martin and Harder, Markus and Lemke, Peter and
+		  Flato, Gregory M.},
+  title		= {Results of the Sea Ice Model Intercomparison Project:
+		  Evaluation of sea ice rheology schemes for use in climate
+		  simulations},
+  year		= 2000,
+  volume	= 105,
+  number	= {C5},
+  month		= {May},
+  pages		= {11299–11320},
+  issn		= {0148-0227},
+  doi		= {10.1029/1999jc000016},
+  url		= {http://dx.doi.org/10.1029/1999jc000016},
+  journal	= {Journal of Geophysical Research: Oceans},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  lecomte_2011,
+  author	= {Lecomte, Olivier and Fichefet, Thierry and Vancoppenolle,
+		  Martin and Nicolaus, Marcel},
+  title		= {A new snow thermodynamic scheme for large-scale sea-ice
+		  models},
+  year		= 2011,
+  volume	= 52,
+  number	= 57,
+  pages		= {337–346},
+  issn		= {1727-5644},
+  doi		= {10.3189/172756411795931453},
+  url		= {http://dx.doi.org/10.3189/172756411795931453},
+  journal	= {Annals of Glaciology},
+  publisher	= {Cambridge University Press (CUP)}
+}
+
+@Article{	  lecomte_2015,
+  author	= {Lecomte, Olivier and Fichefet, Thierry and Flocco, Daniela
+		  and Schroeder, David and Vancoppenolle, Martin},
+  title		= {Interactions between wind-blown snow redistribution and
+		  melt ponds in a coupled ocean–sea ice model},
+  year		= 2015,
+  volume	= 87,
+  month		= {Mar},
+  pages		= {67–80},
+  issn		= {1463-5003},
+  doi		= {10.1016/j.ocemod.2014.12.003},
+  url		= {http://dx.doi.org/10.1016/j.ocemod.2014.12.003},
+  journal	= {Ocean Modelling},
+  publisher	= {Elsevier BV}
+}
+
+@Article{	  lepparanta_1995,
+  author	= {Leppäranta, Matti and Lensu, Mikko and Kosloff, Pekka and
+		  Veitch, Brian},
+  title		= {The life story of a first-year sea ice ridge},
+  year		= 1995,
+  volume	= 23,
+  number	= 3,
+  month		= {May},
+  pages		= {279–290},
+  issn		= {0165-232X},
+  doi		= {10.1016/0165-232x(94)00019-t},
+  url		= {http://dx.doi.org/10.1016/0165-232x(94)00019-t},
+  journal	= {Cold Regions Science and Technology},
+  publisher	= {Elsevier BV}
+}
+
+@Article{	  lepparanta_2011,
+  author	= {Leppäranta, Matti},
+  title		= {Drift ice material},
+  year		= 2011,
+  pages		= {11–63},
+  doi		= {10.1007/978-3-642-04683-4\_2},
+  url		= {http://dx.doi.org/10.1007/978-3-642-04683-4\_2},
+  isbn		= 9783642046834,
+  journal	= {The Drift of Sea Ice},
+  publisher	= {Springer Berlin Heidelberg}
+}
+
+@Article{	  lipscomb_2001,
+  author	= {Lipscomb, William H.},
+  title		= {Remapping the thickness distribution in sea ice models},
+  year		= 2001,
+  volume	= 106,
+  number	= {C7},
+  month		= {Jul},
+  pages		= {13989–14000},
+  issn		= {0148-0227},
+  doi		= {10.1029/2000jc000518},
+  url		= {http://dx.doi.org/10.1029/2000jc000518},
+  journal	= {Journal of Geophysical Research: Oceans},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  lipscomb_2007,
+  author	= {Lipscomb, William H. and Hunke, Elizabeth C. and
+		  Maslowski, Wieslaw and Jakacki, Jaromir},
+  title		= {Ridging, strength, and stability in high-resolution sea
+		  ice models},
+  year		= 2007,
+  volume	= 112,
+  number	= {C3},
+  month		= {Mar},
+  issn		= {0148-0227},
+  doi		= {10.1029/2005jc003355},
+  url		= {http://dx.doi.org/10.1029/2005JC003355},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  massonnet_2018,
+  author	= {Massonnet, F. and Barth\'el\'emy, A. and Worou, K. and
+		  Fichefet, T. and Vancoppenolle, M. and Rousset, C.},
+  title		= {Insights on the discretization of the ice thickness
+		  distribution in large-scale sea ice models},
+  journal	= {submitted},
+  year		= {2018}
+}
+
+@Article{	  maykut_1971,
+  author	= {Maykut, Gary A. and Untersteiner, Norbert},
+  title		= {Some results from a time-dependent thermodynamic model of
+		  sea ice},
+  year		= 1971,
+  volume	= 76,
+  number	= 6,
+  month		= {Feb},
+  pages		= {1550–1575},
+  issn		= {0148-0227},
+  doi		= {10.1029/jc076i006p01550},
+  url		= {http://dx.doi.org/10.1029/jc076i006p01550},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  maykut_1973,
+  author	= {Maykut, G. A. and Thorndike, A. S.},
+  title		= {An approach to coupling the dynamics and thermodynamics of
+		  Arctic sea ice},
+  journal	= {AIDJEX Bulletin},
+  year		= {1973},
+  volume	= {21},
+  pages		= {23--29}
+}
+
+@Article{	  maykut_1986,
+  author	= {Maykut, Gary A.},
+  title		= {The Surface Heat and Mass Balance},
+  year		= 1986,
+  pages		= {395–463},
+  doi		= {10.1007/978-1-4899-5352-0\_6},
+  url		= {http://dx.doi.org/10.1007/978-1-4899-5352-0\_6},
+  isbn		= 9781489953520,
+  journal	= {The Geophysics of Sea Ice},
+  publisher	= {Springer US}
+}
+
+@Article{	  maykut_1995,
+  author	= {Maykut, G. A. and McPhee, Miles G.},
+  title		= {Solar heating of the Arctic mixed layer},
+  year		= 1995,
+  volume	= 100,
+  number	= {C12},
+  pages		= 24691,
+  issn		= {0148-0227},
+  doi		= {10.1029/95jc02554},
+  url		= {http://dx.doi.org/10.1029/95jc02554},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  mcphee_1992,
+  author	= {McPhee, Miles G.},
+  title		= {Turbulent heat flux in the upper ocean under sea ice},
+  year		= 1992,
+  volume	= 97,
+  number	= {C4},
+  pages		= 5365,
+  issn		= {0148-0227},
+  doi		= {10.1029/92jc00239},
+  url		= {http://dx.doi.org/10.1029/92jc00239},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  mellor_1989,
+  author	= {Mellor, George L. and Kantha, Lakshmi},
+  title		= {An ice-ocean coupled model},
+  year		= 1989,
+  volume	= 94,
+  number	= {C8},
+  pages		= 10937,
+  issn		= {0148-0227},
+  doi		= {10.1029/jc094ic08p10937},
+  url		= {http://dx.doi.org/10.1029/jc094ic08p10937},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  notz_2016,
+  author	= {Notz, Dirk and Jahn, Alexandra and Holland, Marika and
+		  Hunke, Elizabeth and Massonnet, François and Stroeve,
+		  Julienne and Tremblay, Bruno and Vancoppenolle, Martin},
+  title		= {The CMIP6 Sea-Ice Model Intercomparison Project (SIMIP):
+		  understanding sea ice through climate-model simulations},
+  year		= 2016,
+  volume	= 9,
+  number	= 9,
+  month		= {Sep},
+  pages		= {3427–3446},
+  issn		= {1991-9603},
+  doi		= {10.5194/gmd-9-3427-2016},
+  url		= {http://dx.doi.org/10.5194/gmd-9-3427-2016},
+  journal	= {Geoscientific Model Development},
+  publisher	= {Copernicus GmbH}
+}
+
+@Article{	  parmerter_1975,
+  author	= {Parmerter, R. Reid},
+  title		= {A model of simple rafting in sea ice},
+  year		= 1975,
+  volume	= 80,
+  number	= 15,
+  month		= {May},
+  pages		= {1948–1952},
+  issn		= {0148-0227},
+  doi		= {10.1029/jc080i015p01948},
+  url		= {http://dx.doi.org/10.1029/jc080i015p01948},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  perovich_2002,
+  author	= {Perovich, D. K.},
+  title		= {Seasonal evolution of the albedo of multiyear Arctic sea
+		  ice},
+  year		= 2002,
+  volume	= 107,
+  number	= {C10},
+  issn		= {0148-0227},
+  doi		= {10.1029/2000jc000438},
+  url		= {http://dx.doi.org/10.1029/2000JC000438},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  prather_1986,
+  author	= {Prather, Michael J.},
+  title		= {Numerical advection by conservation of second-order
+		  moments},
+  year		= 1986,
+  volume	= 91,
+  number	= {D6},
+  pages		= 6671,
+  issn		= {0148-0227},
+  doi		= {10.1029/jd091id06p06671},
+  url		= {http://dx.doi.org/10.1029/jd091id06p06671},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  pringle_2007,
+  author	= {Pringle, D. J. and Eicken, H. and Trodahl, H. J. and
+		  Backstrom, L. G. E.},
+  title		= {Thermal conductivity of landfast Antarctic and Arctic sea
+		  ice},
+  year		= 2007,
+  volume	= 112,
+  number	= {C4},
+  month		= {Apr},
+  issn		= {0148-0227},
+  doi		= {10.1029/2006jc003641},
+  url		= {http://dx.doi.org/10.1029/2006JC003641},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  schmidt_2004,
+  author	= {Schmidt, Gavin A. and Bitz, Cecilia M. and Mikolajewicz,
+		  Uwe and Tremblay, L.-Bruno},
+  title		= {Ice–ocean boundary conditions for coupled models},
+  year		= 2004,
+  volume	= 7,
+  number	= {1-2},
+  month		= {Jan},
+  pages		= {59–74},
+  issn		= {1463-5003},
+  doi		= {10.1016/s1463-5003(03)00030-1},
+  url		= {http://dx.doi.org/10.1016/S1463-5003(03)00030-1},
+  journal	= {Ocean Modelling},
+  publisher	= {Elsevier BV}
+}
+
+@Article{	  shine_1985,
+  author	= {Shine, K. P. and Henderson-Sellers, A.},
+  title		= {The sensitivity of a thermodynamic sea ice model to
+		  changes in surface albedo parameterization},
+  year		= 1985,
+  volume	= 90,
+  number	= {D1},
+  pages		= 2243,
+  issn		= {0148-0227},
+  doi		= {10.1029/jd090id01p02243},
+  url		= {http://dx.doi.org/10.1029/jd090id01p02243},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Book{		  teos-10_2010,
+  title		= {{The international thermodynamic equation of seawater -
+		  2010: Calculation and use of thermodynamic properties}},
+  publisher	= {UNESCO (English)},
+  year		= {2010},
+  author	= {{IOC, SCOR and IAPSO}},
+  series	= {Intergovernmental Oceanographic Commission, Manuals and
+		  Guides No. 56},
+  url =          {http://www.teos-10.org/pubs/TEOS-10_Manual.pdf}
+}
+
+@Article{	  thorndike_1975,
+  author	= {Thorndike, A. S. and Rothrock, D. A. and Maykut, G. A. and
+		  Colony, R.},
+  title		= {The thickness distribution of sea ice},
+  year		= 1975,
+  volume	= 80,
+  number	= 33,
+  month		= {Nov},
+  pages		= {4501–4513},
+  issn		= {0148-0227},
+  doi		= {10.1029/jc080i033p04501},
+  url		= {http://dx.doi.org/10.1029/JC080i033p04501},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  tuhkuri_2002,
+  author	= {Tuhkuri, Jukka},
+  title		= {Laboratory tests on ridging and rafting of ice sheets},
+  year		= 2002,
+  volume	= 107,
+  number	= {C9},
+  issn		= {0148-0227},
+  doi		= {10.1029/2001jc000848},
+  url		= {http://dx.doi.org/10.1029/2001JC000848},
+  journal	= {Journal of Geophysical Research},
+  publisher	= {American Geophysical Union (AGU)}
+}
+
+@Article{	  vancoppenolle_2009,
+  author	= {Vancoppenolle, Martin and Fichefet, Thierry and Goosse,
+		  Hugues},
+  title		= {Simulating the mass balance and salinity of Arctic and
+		  Antarctic sea ice. 2. Importance of sea ice salinity
+		  variations},
+  year		= 2009,
+  volume	= 27,
+  number	= {1-2},
+  month		= {Jan},
+  pages		= {54–69},
+  issn		= {1463-5003},
+  doi		= {10.1016/j.ocemod.2008.11.003},
+  url		= {http://dx.doi.org/10.1016/j.ocemod.2008.11.003},
+  journal	= {Ocean Modelling},
+  publisher	= {Elsevier BV}
+}
+
+@Article{	  weiss_2013,
+  author	= {Weiss, Jérôme},
+  title		= {Drift, Deformation, and Fracture of Sea Ice},
+  year		= 2013,
+  issn		= {2191-5377},
+  doi		= {10.1007/978-94-007-6202-2},
+  url		= {http://dx.doi.org/10.1007/978-94-007-6202-2},
+  isbn		= 9789400762022,
+  journal	= {SpringerBriefs in Earth Sciences},
+  publisher	= {Springer Netherlands}
+}
+
+@Article{	  worster_1992,
+  author	= {Worster, M. G.},
+  title		= {The Dynamics of Mushy Layers},
+  year		= 1992,
+  pages		= {113–138},
+  doi		= {10.1007/978-94-011-2809-4\_20},
+  url		= {http://dx.doi.org/10.1007/978-94-011-2809-4\_20},
+  isbn		= 9789401128094,
+  journal	= {Interactive Dynamics of Convection and Solidification},
+  publisher	= {Springer Netherlands}
+}
+
+@Article{	  zhang_2001,
+  author	= {Zhang, Jinlun and Rothrock, Drew},
+  title		= {A Thickness and Enthalpy Distribution Sea-Ice Model},
+  year		= 2001,
+  volume	= 31,
+  number	= 10,
+  month		= {Oct},
+  pages		= {2986–3001},
+  issn		= {1520-0485},
+  doi		= {10.1175/1520-0485(2001)031<2986:ataeds>2.0.co;2},
+  url		= {http://dx.doi.org/10.1175/1520-0485(2001)031<2986:ataeds>2.0.co;2},
+  journal	= {Journal of Physical Oceanography},
+  publisher	= {American Meteorological Society}
+}
+
+@Article{	  zuo_1996,
+  author	= {Zuo, Z. and Oerlemans, J.},
+  title		= {Modelling albedo and specific balance of the Greenland ice
+		  sheet: calculations for the Søndre Strømfjord transect},
+  year		= 1996,
+  volume	= 42,
+  number	= 141,
+  pages		= {305–317},
+  issn		= {1727-5652},
+  doi		= {10.1017/s0022143000004160},
+  url		= {http://dx.doi.org/10.1017/s0022143000004160},
+  journal	= {Journal of Glaciology},
+  publisher	= {Cambridge University Press (CUP)}
+}

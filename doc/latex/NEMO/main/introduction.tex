@@ -1,0 +1,142 @@
+
+\chapter*{Introduction}
+
+%\chaptertoc
+
+%\paragraph{Changes record} ~\\
+
+%\thispagestyle{plain}
+
+%{\footnotesize
+%  \begin{tabularx}{\textwidth}{l||X|X}
+%    Release & Author(s) & Modifications \\
+%    \hline
+%    {\em x.x} & {\em ...} & {\em ...}   \\
+%    {\em ...} & {\em ...} & {\em ...}   \\
+%  \end{tabularx}
+%}
+
+%\clearpage
+
+The \textbf{N}ucleus for \textbf{E}uropean \textbf{M}odelling of the \textbf{O}cean (\NEMO) is
+a framework of ocean related engines, namely the aforementioned for
+the ocean dynamics and thermodynamics,
+\SIcube \footnote{\textbf{S}ea-\textbf{I}ce modelling \textbf{I}ntegrated \textbf{I}nitiative}
+for the sea-ice dynamics and thermodynamics,
+\TOP \footnote{\textbf{T}racer in the \textbf{O}cean \textbf{P}aradigm} for
+the biogeochemistry (both transport and sources minus sinks
+(\PISCES \footnote{
+  \textbf{P}elagic \textbf{I}nteractions \textbf{S}cheme for
+  \textbf{C}arbon and \textbf{E}cosystem \textbf{S}tudies
+}
+)).
+The ocean component has been developed from the legacy of
+the \OPA \footnote{\textbf{O}c\'{e}an \textbf{PA}rall\'{e}lis\'{e} (French)}
+model, described in \citet{madec.delecluse.ea_NPM98}.
+This model has been used for a wide range of applications, both regional or global,
+as a forced ocean model and as a model coupled with the sea-ice and/or the atmosphere.
+
+This manual provides information about the physics represented by the ocean component of \NEMO\ and
+the rationale for the choice of numerical schemes and the model design.
+For the use of framework,
+a guide which gathers the \texttt{README} files spread out in the source code can be build and
+exported in a web or printable format (see \path{./doc/rst}).
+Also a online copy is available on the \href{http://forge.ipsl.jussieu.fr/nemo}{forge platform}.
+
+%% =================================================================================================
+\section*{Manual outline}
+
+\subsection*{Chapters}
+
+The manual mirrors the organization of the model and it is organised in as follows:
+after the presentation of the continuous equations
+(primitive equations with temperature and salinity, and an equation of seawater) in the next chapter,
+the following chapters refer to specific terms of the equations each associated with
+a group of modules.
+
+\begin{description}
+\item [\nameref{chap:MB}] presents the equations and their assumptions, the vertical coordinates used,
+and the subgrid scale physics.
+The equations are written in a curvilinear coordinate system, with a choice of vertical coordinates
+($z$, $s$, \zstar, \sstar, \ztilde, \stilde, and a mix of them).
+Momentum equations are formulated in vector invariant or flux form.
+Dimensional units in the meter, kilogram, second (MKS) international system are used throughout.
+The following chapters deal with the discrete equations.
+\item [\nameref{chap:TD}] presents the model time stepping environment.
+it is a three level scheme in which the tendency terms of the equations are evaluated either
+centered in time, or forward, or backward depending of the nature of the term.
+\item [\nameref{chap:DOM}] presents the model \textbf{DOM}ain.
+It is discretised on a staggered grid (Arakawa C grid) with masking of land areas.
+Vertical discretisation used depends on both how the bottom topography is represented and whether
+the free surface is linear or not.
+Full step or partial step $z$-coordinate or $s$- (terrain-following) coordinate is used with
+linear free surface (level position are then fixed in time).
+In non-linear free surface, the corresponding rescaled height coordinate formulation
+(\zstar or \sstar) is used
+(the level position then vary in time as a function of the sea surface heigh).
+\item [\nameref{chap:TRA} and \nameref{chap:DYN}] describe the discretisation of
+the prognostic equations for the active \textbf{TRA}cers (potential temperature and salinity) and
+the momentum (\textbf{DYN}amic).
+Explicit, split-explicit and filtered free surface formulations are implemented.
+A number of numerical schemes are available for momentum advection,
+for the computation of the pressure gradients, as well as for the advection of tracers
+(second or higher order advection schemes, including positive ones).
+\item [\nameref{chap:SBC}] can be implemented as prescribed fluxes,
+or bulk formulations for the surface fluxes (wind stress, heat, freshwater).
+The model allows penetration of solar radiation.
+There is an optional geothermal heating at the ocean bottom.
+Within the \NEMO\ system the ocean model is interactively coupled with
+a sea ice model (\SIcube) and a biogeochemistry model (\PISCES).
+Interactive coupling to Atmospheric models is possible via the \OASIS\ coupler.
+Two-way nesting is also available through an interface to the \AGRIF\ package,
+\ie\ \textbf{A}daptative \textbf{G}rid \textbf{R}efinement in \textbf{F}ortran
+\citep{debreu.vouland.ea_CG08}.
+The interface code for coupling to an alternative sea ice model (\CICE) has now been upgraded so that
+it works for both global and regional domains.
+\item [\nameref{chap:LBC}] presents the \textbf{L}ateral
+\textbf{B}oun\textbf{D}ar\textbf{Y} \textbf{C}onditions.
+Global configurations of the model make use of the ORCA tripolar grid,
+with special north fold boundary condition.
+Free-slip or no-slip boundary conditions are allowed at land boundaries.
+Closed basin geometries as well as periodic domains and open boundary conditions are possible.
+\item [\nameref{chap:LDF} and \nameref{chap:ZDF}] describe the physical parameterisations
+(\textbf{L}ateral \textbf{D}i\textbf{F}fusion and vertical \textbf{Z} \textbf{D}i\textbf{F}fusion)
+The model includes an implicit treatment of vertical viscosity and diffusivity.
+The lateral Laplacian and biharmonic viscosity and diffusion can be rotated following
+a geopotential or neutral direction.
+There is an optional eddy induced velocity \citep{gent.mcwilliams_JPO90} with
+a space and time variable coefficient \citet{treguier.held.ea_JPO97}.
+The model has vertical harmonic viscosity and diffusion with a space and time variable coefficient,
+with options to compute the coefficients with \citet{blanke.delecluse_JPO93},
+\citet{pacanowski.philander_JPO81}, or \citet{umlauf.burchard_JMR03} mixing schemes.
+\item [\nameref{chap:DIA}] describes model \textbf{I}n-\textbf{O}utputs \textbf{M}anagement and
+specific online \textbf{DIA}gnostics.
+The diagnostics includes the output of all the tendencies of the momentum and tracers equations,
+the output of tracers \textbf{TR}en\textbf{D}s averaged over the time evolving mixed layer,
+the output of the tendencies of the barotropic vorticity equation,
+the computation of on-line \textbf{FLO}ats trajectories...
+\item [\nameref{chap:OBS}] describes a tool which reads in \textbf{OBS}ervation files
+(profile temperature and salinity, sea surface temperature, sea level anomaly and
+sea ice concentration) and calculates an interpolated model equivalent value at
+the observation location and nearest model timestep.
+Originally developed of data assimilation, it is a fantastic tool for model and data comparison.
+\item [\nameref{chap:ASM}] describes how increments produced by
+data \textbf{A}s\textbf{S}i\textbf{M}ilation may be applied to the model equations.
+\item [\nameref{chap:STO}]
+\item [\nameref{chap:MISC}] (including solvers)
+\item [\nameref{chap:CFGS}] provides finally a brief introduction to
+the pre-defined model configurations
+(water column model \texttt{C1D}, ORCA and GYRE families of configurations).
+\end{description}
+
+%% =================================================================================================
+\subsection*{Appendices}
+
+\begin{description}
+\item [\nameref{apdx:SCOORD}]
+\item [\nameref{apdx:DIFFOPERS}]
+\item [\nameref{apdx:INVARIANTS}]
+\item [\nameref{apdx:TRIADS}]
+\item [\nameref{apdx:DOMCFG}]
+\item [\nameref{apdx:CODING}]
+\end{description}

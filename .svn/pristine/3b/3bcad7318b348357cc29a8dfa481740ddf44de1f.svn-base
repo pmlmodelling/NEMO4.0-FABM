@@ -1,0 +1,6 @@
+!-----------------------------------------------------------------------
+&namlobdom     !   biological parameters for DOM
+!-----------------------------------------------------------------------
+   taudomn = 6.43e-8    ! DOM breakdown rate                             [s-1] 
+!                       ! slow remineralization rate of semi-labile dom to nh4 (1 month)
+/

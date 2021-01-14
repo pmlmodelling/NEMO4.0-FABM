@@ -1,0 +1,8 @@
+!-----------------------------------------------------------------------
+&namlobnut     !   biological parameters for nutrients
+!-----------------------------------------------------------------------
+   akno3   =  0.7       ! nitrate limitation half-saturation value     [mmol/m3]
+   aknh4   =  0.001     ! ammonium limitation half-saturation value    [mmol/m3]
+   taunn   =  5.80e-7   ! nitrification rate                           [s-1]  
+   psinut  =  3.        ! inhibition of nitrate uptake by ammonium
+/

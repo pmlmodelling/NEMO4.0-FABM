@@ -1,0 +1,10 @@
+!-----------------------------------------------------------------------
+&nam_diadct    !   transports through some sections                     (default: OFF)
+!-----------------------------------------------------------------------
+    ln_diadct  = .false.   ! Calculate transport thru sections or not
+       nn_dct     = 15     !  time step frequency for transports computing
+       nn_dctwri  = 15     !  time step frequency for transports writing
+       nn_secdebug = 112   !      0 : no section to debug
+       !                   !     -1 : debug all section
+       !                   !  0 < n : debug section number n
+/

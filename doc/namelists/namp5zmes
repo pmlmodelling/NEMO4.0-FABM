@@ -1,0 +1,29 @@
+!-----------------------------------------------------------------------
+&namp5zmes     !   parameters for mesozooplankton
+!-----------------------------------------------------------------------
+   part2      =  0.75     ! part of calcite not dissolved in mesozoo guts
+   grazrat2   =  0.85     ! maximal mesozoo grazing rate
+   bmetexc2   =  .true.   ! Metabolic use of excess carbon 
+   resrat2    =  0.005    ! exsudation rate of mesozooplankton
+   mzrat2     =  0.02     ! mesozooplankton mortality rate
+   xpref2d    =  1.       ! zoo preference for phyto
+   xpref2p    =  1.       ! zoo preference for POC
+   xpref2z    =  1.       ! zoo preference for zoo
+   xpref2m    =  0.2      ! meso preference for zoo
+   xpref2c    =  0.3      ! zoo preference for poc
+   xthresh2zoo = 1E-8     ! zoo feeding threshold for mesozooplankton
+   xthresh2dia = 1E-8     ! diatoms feeding threshold for mesozooplankton
+   xthresh2phy = 1E-8     ! nanophyto feeding threshold for mesozooplankton
+   xthresh2mes = 1E-8     ! meso feeding threshold for mesozooplankton
+   xthresh2poc = 1E-8     ! poc feeding threshold for mesozooplankton
+   xthresh2    =  3E-7     ! Food threshold for grazing
+   xkgraz2     =  20.E-6   ! half sturation constant for meso grazing
+   epsher2     =  0.5      ! Efficicency of Mesozoo growth
+   epsher2min  =  0.2     ! Minimum efficiency of mesozoo growth
+   ssigma2     =  0.5     ! Fraction excreted as semi-labile DOM
+   srespir2    =  0.2     ! Active respiration
+   unass2c     =  0.3     ! non assimilated fraction of P by mesozoo
+   unass2n     =  0.3     ! non assimilated fraction of N by mesozoo
+   unass2p     =  0.3     ! non assimilated fraction of P by mesozoo
+   grazflux   =  3.e3     ! flux-feeding rate
+/

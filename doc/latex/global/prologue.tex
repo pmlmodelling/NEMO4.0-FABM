@@ -1,0 +1,25 @@
+
+%% Specific configuration
+\input{../main/settings}
+
+%% Global configuration
+\input{../../global/packages}
+\input{../../global/highlighting}
+\input{../../global/index}
+\input{../../global/styles}
+\input{../../global/new_cmds}
+%\input{../../global/todonotes}
+
+%% Load hyperref at the end of the preamble to make it work with other pkgs
+\usepackage{hyperref}   %% links
+\hypersetup{
+  colorlinks,
+  citecolor = manualcolor, linkcolor = manualcolor, urlcolor = manualcolor,
+  final   %% Links even in draft mode
+}
+
+%% `\autoref` uncapitalization
+\renewcommand{\appendixautorefname}{appendix}
+\renewcommand{\equationautorefname}{equation}
+\renewcommand{\figureautorefname}{figure}
+\renewcommand{\tableautorefname}{table}

@@ -1,0 +1,1483 @@
+\documentclass[../main/NEMO_manual]{subfiles}
+
+\begin{document}
+
+\chapter{Discrete Invariants of the Equations}
+\label{apdx:INVARIANTS}
+
+\thispagestyle{plain}
+
+\chaptertoc
+
+\paragraph{Changes record} ~\\
+
+{\footnotesize
+  \begin{tabularx}{\textwidth}{l||X|X}
+    Release & Author(s) & Modifications \\
+    \hline
+    {\em   4.0} & {\em ...} & {\em ...} \\
+    {\em   3.6} & {\em ...} & {\em ...} \\
+    {\em   3.4} & {\em ...} & {\em ...} \\
+    {\em <=3.4} & {\em ...} & {\em ...}
+  \end{tabularx}
+}
+
+\clearpage
+
+%%%  Appendix put in cmtgm as it has not been updated for \zstar and s coordinate
+%I'm writting this appendix. It will be available in a forthcoming release of the documentation
+
+%\cmtgm{
+
+%% =================================================================================================
+\section{Introduction / Notations}
+\label{sec:INVARIANTS_0}
+
+Notation used in this appendix in the demonstations:
+
+fluxes at the faces of a $T$-box:
+\[
+  U = e_{2u}\,e_{3u}\; u  \qquad  V = e_{1v}\,e_{3v}\; v  \qquad W = e_{1w}\,e_{2w}\; \omega
+\]
+
+volume of cells at $u$-, $v$-, and $T$-points:
+\[
+  b_u = e_{1u}\,e_{2u}\,e_{3u}  \qquad  b_v = e_{1v}\,e_{2v}\,e_{3v}  \qquad b_t = e_{1t}\,e_{2t}\,e_{3t}
+\]
+
+partial derivative notation: $\partial_\bullet = \frac{\partial}{\partial \bullet}$
+
+$dv=e_1\,e_2\,e_3 \,di\,dj\,dk$  is the volume element, with only $e_3$ that depends on time.
+$D$ and $S$ are the ocean domain volume and surface, respectively.
+No wetting/drying is allow (\ie\ $\frac{\partial S}{\partial t} = 0$).
+Let $k_s$ and $k_b$ be the ocean surface and bottom, resp.
+(\ie\ $s(k_s) = \eta$ and $s(k_b)=-H$, where $H$ is the bottom depth).
+\begin{flalign*}
+  z(k) = \eta - \int\limits_{\tilde{k}=k}^{\tilde{k}=k_s}  e_3(\tilde{k}) \;d\tilde{k}
+  = \eta - \int\limits_k^{k_s}  e_3 \;d\tilde{k}
+\end{flalign*}
+
+Continuity equation with the above notation:
+\[
+  \frac{1}{e_{3t}} \partial_t (e_{3t})+ \frac{1}{b_t}  \biggl\{  \delta_i [U] + \delta_j [V] + \delta_k [W] \biggr\} = 0
+\]
+
+A quantity, $Q$ is conserved when its domain averaged time change is zero, that is when:
+\[
+  \partial_t \left( \int_D{ Q\;dv } \right) =0
+\]
+Noting that the coordinate system used ....  blah blah
+\[
+  \partial_t \left( \int_D {Q\;dv} \right) =  \int_D { \partial_t \left( e_3 \, Q \right) e_1e_2\;di\,dj\,dk }
+  =  \int_D { \frac{1}{e_3} \partial_t \left( e_3 \, Q \right) dv } =0
+\]
+equation of evolution of $Q$ written as
+the time evolution of the vertical content of $Q$ like for tracers, or momentum in flux form,
+the quadratic quantity $\frac{1}{2}Q^2$ is conserved when:
+\begin{flalign*}
+  \partial_t \left(   \int_D{ \frac{1}{2} \,Q^2\;dv }   \right)
+  =&  \int_D{ \frac{1}{2} \partial_t \left( \frac{1}{e_3}\left( e_3 \, Q \right)^2 \right) e_1e_2\;di\,dj\,dk } \\
+  =&  \int_D {         Q   \;\partial_t\left( e_3 \, Q \right) e_1e_2\;di\,dj\,dk }
+  -  \int_D { \frac{1}{2} Q^2 \,\partial_t  (e_3) \;e_1e_2\;di\,dj\,dk } \\
+\end{flalign*}
+that is in a more compact form :
+\begin{flalign}
+  \label{eq:INVARIANTS_Q2_flux}
+  \partial_t \left( \int_D {\frac{1}{2} Q^2\;dv} \right)
+  =&                   \int_D { \frac{Q}{e_3}  \partial_t \left( e_3 \, Q \right) dv }
+  -   \frac{1}{2} \int_D {  \frac{Q^2}{e_3} \partial_t (e_3) \;dv }
+\end{flalign}
+equation of evolution of $Q$ written as the time evolution of $Q$ like for momentum in vector invariant form,
+the quadratic quantity $\frac{1}{2}Q^2$ is conserved when:
+\begin{flalign*}
+  \partial_t \left( \int_D {\frac{1}{2} Q^2\;dv} \right)
+  =&  \int_D { \frac{1}{2} \partial_t \left( e_3 \, Q^2 \right) \;e_1e_2\;di\,dj\,dk } \\
+  =& \int_D {         Q      \partial_t Q  \;e_1e_2e_3\;di\,dj\,dk }
+  +  \int_D { \frac{1}{2} Q^2 \, \partial_t e_3  \;e_1e_2\;di\,dj\,dk } \\
+\end{flalign*}
+that is in a more compact form:
+\begin{flalign}
+  \label{eq:INVARIANTS_Q2_vect}
+  \partial_t \left( \int_D {\frac{1}{2} Q^2\;dv} \right)
+  =& \int_D {         Q   \,\partial_t Q  \;dv }
+  +   \frac{1}{2} \int_D { \frac{1}{e_3} Q^2 \partial_t e_3 \;dv }
+\end{flalign}
+
+%% =================================================================================================
+\section{Continuous conservation}
+\label{sec:INVARIANTS_1}
+
+The discretization of pimitive equation in $s$-coordinate (\ie\ time and space varying vertical coordinate)
+must be chosen so that the discrete equation of the model satisfy integral constrains on energy and enstrophy.
+
+Let us first establish those constraint in the continuous world.
+The total energy (\ie\ kinetic plus potential energies) is conserved:
+\begin{flalign}
+  \label{eq:INVARIANTS_Tot_Energy}
+  \partial_t \left( \int_D \left( \frac{1}{2} {\textbf{U}_h}^2 +  \rho \, g \, z \right) \;dv \right)  = & 0
+\end{flalign}
+under the following assumptions: no dissipation, no forcing (wind, buoyancy flux, atmospheric pressure variations),
+mass conservation, and closed domain.
+
+This equation can be transformed to obtain several sub-equalities.
+The transformation for the advection term depends on whether the vector invariant form or
+the flux form is used for the momentum equation.
+Using \autoref{eq:INVARIANTS_Q2_vect} and introducing \autoref{eq:SCOORD_dyn_vect} in
+\autoref{eq:INVARIANTS_Tot_Energy} for the former form and
+using \autoref{eq:INVARIANTS_Q2_flux} and introducing \autoref{eq:SCOORD_dyn_flux} in
+\autoref{eq:INVARIANTS_Tot_Energy} for the latter form leads to:
+
+% \label{eq:INVARIANTS_E_tot}
+advection term (vector invariant form):
+\[
+  % \label{eq:INVARIANTS_E_tot_vect_vor_1}
+  \int\limits_D  \zeta \; \left( \textbf{k} \times \textbf{U}_h  \right) \cdot \textbf{U}_h  \;  dv   = 0   \\
+\]
+\[
+  % \label{eq:INVARIANTS_E_tot_vect_adv_1}
+  \int\limits_D  \textbf{U}_h \cdot \nabla_h \left( \frac{{\textbf{U}_h}^2}{2} \right)     dv
+  + \int\limits_D  \textbf{U}_h \cdot \nabla_z \textbf{U}_h  \;dv
+  -  \int\limits_D { \frac{{\textbf{U}_h}^2}{2} \frac{1}{e_3} \partial_t e_3 \;dv }   = 0
+\]
+advection term (flux form):
+\[
+  % \label{eq:INVARIANTS_E_tot_flux_metric}
+  \int\limits_D  \frac{1} {e_1 e_2 } \left( v \,\partial_i e_2 - u \,\partial_j e_1  \right)\;
+  \left(  \textbf{k} \times \textbf{U}_h  \right) \cdot \textbf{U}_h  \;  dv   = 0
+\]
+\[
+  % \label{eq:INVARIANTS_E_tot_flux_adv}
+  \int\limits_D \textbf{U}_h \cdot     \left(                 {{
+        \begin{array} {*{20}c}
+          \nabla \cdot \left( \textbf{U}\,u \right) \hfill \\
+          \nabla \cdot \left( \textbf{U}\,v \right) \hfill
+        \end{array}}
+    }           \right)   \;dv
+  +   \frac{1}{2} \int\limits_D {  {\textbf{U}_h}^2 \frac{1}{e_3} \partial_t e_3 \;dv } =\;0
+\]
+coriolis term
+\[
+  % \label{eq:INVARIANTS_E_tot_cor}
+  \int\limits_D  f   \; \left( \textbf{k} \times \textbf{U}_h  \right) \cdot \textbf{U}_h  \;  dv   = 0
+\]
+pressure gradient:
+\[
+  % \label{eq:INVARIANTS_E_tot_pg_1}
+  - \int\limits_D  \left. \nabla p \right|_z \cdot \textbf{U}_h \;dv
+  = - \int\limits_D \nabla \cdot \left( \rho \,\textbf {U} \right)\;g\;z\;\;dv
+  + \int\limits_D g\, \rho \; \partial_t z  \;dv
+\]
+
+where $\nabla_h = \left. \nabla \right|_k$ is the gradient along the $s$-surfaces.
+
+blah blah....
+
+The prognostic ocean dynamics equation can be summarized as follows:
+\[
+  \text{NXT} = \dbinom	{\text{VOR} + \text{KEG} + \text {ZAD} }
+  {\text{COR} + \text{ADV}                       }
+  + \text{HPG} + \text{SPG} + \text{LDF} + \text{ZDF}
+\]
+
+Vector invariant form:
+% \label{eq:INVARIANTS_E_tot_vect}
+\[
+  % \label{eq:INVARIANTS_E_tot_vect_vor_2}
+  \int\limits_D   \textbf{U}_h \cdot \text{VOR} \;dv   = 0
+\]
+\[
+  % \label{eq:INVARIANTS_E_tot_vect_adv_2}
+  \int\limits_D  \textbf{U}_h \cdot \text{KEG}  \;dv
+  + \int\limits_D  \textbf{U}_h \cdot \text{ZAD}  \;dv
+  -  \int\limits_D { \frac{{\textbf{U}_h}^2}{2} \frac{1}{e_3} \partial_t e_3 \;dv }   = 0
+\]
+\[
+  % \label{eq:INVARIANTS_E_tot_pg_2}
+  - \int\limits_D  \textbf{U}_h \cdot (\text{HPG}+ \text{SPG}) \;dv
+  = - \int\limits_D \nabla \cdot \left( \rho \,\textbf {U} \right)\;g\;z\;\;dv
+  + \int\limits_D g\, \rho \; \partial_t z  \;dv
+\]
+
+Flux form:
+\begin{subequations}
+  \label{eq:INVARIANTS_E_tot_flux}
+  \[
+    % \label{eq:INVARIANTS_E_tot_flux_metric_2}
+    \int\limits_D  \textbf{U}_h \cdot \text {COR} \;  dv   = 0
+  \]
+  \[
+    % \label{eq:INVARIANTS_E_tot_flux_adv_2}
+    \int\limits_D \textbf{U}_h \cdot \text{ADV}   \;dv
+    +   \frac{1}{2} \int\limits_D {  {\textbf{U}_h}^2 \frac{1}{e_3} \partial_t e_3  \;dv } =\;0
+  \]
+  \begin{equation}
+    \label{eq:INVARIANTS_E_tot_pg_3}
+    - \int\limits_D  \textbf{U}_h \cdot (\text{HPG}+ \text{SPG}) \;dv
+    = - \int\limits_D \nabla \cdot \left( \rho \,\textbf {U} \right)\;g\;z\;\;dv
+    + \int\limits_D g\, \rho \; \partial_t  z  \;dv
+  \end{equation}
+\end{subequations}
+
+\autoref{eq:INVARIANTS_E_tot_pg_3} is the balance between the conversion KE to PE and PE to KE.
+Indeed the left hand side of \autoref{eq:INVARIANTS_E_tot_pg_3} can be transformed as follows:
+\begin{flalign*}
+  \partial_t  \left( \int\limits_D { \rho \, g \, z  \;dv} \right)
+  &= + \int\limits_D \frac{1}{e_3} \partial_t (e_3\,\rho) \;g\;z\;\;dv
+  +  \int\limits_D g\, \rho \; \partial_t z  \;dv   &&&\\
+  &= - \int\limits_D \nabla \cdot \left( \rho \,\textbf {U} \right)\;g\;z\;\;dv
+  + \int\limits_D g\, \rho \; \partial_t z \;dv   &&&\\
+  &= + \int\limits_D  \rho \,g \left( \textbf {U}_h \cdot \nabla_h z + \omega \frac{1}{e_3} \partial_k z \right)  \;dv
+  + \int\limits_D g\, \rho \; \partial_t z \;dv   &&&\\
+  &= + \int\limits_D  \rho \,g \left( \omega + \partial_t z + \textbf {U}_h \cdot \nabla_h z  \right)  \;dv  &&&\\
+  &=+  \int\limits_D g\, \rho \; w \; dv   &&&\\
+\end{flalign*}
+where the last equality is obtained by noting that the brackets is exactly the expression of $w$,
+the vertical velocity referenced to the fixe $z$-coordinate system (see \autoref{eq:SCOORD_w_s}).
+
+The left hand side of \autoref{eq:INVARIANTS_E_tot_pg_3} can be transformed as follows:
+\begin{flalign*}
+  - \int\limits_D  \left. \nabla p \right|_z & \cdot \textbf{U}_h \;dv
+  = - \int\limits_D  \left( \nabla_h p + \rho \, g \nabla_h z \right) \cdot \textbf{U}_h \;dv   &&&\\
+  \allowdisplaybreaks
+  &= - \int\limits_D  \nabla_h  p \cdot \textbf{U}_h \;dv   - \int\limits_D  \rho \, g \, \nabla_h z \cdot \textbf{U}_h \;dv   &&&\\
+  \allowdisplaybreaks
+  &= +\int\limits_D p \,\nabla_h \cdot \textbf{U}_h \;dv   + \int\limits_D  \rho \, g \left( \omega - w + \partial_t z \right) \;dv   &&&\\
+  \allowdisplaybreaks
+  &= -\int\limits_D p \left( \frac{1}{e_3} \partial_t e_3 + \frac{1}{e_3} \partial_k \omega  \right) \;dv
+  +\int\limits_D  \rho \, g \left( \omega - w + \partial_t z \right) \;dv   &&&\\
+  \allowdisplaybreaks
+  &= -\int\limits_D \frac{p}{e_3} \partial_t e_3  \;dv
+  +\int\limits_D \frac{1}{e_3} \partial_k p\; \omega \;dv
+  +\int\limits_D  \rho \, g \left( \omega - w + \partial_t z \right) \;dv   &&&\\
+  &= -\int\limits_D \frac{p}{e_3} \partial_t e_3  \;dv
+  -\int\limits_D \rho \, g \, \omega \;dv
+  +\int\limits_D  \rho \, g \left( \omega - w + \partial_t z \right) \;dv   &&&\\
+  &= - \int\limits_D \frac{p}{e_3} \partial_t e_3 \; \;dv
+  - \int\limits_D  \rho \, g \, w \;dv
+  + \int\limits_D   \rho \, g \, \partial_t z \;dv   &&&\\
+  \allowdisplaybreaks
+  \intertext{introducing the hydrostatic balance $\partial_k p=-\rho \,g\,e_3$ in the last term,
+    it becomes:}
+  &= - \int\limits_D \frac{p}{e_3} \partial_t e_3 \;dv
+  - \int\limits_D  \rho \, g \, w \;dv
+  - \int\limits_D  \frac{1}{e_3} \partial_k p\, \partial_t z \;dv   &&&\\
+  &= - \int\limits_D \frac{p}{e_3} \partial_t e_3 \;dv
+  - \int\limits_D  \rho \, g \, w \;dv
+  + \int\limits_D \,\frac{p}{e_3}\partial_t ( \partial_k z )  dv   &&&\\
+  %
+  &= - \int\limits_D  \rho \, g \, w \;dv   &&&\\
+\end{flalign*}
+
+%gm comment
+\cmtgm{
+The last equality comes from the following equation,
+\begin{flalign*}
+  \int\limits_D p \frac{1}{e_3} \frac{\partial e_3}{\partial t}\; \;dv
+  = \int\limits_D   \rho \, g \, \frac{\partial z }{\partial t} \;dv \quad,
+\end{flalign*}
+that can be demonstrated as follows:
+
+\begin{flalign*}
+  \int\limits_D   \rho \, g \, \frac{\partial z }{\partial t} \;dv
+  &= \int\limits_D    \rho \, g \, \frac{\partial \eta}{\partial t} \;dv
+  -  \int\limits_D    \rho \, g \, \frac{\partial}{\partial t} \left(  \int\limits_k^{k_s}  e_3 \;d\tilde{k} \right) \;dv   &&&\\
+  &= \int\limits_D    \rho \, g \, \frac{\partial \eta}{\partial t} \;dv
+  -  \int\limits_D    \rho \, g    \left(  \int\limits_k^{k_s}  \frac{\partial e_3}{\partial t} \;d\tilde{k} \right) \;dv   &&&\\
+  %
+  \allowdisplaybreaks
+  \intertext{The second term of the right hand side can be transformed by applying the integration by part rule:
+    $\left[ a\,b \right]_{k_b}^{k_s} = \int_{k_b}^{k_s}  a\,\frac{\partial b}{\partial k}       \;dk
+    + \int_{k_b}^{k_s}      \frac{\partial a}{\partial k} \,b \;dk $
+    to the following function: $a=  \int_k^{k_s}  \frac{\partial e_3}{\partial t} \;d\tilde{k}$
+    and $b=  \int_k^{k_s}  \rho \, e_3 \;d\tilde{k}$
+    (note that $\frac{\partial}{\partial k} \left(  \int_k^{k_s}  a \;d\tilde{k}  \right) = - a$ as $k$ is the lower bound of the integral).
+    This leads to:  }
+\end{flalign*}
+\begin{flalign*}
+  &\left[ \int\limits_{k}^{k_s}  \frac{\partial e_3}{\partial t} \,dk \cdot \int\limits_{k}^{k_s}  \rho \, e_3 \,dk   \right]_{k_b}^{k_s}
+  =-\int\limits_{k_b}^{k_s} \left(  \int\limits_k^{k_s}  \frac{\partial e_3}{\partial t} \;d\tilde{k} \right)  \rho \,e_3 \;dk
+  -\int\limits_{k_b}^{k_s}  \frac{\partial e_3}{\partial t}  \left(  \int\limits_k^{k_s}  \rho \, e_3 \;d\tilde{k} \right)   dk  &&&\\
+  \allowdisplaybreaks
+  \intertext{Noting that $\frac{\partial \eta}{\partial t}
+    = \frac{\partial}{\partial t}  \left( \int_{k_b}^{k_s}   e_3  \;d\tilde{k}  \right)
+    = \int_{k_b}^{k_s}  \frac{\partial e_3}{\partial t} \;d\tilde{k}$
+    and
+    $p(k) = \int_k^{k_s}  \rho \,g \, e_3 \;d\tilde{k} $,
+    but also that $\frac{\partial \eta}{\partial t}$ does not depends on $k$, it comes:
+  }
+  & - \int\limits_{k_b}^{k_s}  \rho \, \frac{\partial \eta}{\partial t} \, e_3 \;dk
+  = - \int\limits_{k_b}^{k_s} \left(  \int\limits_k^{k_s}  \frac{\partial e_3}{\partial t} \;d\tilde{k} \right)   \, \rho \, g   e_3\;dk
+  - \int\limits_{k_b}^{k_s}  \frac{\partial e_3}{\partial t} \frac{p}{g}         \;dk       &&&\\
+\end{flalign*}
+Mutliplying by $g$ and integrating over the $(i,j)$ domain it becomes:
+\begin{flalign*}
+  \int\limits_D  \rho \, g \, \left(  \int\limits_k^{k_s}  \frac{\partial e_3}{\partial t} \;d\tilde{k} \right)    \;dv
+  =  \int\limits_D  \rho \, g \, \frac{\partial \eta}{\partial t} dv
+  - \int\limits_D  \frac{p}{e_3}\frac{\partial e_3}{\partial t}         \;dv
+\end{flalign*}
+Using this property, we therefore have:
+\begin{flalign*}
+  \int\limits_D   \rho \, g \, \frac{\partial z }{\partial t} \;dv
+  &= \int\limits_D    \rho \, g \, \frac{\partial \eta}{\partial t}   \;dv
+  - \left(  \int\limits_D  \rho \, g \, \frac{\partial \eta}{\partial t} dv
+    - \int\limits_D  \frac{p}{e_3}\frac{\partial e_3}{\partial t}   \;dv  \right)    &&&\\
+  %
+  &=\int\limits_D \frac{p}{e_3} \frac{\partial (e_3\,\rho)}{\partial t}\; \;dv
+\end{flalign*}
+% end gm comment
+}
+
+%% =================================================================================================
+\section{Discrete total energy conservation: vector invariant form}
+\label{sec:INVARIANTS_2}
+
+%% =================================================================================================
+\subsection{Total energy conservation}
+\label{subsec:INVARIANTS_KE+PE_vect}
+
+The discrete form of the total energy conservation, \autoref{eq:INVARIANTS_Tot_Energy}, is given by:
+\begin{flalign*}
+  \partial_t  \left(  \sum\limits_{i,j,k} \biggl\{ \frac{u^2}{2} \,b_u + \frac{v^2}{2}\, b_v +  \rho \, g \, z_t \,b_t  \biggr\} \right) &=0
+\end{flalign*}
+which in vector invariant forms, it leads to:
+\begin{equation}
+  \label{eq:INVARIANTS_KE+PE_vect_discrete}
+  \begin{split}
+    \sum\limits_{i,j,k} \biggl\{   u\,                        \partial_t u         \;b_u
+    + v\,                        \partial_t v          \;b_v  \biggr\}
+    + \frac{1}{2} \sum\limits_{i,j,k} \biggl\{  \frac{u^2}{e_{3u}}\partial_t e_{3u} \;b_u
+    +  \frac{v^2}{e_{3v}}\partial_t e_{3v} \;b_v   \biggr\}      \\
+    = - \sum\limits_{i,j,k} \biggl\{ \frac{1}{e_{3t}}\partial_t (e_{3t} \rho) \, g \, z_t \;b_t  \biggr\}
+    - \sum\limits_{i,j,k} \biggl\{ \rho \,g\,\partial_t (z_t) \,b_t  \biggr\}
+  \end{split}
+\end{equation}
+
+Substituting the discrete expression of the time derivative of the velocity either in vector invariant,
+leads to the discrete equivalent of the four equations \autoref{eq:INVARIANTS_E_tot_flux}.
+
+%% =================================================================================================
+\subsection{Vorticity term (coriolis + vorticity part of the advection)}
+\label{subsec:INVARIANTS_vor}
+
+Let $q$, located at $f$-points, be either the relative ($q=\zeta / e_{3f}$),
+or the planetary ($q=f/e_{3f}$), or the total potential vorticity ($q=(\zeta +f) /e_{3f}$).
+Two discretisation of the vorticity term (ENE and EEN) allows the conservation of the kinetic energy.
+%% =================================================================================================
+\subsubsection{Vorticity term with ENE scheme (\protect\np[=.true.]{ln_dynvor_ene}{ln\_dynvor\_ene})}
+\label{subsec:INVARIANTS_vorENE}
+
+For the ENE scheme, the two components of the vorticity term are given by:
+\[
+  - e_3 \, q \;{\textbf{k}}\times {\textbf {U}}_h    \equiv
+  \left( {{
+        \begin{array} {*{20}c}
+          + \frac{1} {e_{1u}} \;
+          \overline {\, q \ \overline {\left( e_{1v}\,e_{3v}\,v \right)}^{\,i+1/2}} ^{\,j}        \hfill \\
+          - \frac{1} {e_{2v}} \;
+          \overline {\, q \ \overline {\left( e_{2u}\,e_{3u}\,u \right)}^{\,j+1/2}} ^{\,i}       \hfill
+        \end{array}
+      } }    \right)
+\]
+
+This formulation does not conserve the enstrophy but it does conserve the total kinetic energy.
+Indeed, the kinetic energy tendency associated to the vorticity term and
+averaged over the ocean domain can be transformed as follows:
+\begin{flalign*}
+  &\int\limits_D -  \left(  e_3 \, q \;\textbf{k} \times \textbf{U}_h  \right) \cdot \textbf{U}_h  \;  dv &&  \\
+  & \qquad \qquad
+  {
+    \begin{array}{*{20}l}
+      &\equiv \sum\limits_{i,j,k} 	\biggl\{
+        \frac{1} {e_{1u}} \overline { \,q\ \overline{ V }^{\,i+1/2}} ^{\,j} \, u \; b_u
+        - \frac{1} {e_{2v}}\overline { \, q\ \overline{ U }^{\,j+1/2}} ^{\,i} \, v \; b_v \; \biggr\}    \\
+      &\equiv  \sum\limits_{i,j,k} 	\biggl\{
+        \overline { \,q\ \overline{ V }^{\,i+1/2}}^{\,j} \; U
+        - \overline { \,q\ \overline{ U }^{\,j+1/2}}^{\,i} \; V  \; \biggr\}     \\
+      &\equiv \sum\limits_{i,j,k} q \  \biggl\{  \overline{ V }^{\,i+1/2}\; \overline{ U }^{\,j+1/2}
+        - \overline{ U }^{\,j+1/2}\; \overline{ V }^{\,i+1/2}         \biggr\}  \quad  \equiv 0
+    \end{array}
+  }
+\end{flalign*}
+In other words, the domain averaged kinetic energy does not change due to the vorticity term.
+
+%% =================================================================================================
+\subsubsection{Vorticity term with EEN scheme (\protect\np[=.true.]{ln_dynvor_een}{ln\_dynvor\_een})}
+\label{subsec:INVARIANTS_vorEEN_vect}
+
+With the EEN scheme, the vorticity terms are represented as:
+\begin{equation}
+  \label{eq:INVARIANTS_dynvor_een1}
+  \left\{ {
+      \begin{aligned}
+        +q\,e_3 \, v 	&\equiv +\frac{1}{e_{1u} }   \sum_{\substack{i_p,\,k_p}}
+        {^{i+1/2-i_p}_j}  \mathbb{Q}^{i_p}_{j_p}  \left( e_{1v} e_{3v} \ v  \right)^{i+i_p-1/2}_{j+j_p}   \\
+        - q\,e_3 \, u     &\equiv -\frac{1}{e_{2v} }    \sum_{\substack{i_p,\,k_p}}
+        {^i_{j+1/2-j_p}}  \mathbb{Q}^{i_p}_{j_p}  \left( e_{2u} e_{3u} \ u  \right)^{i+i_p}_{j+j_p-1/2}
+      \end{aligned}
+    } \right.
+\end{equation}
+where the indices $i_p$ and $j_p$ take the following value: $i_p = -1/2$ or $1/2$ and $j_p = -1/2$ or $1/2$,
+and the vorticity triads, ${^i_j}\mathbb{Q}^{i_p}_{j_p}$, defined at $T$-point, are given by:
+\begin{equation}
+  \label{eq:INVARIANTS_Q_triads}
+  _i^j \mathbb{Q}^{i_p}_{j_p}
+  = \frac{1}{12} \ \left(   q^{i-i_p}_{j+j_p} + q^{i+j_p}_{j+i_p} + q^{i+i_p}_{j-j_p}  \right)
+\end{equation}
+
+This formulation does conserve the total kinetic energy.
+Indeed,
+\begin{flalign*}
+  &\int\limits_D - \textbf{U}_h \cdot   \left(  \zeta \;\textbf{k} \times \textbf{U}_h  \right)  \;  dv &&  \\
+  \equiv \sum\limits_{i,j,k} &	\biggl\{
+  \left[  \sum_{\substack{i_p,\,k_p}}
+    {^{i+1/2-i_p}_j}\mathbb{Q}^{i_p}_{j_p} \; V^{i+1/2-i_p}_{j+j_p} \right] U^{i+1/2}_{j}    %   &&\\
+  - \left[  \sum_{\substack{i_p,\,k_p}}
+    {^i_{j+1/2-j_p}}\mathbb{Q}^{i_p}_{j_p} \; U^{i+i_p}_{j+1/2-j_p}  \right] V^{i}_{j+1/2}    \biggr\}     && \\ \\
+  \equiv \sum\limits_{i,j,k} &  \sum_{\substack{i_p,\,k_p}} \biggl\{  \ \
+  {^{i+1/2-i_p}_j}\mathbb{Q}^{i_p}_{j_p} \; V^{i+1/2-i_p}_{j+j_p}  \, U^{i+1/2}_{j}     %  &&\\
+  - {^i_{j+1/2-j_p}}\mathbb{Q}^{i_p}_{j_p} \; U^{i+i_p}_{j+1/2-j_p} \, V^{i}_{j+1/2}     \ \;     \biggr\}     &&  \\
+  %
+  \allowdisplaybreaks
+  \intertext{ Expending the summation on $i_p$ and $k_p$, it becomes:}
+  %
+  \equiv \sum\limits_{i,j,k} & \biggl\{  \ \
+  {^{i+1}_j     }\mathbb{Q}^{-1/2}_{+1/2} \;V^{i+1}_{j+1/2} \; U^{\,i+1/2}_{j}
+  -  {^i_{j}\quad}\mathbb{Q}^{-1/2}_{+1/2} \; U^{i-1/2}_{j}    \; V^{\,i}_{j+1/2}         &&  \\
+  &       + {^{i+1}_j     }\mathbb{Q}^{-1/2}_{-1/2} \; V^{i+1}_{j-1/2} \; U^{\,i+1/2}_{j}
+  - {^i_{j+1}     }\mathbb{Q}^{-1/2}_{-1/2} \; U^{i-1/2}_{j+1} \; V^{\,i}_{j+1/2}        \biggr.     &&  \\
+  &       + {^{i}_j\quad}\mathbb{Q}^{+1/2}_{+1/2} \; V^{i}_{j+1/2}   \; U^{\,i+1/2}_{j}
+  - {^i_{j}\quad}\mathbb{Q}^{+1/2}_{+1/2} \; U^{i+1/2}_{j}   \; V^{\,i}_{j+1/2}          \biggr.        &&  \\
+  &       + {^{i}_j\quad}\mathbb{Q}^{+1/2}_{-1/2} \; V^{i}_{j-1/2}     \; U^{\,i+1/2}_{j}
+  -  {^i_{j+1}     }\mathbb{Q}^{+1/2}_{-1/2} \; U^{i+1/2}_{j+1}\; V^{\,i}_{j+1/2}  \ \;     \biggr\}     &&  \\
+  %
+  \allowdisplaybreaks
+  \intertext{The summation is done over all $i$ and $j$ indices, it is therefore possible to introduce
+    a shift of $-1$ either in $i$ or $j$ direction in some of the term of the summation (first term of the
+    first and second lines, second term of the second and fourth lines). By doning so, we can regroup
+    all the terms of the summation by triad at a ($i$,$j$) point. In other words, we regroup all the terms
+    in the neighbourhood  that contain a triad at the same ($i$,$j$) indices. It becomes: }
+  \allowdisplaybreaks
+  %
+  \equiv \sum\limits_{i,j,k} & \biggl\{  \ \
+  {^{i}_j}\mathbb{Q}^{-1/2}_{+1/2}  \left[  V^{i}_{j+1/2}\, U^{\,i-1/2}_{j}
+    -  U^{i-1/2}_{j} \, V^{\,i}_{j+1/2}      \right]    &&  \\
+  &       + {^{i}_j}\mathbb{Q}^{-1/2}_{-1/2}  \left[  V^{i}_{j-1/2} \, U^{\,i-1/2}_{j}
+    -    U^{i-1/2}_{j} \, V^{\,i}_{j-1/2}      \right]    \biggr.   &&  \\
+  &      + {^{i}_j}\mathbb{Q}^{+1/2}_{+1/2}  \left[  V^{i}_{j+1/2} \, U^{\,i+1/2}_{j}
+    -    U^{i+1/2}_{j} \, V^{\,i}_{j+1/2}     \right]  \biggr.  &&  \\
+  &     + {^{i}_j}\mathbb{Q}^{+1/2}_{-1/2}  \left[   V^{i}_{j-1/2} \, U^{\,i+1/2}_{j}
+    -    U^{i+1/2}_{j-1} \, V^{\,i}_{j-1/2}  \right]  \ \;   \biggr\}   \qquad
+  \equiv \ 0   &&
+\end{flalign*}
+
+%% =================================================================================================
+\subsubsection{Gradient of kinetic energy / Vertical advection}
+\label{subsec:INVARIANTS_zad}
+
+The change of Kinetic Energy (KE) due to the vertical advection is exactly balanced by the change of KE due to the horizontal gradient of KE~:
+\[
+  \int_D \textbf{U}_h \cdot \frac{1}{e_3 } \omega \partial_k \textbf{U}_h \;dv
+  =  -   \int_D \textbf{U}_h \cdot \nabla_h \left( \frac{1}{2}\;{\textbf{U}_h}^2 \right)\;dv
+  +   \frac{1}{2} \int_D {  \frac{{\textbf{U}_h}^2}{e_3} \partial_t ( e_3) \;dv }
+\]
+Indeed, using successively \autoref{eq:DOM_di_adj} (\ie\ the skew symmetry property of the $\delta$ operator)
+and the continuity equation, then \autoref{eq:DOM_di_adj} again,
+then the commutativity of operators $\overline {\,\cdot \,}$ and $\delta$, and finally \autoref{eq:DOM_mi_adj}
+(\ie\ the symmetry property of the $\overline {\,\cdot \,}$ operator)
+applied in the horizontal and vertical directions, it becomes:
+\begin{flalign*}
+  & - \int_D \textbf{U}_h \cdot \text{KEG}\;dv
+  = - \int_D \textbf{U}_h \cdot \nabla_h \left( \frac{1}{2}\;{\textbf{U}_h}^2 \right)\;dv    &&&\\
+  %
+  \equiv  & -  \sum\limits_{i,j,k} \frac{1}{2}  \biggl\{
+  \frac{1} {e_{1u}}  \delta_{i+1/2}   \left[   \overline {u^2}^{\,i} + \overline {v^2}^{\,j}   \right]  u \ b_u
+  + \frac{1} {e_{2v}}  \delta_{j+1/2}   \left[   \overline {u^2}^{\,i} + \overline {v^2}^{\,j}   \right]  v \ b_v   \biggr\}  	&&&  \\
+  %
+  \equiv & + \sum\limits_{i,j,k} \frac{1}{2}  \left(   \overline {u^2}^{\,i} + \overline {v^2}^{\,j}   \right)\;
+  \biggl\{ \delta_{i} \left[  U   \right] +  \delta_{j} \left[  V  \right]    \biggr\}       &&&  \\
+  \allowdisplaybreaks
+  %
+  \equiv   & - \sum\limits_{i,j,k}  \frac{1}{2}
+  \left(       \overline {u^2}^{\,i} + \overline {v^2}^{\,j}   \right)  \;
+  \biggl\{   \frac{b_t}{e_{3t}} \partial_t (e_{3t})  +  \delta_k \left[  W   \right]    \biggr\}    &&&\\
+  \allowdisplaybreaks
+  %
+  \equiv & +  \sum\limits_{i,j,k} \frac{1}{2} \delta_{k+1/2}   \left[ \overline{ u^2}^{\,i} + \overline{ v^2}^{\,j}   \right] \;  W
+  -  \sum\limits_{i,j,k} \frac{1}{2} \left(   \overline {u^2}^{\,i} + \overline {v^2}^{\,j}   \right) \;\partial_t b_t   &&& \\
+  \allowdisplaybreaks
+  %
+  \equiv   & + \sum\limits_{i,j,k} \frac{1} {2} \left(    \overline{\delta_{k+1/2} \left[ u^2 \right]}^{\,i}
+    + \overline{\delta_{k+1/2} \left[ v^2 \right]}^{\,j}    \right) \; W
+  -  \sum\limits_{i,j,k}  \left(  \frac{u^2}{2}\,\partial_t \overline{b_t}^{\,{i+1/2}}
+    + \frac{v^2}{2}\,\partial_t \overline{b_t}^{\,{j+1/2}}   \right)    &&& \\
+  \allowdisplaybreaks
+  \intertext{Assuming that $b_u= \overline{b_t}^{\,i+1/2}$ and $b_v= \overline{b_t}^{\,j+1/2}$, or at least that the time
+    derivative of these two equations is satisfied, it becomes:}
+  %
+  \equiv &     \sum\limits_{i,j,k} \frac{1} {2}
+  \biggl\{ \; \overline{W}^{\,i+1/2}\;\delta_{k+1/2} \left[ u^2 \right]
+  + \overline{W}^{\,j+1/2}\;\delta_{k+1/2} \left[ v^2 \right]  \;  \biggr\}
+  -  \sum\limits_{i,j,k}  \left(  \frac{u^2}{2}\,\partial_t b_u
+    + \frac{v^2}{2}\,\partial_t b_v   \right)    &&& \\
+  \allowdisplaybreaks
+  %
+  \equiv &     \sum\limits_{i,j,k}
+  \biggl\{ \; \overline{W}^{\,i+1/2}\; \overline {u}^{\,k+1/2}\; \delta_{k+1/2}[ u ]
+  + \overline{W}^{\,j+1/2}\; \overline {v}^{\,k+1/2}\; \delta_{k+1/2}[ v ]  \;  \biggr\}
+  -  \sum\limits_{i,j,k}  \left(  \frac{u^2}{2}\,\partial_t b_u
+    + \frac{v^2}{2}\,\partial_t b_v   \right)    &&& \\
+  %
+  \allowdisplaybreaks
+  \equiv  &  \sum\limits_{i,j,k}
+  \biggl\{ \; \frac{1} {b_u } \; \overline { \overline{W}^{\,i+1/2}\,\delta_{k+1/2}  \left[ u \right] }^{\,k} \;u\;b_u
+  + \frac{1} {b_v } \; \overline { \overline{W}^{\,j+1/2} \delta_{k+1/2}  \left[ v \right]  }^{\,k} \;v\;b_v  \; \biggr\}
+  -  \sum\limits_{i,j,k}  \left(  \frac{u^2}{2}\,\partial_t b_u
+    + \frac{v^2}{2}\,\partial_t b_v   \right)    &&& \\
+  %
+  \intertext{The first term provides the discrete expression for the vertical advection of momentum (ZAD),
+    while the second term corresponds exactly to \autoref{eq:INVARIANTS_KE+PE_vect_discrete}, therefore:}
+  \equiv&                   \int\limits_D \textbf{U}_h \cdot \text{ZAD} \;dv
+  + \frac{1}{2} \int_D { {\textbf{U}_h}^2 \frac{1}{e_3} \partial_t  (e_3)  \;dv }    &&&\\
+  \equiv&                   \int\limits_D \textbf{U}_h \cdot w \partial_k \textbf{U}_h \;dv
+  + \frac{1}{2} \int_D { {\textbf{U}_h}^2 \frac{1}{e_3} \partial_t  (e_3)  \;dv }    &&&\\
+\end{flalign*}
+
+There is two main points here.
+First, the satisfaction of this property links the choice of the discrete formulation of the vertical advection and
+of the horizontal gradient of KE.
+Choosing one imposes the other.
+For example KE can also be discretized as $1/2\,({\overline u^{\,i}}^2 + {\overline v^{\,j}}^2)$.
+This leads to the following expression for the vertical advection:
+\[
+  \frac{1} {e_3 }\; \omega\; \partial_k \textbf{U}_h
+  \equiv \left( {{
+        \begin{array} {*{20}c}
+          \frac{1} {e_{1u}\,e_{2u}\,e_{3u}} \;  \overline{\overline {e_{1t}\,e_{2t} \,\omega\;\delta_{k+1/2}
+          \left[ \overline u^{\,i+1/2} \right]}}^{\,i+1/2,k}  \hfill \\
+          \frac{1} {e_{1v}\,e_{2v}\,e_{3v}} \;   \overline{\overline {e_{1t}\,e_{2t} \,\omega \;\delta_{k+1/2}
+          \left[ \overline v^{\,j+1/2} \right]}}^{\,j+1/2,k} \hfill
+        \end{array}
+      } } \right)
+\]
+a formulation that requires an additional horizontal mean in contrast with the one used in \NEMO.
+Nine velocity points have to be used instead of 3.
+This is the reason why it has not been chosen.
+
+Second, as soon as the chosen $s$-coordinate depends on time,
+an extra constraint arises on the time derivative of the volume at $u$- and $v$-points:
+\begin{flalign*}
+  e_{1u}\,e_{2u}\,\partial_t (e_{3u}) =\overline{ e_{1t}\,e_{2t}\;\partial_t (e_{3t}) }^{\,i+1/2}    \\
+  e_{1v}\,e_{2v}\,\partial_t (e_{3v})  =\overline{ e_{1t}\,e_{2t}\;\partial_t (e_{3t}) }^{\,j+1/2}
+\end{flalign*}
+which is (over-)satified by defining the vertical scale factor as follows:
+\begin{flalign*}
+  % \label{eq:INVARIANTS_e3u-e3v}
+  e_{3u} = \frac{1}{e_{1u}\,e_{2u}}\;\overline{ e_{1t}^{ }\,e_{2t}^{ }\,e_{3t}^{ } }^{\,i+1/2}    \\
+  e_{3v} = \frac{1}{e_{1v}\,e_{2v}}\;\overline{ e_{1t}^{ }\,e_{2t}^{ }\,e_{3t}^{ } }^{\,j+1/2}
+\end{flalign*}
+
+Blah blah required on the the step representation of bottom topography.....
+
+%% =================================================================================================
+\subsection{Pressure gradient term}
+\label{subsec:INVARIANTS_2.6}
+
+\cmtgm{
+  A pressure gradient has no contribution to the evolution of the vorticity as the curl of a gradient is zero.
+  In the $z$-coordinate, this property is satisfied locally on a C-grid with 2nd order finite differences
+  (property \autoref{eq:DOM_curl_grad}).
+}
+
+When the equation of state is linear
+(\ie\ when an advection-diffusion equation for density can be derived from those of temperature and salinity)
+the change of KE due to the work of pressure forces is balanced by
+the change of potential energy due to buoyancy forces:
+\[
+  - \int_D  \left. \nabla p \right|_z \cdot \textbf{U}_h \;dv
+  = - \int_D \nabla \cdot \left( \rho \,\textbf {U} \right) \,g\,z \;dv
+  + \int_D g\, \rho \; \partial_t (z)  \;dv
+\]
+
+This property can be satisfied in a discrete sense for both $z$- and $s$-coordinates.
+Indeed, defining the depth of a $T$-point, $z_t$,
+as the sum of the vertical scale factors at $w$-points starting from the surface,
+the work of pressure forces can be written as:
+\begin{flalign*}
+  &- \int_D  \left. \nabla p \right|_z \cdot \textbf{U}_h \;dv
+  \equiv \sum\limits_{i,j,k} \biggl\{ \;  - \frac{1} {e_{1u}}   \Bigl(
+  \delta_{i+1/2} [p_t] - g\;\overline \rho^{\,i+1/2}\;\delta_{i+1/2} [z_t]     \Bigr)  \; u\;b_u && \\
+  & \qquad \qquad  \qquad \qquad  \qquad \quad \ \,
+  - \frac{1} {e_{2v}}    \Bigl(
+  \delta_{j+1/2} [p_t] - g\;\overline \rho^{\,j+1/2}\delta_{j+1/2} [z_t]      \Bigr)  \; v\;b_v \;  \biggr\}   && \\
+  %
+  \allowdisplaybreaks
+  \intertext{Using successively \autoref{eq:DOM_di_adj}, \ie\ the skew symmetry property of
+    the $\delta$ operator, \autoref{eq:DYN_wzv}, the continuity equation, \autoref{eq:DYN_hpg_sco},
+    the hydrostatic equation in the $s$-coordinate, and $\delta_{k+1/2} \left[ z_t \right] \equiv e_{3w} $,
+    which comes from the definition of $z_t$, it becomes: }
+  \allowdisplaybreaks
+  %
+  \equiv& +  \sum\limits_{i,j,k}   g  \biggl\{
+  \overline\rho^{\,i+1/2}\,U\,\delta_{i+1/2}[z_t]
+  +  	\overline\rho^{\,j+1/2}\,V\,\delta_{j+1/2}[z_t]
+  +\Bigl(  \delta_i[U] + \delta_j [V]  \Bigr)\;\frac{p_t}{g} \biggr\}  &&\\
+  %
+  \equiv& +  \sum\limits_{i,j,k}   g   \biggl\{
+  \overline\rho^{\,i+1/2}\,U\,\delta_{i+1/2}[z_t]
+  +  	\overline\rho^{\,j+1/2}\,V\,\delta_{j+1/2}[z_t]
+  -       \left(   \frac{b_t}{e_{3t}} \partial_t (e_{3t})  +  \delta_k \left[ W \right]    \right) \frac{p_t}{g}    \biggr\}   &&&\\
+  %
+  \equiv& +  \sum\limits_{i,j,k}  g   \biggl\{
+  \overline\rho^{\,i+1/2}\,U\,\delta_{i+1/2}[z_t]
+  +  	\overline\rho^{\,j+1/2}\,V\,\delta_{j+1/2}[z_t]
+  +	\frac{W}{g}\;\delta_{k+1/2} [p_t]
+  -        \frac{p_t}{g}\,\partial_t b_t    \biggr\}    &&&\\
+  %
+  \equiv& +  \sum\limits_{i,j,k}  g   \biggl\{
+  \overline\rho^{\,i+1/2}\,U\,\delta_{i+1/2}[z_t]
+  +  	\overline\rho^{\,j+1/2}\,V\,\delta_{j+1/2}[z_t]
+  - 	W\;e_{3w} \overline \rho^{\,k+1/2}
+  -        \frac{p_t}{g}\,\partial_t b_t    \biggr\}    &&&\\
+  %
+  \equiv& +  \sum\limits_{i,j,k}    g   \biggl\{
+  \overline\rho^{\,i+1/2}\,U\,\delta_{i+1/2}[z_t]
+  +  	\overline\rho^{\,j+1/2}\,V\,\delta_{j+1/2}[z_t]
+  + 	W\; \overline \rho^{\,k+1/2}\;\delta_{k+1/2} [z_t]
+  -        \frac{p_t}{g}\,\partial_t b_t    \biggr\}    &&&\\
+  %
+  \allowdisplaybreaks
+  %
+  \equiv& - \sum\limits_{i,j,k}   g \; z_t      \biggl\{
+  \delta_i 	\left[ U\;	\overline \rho^{\,i+1/2} 	\right]
+  + 	\delta_j 	\left[ V\;	\overline \rho^{\,j+1/2} 	\right]
+  + 	\delta_k 	\left[ W\;	\overline \rho^{\,k+1/2} 	\right]       \biggr\}
+  - \sum\limits_{i,j,k}       \biggl\{ p_t\;\partial_t b_t    \biggr\}   &&&\\
+  %
+  \equiv& + \sum\limits_{i,j,k}   g \; z_t    \biggl\{      \partial_t ( e_{3t} \,\rho)    \biggr\}  \; b_t
+  -  \sum\limits_{i,j,k}                 \biggl\{  p_t\;\partial_t b_t                     \biggr\}              &&&\\
+  %
+\end{flalign*}
+The first term is exactly the first term of the right-hand-side of \autoref{eq:INVARIANTS_KE+PE_vect_discrete}.
+It remains to demonstrate that the last term,
+which is obviously a discrete analogue of $\int_D \frac{p}{e_3} \partial_t (e_3)\;dv$ is equal to
+the last term of \autoref{eq:INVARIANTS_KE+PE_vect_discrete}.
+In other words, the following property must be satisfied:
+\begin{flalign*}
+  \sum\limits_{i,j,k}  \biggl\{  p_t\;\partial_t b_t                  \biggr\}
+  \equiv  \sum\limits_{i,j,k}  \biggl\{ \rho \,g\,\partial_t (z_t) \,b_t  \biggr\}
+\end{flalign*}
+
+Let introduce $p_w$ the pressure at $w$-point such that $\delta_k [p_w] = - \rho \,g\,e_{3t}$.
+The right-hand-side of the above equation can be transformed as follows:
+
+\begin{flalign*}
+  \sum\limits_{i,j,k}  \biggl\{ \rho \,g\,\partial_t (z_t) \,b_t  \biggr\}
+  &\equiv   - \sum\limits_{i,j,k}  \biggl\{ \delta_k [p_w]\,\partial_t (z_t) \,e_{1t}\,e_{2t}  \biggr\}        &&&\\
+  %
+  &\equiv  + \sum\limits_{i,j,k}  \biggl\{  p_w\, \delta_{k+1/2} [\partial_t (z_t)] \,e_{1t}\,e_{2t}  \biggr\}
+  \equiv  + \sum\limits_{i,j,k}  \biggl\{  p_w\, \partial_t (e_{3w}) \,e_{1t}\,e_{2t}  \biggr\}        &&&\\
+  &\equiv  + \sum\limits_{i,j,k}  \biggl\{  p_w\, \partial_t (b_w) \biggr\}
+  %
+  % & \equiv     \sum\limits_{i,j,k} \biggl\{  \frac{1}{e_{3t}} \delta_k [p_w]\;\partial_t (z_t) \,b_w   \right)   \biggr\}           &&&\\
+  % & \equiv     \sum\limits_{i,j,k} \biggl\{   p_w\;\partial_t \left(    \delta_k [z_t]   \right)  e_{1w}\,e_{2w}   \biggr\}           &&&\\
+  % & \equiv     \sum\limits_{i,j,k} \biggl\{   p_w\;\partial_t b_w   \biggr\}
+\end{flalign*}
+therefore, the balance to be satisfied is:
+\begin{flalign*}
+  \sum\limits_{i,j,k}  \biggl\{  p_t\;\partial_t (b_t) \biggr\}  \equiv  \sum\limits_{i,j,k}  \biggl\{  p_w\, \partial_t (b_w) \biggr\}
+\end{flalign*}
+which is a purely vertical balance:
+\begin{flalign*}
+  \sum\limits_{k}  \biggl\{  p_t\;\partial_t (e_{3t}) \biggr\}  \equiv  \sum\limits_{k}  \biggl\{  p_w\, \partial_t (e_{3w}) \biggr\}
+\end{flalign*}
+Defining $p_w = \overline{p_t}^{\,k+1/2}$
+
+%gm comment
+\cmtgm{
+  \begin{flalign*}
+    \sum\limits_{i,j,k} \biggl\{   p_t\;\partial_t b_t   \biggr\}                                &&&\\
+    %
+    & \equiv     \sum\limits_{i,j,k} \biggl\{  \frac{1}{e_{3t}} \delta_k [p_w]\;\partial_t (z_t) \,b_w    \biggr\}           &&&\\
+    & \equiv     \sum\limits_{i,j,k} \biggl\{   p_w\;\partial_t \left(    \delta_{k+1/2} [z_t]   \right)  e_{1w}\,e_{2w}   \biggr\}           &&&\\
+    & \equiv     \sum\limits_{i,j,k} \biggl\{   p_w\;\partial_t b_w   \biggr\}
+  \end{flalign*}
+
+  \begin{flalign*}
+    \int\limits_D   \rho \, g \, \frac{\partial z }{\partial t} \;dv
+    \equiv&  \sum\limits_{i,j,k}   \biggl\{  \frac{1}{e_{3t}} \frac{\partial e_{3t}}{\partial t} p   \biggr\} \; b_t   &&&\\
+    \equiv&  \sum\limits_{i,j,k}   \biggl\{      \biggr\} \; b_t   &&&\\
+  \end{flalign*}
+
+  %
+  \begin{flalign*}
+    \equiv& - \int_D \nabla \cdot \left( \rho \,\textbf {U} \right)\;g\;z\;\;dv
+    + \int\limits_D g\, \rho \; \frac{\partial z}{\partial t}  \;dv     &&& \\
+  \end{flalign*}
+  %
+}
+%end gm comment
+
+Note that this property strongly constrains the discrete expression of both the depth of $T-$points and
+of the term added to the pressure gradient in the $s$-coordinate.
+Nevertheless, it is almost never satisfied since a linear equation of state is rarely used.
+
+%% =================================================================================================
+\section{Discrete total energy conservation: flux form}
+\label{sec:INVARIANTS_3}
+
+%% =================================================================================================
+\subsection{Total energy conservation}
+\label{subsec:INVARIANTS_KE+PE_flux}
+
+The discrete form of the total energy conservation, \autoref{eq:INVARIANTS_Tot_Energy}, is given by:
+\begin{flalign*}
+  \partial_t \left(  \sum\limits_{i,j,k} \biggl\{ \frac{u^2}{2} \,b_u + \frac{v^2}{2}\, b_v +  \rho \, g \, z_t \,b_t  \biggr\} \right) &=0  \\
+\end{flalign*}
+which in flux form, it leads to:
+\begin{flalign*}
+  \sum\limits_{i,j,k} \biggl\{  \frac{u    }{e_{3u}}\,\frac{\partial (e_{3u}u)}{\partial t} \,b_u
+  +  \frac{v    }{e_{3v}}\,\frac{\partial (e_{3v}v)}{\partial t} \,b_v  \biggr\}
+  &  -  \frac{1}{2} \sum\limits_{i,j,k} \biggl\{  \frac{u^2}{e_{3u}}\frac{\partial    e_{3u}    }{\partial t} \,b_u
+  +  \frac{v^2}{e_{3v}}\frac{\partial    e_{3v}    }{\partial t} \,b_v   \biggr\} \\
+  &= - \sum\limits_{i,j,k} \biggl\{ \frac{1}{e_3t}\frac{\partial e_{3t} \rho}{\partial t} \, g \, z_t \,b_t  \biggr\}
+  - \sum\limits_{i,j,k} \biggl\{ \rho \,g\,\frac{\partial z_t}{\partial t} \,b_t  \biggr\} \\
+\end{flalign*}
+
+Substituting the discrete expression of the time derivative of the velocity either in
+vector invariant or in flux form, leads to the discrete equivalent of the ????
+
+%% =================================================================================================
+\subsection{Coriolis and advection terms: flux form}
+\label{subsec:INVARIANTS_3.2}
+
+%% =================================================================================================
+\subsubsection{Coriolis plus ``metric'' term}
+\label{subsec:INVARIANTS_3.3}
+
+In flux from the vorticity term reduces to a Coriolis term in which
+the Coriolis parameter has been modified to account for the ``metric'' term.
+This altered Coriolis parameter is discretised at an f-point.
+It is given by:
+\[
+  f+\frac{1} {e_1 e_2 } \left( v \frac{\partial e_2 } {\partial i} - u \frac{\partial e_1 } {\partial j}\right)\;
+  \equiv \;
+  f+\frac{1} {e_{1f}\,e_{2f}} \left( \overline v^{\,i+1/2} \delta_{i+1/2} \left[ e_{2u} \right]
+    -\overline u^{\,j+1/2} \delta_{j+1/2} \left[ e_{1u}  \right] \right)
+\]
+
+Either the ENE or EEN scheme is then applied to obtain the vorticity term in flux form.
+It therefore conserves the total KE.
+The derivation is the same as for the vorticity term in the vector invariant form (\autoref{subsec:INVARIANTS_vor}).
+
+%% =================================================================================================
+\subsubsection{Flux form advection}
+\label{subsec:INVARIANTS_3.4}
+
+The flux form operator of the momentum advection is evaluated using
+a centered second order finite difference scheme.
+Because of the flux form, the discrete operator does not contribute to the global budget of linear momentum.
+Because of the centered second order scheme, it conserves the horizontal kinetic energy, that is:
+
+\begin{equation}
+  \label{eq:INVARIANTS_ADV_KE_flux}
+  -  \int_D \textbf{U}_h \cdot     \left(                 {{
+        \begin{array} {*{20}c}
+          \nabla \cdot \left( \textbf{U}\,u \right) \hfill \\
+          \nabla \cdot \left( \textbf{U}\,v \right) \hfill \\
+        \end{array}
+      } }           \right)   \;dv
+  -   \frac{1}{2} \int_D {  {\textbf{U}_h}^2 \frac{1}{e_3} \frac{\partial  e_3 }{\partial t} \;dv } =\;0
+\end{equation}
+
+Let us first consider the first term of the scalar product
+(\ie\ just the the terms associated with the i-component of the advection):
+\begin{flalign*}
+  &  - \int_D u \cdot \nabla \cdot \left(   \textbf{U}\,u   \right) \; dv   \\
+  %
+  \equiv& - \sum\limits_{i,j,k} \biggl\{    \frac{1} {b_u}    \biggl(
+  \delta_{i+1/2}  \left[   \overline {U}^{\,i}      \;\overline u^{\,i}          \right]
+  + \delta_j           \left[   \overline {V}^{\,i+1/2}\;\overline u^{\,j+1/2}   \right]
+  + \delta_k          \left[   \overline {W}^{\,i+1/2}\;\overline u^{\,k+1/2} \right]  \biggr)   \;   \biggr\} \, b_u \;u &&&  \\
+  %
+  \equiv& - \sum\limits_{i,j,k}
+  \biggl\{
+  \delta_{i+1/2} \left[   \overline {U}^{\,i}\;  \overline u^{\,i}  \right]
+  + \delta_j          \left[   \overline {V}^{\,i+1/2}\;\overline u^{\,j+1/2}   \right]
+  + \delta_k         \left[   \overline {W}^{\,i+12}\;\overline u^{\,k+1/2}  \right]
+  \; \biggr\} \; u     \\
+  %
+  \equiv& + \sum\limits_{i,j,k}
+  \biggl\{
+  \overline {U}^{\,i}\;	\overline u^{\,i} 	\delta_i \left[ u \right]
+  + \overline {V}^{\,i+1/2}\;	\overline u^{\,j+1/2} 	\delta_{j+1/2} \left[ u \right]
+  + \overline {W}^{\,i+1/2}\;	\overline u^{\,k+1/2}	\delta_{k+1/2} 	\left[ u \right]     \biggr\}     && \\
+  %
+  \equiv& + \frac{1}{2} \sum\limits_{i,j,k}    \biggl\{
+  \overline{U}^{\,i} 		\delta_i 		\left[ u^2 \right]
+  + \overline{V}^{\,i+1/2} 	\delta_{j+/2} 	\left[ u^2 \right]
+  + \overline{W}^{\,i+1/2} 	\delta_{k+1/2} 	\left[ u^2 \right]      \biggr\} && \\
+  %
+  \equiv& -  \sum\limits_{i,j,k}    \frac{1}{2}   \bigg\{
+  U  \; \delta_{i+1/2}    \left[ \overline {u^2}^{\,i} \right]
+  + V  \; \delta_{j+1/2}    \left[ \overline {u^2}^{\,i} \right]
+  + W \; \delta_{k+1/2}   \left[ \overline {u^2}^{\,i} \right]     \biggr\}    &&& \\
+  %
+  \equiv& - \sum\limits_{i,j,k}  \frac{1}{2}  \overline {u^2}^{\,i}     \biggl\{
+  \delta_{i+1/2} 	\left[ U  \right]
+  + \delta_{j+1/2} 	\left[ V  \right]
+  + \delta_{k+1/2} 	\left[ W \right]     \biggr\}    &&& \\
+  %
+  \equiv& + \sum\limits_{i,j,k}  \frac{1}{2}  \overline {u^2}^{\,i}
+  \biggl\{     \left(   \frac{1}{e_{3t}} \frac{\partial e_{3t}}{\partial t}   \right) \; b_t     \biggr\}    &&& \\
+\end{flalign*}
+Applying similar manipulation applied to the second term of the scalar product leads to:
+\[
+  -  \int_D \textbf{U}_h \cdot     \left(                 {{
+        \begin{array} {*{20}c}
+          \nabla \cdot \left( \textbf{U}\,u \right) \hfill \\
+          \nabla \cdot \left( \textbf{U}\,v \right) \hfill \\
+        \end{array}
+      } }           \right)   \;dv
+  \equiv + \sum\limits_{i,j,k}  \frac{1}{2}  \left( \overline {u^2}^{\,i} + \overline {v^2}^{\,j} \right)
+  \biggl\{     \left(   \frac{1}{e_{3t}} \frac{\partial e_{3t}}{\partial t}   \right) \; b_t     \biggr\}
+\]
+which is the discrete form of $ \frac{1}{2} \int_D u \cdot \nabla \cdot \left(   \textbf{U}\,u   \right) \; dv $.
+\autoref{eq:INVARIANTS_ADV_KE_flux} is thus satisfied.
+
+When the UBS scheme is used to evaluate the flux form momentum advection,
+the discrete operator does not contribute to the global budget of linear momentum (flux form).
+The horizontal kinetic energy is not conserved, but forced to decay (\ie\ the scheme is diffusive).
+
+%% =================================================================================================
+\section{Discrete enstrophy conservation}
+\label{sec:INVARIANTS_4}
+
+%% =================================================================================================
+\subsubsection{Vorticity term with ENS scheme  (\protect\np[=.true.]{ln_dynvor_ens}{ln\_dynvor\_ens})}
+\label{subsec:INVARIANTS_vorENS}
+
+In the ENS scheme, the vorticity term is descretized as follows:
+\begin{equation}
+  \label{eq:INVARIANTS_dynvor_ens}
+  \left\{
+    \begin{aligned}
+      +\frac{1}{e_{1u}} & \overline{q}^{\,i}  & {\overline{ \overline{\left( e_{1v}\,e_{3v}\;  v \right) } } }^{\,i, j+1/2}    \\
+      - \frac{1}{e_{2v}} & \overline{q}^{\,j}  & {\overline{ \overline{\left( e_{2u}\,e_{3u}\; u \right) } } }^{\,i+1/2, j}
+    \end{aligned}
+  \right.
+\end{equation}
+
+The scheme does not allow but the conservation of the total kinetic energy but the conservation of $q^2$,
+the potential enstrophy for a horizontally non-divergent flow (\ie\ when $\chi$=$0$).
+Indeed, using the symmetry or skew symmetry properties of the operators
+( \autoref{eq:DOM_mi_adj} and \autoref{eq:DOM_di_adj}),
+it can be shown that:
+\begin{equation}
+  \label{eq:INVARIANTS_1.1}
+  \int_D {q\,\;{\textbf{k}}\cdot \frac{1} {e_3} \nabla \times \left( {e_3 \, q \;{\textbf{k}}\times {\textbf{U}}_h } \right)\;dv} \equiv 0
+\end{equation}
+where $dv=e_1\,e_2\,e_3 \; di\,dj\,dk$ is the volume element.
+Indeed, using \autoref{eq:DYN_vor_ens},
+the discrete form of the right hand side of \autoref{eq:INVARIANTS_1.1} can be transformed as follow:
+\begin{flalign*}
+  &\int_D q \,\; \textbf{k} \cdot \frac{1} {e_3 } \nabla \times
+  \left(  e_3 \, q \; \textbf{k} \times  \textbf{U}_h   \right)\;   dv \\
+  %
+  & \qquad
+  {
+    \begin{array}{*{20}l}
+      &\equiv \sum\limits_{i,j,k}
+        q \ \left\{  \delta_{i+1/2}  \left[ - \,\overline {q}^{\,i}\;  \overline{\overline  U }^{\,i,j+1/ 2} \right]
+        - \delta_{j+1/2} \left[	 \overline {q}^{\,j}\;  \overline{\overline  V }^{\,i+1/2, j} \right]     \right\}    \\
+      %
+      &\equiv \sum\limits_{i,j,k}
+        \left\{   \delta_i [q] \; \overline{q}^{\,i} \; \overline{  \overline U  }^{\,i,j+1/2}
+        + \delta_j [q] \; \overline{q}^{\,j} \; \overline{\overline V }^{\,i+1/2,j}        \right\}       &&  \\
+      %
+      &\equiv \,\frac{1} {2} \sum\limits_{i,j,k}
+        \left\{         \delta_i  \left[ q^2 \right] \; \overline{\overline U }^{\,i,j+1/2}
+        + \delta_j  \left[ q^2 \right] \; \overline{\overline V }^{\,i+1/2,j}      \right\}    &&  \\
+      %
+      &\equiv - \frac{1} {2} \sum\limits_{i,j,k} 	q^2 \;
+        \left\{    \delta_{i+1/2}   \left[   \overline{\overline{ U }}^{\,i,j+1/2}    \right]
+        + \delta_{j+1/2}  \left[   \overline{\overline{ V }}^{\,i+1/2,j}     \right]    \right\}    && \\
+    \end{array}
+  }
+  %
+  \allowdisplaybreaks
+  \intertext{ Since $\overline {\;\cdot \;} $ and $\delta $ operators commute: $\delta_{i+1/2}
+    \left[ {\overline a^{\,i}} \right] = \overline {\delta_i \left[ a \right]}^{\,i+1/2}$,
+    and introducing the horizontal divergence $\chi $, it becomes: }
+  \allowdisplaybreaks
+  %
+  & \qquad {
+    \begin{array}{*{20}l}
+      &\equiv \sum\limits_{i,j,k} - \frac{1} {2} q^2 \; \overline{\overline{ e_{1t}\,e_{2t}\,e_{3t}^{}\, \chi}}^{\,i+1/2,j+1/2}
+        \quad \equiv 0 &&
+    \end{array}
+  }
+\end{flalign*}
+The later equality is obtain only when the flow is horizontally non-divergent, \ie\ $\chi$=$0$.
+
+%% =================================================================================================
+\subsubsection{Vorticity Term with EEN scheme (\protect\np[=.true.]{ln_dynvor_een}{ln\_dynvor\_een})}
+\label{subsec:INVARIANTS_vorEEN}
+
+With the EEN scheme, the vorticity terms are represented as:
+\begin{equation}
+  \label{eq:INVARIANTS_dynvor_een2}
+  \left\{ {
+      \begin{aligned}
+        +q\,e_3 \, v 	&\equiv +\frac{1}{e_{1u} }   \sum_{\substack{i_p,\,k_p}}
+        {^{i+1/2-i_p}_j}  \mathbb{Q}^{i_p}_{j_p}  \left( e_{1v} e_{3v} \ v  \right)^{i+i_p-1/2}_{j+j_p}   \\
+        - q\,e_3 \, u     &\equiv -\frac{1}{e_{2v} }    \sum_{\substack{i_p,\,k_p}}
+        {^i_{j+1/2-j_p}}  \mathbb{Q}^{i_p}_{j_p}  \left( e_{2u} e_{3u} \ u  \right)^{i+i_p}_{j+j_p-1/2}   \\
+      \end{aligned}
+    } \right.
+\end{equation}
+where the indices $i_p$ and $k_p$ take the following values:
+$i_p = -1/2$ or $1/2$ and $j_p = -1/2$ or $1/2$,
+and the vorticity triads, ${^i_j}\mathbb{Q}^{i_p}_{j_p}$, defined at $T$-point, are given by:
+\begin{equation}
+  \tag{\ref{eq:INVARIANTS_Q_triads}}
+  _i^j \mathbb{Q}^{i_p}_{j_p}
+  = \frac{1}{12} \ \left(   q^{i-i_p}_{j+j_p} + q^{i+j_p}_{j+i_p} + q^{i+i_p}_{j-j_p}  \right)
+\end{equation}
+
+This formulation does conserve the potential enstrophy for a horizontally non-divergent flow (\ie\ $\chi=0$).
+
+Let consider one of the vorticity triad, for example ${^{i}_j}\mathbb{Q}^{+1/2}_{+1/2} $,
+similar manipulation can be done for the 3 others.
+The discrete form of the right hand side of \autoref{eq:INVARIANTS_1.1} applied to
+this triad only can be transformed as follow:
+
+\begin{flalign*}
+  &\int_D {q\,\;{\textbf{k}}\cdot \frac{1} {e_3} \nabla \times \left( {e_3 \, q \;{\textbf{k}}\times {\textbf{U}}_h } \right)\;dv} \\
+  %
+  \equiv& \sum\limits_{i,j,k}
+  {q} \    \biggl\{ \;\;
+  \delta_{i+1/2} \left[   -\, {{^i_j}\mathbb{Q}^{+1/2}_{+1/2}  \; U^{i+1/2}_{j}}    \right]
+  - \delta_{j+1/2} \left[       {{^i_j}\mathbb{Q}^{+1/2}_{+1/2}  \; V^{i}_{j+1/2}}    \right]
+  \;\;\biggr\}        &&  \\
+  %
+  \equiv& \sum\limits_{i,j,k}
+  \biggl\{   \delta_i [q] \  {{^i_j}\mathbb{Q}^{+1/2}_{+1/2}  \; U^{i+1/2}_{j}}
+  + \delta_j [q] \  {{^i_j}\mathbb{Q}^{+1/2}_{+1/2}  \; V^{i}_{j+1/2}}   \biggr\}
+  && \\
+  %
+  ... & &&\\
+  &Demonstation \ to \ be \ done... &&\\
+  ... & &&\\
+  %
+  \equiv& \frac{1} {2} \sum\limits_{i,j,k}
+  \biggl\{	\delta_i    \Bigl[    \left(  {{^i_j}\mathbb{Q}^{+1/2}_{+1/2}} \right)^2   \Bigr]\;
+  \overline{\overline {U}}^{\,i,j+1/2}
+  + \delta_j 	\Bigl[    \left( {{^i_j}\mathbb{Q}^{+1/2}_{+1/2}} \right)^2     \Bigr]\;
+  \overline{\overline {V}}^{\,i+1/2,j}
+  \biggr\}
+  &&  \\
+  %
+  \equiv& - \frac{1} {2} \sum\limits_{i,j,k} 	\left( {{^i_j}\mathbb{Q}^{+1/2}_{+1/2}} \right)^2\;
+  \biggl\{    \delta_{i+1/2}
+  \left[   \overline{\overline {U}}^{\,i,j+1/2}    \right]
+  + \delta_{j+1/2}
+  \left[   \overline{\overline {V}}^{\,i+1/2,j}     \right]
+  \biggr\}    && \\
+  %
+  \equiv& \sum\limits_{i,j,k} - \frac{1} {2} \left( {{^i_j}\mathbb{Q}^{+1/2}_{+1/2}} \right)^2
+  \; \overline{\overline{ b_t^{}\, \chi}}^{\,i+1/2,\,j+1/2}  &&\\
+  %
+  \ \ \equiv& \ 0     &&\\
+\end{flalign*}
+
+%% =================================================================================================
+\section{Conservation properties on tracers}
+\label{sec:INVARIANTS_5}
+
+All the numerical schemes used in \NEMO\ are written such that the tracer content is conserved by
+the internal dynamics and physics (equations in flux form).
+For advection,
+only the CEN2 scheme (\ie\ $2^{nd}$ order finite different scheme) conserves the global variance of tracer.
+Nevertheless the other schemes ensure that the global variance decreases
+(\ie\ they are at least slightly diffusive).
+For diffusion, all the schemes ensure the decrease of the total tracer variance, except the iso-neutral operator.
+There is generally no strict conservation of mass,
+as the equation of state is non linear with respect to $T$ and $S$.
+In practice, the mass is conserved to a very high accuracy.
+%% =================================================================================================
+\subsection{Advection term}
+\label{subsec:INVARIANTS_5.1}
+
+conservation of a tracer, $T$:
+\[
+  \frac{\partial }{\partial t} \left(   \int_D {T\;dv}   \right)
+  =  \int_D { \frac{1}{e_3}\frac{\partial \left( e_3 \, T \right)}{\partial t} \;dv }=0
+\]
+
+conservation of its variance:
+\begin{flalign*}
+  \frac{\partial }{\partial t} \left( \int_D {\frac{1}{2} T^2\;dv} \right)
+  =&  \int_D { \frac{1}{e_3} Q      \frac{\partial \left( e_3 \, T \right) }{\partial t} \;dv }
+  -   \frac{1}{2} \int_D {  T^2 \frac{1}{e_3} \frac{\partial  e_3 }{\partial t} \;dv }
+\end{flalign*}
+
+Whatever the advection scheme considered it conserves of the tracer content as
+all the scheme are written in flux form.
+Indeed, let $T$ be the tracer and its $\tau_u$, $\tau_v$, and $\tau_w$ interpolated values at velocity point
+(whatever the interpolation is),
+the conservation of the tracer content due to the advection tendency is obtained as follows:
+\begin{flalign*}
+  &\int_D { \frac{1}{e_3}\frac{\partial \left( e_3 \, T \right)}{\partial t} \;dv } = - \int_D \nabla \cdot \left( T \textbf{U} \right)\;dv    &&&\\
+  &\equiv - \sum\limits_{i,j,k}    \biggl\{
+  \frac{1} {b_t}  \left(  \delta_i    \left[   U \;\tau_u   \right]
+    + \delta_j    \left[   V  \;\tau_v   \right] \right)
+  + \frac{1} {e_{3t}} \delta_k \left[ w\;\tau_w \right]    \biggl\}  b_t   &&&\\
+  %
+  &\equiv - \sum\limits_{i,j,k}     \left\{
+    \delta_i  \left[   U \;\tau_u   \right]
+    + \delta_j  \left[   V  \;\tau_v   \right]
+ 	 + \delta_k \left[ W \;\tau_w \right] \right\}   && \\
+  &\equiv 0 &&&
+\end{flalign*}
+
+The conservation of the variance of tracer due to the advection tendency can be achieved only with the CEN2 scheme,
+\ie\ when $\tau_u= \overline T^{\,i+1/2}$, $\tau_v= \overline T^{\,j+1/2}$, and $\tau_w= \overline T^{\,k+1/2}$.
+It can be demonstarted as follows:
+\begin{flalign*}
+  &\int_D { \frac{1}{e_3} Q      \frac{\partial \left( e_3 \, T \right) }{\partial t} \;dv }
+  = - \int\limits_D \tau\;\nabla \cdot \left( T\; \textbf{U} \right)\;dv &&&\\
+  \equiv& - \sum\limits_{i,j,k} T\;
+  \left\{
+    \delta_i  \left[ U  \overline T^{\,i+1/2}  \right]
+    + \delta_j  \left[ V  \overline T^{\,j+1/2}  \right]
+    + \delta_k \left[ W \overline T^{\,k+1/2} \right]          \right\} && \\
+  \equiv& + \sum\limits_{i,j,k}
+  \left\{     U  \overline T^{\,i+1/2} \,\delta_{i+1/2}  \left[ T \right]
+    +  V  \overline T^{\,j+1/2} \;\delta_{j+1/2}  \left[ T \right]
+    +  W \overline T^{\,k+1/2}\;\delta_{k+1/2} \left[ T \right]     \right\}      &&\\
+  \equiv&  + \frac{1} {2}  \sum\limits_{i,j,k}
+  \Bigl\{   U  \;\delta_{i+1/2} \left[ T^2 \right]
+  + V  \;\delta_{j+1/2}  \left[ T^2 \right]
+  + W \;\delta_{k+1/2} \left[ T^2 \right]   \Bigr\}     && \\
+  \equiv& - \frac{1} {2}  \sum\limits_{i,j,k} T^2
+  \Bigl\{    \delta_i  \left[ U  \right]
+  + \delta_j  \left[ V  \right]
+  + \delta_k \left[ W \right]     \Bigr\}      &&&  \\
+  \equiv& + \frac{1} {2}  \sum\limits_{i,j,k} T^2
+  \Bigl\{   \frac{1}{e_{3t}} \frac{\partial e_{3t}\,T }{\partial t}     \Bigr\}      &&& \\
+\end{flalign*}
+which is the discrete form of $ \frac{1}{2} \int_D {  T^2 \frac{1}{e_3} \frac{\partial  e_3 }{\partial t} \;dv }$.
+
+%% =================================================================================================
+\section{Conservation properties on lateral momentum physics}
+\label{sec:INVARIANTS_dynldf_properties}
+
+The discrete formulation of the horizontal diffusion of momentum ensures
+the conservation of potential vorticity and the horizontal divergence,
+and the dissipation of the square of these quantities
+(\ie\ enstrophy and the variance of the horizontal divergence) as well as
+the dissipation of the horizontal kinetic energy.
+In particular, when the eddy coefficients are horizontally uniform,
+it ensures a complete separation of vorticity and horizontal divergence fields,
+so that diffusion (dissipation) of vorticity (enstrophy) does not generate horizontal divergence
+(variance of the horizontal divergence) and \textit{vice versa}.
+
+These properties of the horizontal diffusion operator are a direct consequence of
+properties \autoref{eq:DOM_curl_grad} and \autoref{eq:DOM_div_curl}.
+When the vertical curl of the horizontal diffusion of momentum (discrete sense) is taken,
+the term associated with the horizontal gradient of the divergence is locally zero.
+
+%% =================================================================================================
+\subsection{Conservation of potential vorticity}
+\label{subsec:INVARIANTS_6.1}
+
+The lateral momentum diffusion term conserves the potential vorticity:
+\begin{flalign*}
+  &\int \limits_D \frac{1} {e_3 } \textbf{k} \cdot \nabla \times
+  \Bigl[    \nabla_h  \left( A^{\,lm}\;\chi  \right)
+  - \nabla_h \times \left( A^{\,lm}\;\zeta \; \textbf{k} \right)    \Bigr]\;dv   \\
+  % \end{flalign*}
+  %%%%%%%%%% recheck here....  (gm)
+  % \begin{flalign*}
+  =& \int \limits_D  -\frac{1} {e_3 } \textbf{k} \cdot \nabla \times
+  \Bigl[ \nabla_h \times \left( A^{\,lm}\;\zeta \; \textbf{k} \right)  \Bigr]\;dv  \\
+  % \end{flalign*}
+  % \begin{flalign*}
+  \equiv& \sum\limits_{i,j}
+  \left\{
+    \delta_{i+1/2} \left[  \frac {e_{2v}} {e_{1v}\,e_{3v}}  \delta_i \left[ A_f^{\,lm} e_{3f} \zeta  \right]  \right]
+    + \delta_{j+1/2} \left[  \frac {e_{1u}} {e_{2u}\,e_{3u}}  \delta_j \left[ A_f^{\,lm} e_{3f} \zeta  \right]  \right]
+  \right\} 	 \\
+  %
+  \intertext{Using \autoref{eq:DOM_di_adj}, it follows:}
+  %
+  \equiv& \sum\limits_{i,j,k}
+  -\,\left\{
+    \frac{e_{2v}} {e_{1v}\,e_{3v}}  \delta_i	\left[ A_f^{\,lm} e_{3f} \zeta  \right]\;\delta_i \left[ 1\right]
+	 + \frac{e_{1u}} {e_{2u}\,e_{3u}}  \delta_j 	\left[ A_f^{\,lm} e_{3f} \zeta  \right]\;\delta_j \left[ 1\right]
+  \right\} \quad \equiv 0
+  \\
+\end{flalign*}
+
+%% =================================================================================================
+\subsection{Dissipation of horizontal kinetic energy}
+\label{subsec:INVARIANTS_6.2}
+
+The lateral momentum diffusion term dissipates the horizontal kinetic energy:
+%\begin{flalign*}
+\[
+  \begin{split}
+    \int_D \textbf{U}_h \cdot
+    \left[ \nabla_h 		\right.   &     \left.       \left( A^{\,lm}\;\chi \right)
+      - \nabla_h \times  \left( A^{\,lm}\;\zeta \;\textbf{k} \right)     \right] \; dv    \\
+    \\  %%%
+    \equiv& \sum\limits_{i,j,k}
+    \left\{
+      \frac{1} {e_{1u}}               \delta_{i+1/2} \left[  A_T^{\,lm}          \chi     \right]
+      - \frac{1} {e_{2u}\,e_{3u}}  \delta_j           \left[ A_f^{\,lm} e_{3f} \zeta   \right]
+    \right\} \; e_{1u}\,e_{2u}\,e_{3u} \;u     \\
+    &\;\; + 	\left\{
+	   \frac{1} {e_{2u}}             \delta_{j+1/2}	\left[ A_T^{\,lm}          \chi    \right]
+      + \frac{1} {e_{1v}\,e_{3v}} \delta_i            \left[ A_f^{\,lm} e_{3f} \zeta  \right]
+    \right\} \; e_{1v}\,e_{2u}\,e_{3v} \;v     \qquad \\
+    \\  %%%
+    \equiv& \sum\limits_{i,j,k}
+    \Bigl\{
+    e_{2u}\,e_{3u} \;u\;  \delta_{i+1/2} \left[ A_T^{\,lm}           \chi    \right]
+    - e_{1u}             \;u\;  \delta_j           \left[ A_f^{\,lm} e_{3f} \zeta  \right]
+	 \Bigl\}
+	 \\
+    &\;\; + \Bigl\{
+    e_{1v}\,e_{3v} \;v\;  \delta_{j+1/2}  \left[ A_T^{\,lm}           \chi    \right]
+    + e_{2v}             \;v\;  \delta_i            \left[ A_f^{\,lm} e_{3f} \zeta  \right]
+    \Bigl\}      \\
+    \\  %%%
+    \equiv& \sum\limits_{i,j,k}
+    - \Bigl(
+    \delta_i   \left[  e_{2u}\,e_{3u} \;u  \right]
+    + \delta_j  \left[  e_{1v}\,e_{3v}  \;v  \right]
+    \Bigr) \;  A_T^{\,lm} \chi   \\
+    &\;\; - \Bigl(
+    \delta_{i+1/2}  \left[  e_{2v}  \;v  \right]
+    - \delta_{j+1/2}  \left[  e_{1u} \;u  \right]
+    \Bigr)\;  A_f^{\,lm} e_{3f} \zeta      \\
+    \\  %%%
+    \equiv& \sum\limits_{i,j,k}
+    - A_T^{\,lm}  \,\chi^2   \;e_{1t}\,e_{2t}\,e_{3t}
+    - A_f ^{\,lm}  \,\zeta^2 \;e_{1f }\,e_{2f }\,e_{3f}
+    \quad \leq 0       \\
+  \end{split}
+\]
+
+%% =================================================================================================
+\subsection{Dissipation of enstrophy}
+\label{subsec:INVARIANTS_6.3}
+
+The lateral momentum diffusion term dissipates the enstrophy when the eddy coefficients are horizontally uniform:
+\begin{flalign*}
+  &\int\limits_D  \zeta \; \textbf{k} \cdot \nabla \times
+  \left[   \nabla_h \left( A^{\,lm}\;\chi  \right)
+    - \nabla_h \times \left( A^{\,lm}\;\zeta \; \textbf{k} \right)   \right]\;dv &&&\\
+  &\quad = A^{\,lm} \int \limits_D \zeta \textbf{k} \cdot \nabla \times
+  \left[    \nabla_h \times \left( \zeta \; \textbf{k} \right)   \right]\;dv &&&\\
+  &\quad \equiv A^{\,lm} \sum\limits_{i,j,k}  \zeta \;e_{3f}
+  \left\{     \delta_{i+1/2} \left[  \frac{e_{2v}} {e_{1v}\,e_{3v}} \delta_i \left[ e_{3f} \zeta  \right]   \right]
+    + \delta_{j+1/2} \left[  \frac{e_{1u}} {e_{2u}\,e_{3u}} \delta_j \left[ e_{3f} \zeta  \right]   \right]      \right\}   &&&\\
+  %
+  \intertext{Using \autoref{eq:DOM_di_adj}, it follows:}
+  %
+  &\quad \equiv  - A^{\,lm} \sum\limits_{i,j,k}
+  \left\{    \left(  \frac{1} {e_{1v}\,e_{3v}}  \delta_i \left[ e_{3f} \zeta  \right]  \right)^2   b_v
+    + \left(  \frac{1} {e_{2u}\,e_{3u}}  \delta_j \left[ e_{3f} \zeta  \right] \right)^2   b_u  \right\}  \quad \leq \;0    &&&\\
+\end{flalign*}
+
+%% =================================================================================================
+\subsection{Conservation of horizontal divergence}
+\label{subsec:INVARIANTS_6.4}
+
+When the horizontal divergence of the horizontal diffusion of momentum (discrete sense) is taken,
+the term associated with the vertical curl of the vorticity is zero locally, due to \autoref{eq:DOM_div_curl}.
+The resulting term conserves the $\chi$ and dissipates $\chi^2$ when the eddy coefficients are horizontally uniform.
+\begin{flalign*}
+  & \int\limits_D  \nabla_h \cdot
+  \Bigl[     \nabla_h \left( A^{\,lm}\;\chi \right)
+  - \nabla_h \times \left( A^{\,lm}\;\zeta \;\textbf{k} \right)    \Bigr]  dv
+  = \int\limits_D  \nabla_h \cdot \nabla_h \left( A^{\,lm}\;\chi  \right)   dv   \\
+  %
+  &\equiv \sum\limits_{i,j,k}
+  \left\{   \delta_i \left[ A_u^{\,lm} \frac{e_{2u}\,e_{3u}} {e_{1u}}  \delta_{i+1/2} \left[ \chi \right]  \right]
+    + \delta_j \left[ A_v^{\,lm} \frac{e_{1v}\,e_{3v}} {e_{2v}}  \delta_{j+1/2} \left[ \chi \right]  \right]    \right\}    \\
+  %
+  \intertext{Using \autoref{eq:DOM_di_adj}, it follows:}
+  %
+  &\equiv \sum\limits_{i,j,k}
+  - \left\{   \frac{e_{2u}\,e_{3u}} {e_{1u}}  A_u^{\,lm} \delta_{i+1/2} \left[ \chi \right] \delta_{i+1/2} \left[ 1 \right]
+    + \frac{e_{1v}\,e_{3v}} {e_{2v}}  A_v^{\,lm} \delta_{j+1/2} \left[ \chi \right] \delta_{j+1/2} \left[ 1 \right]    \right\}
+  \quad \equiv 0
+\end{flalign*}
+
+%% =================================================================================================
+\subsection{Dissipation of horizontal divergence variance}
+\label{subsec:INVARIANTS_6.5}
+
+\begin{flalign*}
+  &\int\limits_D \chi \;\nabla_h \cdot
+  \left[    \nabla_h              \left( A^{\,lm}\;\chi                    \right)
+    - \nabla_h   \times  \left( A^{\,lm}\;\zeta \;\textbf{k} \right)    \right]\;  dv
+  = A^{\,lm}   \int\limits_D \chi \;\nabla_h \cdot \nabla_h \left( \chi \right)\;  dv    \\
+  %
+  &\equiv A^{\,lm}  \sum\limits_{i,j,k}  \frac{1} {e_{1t}\,e_{2t}\,e_{3t}}  \chi
+  \left\{
+    \delta_i  \left[   \frac{e_{2u}\,e_{3u}} {e_{1u}}  \delta_{i+1/2} \left[ \chi \right]   \right]
+    + \delta_j  \left[   \frac{e_{1v}\,e_{3v}} {e_{2v}}   \delta_{j+1/2} \left[ \chi \right]   \right]
+  \right\} \;   e_{1t}\,e_{2t}\,e_{3t}    \\
+  %
+  \intertext{Using \autoref{eq:DOM_di_adj}, it turns out to be:}
+  %
+  &\equiv - A^{\,lm} \sum\limits_{i,j,k}
+  \left\{    \left(  \frac{1} {e_{1u}}  \delta_{i+1/2}  \left[ \chi \right]  \right)^2  b_u
+    + \left(  \frac{1} {e_{2v}}  \delta_{j+1/2}  \left[ \chi \right]  \right)^2  b_v    \right\}
+  \quad \leq 0
+\end{flalign*}
+
+%% =================================================================================================
+\section{Conservation properties on vertical momentum physics}
+\label{sec:INVARIANTS_7}
+
+As for the lateral momentum physics,
+the continuous form of the vertical diffusion of momentum satisfies several integral constraints.
+The first two are associated with the conservation of momentum and the dissipation of horizontal kinetic energy:
+\begin{align*}
+  \int\limits_D   \frac{1} {e_3 }\; \frac{\partial } {\partial k}
+  \left(   \frac{A^{\,vm}} {e_3 }\; \frac{\partial \textbf{U}_h } {\partial k}   \right)\;  dv
+  \qquad \quad &= \vec{\textbf{0}}
+  %
+  \intertext{and}
+  %
+                 \int\limits_D
+                 \textbf{U}_h \cdot   \frac{1} {e_3 }\; \frac{\partial } {\partial k}
+                 \left(   \frac{A^{\,vm}} {e_3 }\; \frac{\partial \textbf{U}_h } {\partial k}   \right)\; dv    \quad &\leq 0
+\end{align*}
+
+The first property is obvious.
+The second results from:
+\begin{flalign*}
+  \int\limits_D
+  \textbf{U}_h \cdot   \frac{1} {e_3 }\; \frac{\partial } {\partial k}
+  \left( \frac{A^{\,vm}} {e_3 }\; \frac{\partial \textbf{U}_h } {\partial k}   \right)\;dv    &&&\\
+\end{flalign*}
+\begin{flalign*}
+  &\equiv \sum\limits_{i,j,k}
+  \left(
+    u\; \delta_k \left[ \frac{A_u^{\,vm}} {e_{3uw}} \delta_{k+1/2}  \left[ u \right]  \right]\;  e_{1u}\,e_{2u}
+    + v\; \delta_k \left[ \frac{A_v^{\,vm}} {e_{3vw}} \delta_{k+1/2}   \left[ v \right]  \right]\;  e_{1v}\,e_{2v} \right)   &&&
+  %
+  \intertext{since the horizontal scale factor does not depend on $k$, it follows:}
+  %
+  &\equiv - \sum\limits_{i,j,k}
+  \left(  \frac{A_u^{\,vm}} {e_{3uw}} \left( \delta_{k+1/2} \left[ u \right] \right)^2\; e_{1u}\,e_{2u}
+    + \frac{A_v^{\,vm}} {e_{3vw}}  \left( \delta_{k+1/2} \left[ v \right] \right)^2\; e_{1v}\,e_{2v}  \right)
+  \quad \leq 0   &&&
+\end{flalign*}
+
+The vorticity is also conserved.
+Indeed:
+\begin{flalign*}
+  \int \limits_D
+  \frac{1} {e_3 } \textbf{k} \cdot \nabla \times
+  \left( \frac{1} {e_3 }\; \frac{\partial } {\partial k}  \left(
+      \frac{A^{\,vm}} {e_3}\; \frac{\partial \textbf{U}_h } {\partial k}
+    \right)  \right)\; dv   &&&
+\end{flalign*}
+\begin{flalign*}
+  \equiv \sum\limits_{i,j,k}  \frac{1} {e_{3f}}\; \frac{1} {e_{1f}\,e_{2f}}
+  \bigg\{    \biggr.   \quad
+  \delta_{i+1/2}
+  &\left(   \frac{e_{2v}} {e_{3v}} \delta_k  \left[  \frac{1} {e_{3vw}} \delta_{k+1/2} \left[ v \right]  \right]  \right)   &&\\
+  \biggl.
+  - \delta_{j+1/2}
+  &\left(   \frac{e_{1u}} {e_{3u}} \delta_k \left[  \frac{1} {e_{3uw}}\delta_{k+1/2} \left[ u \right]  \right]   \right)
+  \biggr\} \;
+  e_{1f}\,e_{2f}\,e_{3f} \; \equiv 0   &&
+\end{flalign*}
+
+If the vertical diffusion coefficient is uniform over the whole domain, the enstrophy is dissipated, \ie
+\begin{flalign*}
+  \int\limits_D \zeta \, \textbf{k} \cdot \nabla \times
+  \left(   \frac{1} {e_3}\; \frac{\partial } {\partial k}
+    \left( \frac{A^{\,vm}} {e_3 }\; \frac{\partial \textbf{U}_h } {\partial k}   \right)   \right)\; dv = 0   &&&
+\end{flalign*}
+
+This property is only satisfied in $z$-coordinates:
+\begin{flalign*}
+  \int\limits_D \zeta \, \textbf{k} \cdot \nabla \times
+  \left(  \frac{1} {e_3}\; \frac{\partial } {\partial k}
+    \left( \frac{A^{\,vm}} {e_3 }\; \frac{\partial \textbf{U}_h } {\partial k}  \right)   \right)\; dv   &&&
+\end{flalign*}
+\begin{flalign*}
+  \equiv \sum\limits_{i,j,k} \zeta \;e_{3f} \;
+  \biggl\{ 	\biggr.	\quad
+  \delta_{i+1/2}
+  &\left(   \frac{e_{2v}} {e_{3v}} \delta_k \left[ \frac{A_v^{\,vm}} {e_{3vw}} \delta_{k+1/2}[v]  \right]   \right)   &&\\
+  - \delta_{j+1/2}
+  &\biggl.
+  \left(   \frac{e_{1u}} {e_{3u}} \delta_k \left[ \frac{A_u^{\,vm}} {e_{3uw}} \delta_{k+1/2} [u]  \right]    \right) \biggr\}   &&
+\end{flalign*}
+\begin{flalign*}
+  \equiv \sum\limits_{i,j,k} \zeta \;e_{3f}
+  \biggl\{		\biggr.	\quad
+  \frac{1} {e_{3v}} \delta_k
+  &\left[ \frac{A_v^{\,vm}} {e_{3vw}} \delta_{k+1/2} \left[ \delta_{i+1/2} \left[ e_{2v}\,v \right] \right]   \right]    &&\\
+  \biggl.
+  - \frac{1} {e_{3u}} \delta_k
+  &\left[  \frac{A_u^{\,vm}} {e_{3uw}} \delta_{k+1/2} \left[ \delta_{j+1/2} \left[ e_{1u}\,u \right] \right]  \right]  \biggr\}  &&
+\end{flalign*}
+Using the fact that the vertical diffusion coefficients are uniform,
+and that in $z$-coordinate, the vertical scale factors do not depend on $i$ and $j$ so that:
+$e_{3f} =e_{3u} =e_{3v} =e_{3t} $ and $e_{3w} =e_{3uw} =e_{3vw} $, it follows:
+\begin{flalign*}
+  \equiv A^{\,vm} \sum\limits_{i,j,k} \zeta \;\delta_k
+  \left[   \frac{1} {e_{3w}} \delta_{k+1/2} \Bigl[   \delta_{i+1/2} \left[ e_{2v}\,v \right]
+    - \delta_{j+1/ 2} \left[ e_{1u}\,u \right]   \Bigr]    \right]    &&&
+\end{flalign*}
+\begin{flalign*}
+  \equiv - A^{\,vm} \sum\limits_{i,j,k} \frac{1} {e_{3w}}
+  \left( \delta_{k+1/2} \left[ \zeta  \right] \right)^2 \; e_{1f}\,e_{2f}  \; \leq 0    &&&
+\end{flalign*}
+Similarly, the horizontal divergence is obviously conserved:
+
+\begin{flalign*}
+  \int\limits_D \nabla \cdot
+  \left( \frac{1} {e_3 }\; \frac{\partial } {\partial k}
+    \left( \frac{A^{\,vm}} {e_3 }\; \frac{\partial \textbf{U}_h } {\partial k} \right) \right)\; dv = 0    &&&
+\end{flalign*}
+and the square of the horizontal divergence decreases (\ie\ the horizontal divergence is dissipated) if
+the vertical diffusion coefficient is uniform over the whole domain:
+
+\begin{flalign*}
+  \int\limits_D \chi \;\nabla \cdot
+  \left( \frac{1} {e_3 }\; \frac{\partial } {\partial k}
+    \left( \frac{A^{\,vm}} {e_3 }\; \frac{\partial \textbf{U}_h } {\partial k}  \right) \right)\;  dv = 0  &&&
+\end{flalign*}
+This property is only satisfied in the $z$-coordinate:
+\begin{flalign*}
+  \int\limits_D \chi \;\nabla \cdot
+  \left( \frac{1} {e_3 }\; \frac{\partial } {\partial k}
+    \left( \frac{A^{\,vm}} {e_3 }\; \frac{\partial \textbf{U}_h } {\partial k} \right)  \right)\; dv    &&&
+\end{flalign*}
+\begin{flalign*}
+  \equiv \sum\limits_{i,j,k} \frac{\chi } {e_{1t}\,e_{2t}}
+  \biggl\{ 	\Biggr.	\quad
+  \delta_{i+1/2}
+  &\left(   \frac{e_{2u}} {e_{3u}} \delta_k
+    \left[ \frac{A_u^{\,vm}} {e_{3uw}} \delta_{k+1/2} [u] \right] \right)    &&\\
+  \Biggl.
+  + \delta_{j+1/2}
+  &\left( \frac{e_{1v}} {e_{3v}} \delta_k
+    \left[ \frac{A_v^{\,vm}} {e_{3vw}} \delta_{k+1/2} [v] \right]   \right)
+  \Biggr\} \;  e_{1t}\,e_{2t}\,e_{3t}   &&
+\end{flalign*}
+
+\begin{flalign*}
+  \equiv A^{\,vm} \sum\limits_{i,j,k}  \chi \,
+  \biggl\{	\biggr.	\quad
+  \delta_{i+1/2}
+  &\left(
+    \delta_k \left[
+      \frac{1} {e_{3uw}} \delta_{k+1/2} \left[ e_{2u}\,u \right] \right]   \right)    && \\
+  \biggl.
+  + \delta_{j+1/2}
+  &\left(    \delta_k \left[
+      \frac{1} {e_{3vw}} \delta_{k+1/2} \left[ e_{1v}\,v \right] \right]   \right)   \biggr\}    &&
+\end{flalign*}
+
+\begin{flalign*}
+  \equiv -A^{\,vm} \sum\limits_{i,j,k}
+  \frac{\delta_{k+1/2} \left[ \chi \right]} {e_{3w}}\; \biggl\{
+  \delta_{k+1/2} \Bigl[
+  \delta_{i+1/2} \left[ e_{2u}\,u \right]
+  + \delta_{j+1/2} \left[ e_{1v}\,v \right]  \Bigr]    \biggr\}    &&&
+\end{flalign*}
+
+\begin{flalign*}
+  \equiv -A^{\,vm} \sum\limits_{i,j,k}
+  \frac{1} {e_{3w}} \delta_{k+1/2} \left[ \chi \right]\; \delta_{k+1/2} \left[ e_{1t}\,e_{2t} \;\chi \right]   &&&
+\end{flalign*}
+
+\begin{flalign*}
+  \equiv -A^{\,vm} \sum\limits_{i,j,k}
+  \frac{e_{1t}\,e_{2t}} {e_{3w}}\; \left( \delta_{k+1/2} \left[ \chi \right]  \right)^2     \quad  \equiv 0    &&&
+\end{flalign*}
+
+%% =================================================================================================
+\section{Conservation properties on tracer physics}
+\label{sec:INVARIANTS_8}
+
+The numerical schemes used for tracer subgridscale physics are written such that
+the heat and salt contents are conserved (equations in flux form).
+Since a flux form is used to compute the temperature and salinity,
+the quadratic form of these quantities (\ie\ their variance) globally tends to diminish.
+As for the advection term, there is conservation of mass only if the Equation Of Seawater is linear.
+
+%% =================================================================================================
+\subsection{Conservation of tracers}
+\label{subsec:INVARIANTS_8.1}
+
+constraint of conservation of tracers:
+\begin{flalign*}
+  &\int\limits_D  \nabla  \cdot \left( A\;\nabla T \right)\;dv  &&& \\ \\
+  &\equiv \sum\limits_{i,j,k}
+  \biggl\{ 	\biggr.
+  \delta_i
+  \left[
+    A_u^{\,lT} \frac{e_{2u}\,e_{3u}} {e_{1u}} \delta_{i+1/2}
+    \left[ T \right]
+  \right]
+  + \delta_j
+  \left[
+    A_v^{\,lT} \frac{e_{1v}\,e_{3v}} {e_{2v}} \delta_{j+1/2}
+    \left[ T \right]
+  \right] && \\
+  & \qquad \qquad \qquad \qquad \qquad \qquad \quad \;\;\;
+  + \delta_k
+  \left[
+    A_w^{\,vT} \frac{e_{1t}\,e_{2t}} {e_{3t}} \delta_{k+1/2}
+    \left[ T \right]
+  \right]
+  \biggr\}   \quad  \equiv 0
+  &&
+\end{flalign*}
+
+In fact, this property simply results from the flux form of the operator.
+
+%% =================================================================================================
+\subsection{Dissipation of tracer variance}
+\label{subsec:INVARIANTS_8.2}
+
+constraint on the dissipation of tracer variance:
+\begin{flalign*}
+  \int\limits_D T\;\nabla & \cdot \left( A\;\nabla T \right)\;dv	&&&\\
+  &\equiv   \sum\limits_{i,j,k} \; T
+  \biggl\{  \biggr.
+  \delta_i \left[ A_u^{\,lT} \frac{e_{2u}\,e_{3u}} {e_{1u}} \delta_{i+1/2} \left[T\right] \right]
+  & + \delta_j \left[ A_v^{\,lT} \frac{e_{1v} \,e_{3v}} {e_{2v}} \delta_{j+1/2} \left[T\right] \right]
+  \quad&& \\
+  \biggl.
+  &&+ \delta_k \left[A_w^{\,vT}\frac{e_{1t}\,e_{2t}} {e_{3t}}\delta_{k+1/2}\left[T\right]\right]
+  \biggr\} &&
+\end{flalign*}
+\begin{flalign*}
+  \equiv - \sum\limits_{i,j,k}
+  \biggl\{ 	\biggr.	\quad
+  &    A_u^{\,lT} \left( \frac{1} {e_{1u}} \delta_{i+1/2} \left[ T \right]  \right)^2   e_{1u}\,e_{2u}\,e_{3u}    && \\
+  & + A_v^{\,lT} \left( \frac{1} {e_{2v}} \delta_{j+1/2} \left[ T \right]  \right)^2   e_{1v}\,e_{2v}\,e_{3v}     && \\ \biggl.
+  & + A_w^{\,vT} \left( \frac{1} {e_{3w}} \delta_{k+1/2} \left[ T \right]   \right)^2    e_{1w}\,e_{2w}\,e_{3w}   \biggr\}
+  \quad      \leq 0      &&
+\end{flalign*}
+
+%%%%  end of appendix in gm comment
+%}
+
+\subinc{\input{../../global/epilogue}}
+
+\end{document}

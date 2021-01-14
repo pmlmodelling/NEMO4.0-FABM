@@ -1,0 +1,11 @@
+!-----------------------------------------------------------------------
+&namp5zmort    !   parameters for phytoplankton sinks for PISCES quota - ln_p5z
+!-----------------------------------------------------------------------
+   wchln      =  0.01     ! quadratic mortality of nanophytoplankton
+   wchlp      =  0.01     ! quadratic mortality of picophytoplankton
+   wchld      =  0.01     ! maximum quadratic mortality of diatoms
+   wchldm     =  0.02     ! maximum quadratic mortality of diatoms
+   mpratn     =  0.01     ! nanophytoplankton mortality rate
+   mpratp     =  0.01     ! picophytoplankton mortality rate
+   mprat2     =  0.01     ! Diatoms mortality rate
+/

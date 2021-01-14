@@ -1,0 +1,20 @@
+%% Engine (subfolder name)
+\def \engine{NEMO}
+
+%% Cover page settings
+\def \spacetop{  \vspace*{1.85cm} }
+\def \heading{NEMO ocean engine}
+%\def \subheading{}
+\def \spacedown{ \vspace*{0.75cm } }
+\def \authorswidth{ 0.3\linewidth}
+\def \rulelenght{270pt}
+\def \abstractwidth{0.6\linewidth}
+
+%% Manual color (frontpage banner, links  and chapter boxes)
+\def \setmanualcolor{ \definecolor{manualcolor}{cmyk}{1, .60, 0, .4} }
+
+%% IPSL publication number
+\def \ipslnum{27}
+
+%% Zenodo ID, i.e. doi:10.5281/zenodo.\([0-9]*\)
+\def \zid{1464816}

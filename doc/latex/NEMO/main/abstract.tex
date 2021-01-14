@@ -1,0 +1,27 @@
+%% ================================================================
+%% Abstract
+%% ================================================================
+
+%% Common part between NEMO-SI3-TOP
+\NEMO\ (``Nucleus for European Modelling of the Ocean'') is a framework of ocean-related engines.
+It is intended to be a flexible tool for studying the ocean dynamics and thermodynamics (``blue ocean''),
+as well as its interactions with the components of the Earth climate system over
+a wide range of space and time scales.
+Within \NEMO, the ocean engine is interfaced with a sea-ice model (\SIcube\ or
+\href{http://github.com/CICE-Consortium/CICE}{CICE}),
+passive tracers and biogeochemical models (\TOP) and,
+via the \href{http://portal.enes.org/oasis}{OASIS} coupler,
+with several atmospheric general circulation models.
+It also supports two-way grid embedding by means of the \href{http://agrif.imag.fr}{AGRIF} software.
+
+%% Specific part
+The primitive equation model is adapted to regional and global ocean circulation problems down to
+kilometric scale.
+Prognostic variables are the three-dimensional velocity field, a non-linear sea surface height,
+the \textit{Conservative} Temperature and the \textit{Absolute} Salinity.
+In the horizontal direction, the model uses a curvilinear orthogonal grid and
+in the vertical direction, a full or partial step $z$-coordinate, or $s$-coordinate, or
+a mixture of the two.
+The distribution of variables is a three-dimensional Arakawa C-type grid.
+Various physical choices are available to describe ocean physics,
+so as various HPC functionalities to improve performances.

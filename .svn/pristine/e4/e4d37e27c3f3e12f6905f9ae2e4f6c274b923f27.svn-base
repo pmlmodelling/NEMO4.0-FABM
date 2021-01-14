@@ -1,0 +1,13 @@
+!-----------------------------------------------------------------------
+&namtrc_trd      !   diagnostics on tracer trends                       ('key_trdtrc')
+!                          or mixed-layer trends                        ('key_trdmld_trc')
+!----------------------------------------------------------------------
+   nn_trd_trc    =  5475     !  time step frequency and tracers trends
+   nn_ctls_trc   =   0       !  control surface type in mixed-layer trends (0,1 or n<jpk)
+   rn_ucf_trc    =   1       !  unit conversion factor (=1 -> /seconds ; =86400. -> /day)
+   ln_trdmld_trc_restart = .false. !  restart for ML diagnostics
+   ln_trdmld_trc_instant = .true.  !  flag to diagnose trends of instantantaneous or mean ML T/S
+   ln_trdtrc( 1) = .true.
+   ln_trdtrc( 2) = .true.
+   ln_trdtrc(23) = .true.
+/

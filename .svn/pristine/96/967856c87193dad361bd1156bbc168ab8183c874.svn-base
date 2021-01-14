@@ -1,0 +1,112 @@
+¤ Missing namelist groups in NEMO manual
+namage namagrif namalb namc14_fcg namc14_sbc namc14_typ namc1d namc1d_dyndmp namc1d_uvd namcfc namcrs namdia namdrg namdrg_bot namdrg_top namdta_dyn namdyn namdyn_rdgrft namdyn_rhg namforcing namhsb namini namitd namlobdet namlobdom namlobnut namlobopt namlobphy namlobrat namlobsed namlobzoo nammpp namp4zlim namp4zmes namp4zmort namp4zprod namp4zzoo namp5zlim namp5zmes namp5zmort namp5zprod namp5zquota namp5zzoo nampar nampisatm nampisbio nampiscal nampisdmp nampisext nampisfer nampisice nampislig nampismass nampismod nampisopt nampispoc nampisrem nampissbc namsbc_blk namsbc_iif namthd namthd_da namthd_do namthd_pnd namthd_sal namthd_zdf namtra_eiv namtra_mle namtrc namtrc_adv namtrc_bc namtrc_bdy namtrc_dmp namtrc_dta namtrc_ice namtrc_ldf namtrc_rad namtrc_run namtrc_snk namtrc_trd nam_vvl namzdf_iwm 
+
+¤ Vanished index entries in NEMO manual (\{hf,jp,key,mdl,ngn,nlst,np,rou}{...})
+chap_DYN.tex: key{dynspg\_exp} key{dynspg\_flt} key{dynspg\_ts} key{trddyn} key{trdvor} key{vvl} mdl{dynspg\_flt} mdl{zpsdhe} nlst{namsplit} np{ln\_bt\_nn\_auto} np{ln\_dynhpg\_djc} np{ln\_dynhpg\_imp} np{ln\_dynhpg\_isf} np{ln\_dynhpg\_prj} np{ln\_dynhpg\_sco} np{ln\_dynhpg\_vec} np{ln\_dynhpg\_zco} np{ln\_dynhpg\_zps} np{ln\_dynldf\_bilap} np{ln\_dynvor\_con} np{ln\_dynzad\_zts} np{ln\_traadv\_tvd\_zts} np{ln\_wd\_dl\_ramp} np{ln\_zdfexp} np{nn\_atfp} np{nn\_dynhpg\_rst} np{nn\_ice\_embd} np{nn\_zdfexp} 
+introduction.tex: 
+chap_model_basics_zstar.tex: key{dynspg\_exp} key{dynspg\_flt} key{dynspg\_ts} key{vvl} mdl{dynspg\_flt} np{rdtbt} np{rnu} 
+chap_DIA.tex: key{diaar5} key{diadct} key{diaharm} key{diahth} key{diainstant} key{floats} key{IOM} key{iomput} key{mpp\_mpi} key{netcdf4} key{trdmld\_trc} key{trdtrc} key{vvl} ngn{namdia\_harm} np{init\_float\_ariane} np{iom\_put} np{jpnflnewflo} np{nb\_ana} np{nit000} np{nitend} np{nn\_debug} np{nn\_diacfl} np{tname} rou{iom\_rstput} 
+annex_E.tex: key{traldf\_eiv} 
+chap_TRA.tex: jp{lk\_vvl} key{trabbl} key{traTTT} key{zdfddm} mdl{traldf\_lap} ngn{namtra\_bbc} np{ln\_flxqsr} np{ln\_sco} np{ln\_traadv\_NONE} np{ln\_traldf} np{ln\_traldf\_grif} np{ln\_traldf\_NONE} np{ln\_tsd\_tradmp} np{ln\_useCT} np{ln\_zco} np{ln\_zdfexp} np{ln\_zps} np{nn\_chdta} np{nn\_eos} np{nn\_fct\_zts} np{nn\_geoflx\_cst} np{nn\_zdfexp} rou{traldf\_blp} rou{traldf\_lap} 
+chap_DIU.tex: 
+chap_ASM.tex: key{asminc} ngn{namasm} 
+chap_ZDF.tex: key{dynspg\_exp} key{dynspg\_flt} key{dynspg\_ts} key{trabbl} key{vvl} key{zdf} key{zdfcst} key{zdfddm} key{zdfgls} key{zdfosm} key{zdfric} key{zdftke} key{zdftmx} key{zdftmx\_new} mdl{dynbfr} mdl{dynzdf\_imp} mdl{zdfbfr} mdl{zdfini} mdl{zdfkpp} ngn{namzdf\_ddm} ngn{namzdf\_tmx} ngn{namzdf\_tmx\_new} nlst{nambfr} nlst{namzdf_ddm} nlst{namzdf_tmx} nlst{namzdf_tmx_new} np{ln\_bfr2d} np{ln\_bfrimp} np{ln\_crban} np{ln\_tmx\_itf} np{ln\_tranpc} np{ln\_zdfexp} np{ln\_zdftmx\_itf} np{nn\_botfr} np{nn\_clo} np{nn\_ediff} np{nn\_ediss} np{nn\_tkebc\_bot} np{nn\_tkebc\_surf} np{rn\_avevd} np{rn\_bfeb2} np{rn\_bfri1} np{rn\_bfri2} np{rn\_bfri2\_max} np{rn\_bfrien} np{rn\_bfrz0} np{rn\_htmx} np{rn\_me} np{rn\_n2min} np{rn\_tfe} np{rn\_tfe\_itf} np{rn\_tfri2} np{rn\_tfri2\_max} np{rn\_tfrz0} rou{zdf\_bfr} 
+chap_OBS.tex: 
+chap_misc.tex: key{mpp\_mpi} key{nosignedzero} key{vectopt\_loop} np{iom\_get} np{jpjdta} np{jpjglo} np{nn\_bench} np{nn\_bit\_cmp} np{open\_ocean\_jstart} 
+chap_LDF.tex: hf{dynldf\_cNd} hf{ldfdyn\_substitute} hf{ldftra\_substitute} hf{traldf\_c1d} hf{traldf\_cNd} key{dynldf\_c1d} key{dynldf\_c2d} key{dynldf\_c3d} key{traldf\_c1d} key{traldf\_c2d} key{traldf\_c3d} key{traldf\_cNd} key{traldf\_eiv} mdl{ldfdyn\_c2d} mdl{ldfeiv} mdl{traadv\_eiv} np{ln\_dynldf\_bilap} np{ln\_sco} np{nn\_eos} np{rn\_aeih\_0} np{rn\_aeiv} np{rn\_aeiv\_0} np{rn\_ahm0} np{rn\_ahmb0} np{rn\_aht0} np{rn\_ahtb0} np{traldf\_grif} np{traldf\_grif\_iso} rou{ldf\_dyn\_c2d\_orca} rou{ldfslp\_init} 
+chap_LBC.tex: jp{jpreci} key{mpp\_mpi} np{jperio} np{jpiglo} np{jpindt} np{jpinft} np{jpjglo} np{jpjnob} np{nbdysegn} np{nn\_bdy\_jpk} np{nn\_msh} np{nn\_tra} rou{inimpp2} 
+chap_DOM.tex: key{mpp\_mpi} ngn{namzgr} ngn{namzgr\_sco} nlst{namzgr} nlst{namzgr_sco} np{jperio} np{jpiglo} np{jpjglo} np{jpkglo} np{ln\_sco} np{ln\_sigcrit} np{ln\_s\_SF12} np{ln\_s\_SH94} np{ln\_tsd\_ini} np{ln\_zco} np{ln\_zps} np{nn\_bathy} np{nn\_msh} np{ppa0} np{ppa1} np{ppacr} np{ppdzmin} np{pphmax} np{ppkth} np{ppsur} np{rn\_alpha} np{rn\_bb} np{rn\_e3zps\_min} np{rn\_e3zps\_rat} np{rn\_hc} np{rn\_rmax} np{rn\_sbot\_max} np{rn\_sbot\_min} np{rn\_theta} np{rn\_zb\_a} np{rn\_zb\_b} np{rn\_zs} rou{istate\_t\_s} 
+chap_conservation.tex: key{\_} 
+annex_iso.tex: key{trabbl} key{traldf\_eiv} np{ln\_traldf\_eiv} np{ln\_traldf\_gdia} 
+chap_time_domain.tex: np{ln\_zdfexp} np{nn\_dynhpg\_rst} np{nn\_zdfexp} 
+annex_C.tex: 
+chap_CONFIG.tex: key{agrif} key{c1d} key{dynspg\_ts} key{orca\_r12} key{orca\_r8} key{vvl} key{zdfgls} ngn{namusr\_def} np{jpiglo} np{jpizoom} np{jpjglo} np{jpjzoom} np{ln\_bench} np{nn\_GYRE} np{ORCA\_index} 
+chap_SBC.tex: key{cice} key{coupled} key{cpl\_carbon\_cycle} key{lim3} key{mpp\_mpi} key{nemocice\_decomp} key{oasis3} key{pisces} key{top} key{vvl} mdl{sbcana} mdl{sbc\_ana\_gyre} mdl{sbcsas} ngn{namsbc\_ana} ngn{namsbc\_clio} ngn{namsbc\_core} nlst{namsbc_ana} nlst{namsbc_clio} nlst{namsbc_core} np{clim} np{ln\_ana} np{ln\_blk\_clio} np{ln\_blk\_core} np{ln\_clio} np{ln\_core} np{ln\_rnf\_temp} np{nn\_nit000} np{nn\_tau000} np{nn\_test\_box} np{nz\_rnf} np{rn\_emp0} np{rn\_fiscpl} np{rn\_qns0} np{rn\_qsr0} np{rn\_utau0} np{rn\_vtau0} 
+chap_STO.tex: 
+
+¤ Namelist parameters unfollowing naming conventions (^[cdlnr]n_* or uppercase somewhere)
+     nam_asminc: nitbkg nitdin nitiaustr nitiaufin niaufn salfixmin
+         nambbc: sn_qgh
+         nambdy: nb_bdy nb_jpk_bdy ctypebdy nbdyind nbdybeg nbdyend
+     nambdy_dta: bn_ssh bn_u2d bn_v2d bn_u3d bn_v3d bn_tem bn_sal
+    nambdy_tide: filtide
+        namberg: rn_LoW_ratio sn_icb
+     namc14_fcg: cfileco2 cfilec14 tyrc14_beg
+     namc14_sbc: xkwind xdicsur
+     namc14_typ: kc14typ rc14at pco2at rc14init
+     namc1d_uvd: sn_ucur sn_vcur
+         namcfc: ndate_beg nyear_res clname
+         namdia: iiceprt jiceprt
+    nam_diaharm: nit000_han nitend_han nstep_han tname(1) tname(2)
+         namdrg: ln_OFF
+     namdrg_bot: rn_Cd0 rn_Uc0 rn_Cdmax
+     namdrg_top: rn_Cd0 rn_Uc0 rn_Cdmax
+     namdta_dyn: sn_tem sn_sal sn_mld sn_emp sn_fmf sn_ice sn_qsr sn_wnd sn_uwd sn_vwd sn_wwd sn_avt sn_ubl sn_vbl
+         namdyn: ln_dynALL ln_dynRHGADV ln_dynADV1D ln_dynADV2D ln_landfast_L16
+     namdyn_adv: ln_dynadv_OFF
+     namdyn_ldf: ln_dynldf_OFF rn_Uv rn_Lv
+  namdyn_rdgrft: ln_str_H79
+     namdyn_rhg: ln_rhg_EVP ln_aEVP
+     namdyn_vor: ln_dynvor_enT ln_dynvor_eeT
+         namflo: jpnfl jpnnewflo
+     namforcing: nice_jules
+         namini: sn_hti sn_hts sn_ati sn_tsu sn_tmi sn_smi
+      namlobdet: taudn fdetlab
+      namlobdom: taudomn
+      namlobnut: akno3 aknh4 taunn psinut
+      namlobopt: xkg0 xkr0 xkgp xkrp xlg xlr rpig
+      namlobphy: tmumax rgamma fphylab tmminp aki
+      namlobrat: rcchl redf reddom
+      namlobsed: sedlam sedlostpoc vsed xhr
+      namlobzoo: rppz taus aks rpnaz rdnaz tauzn fzoolab fdbod tmminz
+         nammpp: jpni jpnj
+      namp4zlim: concnno3 concdno3 concnnh4 concdnh4 concnfer concdfer concbfe concbnh4 concbno3 xsizedia xsizephy xsizern xsizerd xksi1 xksi2 xkdoc qnfelim qdfelim caco3r oxymin
+      namp4zmes: part2 grazrat2 resrat2 mzrat2 xpref2d xpref2n xpref2z xpref2c xthresh2zoo xthresh2dia xthresh2phy xthresh2poc xthresh2 xkgraz2 epsher2 epsher2min sigma2 unass2 grazflux
+     namp4zmort: wchl wchld wchldm mprat mprat2
+     namp4zprod: pislopen pisloped xadap excretn excretd bresp chlcnm chlcdm chlcmin fecnm fecdm grosip
+      namp4zzoo: part grazrat resrat mzrat xprefc xprefn xprefd xthreshdia xthreshphy xthreshpoc xthresh xkgraz epsher epshermin sigma1 unass
+      namp5zlim: concnno3 concpno3 concdno3 concnnh4 concpnh4 concdnh4 concnpo4 concppo4 concdpo4 concnfer concpfer concdfer concbfe concbnh4 concbno3 concbpo4 xsizedia xsizephy xsizepic xsizern xsizerp xsizerd xksi1 xksi2 xkdoc caco3r oxymin
+      namp5zmes: part2 grazrat2 bmetexc2 resrat2 mzrat2 xpref2d xpref2p xpref2z xpref2m xpref2c xthresh2zoo xthresh2dia xthresh2phy xthresh2mes xthresh2poc xthresh2 xkgraz2 epsher2 epsher2min ssigma2 srespir2 unass2c unass2n unass2p grazflux
+     namp5zmort: wchln wchlp wchld wchldm mpratn mpratp mprat2
+     namp5zprod: pislopen pislopep pisloped excretn excretp excretd xadap bresp thetannm thetanpm thetandm chlcmin grosip
+    namp5zquota: qfnopt qfpopt qfdopt qnnmin qnnmax qpnmin qpnmax qnpmin qnpmax qppmin qppmax qndmin qndmax qpdmin qpdmax qfnmax qfpmax qfdmax
+      namp5zzoo: part grazrat bmetexc resrat mzrat xprefc xprefn xprefp xprefd xprefz xthreshdia xthreshphy xthreshpic xthreshzoo xthreshpoc xthresh xkgraz epsher epshermin ssigma srespir unassc unassn unassp
+         nampar: jpl nlay_i nlay_s
+      nampisatm: sn_patm sn_atmco2
+      nampisbio: nrdttrc wsbio xkmort ferat3 wsbio2 wsbio2max wsbio2scale ldocp ldocz lthet no3rat3 po4rat3
+      nampiscal: kdca nca
+      nampisext: atcco2 clname
+      nampisfer: xlam1 xlamdust ligand kfep
+      nampisice: sn_tri_dic sn_tri_doc sn_tri_tal sn_tri_oxy sn_tri_cal sn_tri_po4 sn_tri_poc sn_tri_goc sn_tri_bfe sn_tri_num sn_tri_sil sn_tri_dsi sn_tri_gsi sn_tri_phy sn_tri_dia sn_tri_zoo sn_tri_mes sn_tri_fer sn_tri_sfe sn_tri_dfe sn_tri_nfe sn_tri_nch sn_tri_dch sn_tri_no3 sn_tri_nh4
+      nampislig: rlgw rlig prlgw rlgs
+      nampisopt: sn_par parlux
+      nampispoc: xremip jcpoc rshape xremipc xremipn xremipp
+      nampisrem: xremik nitrif xsirem xsiremlab xsilab feratb xkferb xremikc xremikn xremikp
+      nampissbc: sn_dust sn_solub sn_riverdic sn_riverdoc sn_riverdin sn_riverdon sn_riverdip sn_riverdop sn_riverdsi sn_ndepo sn_ironsed sn_hydrofe sedfeinput distcoast dustsolub mfrac wdust icefeinput nitrfix diazolight concfediaz hratio lgw_rath
+     namsbc_apr: sn_apr
+     namsbc_blk: ln_NCAR ln_COARE_3p0 ln_COARE_3p5 ln_ECMWF ln_Cd_L12 ln_Cd_L15 sn_wndi sn_wndj sn_qsr sn_qlw sn_tair sn_humi sn_prec sn_snow sn_slp sn_tdif
+     namsbc_cpl: sn_snd_temp sn_snd_alb sn_snd_thick sn_snd_crt sn_snd_co2 sn_snd_crtw sn_snd_ifrac sn_snd_wlev sn_snd_cond sn_snd_thick1 sn_snd_mpnd sn_snd_sstfrz sn_snd_ttilyr sn_rcv_w10m sn_rcv_taumod sn_rcv_tau sn_rcv_dqnsdt sn_rcv_qsr sn_rcv_qns sn_rcv_emp sn_rcv_rnf sn_rcv_cal sn_rcv_co2 sn_rcv_hsig sn_rcv_iceflx sn_rcv_mslp sn_rcv_phioc sn_rcv_sdrfx sn_rcv_sdrfy sn_rcv_wper sn_rcv_wnum sn_rcv_wstrf sn_rcv_wdrag sn_rcv_ts_ice sn_rcv_isf sn_rcv_icb sn_rcv_tauwoc sn_rcv_tauw sn_rcv_wdrag
+     namsbc_flx: sn_utau sn_vtau sn_qtot sn_qsr sn_emp
+     namsbc_iif: sn_ice
+     namsbc_isf: sn_fwfisf sn_rnfisf sn_depmax_isf sn_depmin_isf sn_Leff_isf
+     namsbc_rnf: sn_rnf sn_cnf sn_s_rnf sn_t_rnf sn_dep_rnf
+     namsbc_sas: l_sasread sn_usp sn_vsp sn_tem sn_sal sn_ssh sn_e3t sn_frq
+     namsbc_ssr: sn_sst sn_sss
+    namsbc_wave: sn_cdg sn_usd sn_vsd sn_hsw sn_wmp sn_wfr sn_wnum sn_tauwoc sn_tauwx sn_tauwy
+         namthd: ln_icedH ln_icedA ln_icedO ln_icedS
+      namthd_do: rn_Cfraz
+     namthd_pnd: ln_pnd_H12 ln_pnd_CST
+     namthd_zdf: ln_zdf_BL99 ln_cndi_U64 ln_cndi_P07
+       nam_tide: rdttideramp clname(1)
+     namtra_adv: ln_traadv_OFF
+     namtra_eiv: rn_Ue rn_Le
+     namtra_ldf: ln_traldf_OFF rn_Ud rn_Ld
+     namtra_qsr: sn_chl
+         namtrc: jp_bgc jp_dia3d jp_dia2d
+     namtrc_adv: ln_trcadv_OFF
+     namtrc_dta: sn_trcdta(1)
+     namtrc_ldf: ln_trcldf_OFF
+     namtrc_snk: nitermax
+         namtrd: ln_KE_trd ln_PE_trd
+         namtsd: sn_tem sn_sal
+         namzdf: ln_zad_Aimp

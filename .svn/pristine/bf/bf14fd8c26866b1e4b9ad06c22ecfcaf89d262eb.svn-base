@@ -1,0 +1,35 @@
+
+\documentclass[../main/SI3_manual]{subfiles}
+
+\begin{document}
+
+% ================================================================
+% Chapter 3 Ñ Ice dynamics
+% ================================================================
+
+\chapter{Ice dynamics}
+\label{chap:DYN}
+\chaptertoc
+
+\newpage
+$\ $\newline    % force a new line
+
+In this chapter, we describe how the momentum equation is solved.
+
+I guess we could be brief. Gurvan and Clem should take the lead to write this.
+
+1) aEVP approach, revisited by Bouillon et al (2013).
+
+2) Short description of the numerical method. NEMO scale factors.
+
+3) Landfast ice option
+
+4) Boundary conditions (free-slip, no-slip, ...)
+
+4) Practical use of namelist parameters (nevp, telast, ...).
+
+\end{document}
+
+
+
+

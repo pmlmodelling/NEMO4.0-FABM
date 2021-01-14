@@ -1,0 +1,9 @@
+!-----------------------------------------------------------------------
+&namzgr        !   vertical coordinate                                  (default: NO selection)
+!-----------------------------------------------------------------------
+   ln_zco      = .false.   !  z-coordinate - full    steps
+   ln_zps      = .false.   !  z-coordinate - partial steps
+   ln_sco      = .false.   !  s- or hybrid z-s-coordinate
+   ln_isfcav   = .false.   !  ice shelf cavity
+   ln_linssh   = .false.   !  linear free surface
+/

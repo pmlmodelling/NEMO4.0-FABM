@@ -1,0 +1,5 @@
+!-----------------------------------------------------------------------
+&namtrc_rad      !  treatment of negative concentrations 
+!-----------------------------------------------------------------------
+   ln_trcrad     =  .true.   !  artificially correct negative concentrations (T) or not (F)
+/

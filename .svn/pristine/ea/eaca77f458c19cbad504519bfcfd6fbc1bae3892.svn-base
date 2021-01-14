@@ -1,0 +1,24 @@
+!-----------------------------------------------------------------------
+&namzdf_gls    !   GLS vertical diffusion                               (ln_zdfgls =T)
+!-----------------------------------------------------------------------
+   rn_emin       = 1.e-7   !  minimum value of e   [m2/s2]
+   rn_epsmin     = 1.e-12  !  minimum value of eps [m2/s3]
+   ln_length_lim = .true.  !  limit on the dissipation rate under stable stratification (Galperin et al., 1988)
+   rn_clim_galp  = 0.267   !  galperin limit
+   ln_sigpsi     = .true.  !  Activate or not Burchard 2001 mods on psi schmidt number in the wb case
+   rn_crban      = 100.    !  Craig and Banner 1994 constant for wb tke flux
+   rn_charn      = 70000.  !  Charnock constant for wb induced roughness length
+   rn_hsro       =  0.02   !  Minimum surface roughness
+   rn_frac_hs    =   1.3   !  Fraction of wave height as roughness (if nn_z0_met>1)
+   nn_z0_met     =     2   !  Method for surface roughness computation (0/1/2/3)
+   !                             ! =3 requires ln_wave=T
+   nn_z0_ice     =   1     !  attenutaion of surface wave breaking under ice
+   !                       !           = 0 no impact of ice cover
+   !                       !           = 1 roughness uses rn_hsri and is weigthed by 1-TANH(10*fr_i)
+   !                       !           = 2 roughness uses rn_hsri and is weighted by 1-fr_i
+   !                       !           = 3 roughness uses rn_hsri and is weighted by 1-MIN(1,4*fr_i)
+   nn_bc_surf    =     1   !  surface condition (0/1=Dir/Neum)
+   nn_bc_bot     =     1   !  bottom condition (0/1=Dir/Neum)
+   nn_stab_func  =     2   !  stability function (0=Galp, 1= KC94, 2=CanutoA, 3=CanutoB)
+   nn_clos       =     1   !  predefined closure type (0=MY82, 1=k-eps, 2=k-w, 3=Gen)
+/

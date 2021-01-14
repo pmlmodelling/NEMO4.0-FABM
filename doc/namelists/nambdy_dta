@@ -1,0 +1,39 @@
+!-----------------------------------------------------------------------
+&nambdy_dta    !  open boundaries - external data                       (see nam_bdy)
+!-----------------------------------------------------------------------
+   ln_zinterp  = .false.      !  T if a vertical interpolation is required. Variables gdep[tuv] and e3[tuv] must exist in the file
+   !                          !  automatically defined to T if the number of vertical levels in bdy dta /= jpk
+   ln_full_vel = .false.      !  T if [uv]3d are "full" velocities and not only its baroclinic components
+   !                          !  in this case, baroclinic and barotropic velocities will be recomputed -> [uv]2d not needed
+   !
+   cn_dir      = 'bdydta/'    !  root directory for the BDY data location
+   !___________!_________________________!___________________!___________!_____________!________!___________!__________________!__________!_______________!
+   !           !  file name              ! frequency (hours) ! variable  ! time interp.!  clim  ! 'yearly'/ ! weights filename ! rotation ! land/sea mask !
+   !           !                         !  (if <0  months)  !   name    !   (logical) !  (T/F) ! 'monthly' !                  ! pairing  !    filename   !
+   bn_ssh      = 'amm12_bdyT_u2d'        ,         24.       , 'sossheig',    .true.   , .false.,  'daily'  ,    ''            ,   ''     ,     ''
+   bn_u2d      = 'amm12_bdyU_u2d'        ,         24.       , 'vobtcrtx',    .true.   , .false.,  'daily'  ,    ''            ,   ''     ,     ''
+   bn_v2d      = 'amm12_bdyV_u2d'        ,         24.       , 'vobtcrty',    .true.   , .false.,  'daily'  ,    ''            ,   ''     ,     ''
+   bn_u3d      = 'amm12_bdyU_u3d'        ,         24.       , 'vozocrtx',    .true.   , .false.,  'daily'  ,    ''            ,   ''     ,     ''
+   bn_v3d      = 'amm12_bdyV_u3d'        ,         24.       , 'vomecrty',    .true.   , .false.,  'daily'  ,    ''            ,   ''     ,     ''
+   bn_tem      = 'amm12_bdyT_tra'        ,         24.       , 'votemper',    .true.   , .false.,  'daily'  ,    ''            ,   ''     ,     ''
+   bn_sal      = 'amm12_bdyT_tra'        ,         24.       , 'vosaline',    .true.   , .false.,  'daily'  ,    ''            ,   ''     ,     ''
+!* for si3
+   bn_a_i      = 'amm12_bdyT_ice'        ,         24.       , 'siconc'  ,    .true.   , .false.,  'daily'  ,    ''            ,   ''     ,     ''
+   bn_h_i      = 'amm12_bdyT_ice'        ,         24.       , 'sithic'  ,    .true.   , .false.,  'daily'  ,    ''            ,   ''     ,     ''
+   bn_h_s      = 'amm12_bdyT_ice'        ,         24.       , 'snthic'  ,    .true.   , .false.,  'daily'  ,    ''            ,   ''     ,     ''
+   bn_t_i      = 'NOT USED'              ,         24.       , 'sitemp'  ,    .true.   , .false.,  'daily'  ,    ''            ,   ''     ,     ''
+   bn_t_s      = 'NOT USED'              ,         24.       , 'sntemp'  ,    .true.   , .false.,  'daily'  ,    ''            ,   ''     ,     ''
+   bn_tsu      = 'NOT USED'              ,         24.       , 'sittop'  ,    .true.   , .false.,  'daily'  ,    ''            ,   ''     ,     ''
+   bn_s_i      = 'NOT USED'              ,         24.       , 'sisalt'  ,    .true.   , .false.,  'daily'  ,    ''            ,   ''     ,     ''
+   ! melt ponds (be careful, bn_aip is the pond concentration (not fraction), so it differs from rn_iceapnd)
+   bn_aip      = 'NOT USED'              ,         24.       , 'siapnd'  ,    .true.   , .false.,  'daily'  ,    ''            ,   ''     ,     ''
+   bn_hip      = 'NOT USED'              ,         24.       , 'sihpnd'  ,    .true.   , .false.,  'daily'  ,    ''            ,   ''     ,     ''
+   bn_hil      = 'NOT USED'              ,         24.       , 'sihlid'  ,    .true.   , .false.,  'daily'  ,    ''            ,   ''     ,     ''
+   ! if bn_t_i etc are "not used", then define arbitrary temperatures and salinity and ponds
+   rn_ice_tem  = 270.         !  arbitrary temperature               of incoming sea ice
+   rn_ice_sal  = 10.          !       --   salinity                            --
+   rn_ice_age  = 30.          !       --   age                                 --
+   rn_ice_apnd = 0.2          !       --   pond fraction = a_ip/a_i            --
+   rn_ice_hpnd = 0.05         !       --   pond depth                          --
+   rn_ice_hlid = 0.0          !       --   pond lid depth                      --
+/

@@ -1,0 +1,20 @@
+!-----------------------------------------------------------------------
+&namp4zzoo     !   parameters for microzooplankton for PISCES std      - ln_p4z
+!-----------------------------------------------------------------------
+   part       =  0.5      ! part of calcite not dissolved in microzoo guts
+   grazrat    =  3.0      ! maximal zoo grazing rate
+   resrat     =  0.03     ! exsudation rate of zooplankton
+   mzrat      =  0.004    ! zooplankton mortality rate
+   xprefc     =  0.1      ! Microzoo preference for POM
+   xprefn     =  1.       ! Microzoo preference for Nanophyto
+   xprefd     =  0.6      ! Microzoo preference for Diatoms
+   xthreshdia =  1.E-8    ! Diatoms feeding threshold for microzooplankton 
+   xthreshphy =  1.E-8    ! Nanophyto feeding threshold for microzooplankton 
+   xthreshpoc =  1.E-8    ! POC feeding threshold for microzooplankton 
+   xthresh    =  3.E-7    ! Food threshold for feeding
+   xkgraz     =  20.E-6   ! half sturation constant for grazing
+   epsher     =  0.3      ! Efficiency of microzoo growth
+   epshermin  =  0.3      ! Minimum efficiency of microzoo growth
+   sigma1     =  0.6      ! Fraction of microzoo excretion as DOM
+   unass      =  0.3      ! non assimilated fraction of phyto by zoo
+/

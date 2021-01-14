@@ -1,0 +1,20 @@
+%% Engine (folder name)
+\def \engine{SI3}
+
+%% Title and cover page settings
+\def \spacetop{  \vspace*{1.2cm} }
+\def \heading{Sea Ice modelling Integrated Initiative (SI$^3$)}
+\def \subheading{The NEMO sea ice engine}
+\def \spacedown{ \vspace*{  1cm} }
+\def \authorswidth{0.2\linewidth}
+\def \rulelenght{230pt}
+\def \abstractwidth{0.65\linewidth}
+
+%% Color for document (frontpage banner, links and chapter boxes)
+\def \setmanualcolor{ \definecolor{manualcolor}{cmyk}{0, 0, 0, 0.4} }
+
+%% IPSL publication number
+\def \ipslnum{31}
+
+%% Zenodo ID, i.e. doi:10.5281/zenodo.\([0-9]*\)
+\def \zid{1471689}

@@ -1,0 +1,10 @@
+!-----------------------------------------------------------------------
+&nampisext     !   air-sea exchange
+!-----------------------------------------------------------------------
+   ln_co2int  =  .false. ! read atm pco2 from a file (T) or constant (F)
+   atcco2     =  280.    ! Constant value atmospheric pCO2 - ln_co2int = F
+   clname     =  'atcco2.txt'  ! Name of atm pCO2 file - ln_co2int = T
+   nn_offset  =  0       ! Offset model-data start year - ln_co2int = T
+!                        ! If your model year is iyy, nn_offset=(years(1)-iyy) 
+!                        ! then the first atmospheric CO2 record read is at years(1)
+/

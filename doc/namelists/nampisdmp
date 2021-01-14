@@ -1,0 +1,6 @@
+!-----------------------------------------------------------------------
+&nampisdmp     !   Damping 
+!-----------------------------------------------------------------------
+   ln_pisdmp    =  .true.     !  Relaxation for some tracers to a mean value
+   nn_pisdmp    =  5475       !  Frequency of Relaxation 
+/

@@ -1,0 +1,40 @@
+\usepackage[]{todonotes}
+
+\newcounter{ubcomment}
+\newcommand{\ubcomment}[2][]{%
+\refstepcounter{ubcomment}%
+{%
+\todo[linecolor=black,backgroundcolor={green!40!},size=\footnotesize]{%
+\textbf{Fixme: UB [\uppercase{#1}\theubcomment]:}~#2}%
+}}
+\newcommand{\ubcommentinline}[2][]{%
+\refstepcounter{ubcomment}%
+{%
+\todo[linecolor=black,inline,backgroundcolor={green!40!},size=\footnotesize]{%
+\textbf{Fixme: UB [\uppercase{#1}\theubcomment]:}~#2}%
+}}
+
+\newcommand{\ubcommentmultiline}[2]{%
+\refstepcounter{ubcomment}%
+{%
+\todo[linecolor=black,inline,caption={\textbf{{Fixme: UB}
+    [\theubcomment] #1}} ,backgroundcolor={green!40!},size=\footnotesize]{%
+\textbf{Fixme: UB [\theubcomment]:}~#2}%
+}}
+
+% add support for todo in equations
+%\usepackage{marginnote}
+%\makeatletter
+%\renewcommand{\@todonotes@drawMarginNoteWithLine}{%
+%\begin{tikzpicture}[remember picture, overlay, baseline=-0.75ex]%
+%    \node [coordinate] (inText) {};%
+%\end{tikzpicture}%
+%\marginnote[{% Draw note in left margin
+%    \@todonotes@drawMarginNote%
+%    \@todonotes@drawLineToLeftMargin%
+%}]{% Draw note in right margin
+%    \@todonotes@drawMarginNote%
+%    \@todonotes@drawLineToRightMargin%
+%}%
+%}
+%\makeatother

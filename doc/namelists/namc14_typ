@@ -1,0 +1,8 @@
+!-----------------------------------------------------------------------
+&namc14_typ     !  C14 - type of C14 tracer, default values of C14/C and pco2
+!-----------------------------------------------------------------------
+   kc14typ  = 0          ! Type of C14 tracer (0=equilibrium; 1=bomb transient; 2=past transient)
+   rc14at   = 1.0        ! Default value for atmospheric C14/C (used for equil run)
+   pco2at   = 280.0      ! Default value for atmospheric pcO2 [atm] (used for equil run)
+   rc14init = 0.85       ! Default value for initialization of ocean C14/C (when no restart)
+/

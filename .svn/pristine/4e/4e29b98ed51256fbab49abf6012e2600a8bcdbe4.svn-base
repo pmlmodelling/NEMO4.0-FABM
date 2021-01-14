@@ -1,0 +1,8 @@
+!-----------------------------------------------------------------------
+&namagrif      !  AGRIF zoom                                            ("key_agrif")
+!-----------------------------------------------------------------------
+   ln_spc_dyn    = .true.  !  use 0 as special value for dynamics
+   rn_sponge_tra = 2880.   !  coefficient for tracer   sponge layer [m2/s]
+   rn_sponge_dyn = 2880.   !  coefficient for dynamics sponge layer [m2/s]
+   ln_chk_bathy  = .false. !  =T  check the parent bathymetry
+/

@@ -1,0 +1,57 @@
+!-----------------------------------------------------------------------
+&namobs        !  observation usage switch                              (default: OFF)
+!-----------------------------------------------------------------------
+   ln_diaobs   = .false.             ! Logical switch for the observation operator
+   !
+   ln_t3d      = .false.             ! Logical switch for T profile observations
+   ln_s3d      = .false.             ! Logical switch for S profile observations
+   ln_sla      = .false.             ! Logical switch for SLA observations
+   ln_sst      = .false.             ! Logical switch for SST observations
+   ln_sss      = .false.             ! Logical swithc for SSS observations
+   ln_sic      = .false.             ! Logical switch for Sea Ice observations
+   ln_vel3d    = .false.             ! Logical switch for velocity observations
+   ln_altbias  = .false.             ! Logical switch for altimeter bias correction
+   ln_sstbias  = .false.             ! Logical switch for SST bias correction
+   ln_nea      = .false.             ! Logical switch for rejection of observations near land
+   ln_grid_global = .true.           ! Logical switch for global distribution of observations
+   ln_grid_search_lookup = .false.   ! Logical switch for obs grid search w/lookup table
+   ln_ignmis   = .true.              ! Logical switch for ignoring missing files
+   ln_s_at_t   = .false.             ! Logical switch for computing model S at T obs if not there
+   ln_sstnight = .false.             ! Logical switch for calculating night-time average for SST obs
+   ln_bound_reject  = .false.        ! Logical to remove obs near boundaries in LAMs.
+   ln_sla_fp_indegs = .true.         ! Logical for SLA: T=> averaging footprint is in degrees, F=> in metres
+   ln_sst_fp_indegs = .true.         ! Logical for SST: T=> averaging footprint is in degrees, F=> in metres
+   ln_sss_fp_indegs = .true.         ! Logical for SSS: T=> averaging footprint is in degrees, F=> in metres
+   ln_sic_fp_indegs = .true.         ! Logical for SIC: T=> averaging footprint is in degrees, F=> in metres
+! All of the *files* variables below are arrays. Use namelist_cfg to add more files
+   cn_profbfiles = 'profiles_01.nc'  ! Profile feedback input observation file names
+   cn_slafbfiles = 'sla_01.nc'       ! SLA feedback input observation file names
+   cn_sstfbfiles = 'sst_01.nc'       ! SST feedback input observation file names
+   cn_sssfbfiles = 'sss_01.nc'       ! SSS feedback input observation file names
+   cn_sicfbfiles = 'sic_01.nc'       ! SIC feedback input observation file names
+   cn_velfbfiles = 'vel_01.nc'       ! Velocity feedback input observation file names
+   cn_altbiasfile = 'altbias.nc'     ! Altimeter bias input file name
+   cn_sstbiasfiles = 'sstbias.nc'    ! SST bias input file name
+   cn_gridsearchfile ='gridsearch.nc' ! Grid search file name
+   rn_gridsearchres = 0.5            ! Grid search resolution
+   rn_mdtcorr  = 1.61                ! MDT  correction
+   rn_mdtcutoff = 65.0               ! MDT cutoff for computed correction
+   rn_dobsini  = 00010101.000000     ! Initial date in window YYYYMMDD.HHMMSS
+   rn_dobsend  = 00010102.000000     ! Final date in window YYYYMMDD.HHMMSS
+   rn_sla_avglamscl = 0.             ! E/W diameter of SLA observation footprint (metres/degrees)
+   rn_sla_avgphiscl = 0.             ! N/S diameter of SLA observation footprint (metres/degrees)
+   rn_sst_avglamscl = 0.             ! E/W diameter of SST observation footprint (metres/degrees)
+   rn_sst_avgphiscl = 0.             ! N/S diameter of SST observation footprint (metres/degrees)
+   rn_sss_avglamscl = 0.             ! E/W diameter of SSS observation footprint (metres/degrees)
+   rn_sss_avgphiscl = 0.             ! N/S diameter of SSS observation footprint (metres/degrees)
+   rn_sic_avglamscl = 0.             ! E/W diameter of SIC observation footprint (metres/degrees)
+   rn_sic_avgphiscl = 0.             ! N/S diameter of SIC observation footprint (metres/degrees)
+   nn_1dint = 0                      ! Type of vertical interpolation method
+   nn_2dint = 0                      ! Default horizontal interpolation method
+   nn_2dint_sla = 0                  ! Horizontal interpolation method for SLA
+   nn_2dint_sst = 0                  ! Horizontal interpolation method for SST
+   nn_2dint_sss = 0                  ! Horizontal interpolation method for SSS
+   nn_2dint_sic = 0                  ! Horizontal interpolation method for SIC
+   nn_msshc     = 0                  ! MSSH correction scheme
+   nn_profdavtypes = -1              ! Profile daily average types - array
+/

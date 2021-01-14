@@ -1,0 +1,7 @@
+!-----------------------------------------------------------------------
+&namsbc_iscpl  !   land ice / ocean coupling option                     (ln_isfcav =T : read (ln_read_cfg=T) 
+!-----------------------------------------------------------------------             or set or usr_def_zgr )
+   nn_drown    = 10        ! number of iteration of the extrapolation loop (fill the new wet cells)
+   ln_hsb      = .false.   ! activate conservation module (conservation exact after a time of rn_fiscpl)
+   nn_fiscpl   = 43800     ! (number of time step) conservation period (maybe should be fix to the coupling frequencey of restart frequency)
+/

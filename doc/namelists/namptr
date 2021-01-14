@@ -1,0 +1,6 @@
+!-----------------------------------------------------------------------
+&namptr        !   Poleward Transport Diagnostic                        (default: OFF)
+!-----------------------------------------------------------------------
+   ln_diaptr   = .false.   !  Poleward heat and salt transport (T) or not (F)
+   ln_subbas   = .false.   !  Atlantic/Pacific/Indian basins computation (T) or not
+/

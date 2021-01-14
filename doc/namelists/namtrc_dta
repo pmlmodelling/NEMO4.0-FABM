@@ -1,0 +1,9 @@
+!-----------------------------------------------------------------------
+&namtrc_dta      !    Initialisation from data input file
+!-----------------------------------------------------------------------
+!                !  file name        ! frequency (hours) ! variable  ! time interp. !  clim  ! 'yearly'/ ! weights  ! rotation ! land/sea mask !
+!                !                   !  (if <0  months)  !   name    !   (logical)  !  (T/F) ! 'monthly' ! filename ! pairing  ! filename      !
+   sn_trcdta(1)  = 'data_TRC_nomask' ,        -12.       ,  'TRC'    ,    .false.   , .true. , 'yearly'  , ''       , ''       , ''
+   !
+   cn_dir        =  './'     !  root directory for the location of the data files
+/

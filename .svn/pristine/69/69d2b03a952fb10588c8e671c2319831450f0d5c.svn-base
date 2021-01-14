@@ -1,0 +1,15 @@
+!-----------------------------------------------------------------------
+&namcrs        !   coarsened grid (for outputs and/or TOP)              (ln_crs =T)
+!-----------------------------------------------------------------------
+   nn_factx    = 3         !  Reduction factor of x-direction
+   nn_facty    = 3         !  Reduction factor of y-direction
+   nn_binref   = 0         !  Bin centering preference: NORTH or EQUAT
+      !                    !  0, coarse grid is binned with preferential treatment of the north fold
+      !                    !  1, coarse grid is binned with centering at the equator
+      !                    !    Symmetry with nn_facty being odd-numbered. Asymmetry with even-numbered nn_facty.
+   ln_msh_crs  = .false.   ! =T create a mesh & mask file
+   nn_crs_kz   = 0         ! 0, MEAN of volume boxes
+      !                    ! 1, MAX of boxes
+      !                    ! 2, MIN of boxes
+   ln_crs_wn   = .true.    ! wn coarsened (T) or computed using horizontal divergence ( F )
+/

@@ -1,0 +1,7 @@
+!------------------------------------------------------------------------------
+&namdyn_adv     !   Ice advection
+!------------------------------------------------------------------------------
+   ln_adv_Pra       = .true.         !  Advection scheme (Prather)
+   ln_adv_UMx       = .false.          !  Advection scheme (Ultimate-Macho)
+      nn_UMx        =   5             !     order of the scheme for UMx (1-5 ; 20=centered 2nd order)
+/

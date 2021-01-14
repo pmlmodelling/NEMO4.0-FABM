@@ -1,0 +1,39 @@
+!-----------------------------------------------------------------------
+&nampissbc     !   parameters for inputs deposition
+!-----------------------------------------------------------------------
+!              !  file name        ! frequency (hours) ! variable      ! time interp. !  clim  ! 'yearly'/ ! weights  ! rotation ! land/sea mask !
+!              !                   !  (if <0  months)  !   name        !   (logical)  !  (T/F) ! 'monthly' ! filename ! pairing  ! filename      !
+   sn_dust     = 'dust.orca'       ,     -1.           , 'dust'        ,  .true.      , .true. , 'yearly'  , ''       , ''    , ''
+   sn_solub    = 'solubility.orca' ,    -12.           , 'solubility1' ,  .false.     , .true. , 'yearly'  , ''       , ''    , ''
+   sn_riverdic = 'river.orca'      ,    120.           , 'riverdic'    ,  .true.      , .true. , 'yearly'  , ''       , ''    , ''
+   sn_riverdoc = 'river.orca'      ,    120.           , 'riverdoc'    ,  .true.      , .true. , 'yearly'  , ''       , ''    , ''
+   sn_riverdin = 'river.orca'      ,    120.           , 'riverdin'    ,  .true.      , .true. , 'yearly'  , ''       , ''    , ''
+   sn_riverdon = 'river.orca'      ,    120.           , 'riverdon'    ,  .true.      , .true. , 'yearly'  , ''       , ''    , ''
+   sn_riverdip = 'river.orca'      ,    120.           , 'riverdip'    ,  .true.      , .true. , 'yearly'  , ''       , ''    , ''
+   sn_riverdop = 'river.orca'      ,    120.           , 'riverdop'    ,  .true.      , .true. , 'yearly'  , ''       , ''    , ''
+   sn_riverdsi = 'river.orca'      ,    120.           , 'riverdsi'    ,  .true.      , .true. , 'yearly'  , ''       , ''    , ''
+   sn_ndepo    = 'ndeposition.orca',    -12.           , 'ndep'        ,  .false.     , .true. , 'yearly'  , ''       , ''    , ''
+   sn_ironsed  = 'bathy.orca'      ,    -12.           , 'bathy'       ,  .false.     , .true. , 'yearly'  , ''       , ''    , ''
+   sn_hydrofe  = 'hydrofe.orca'    ,    -12.           , 'epsdb'       ,  .false.     , .true. , 'yearly'  , ''       , ''    , ''
+!
+   cn_dir      = './'      !  root directory for the location of the dynamical files
+   ln_dust     =  .true.   ! boolean for dust input from the atmosphere
+   ln_solub    =  .true.   ! boolean for variable solubility of atm. Iron
+   ln_river    =  .true.   ! boolean for river input of nutrients
+   ln_ndepo    =  .true.   ! boolean for atmospheric deposition of N
+   ln_ironsed  =  .true.   ! boolean for Fe input from sediments
+   ln_ironice  =  .true.   ! boolean for Fe input from sea ice
+   ln_hydrofe  =  .true.   ! boolean for from hydrothermal vents
+   sedfeinput  =  2.e-9    ! Coastal release of Iron
+   distcoast   =  5.e3     ! Distance off the coast for Iron from sediments
+   dustsolub   =  0.02     ! Solubility of the dusta
+   mfrac       =  0.035    ! Fe mineral fraction of dust
+   wdust       =  2.0      ! Dust sinking speed 
+   icefeinput  =  15.e-9   ! Iron concentration in sea ice
+   nitrfix     =  1.e-7    ! Nitrogen fixation rate
+   diazolight  =  50.      ! Diazotrophs sensitivity to light (W/m2)
+   concfediaz  =  1.e-10   ! Diazotrophs half-saturation Cste for Iron
+   hratio      =  1.e+7    ! Fe to 3He ratio assumed for vent iron supply 
+!                          ! ln_ligand
+   lgw_rath    =  0.5      ! Weak ligand ratio from sed hydro sources 
+/

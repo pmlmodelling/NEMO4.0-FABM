@@ -1,0 +1,3135 @@
+
+@article{         adcroft.campin_OM04,
+  title         = "Rescaled height coordinates for accurate representation of
+                  free-surface flows in ocean circulation models",
+  pages         = "269--284",
+  journal       = "Ocean Modelling",
+  volume        = "7",
+  number        = "3-4",
+  author        = "A. Adcroft and J.-M. Campin",
+  year          = "2004",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2003.09.003"
+}
+
+@article{         arakawa.hsu_MWR90,
+  title         = "Energy Conserving and Potential-Enstrophy Dissipating
+                  Schemes for the Shallow Water Equations",
+  pages         = "1960--1969",
+  journal       = "Monthly Weather Review",
+  volume        = "118",
+  number        = "10",
+  author        = "A. Arakawa and Y.-J. G. Hsu",
+  year          = "1990",
+  month         = "oct",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0493",
+  doi           = "10.1175/1520-0493(1990)118<1960:ecaped>2.0.co;2"
+}
+
+@article{         arakawa.lamb_MWR81,
+  title         = "A Potential Enstrophy and Energy Conserving Scheme for the
+                  Shallow Water Equations",
+  pages         = "18--36",
+  journal       = "Monthly Weather Review",
+  volume        = "109",
+  number        = "1",
+  author        = "A. Arakawa and V. R. Lamb",
+  year          = "1981",
+  month         = "jan",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0493",
+  doi           = "10.1175/1520-0493(1981)109<0018:apeaec>2.0.co;2"
+}
+
+@article{         arakawa_JCP66,
+  title         = "Computational design for long-term numerical integration
+                  of the equations of fluid motion: Two-dimensional
+                  incompressible flow. Part {I}",
+  pages         = "119--143",
+  journal       = "Journal of Computational Physics",
+  volume        = "1",
+  number        = "1",
+  author        = "A. Arakawa",
+  year          = "1966",
+  month         = "Aug",
+  publisher     = "Elsevier BV",
+  issn          = "0021-9991",
+  doi           = "10.1016/0021-9991(66)90015-5"
+}
+
+@article{         arbic.garner.ea_DSR04,
+  title         = "The accuracy of surface elevations in forward global
+                  barotropic and baroclinic tide models",
+  pages         = "3069--3101",
+  journal       = "Deep Sea Research",
+  volume        = "51",
+  number        = "25-26",
+  author        = "B. K. Arbic and S. T. Garner and R. W. Hallberg and H. L.
+                  Simmons",
+  year          = "2004",
+  month         = "dec",
+  publisher     = "Elsevier BV",
+  issn          = "0967-0645",
+  doi           = "10.1016/j.dsr2.2004.09.014"
+}
+
+@article{         artale.iudicone.ea_JGR02,
+  title         = "Role of surface fluxes in Ocean General Circulation Models
+                  using satellite sea surface temperature: Validation of and
+                  sensitivity to the forcing frequency of the Mediterranean
+                  thermohaline circulation",
+  pages         = "2901--2924",
+  journal       = "Journal of Geophysical Research",
+  volume        = "107",
+  number        = "C8",
+  author        = "V. Artale and D. Iudicone and R. Santoleri and V. Rupolo
+                  and S. Marullo and F. {D'O}rtenzio",
+  year          = "2002",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/2000jc000452"
+}
+
+@article{         asselin_MWR72,
+  title         = "Frequency Filter for Time Integrations",
+  pages         = "487--490",
+  journal       = "Monthly Weather Review",
+  volume        = "100",
+  number        = "6",
+  author        = "R. Asselin",
+  year          = "1972",
+  month         = "jun",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0493",
+  doi           = "10.1175/1520-0493(1972)100<0487:fffti>2.3.co;2"
+}
+
+@article{         axell_JGR02,
+  title         = "Wind-driven internal waves and Langmuir circulations in a
+                  numerical ocean model of the southern Baltic Sea",
+  journal       = "Journal of Geophysical Research",
+  volume        = "107",
+  number        = "C11",
+  author        = "L. B. Axell",
+  year          = "2002",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/2001jc000922"
+}
+
+@article{         barnier.madec.ea_OD06,
+  title         = "Impact of partial steps and momentum advection schemes in
+                  a global ocean circulation model at eddy-permitting
+                  resolution",
+  pages         = "543--567",
+  journal       = "Ocean Dynamics",
+  volume        = "56",
+  number        = "5-6",
+  author        = "B. Barnier and G. Madec and T. Penduff and J.-M. Molines
+                  and A.-M. Tr\'{e}guier and J. {Le Sommer} and A. Beckmann
+                  and A. Biastoch and C. B{\"{o}}ning and J. Dengg and C.
+                  Derval and E. Durand and S. Gulev and E. Remy and C.
+                  Talandier and S. Theetten and M. Maltrud and J. McClean and
+                  B. {de Cuevas}",
+  year          = "2006",
+  month         = "jun",
+  publisher     = "Springer Nature",
+  issn          = "1616-7228",
+  doi           = "10.1007/s10236-006-0082-1"
+}
+
+@article{         beckmann.doscher_JPO97,
+  title         = "A method for improved representation of dense water
+                  spreading over topography in geopotential-coordinate
+                  models",
+  pages         = "581--591",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "27",
+  number        = "4",
+  author        = "A. Beckmann and R. D{\"{o}}scher",
+  year          = "1997",
+  month         = "apr",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1997)027<0581:amfiro>2.0.co;2"
+}
+
+@article{         beckmann.goosse_OM03,
+  title         = "A parameterization of ice shelf-ocean interaction for
+                  climate models",
+  pages         = "157--170",
+  journal       = "Ocean Modelling",
+  volume        = "5",
+  number        = "2",
+  author        = "A. Beckmann and H. Goosse",
+  year          = "2003",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/s1463-5003(02)00019-7"
+}
+
+@article{         beckmann.haidvogel_JPO93,
+  title         = "Numerical Simulation of Flow around a Tall Isolated
+                  Seamount. Part {I}: Problem Formulation and Model Accuracy",
+  pages         = "1736--1753",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "23",
+  number        = "8",
+  author        = "A. Beckmann and D. B. Haidvogel",
+  year          = "1993",
+  month         = "aug",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1993)023<1736:nsofaa>2.0.co;2"
+}
+
+@article{ beljaars_QJRMS95,
+title = "The parametrization of surface fluxes in large-scale models under free convection",
+pages = "255--270",
+journal = "Quarterly Journal of the Royal Meteorological Society",
+volume = "121",
+number = "522",
+author = "Beljaars, Anton C. M.",
+year = "1995",
+month = "jan",
+ publisher     = "Wiley",
+issn = "00359009",
+doi = "10.1002/qj.49712152203"
+}
+
+@article{         bernie.guilyardi.ea_CD07,
+  title         = "Impact of resolving the diurnal cycle in an
+                  ocean-atmosphere {GCM}. Part 1: a diurnally forced {OGCM}",
+  pages         = "575--590",
+  journal       = "Climate Dynamics",
+  volume        = "29",
+  number        = "6",
+  author        = "D. J. Bernie and E. Guilyardi and G. Madec and J. M.
+                  Slingo and S. J. Woolnough",
+  year          = "2007",
+  month         = "may",
+  publisher     = "Springer Nature",
+  issn          = "1432-0894",
+  doi           = "10.1007/s00382-007-0249-6"
+}
+
+@article{         bernie.woolnough.ea_JC05,
+  title         = "Modeling diurnal and intraseasonal variability of the
+                  ocean mixed layer",
+  pages         = "1190--1202",
+  journal       = "Journal of Climate",
+  volume        = "18",
+  number        = "8",
+  author        = "D. J. Bernie and S. J. Woolnough and J. M. Slingo and E.
+                  Guilyardi",
+  year          = "2005",
+  month         = "apr",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0442",
+  doi           = "10.1175/jcli3319.1"
+}
+
+@article{         blanke.delecluse_JPO93,
+  title         = "Variability of the tropical Atlantic Ocean simulated by a
+                  General Circulation Model with two different mixed-layer
+                  physics",
+  pages         = "1363--1388",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "23",
+  number        = "7",
+  author        = "B. Blanke and P. Del\'{e}cluse",
+  year          = "1993",
+  month         = "jul",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1993)023<1363:vottao>2.0.co;2"
+}
+
+@article{         blanke.raynaud_JPO97,
+  title         = "Kinematics of the Pacific Equatorial Undercurrent: An
+                  Eulerian and Lagrangian Approach from {GCM} Results",
+  pages         = "1038--1053",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "27",
+  number        = "6",
+  author        = "B. Blanke and S. Raynaud",
+  year          = "1997",
+  month         = "jun",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1997)027<1038:kotpeu>2.0.co;2"
+}
+
+@article{         bloom.takacs.ea_MWR96,
+  title         = "Data assimilation using incremental analysis updates",
+  pages         = "1256--1271",
+  journal       = "Monthly Weather Review",
+  volume        = "124",
+  number        = "6",
+  author        = "S. C. Bloom and L. L. Takacs and A. M. Da Silva and D.
+                  Ledvina",
+  year          = "1996",
+  month         = "jun",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0493",
+  doi           = "10.1175/1520-0493(1996)124<1256:dauiau>2.0.co;2"
+}
+
+@article{         bouffard.boegman_DAO13,
+  title         = "A diapycnal diffusivity model for stratified environmental
+                  flows",
+  pages         = "14--34",
+  journal       = "Dynamics of Atmospheres and Oceans",
+  volume        = "61-62",
+  author        = "D. Bouffard and L. Boegman",
+  year          = "2013",
+  month         = "jun",
+  publisher     = "Elsevier BV",
+  issn          = "0377-0265",
+  doi           = "10.1016/j.dynatmoce.2013.02.002"
+}
+
+@article{         bougeault.lacarrere_MWR89,
+  title         = "Parameterization of Orography-Induced Turbulence in a
+                  Mesobeta--Scale Model",
+  pages         = "1872--1890",
+  journal       = "Monthly Weather Review",
+  volume        = "117",
+  number        = "8",
+  author        = "P. Bougeault and P. Lacarrere",
+  year          = "1989",
+  month         = "aug",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0493",
+  doi           = "10.1175/1520-0493(1989)117<1872:pooiti>2.0.co;2"
+}
+
+@article{         bouillon.maqueda.ea_OM09,
+  title         = "An elastic-viscous-plastic sea ice model formulated on
+                  Arakawa {B} and {C} grids",
+  pages         = "174--184",
+  journal       = "Ocean Modelling",
+  volume        = "27",
+  number        = "3-4",
+  author        = "S. Bouillon and M. A. Morales Maqueda and V. Legat and T.
+                  Fichefet",
+  year          = "2009",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2009.01.004"
+}
+
+@article{         brankart.candille.ea_GMD15,
+  title         = "A generic approach to explicit simulation of uncertainty
+                  in the {NEMO} ocean model",
+  pages         = "1285--1297",
+  journal       = "Geoscientific Model Development",
+  volume        = "8",
+  number        = "5",
+  author        = "J.-M. Brankart and G. Candille and F. Garnier and C.
+                  Calone and A. Melet and P.-A. Bouttier and P. Brasseur and
+                  J. Verron",
+  year          = "2015",
+  month         = "may",
+  publisher     = "Copernicus GmbH",
+  issn          = "1991-9603",
+  doi           = "10.5194/gmd-8-1285-2015"
+}
+
+@article{         brankart_OM13,
+  title         = "Impact of uncertainties in the horizontal density gradient
+                  upon low resolution global ocean modelling",
+  pages         = "64--76",
+  journal       = "Ocean Modelling",
+  volume        = "66",
+  author        = "J.-M. Brankart",
+  year          = "2013",
+  month         = "jun",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2013.02.004"
+}
+
+@article{         breivik.bidlot.ea_OM16,
+  title         = "A Stokes drift approximation based on the Phillips
+                  spectrum",
+  pages         = "49--56",
+  journal       = "Ocean Modelling",
+  volume        = "100",
+  author        = "{\O}. Breivik and J.-R. Bidlot and P. A. E. M. Janssen",
+  year          = "2016",
+  month         = "apr",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2016.01.005"
+}
+
+@article{         breivik.janssen.ea_JPO14,
+  title         = "Approximate Stokes Drift Profiles in Deep Water",
+  pages         = "2433--2445",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "44",
+  number        = "9",
+  author        = "{\O}. Breivik and P. A. E. M. Janssen and J.-R. Bidlot",
+  year          = "2014",
+  month         = "sep",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/jpo-d-14-0020.1"
+}
+
+@article{         brodeau.barnier.ea_OM10,
+  title         = "An {ERA40}-based atmospheric forcing for global ocean
+                  circulation models",
+  pages         = "88--104",
+  journal       = "Ocean Modelling",
+  volume        = "31",
+  number        = "3-4",
+  author        = "L. Brodeau and B. Barnier and A.-M. Tr\'{e}guier and T.
+                  Penduff and S. Gulev",
+  year          = "2010",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2009.10.005"
+}
+
+@article{         brodeau.barnier.ea_JPO16,
+  title         = "Climatologically Significant Effects of Some Approximations in the Bulk Parameterizations of Turbulent Air–Sea Fluxes",
+  pages         = "5--28",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "47",
+  number        = "1",
+  author        = "Brodeau, Laurent and Barnier, Bernard and Gulev, Sergey K. and Woods, Cian",
+  year          = "2016",
+  month         = "jan",
+  publisher     = "American Meteorological Society",
+  issn          = "0022-3670",
+  doi           = "10.1175/jpo-d-16-0169.1",
+}
+
+@article{         brown.campana_MWR78,
+  title         = "An economical time-differencing system for numerical
+                  weather prediction",
+  pages         = "1125--1136",
+  journal       = "Monthly Weather Review",
+  volume        = "106",
+  number        = "8",
+  author        = "J. A. Brown and K. A. Campana",
+  year          = "1978",
+  month         = "aug",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0493",
+  doi           = "10.1175/1520-0493(1978)106<1125:aetsfn>2.0.co;2"
+}
+
+@article{         bryan_JCP97,
+  title         = "A numerical method for the study of the circulation of the
+                  world ocean",
+  pages         = "154--169",
+  journal       = "Journal of Computational Physics",
+  volume        = "135",
+  number        = "2",
+  author        = "K. Bryan",
+  year          = "1997",
+  month         = "Aug",
+  publisher     = "Elsevier BV",
+  issn          = "0021-9991",
+  doi           = "10.1006/jcph.1997.5699"
+}
+
+@article{         burchard_OM02,
+  title         = "Energy-conserving discretisation of turbulent shear and
+                  buoyancy production",
+  pages         = "347--361",
+  journal       = "Ocean Modelling",
+  volume        = "4",
+  number        = "3-4",
+  author        = "H. Burchard",
+  year          = "2002",
+  month         = "jun",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/s1463-5003(02)00009-4"
+}
+
+@article{         campin.adcroft.ea_OM04,
+  title         = "Conservation of properties in a free-surface model",
+  pages         = "221--244",
+  journal       = "Ocean Modelling",
+  volume        = "6",
+  number        = "3-4",
+  author        = "J.-M. Campin and A. Adcroft and C. Hill and J. Marshall",
+  year          = "2004",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/s1463-5003(03)00009-x"
+}
+
+@article{         campin.goosse_T99,
+  title         = "Parameterization of density-driven downsloping flow for a
+                  coarse-resolution ocean model in z-coordinate",
+  pages         = "412--430",
+  journal       = "Tellus A",
+  volume        = "51",
+  number        = "3",
+  author        = "J.-M. Campin and H. Goosse",
+  year          = "1999",
+  month         = "may",
+  publisher     = "Informa UK Limited",
+  issn          = "1600-0870",
+  doi           = "10.1034/j.1600-0870.1999.t01-3-00006.x"
+}
+
+@article{         campin.marshall.ea_OM08,
+  title         = "Sea ice-ocean coupling using a rescaled vertical
+                  coordinate \zstar",
+  pages         = "1--14",
+  journal       = "Ocean Modelling",
+  volume        = "24",
+  number        = "1-2",
+  author        = "J.-M. Campin and J. Marshall and D. Ferreira",
+  year          = "2008",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2008.05.005"
+}
+
+@article{         canuto.howard.ea_JPO01,
+  title         = "Ocean turbulence. Part {I}: One-point closure
+                  model-momentum and heat vertical diffusivities",
+  pages         = "1413--1426",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "31",
+  number        = "6",
+  author        = "V. M. Canuto and A. Howard and Y. Cheng and M. S.
+                  Dubovikov",
+  year          = "2001",
+  month         = "jun",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(2001)031<1413:otpiop>2.0.co;2"
+}
+
+@article{         carrere.lyard_GRL03,
+  title         = "Modeling the barotropic response of the global ocean to
+                  atmospheric wind and pressure forcing - comparisons with
+                  observations",
+  journal       = "Geophysical Research Letters",
+  volume        = "30",
+  number        = "6",
+  author        = "L. Carr\`{e}re and F. Lyard",
+  year          = "2003",
+  month         = "mar",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0094-8276",
+  doi           = "10.1029/2002gl016473"
+}
+
+@techreport{      chanut_rpt05,
+  title         = "Nesting code for {NEMO}",
+  pages         = "25",
+  author        = "J. Chanut",
+  institution   = "European Union: Marine Environment and Security for the
+                  European Area (MERSEA) Integrated Project",
+  year          = "2005",
+  month         = "may",
+  doi           = "10.5281/zenodo.3243409"
+}
+
+@article{         chassignet.smith.ea_JPO03,
+  title         = "North Atlantic Simulations with the Hybrid Coordinate
+                  Ocean Model ({HYCOM}): Impact of the Vertical Coordinate
+                  Choice, Reference Pressure, and Thermobaricity",
+  pages         = "2504--2526",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "33",
+  number        = "12",
+  author        = "E. P. Chassignet and L. T. Smith and G. R. Halliwell and
+                  R. Bleck",
+  year          = "2003",
+  month         = "dec",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(2003)033<2504:naswth>2.0.co;2"
+}
+
+@article{         cox_OM87,
+  title         = "Isopycnal diffusion in a z-coordinate ocean model",
+  pages         = "1--9",
+  journal       = "Ocean Modelling",
+  volume        = "74",
+  author        = "M. D. Cox",
+  year          = "1987",
+  month         = "jan",
+  url           = "https://www.researchgate.net/publication/243768762_Isopycnal_diffusion_in_a_z-coordinate_ocean_model"
+}
+
+@article{         craig.banner_JPO94,
+  title         = "Modeling wave-enhanced turbulence in the ocean surface
+                  layer",
+  pages         = "2546--2559",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "24",
+  number        = "12",
+  author        = "P. D. Craig and M. L. Banner",
+  year          = "1994",
+  month         = "dec",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1994)024<2546:mwetit>2.0.co;2"
+}
+
+@article{         craik.leibovich_JFM76,
+  title         = "A rational model for Langmuir circulations",
+  pages         = "401--426",
+  journal       = "Journal of Fluid Mechanics",
+  volume        = "73",
+  number        = "3",
+  author        = "A. D. D. Craik and S. Leibovich",
+  year          = "1976",
+  month         = "feb",
+  publisher     = "Cambridge University Press (CUP)",
+  issn          = "1469-7645",
+  doi           = "10.1017/s0022112076001420"
+}
+
+@article{         dalessio.abdella.ea_JPO98,
+  title         = "A new second-order turbulence closure scheme for modeling
+                  the oceanic mixed layer",
+  pages         = "1624--1641",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "28",
+  number        = "8",
+  author        = "S. J. D. D'Alessio and K. Abdella and N. A. McFarlane",
+  year          = "1998",
+  month         = "aug",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1998)028<1624:ansotc>2.0.co;2"
+}
+
+@book{            daley.barker_bk01,
+  pages         = "163",
+  booktitle     = "{NAVDAS} Source Book 2001: {NRL} Atmospheric Variational
+                  Data Assimilation System",
+  editor        = "Naval Research Laboratory, Marine Meteorology Division",
+  author        = "R. Daley and E. Barker",
+  year          = "2001",
+  month         = "jul",
+  publisher     = "Defense Technical Information Center",
+  doi           = "10.21236/ada396883"
+}
+
+@article{         danabasoglu.ferrari.ea_JC08,
+  title         = "Sensitivity of an Ocean General Circulation Model to a
+                  parameterization of near-surface eddy fluxes",
+  pages         = "1192--1208",
+  journal       = "Journal of Climate",
+  volume        = "21",
+  number        = "6",
+  author        = "G. Danabasoglu and R. Ferrari and J. C. McWilliams",
+  year          = "2008",
+  month         = "mar",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0442",
+  doi           = "10.1175/2007jcli1508.1"
+}
+
+@article{         davies_QJRMS76,
+  title         = "A lateral boundary formulation for multi-level prediction
+                  models",
+  pages         = "405--418",
+  journal       = "Quarterly Journal of the Royal Meteorological Society",
+  volume        = "102",
+  number        = "432",
+  author        = "H. C. Davies",
+  year          = "1976",
+  month         = "apr",
+  publisher     = "Wiley",
+  issn          = "0035-9009",
+  doi           = "10.1002/qj.49710243210"
+}
+
+@article{         de-boyer-montegut.madec.ea_JGR04,
+  title         = "Mixed layer depth over the global ocean: An examination of
+                  profile data and a profile-based climatology",
+  pages         = "C12003",
+  journal       = "Journal of Geophysical Research",
+  volume        = "109",
+  number        = "C12",
+  author        = "C. {de Boyer Mont\'{e}gut} and G. Madec and A. S. Fischer
+                  and A. Lazar and D. Iudicone",
+  year          = "2004",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/2004jc002378"
+}
+
+@article{         de-lavergne.madec.ea_JPO16,
+  title         = "The impact of a variable mixing efficiency on the abyssal
+                  overturning",
+  pages         = "663--681",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "46",
+  number        = "2",
+  author        = "C. {de Lavergne} and G. Madec and J. {Le Sommer} and A. J.
+                  G. Nurser and A. C. Naveira Garabato",
+  year          = "2016",
+  month         = "feb",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/jpo-d-14-0259.1"
+}
+
+@article{         debreu.vouland.ea_CG08,
+  title         = "{AGRIF}: Adaptive Grid Refinement In Fortran",
+  pages         = "8--13",
+  journal       = "Computers \& Geosciences",
+  volume        = "34",
+  number        = "1",
+  author        = "L. Debreu and C. Vouland and E. Blayo",
+  year          = "2008",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "0098-3004",
+  doi           = "10.1016/j.cageo.2007.01.009"
+}
+
+@incollection{    delecluse.madec_icol99,
+  title         = "Ocean modelling and the role of the ocean in the climate
+                  system",
+  pages         = "237--313",
+  booktitle     = "Modeling the Earth's Climate and its Variability",
+  editor        = "W. R. Holland and S. Joussaume and F. David",
+  series        = "Les Houches",
+  volume        = "67",
+  author        = "P. Del\'{e}cluse and G. Madec",
+  year          = "1999",
+  publisher     = "North Holland",
+  isbn          = "978-0-444-50338-1"
+}
+
+@phdthesis{       demange_phd14,
+  title         = "Advection and gravity waves propagation numerical schemes
+                  for oceanic circulation models",
+  pages         = "138",
+  author        = "J. Demange",
+  school        = "Grenoble University, France",
+  year          = "2014",
+  url           = "https://tel.archives-ouvertes.fr/tel-01104703/file/DEMANGE_2014_archivage.pdf"
+}
+
+@article{         dobricic.pinardi.ea_OS07,
+  title         = "Daily oceanographic analyses by Mediterranean Forecasting
+                  System at the basin scale",
+  pages         = "149--157",
+  journal       = "Ocean Science",
+  volume        = "3",
+  number        = "1",
+  author        = "S. Dobricic and N. Pinardi and M. Adani and M. Tonani and
+                  C. Fratianni and A. Bonazzi and V. Fernandez",
+  year          = "2007",
+  month         = "mar",
+  publisher     = "Copernicus GmbH",
+  issn          = "1812-0792",
+  doi           = "10.5194/os-3-149-2007"
+}
+
+@article{         drijfhout_JPO94,
+  title         = "Heat transport by mesoscale eddies in an ocean circulation
+                  Model",
+  pages         = "353--369",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "24",
+  number        = "2",
+  author        = "S. S. Drijfhout",
+  year          = "1994",
+  month         = "feb",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1994)024<0353:htbmei>2.0.co;2"
+}
+
+@article{         dukowicz.smith_JGR94,
+  title         = "Implicit free-surface method for the Bryan-Cox-Semtner
+                  ocean model",
+  pages         = "7991--8014",
+  journal       = "Journal of Geophysical Research",
+  volume        = "99",
+  number        = "C4",
+  author        = "J. K. Dukowicz and R. D. Smith",
+  year          = "1994",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/93jc03455"
+}
+
+@article{ edson.jampana.ea_JPO13,
+title = "On the Exchange of Momentum over the Open Ocean",
+pages = "1589--1610",
+journal = "Journal of Physical Oceanography",
+volume = "43",
+number = "8",
+author = "Edson, James B. and Jampana, Venkata and Weller, Robert A. and Bigorre, Sebastien P. and Plueddemann, Albert J. and Fairall, Christopher W. and Miller, Scott D. and Mahrt, Larry and Vickers, Dean and Hersbach, Hans",
+year = "2013",
+month = "aug",
+publisher = "American Meteorological Society",
+issn = "0022-3670",
+doi = "10.1175/JPO-D-12-0173.1"
+}
+
+@article{         egbert.ray_JGR01,
+  title         = "Estimates of {M2} tidal energy dissipation from
+                  {TOPEX}/Poseidon altimeter data",
+  pages         = "22475--22502",
+  journal       = "Journal of Geophysical Research",
+  volume        = "106",
+  number        = "C10",
+  author        = "G. D. Egbert and R. D. Ray",
+  year          = "2001",
+  month         = "oct",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/2000jc000699"
+}
+
+@article{         egbert.ray_N00,
+  title         = "Significant dissipation of tidal energy in the deep ocean
+                  inferred from satellite altimeter data",
+  pages         = "775--778",
+  journal       = "Nature",
+  volume        = "405",
+  number        = "6788",
+  author        = "G. D. Egbert and R. D. Ray",
+  year          = "2000",
+  month         = "jun",
+  publisher     = "Springer Nature",
+  issn          = "1476-4687",
+  doi           = "10.1038/35015531"
+}
+
+@article{         eiseman.stone_SR80,
+  title         = "Conservation laws of fluid dynamics - {A} survey",
+  pages         = "12--27",
+  journal       = "SIAM Review",
+  volume        = "22",
+  number        = "1",
+  author        = "P. R. Eiseman and A. P. Stone",
+  year          = "1980",
+  month         = "jan",
+  publisher     = "Society for Industrial & Applied Mathematics (SIAM)",
+  issn          = "1095-7200",
+  doi           = "10.1137/1022002"
+}
+
+@article{         emile-geay.madec_OS09,
+  title         = "Geothermal heating, diapycnal mixing and the abyssal
+                  circulation",
+  pages         = "203--217",
+  journal       = "Ocean Science",
+  volume        = "5",
+  number        = "2",
+  author        = "J. Emile-Geay and G. Madec",
+  year          = "2009",
+  month         = "jun",
+  publisher     = "Copernicus GmbH",
+  issn          = "1812-0792",
+  doi           = "10.5194/os-5-203-2009"
+}
+
+@article{         engedahl_T95,
+  title         = "Use of the flow relaxation scheme in a three-dimensional
+                  baroclinic ocean model with realistic topography",
+  pages         = "365--382",
+  journal       = "Tellus A",
+  volume        = "47",
+  number        = "3",
+  author        = "H. Engedahl",
+  year          = "1995",
+  month         = "jan",
+  publisher     = "Informa UK Limited",
+  issn          = "1600-0870",
+  doi           = "10.3402/tellusa.v47i3.11523"
+}
+
+@article{ fairall.bradley.ea_JC03,
+title = "Bulk parameterization of air-sea fluxes: Updates and verification for the COARE algorithm",
+pages = "571--591",
+journal = "Journal of Climate",
+volume = "16",
+number = "4",
+author = "Fairall, C. W. and Bradley, E. F. and Hare, J. E. and Grachev, A. A. and Edson, J. B.",
+year = "2003",
+publisher = "American Meteorological Society",
+issn = "08948755",
+doi = "10.1175/1520-0442(2003)016<0571:BPOASF>2.0.CO;2"
+}
+
+@phdthesis{       farge-coulombier_phd87,
+  title         = "Dynamique non-lin\'{e}aire des ondes et des tourbillons
+                  dans les \'{e}quations de Saint-Venant",
+  pages         = "353",
+  author        = "M. {Farge Coulombier}",
+  school        = "Paris VI University, France",
+  year          = "1987",
+  url           = "http://www.theses.fr/1987PA066365"
+}
+
+@article{         farrow.stevens_JPO95,
+  title         = "A new tracer advection scheme for Bryan and Cox type Ocean
+                  General Circulation Models",
+  pages         = "1731--1741",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "25",
+  number        = "7",
+  author        = "D. E. Farrow and D. P. Stevens",
+  year          = "1995",
+  month         = "jul",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1995)025<1731:antasf>2.0.co;2"
+}
+
+@article{         flather_JPO94,
+  title         = "A storm surge prediction model for the northern Bay of
+                  Bengal with application to the cyclone disaster in April
+                  1991",
+  pages         = "172--190",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "24",
+  number        = "1",
+  author        = "R. A. Flather",
+  year          = "1994",
+  month         = "jan",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1994)024<0172:asspmf>2.0.co;2"
+}
+
+@book{            fofonoff.millard_bk83,
+  pages         = "53",
+  booktitle     = "Algorithms for computation of fundamental properties of
+                  seawater",
+  editor        = "UNESCO/ICES/SCOR/IAPSO",
+  series        = "Technical Paper in Marine Science",
+  volume        = "44",
+  author        = "N P. Fofonoff and R. C. Millard",
+  year          = "1983",
+  publisher     = "UNESCO",
+  url           = "https://unesdoc.unesco.org/ark:/48223/pf0000059832.locale=en"
+}
+
+@article{         foxkemper.ferrari_JPO08,
+  title         = "Parameterization of Mixed Layer Eddies. Part I: Theory and Diagnosis",
+  pages         = "1145--1165",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "38",
+  number        = "6",
+  author        = "B. Fox-Kemper and R. Ferrari and B. Hallberg",
+  year          = "2008",
+  month         = "jun",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/2007JPO3792.1"
+}
+
+@article{         galperin.kantha.ea_JAS88,
+  title         = "A quasi-equilibrium turbulent energy model for geophysical
+                  flows",
+  pages         = "55--62",
+  journal       = "Journal of the Atmospheric Sciences",
+  volume        = "45",
+  number        = "1",
+  author        = "B. Galperin and L. H. Kantha and S. Hassid and A. Rosati",
+  year          = "1988",
+  month         = "jan",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0469",
+  doi           = "10.1175/1520-0469(1988)045<0055:aqetem>2.0.co;2"
+}
+
+@article{         gargett_JMR84,
+  title         = "Vertical eddy diffusivity in the ocean interior",
+  pages         = "359--393",
+  journal       = "Journal of Marine Research",
+  volume        = "42",
+  number        = "2",
+  author        = "A. E. Gargett",
+  year          = "1984",
+  month         = "may",
+  publisher     = "Journal of Marine Research/Yale",
+  issn          = "1543-9542",
+  doi           = "10.1357/002224084788502756"
+}
+
+@article{         gaspar.gregoris.ea_JGR90,
+  title         = "A simple eddy kinetic energy model for simulations of the
+                  oceanic vertical mixing: Tests at station Papa and
+                  long-term upper ocean study site",
+  pages         = "16179",
+  journal       = "Journal of Geophysical Research",
+  volume        = "95",
+  number        = "C9",
+  author        = "P. Gaspar and Y. Gr{\'e}goris and J.-M. Lefevre",
+  year          = "1990",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/jc095ic09p16179"
+}
+
+@article{         gent.mcwilliams_JPO90,
+  title         = "Isopycnal Mixing in Ocean Circulation Models",
+  pages         = "150--155",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "20",
+  number        = "1",
+  author        = "P. R. Gent and J. C. McWilliams",
+  year          = "1990",
+  month         = "jan",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1990)020<0150:imiocm>2.0.co;2"
+}
+
+@article{         gentemann.minnett.ea_JGR09,
+  title         = "Profiles of Ocean Surface Heating ({POSH}): {A} new model
+                  of upper ocean diurnal warming",
+  pages         = "C07017",
+  journal       = "Journal of Geophysical Research",
+  volume        = "114",
+  number        = "C7",
+  author        = "C. L. Gentemann and P. J. Minnett and B. Ward",
+  year          = "2009",
+  month         = "jul",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/2008jc004825"
+}
+
+@article{         gerdes.koberle.ea_CD91,
+  title         = "The influence of numerical advection schemes on the
+                  results of Ocean General Circulation Models",
+  pages         = "211--226",
+  journal       = "Climate Dynamics",
+  volume        = "5",
+  number        = "4",
+  author        = "R. Gerdes and C. K{\"{o}}berle and J. Willebrand",
+  year          = "1991",
+  month         = "jun",
+  publisher     = "Springer Nature",
+  issn          = "1432-0894",
+  doi           = "10.1007/bf00210006"
+}
+
+@article{         gerdes_JGR93*a,
+  title         = "A primitive equation ocean circulation model using a
+                  general vertical coordinate transformation: 1. Description
+                  and testing of the model",
+  pages         = "14683--14701",
+  journal       = "Journal of Geophysical Research",
+  volume        = "98",
+  number        = "C8",
+  author        = "R. Gerdes",
+  year          = "1993",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/93jc00760"
+}
+
+@article{         gerdes_JGR93*b,
+  title         = "A primitive equation ocean circulation model using a
+                  general vertical coordinate transformation: 2. Application
+                  to an overflow problem",
+  pages         = "14703--14726",
+  journal       = "Journal of Geophysical Research",
+  volume        = "98",
+  number        = "C8",
+  author        = "R. Gerdes",
+  year          = "1993",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/93jc00788"
+}
+
+@techreport{      gibson_rpt86,
+  title         = "Standards for software development and maintenance",
+  pages         = "21",
+  series        = "ECMWF Technical Memoranda",
+  number        = "120",
+  author        = "J. K. Gibson",
+  institution   = "ECMWF Operations Department; Reading, United Kingdom",
+  year          = "1986",
+  month         = "aug",
+  doi           = "10.21957/gi113q4gn"
+}
+
+@book{            gill_bk82,
+  pages         = "662",
+  booktitle     = "Atmosphere-Ocean Dynamics",
+  series        = "International Geophysics",
+  volume        = "30",
+  author        = "A. E. Gill",
+  year          = "1982",
+  month         = "nov",
+  publisher     = "Elsevier",
+  issn          = "0074-6142",
+  isbn          = "978-0-12-283522-3",
+  doi           = "10.1016/s0074-6142(08)x6002-4"
+}
+
+@article{         goff_JGR10,
+  title         = "Global prediction of abyssal hill root-mean-square heights
+                  from small-scale altimetric gravity variability",
+  pages         = "B12104",
+  journal       = "Journal of Geophysical Research",
+  volume        = "115",
+  number        = "B12",
+  author        = "J. A. Goff",
+  year          = "2010",
+  month         = "dec",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/2010jb007867"
+}
+
+@article{         goosse.deleersnijder.ea_JGR99,
+  title         = "Sensitivity of a global coupled ocean-sea ice model to the
+                  parameterization of vertical mixing",
+  pages         = "13681--13695",
+  journal       = "Journal of Geophysical Research",
+  volume        = "104",
+  number        = "C6",
+  author        = "H. Goosse and E. Deleersnijder and T. Fichefet and M. H.
+                  England",
+  year          = "1999",
+  month         = "jun",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/1999jc900099"
+}
+
+@article{         graham.mcdougall_JPO13,
+  title         = "Quantifying the nonconservative production of conservative
+                  temperature, potential temperature, and entropy",
+  pages         = "838--862",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "43",
+  number        = "5",
+  author        = "F. S. Graham and T. J. McDougall",
+  year          = "2013",
+  month         = "may",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/jpo-d-11-0188.1"
+}
+
+@article{         greatbatch_JGR94,
+  title         = "A note on the representation of steric sea level in models
+                  that conserve volume rather than mass",
+  pages         = "12767--12771",
+  journal       = "Journal of Geophysical Research",
+  volume        = "99",
+  number        = "C6",
+  author        = "R. J. Greatbatch",
+  year          = "1994",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/94jc00847"
+}
+
+@article{         griffies.biastoch.ea_OM09,
+  title         = "Coordinated Ocean-ice Reference Experiments ({CORE}s)",
+  pages         = "1--46",
+  journal       = "Ocean Modelling",
+  volume        = "26",
+  number        = "1-2",
+  author        = "S. M. Griffies and A. Biastoch and C. B{\"{o}}ning and F.
+                  Bryan and G. Danabasoglu and E. P. Chassignet and M. H.
+                  England and R. Gerdes and H. Haak and R. W. Hallberg and W.
+                  Hazeleger and J. Jungclaus and W. G. Large and G. Madec and
+                  A. Pirani and B. L. Samuels and M. Scheinert and A. Sen
+                  Gupta and C. A. Severijns and H. L. Simmons and A.-M.
+                  Tr\'{e}guier and M. Winton and S. Yeager and J. Yin",
+  year          = "2009",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2008.08.007"
+}
+
+@article{         griffies.gnanadesikan.ea_JPO98,
+  title         = "Isoneutral Diffusion in a z-coordinate Ocean Model",
+  pages         = "805--830",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "28",
+  number        = "5",
+  author        = "S. M. Griffies and A. Gnanadesikan and R. C. Pacanowski
+                  and V. D. Larichev and J. K. Dukowicz and R. D. Smith",
+  year          = "1998",
+  month         = "may",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1998)028<0805:idiazc>2.0.co;2"
+}
+
+@article{         griffies.pacanowski.ea_MWR01,
+  title         = "Tracer Conservation with an Explicit Free Surface Method
+                  for z-coordinate Ocean Models",
+  pages         = "1081--1098",
+  journal       = "Monthly Weather Review",
+  volume        = "129",
+  number        = "5",
+  author        = "S. M. Griffies and R. C. Pacanowski and M. Schmidt and V.
+                  Balaji",
+  year          = "2001",
+  month         = "may",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0493",
+  doi           = "10.1175/1520-0493(2001)129<1081:tcwaef>2.0.co;2"
+}
+
+@article{         griffies_JPO98,
+  title         = "The Gent-McWilliams skew-flux",
+  pages         = "831--841",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "28",
+  number        = "5",
+  author        = "S. M. Griffies",
+  year          = "1998",
+  month         = "may",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1998)028<0831:tgmsf>2.0.co;2"
+}
+
+@book{            griffies_bk04,
+  pages         = "434",
+  booktitle     = "Fundamentals of ocean climate models",
+  author        = "S. M. Griffies",
+  year          = "2004",
+  month         = "dec",
+  publisher     = "Princeton University Press",
+  isbn          = "978-0-691-18712-9",
+  doi           = "10.2307/j.ctv301gzg"
+}
+
+@article{         guilyardi.madec.ea_CD01,
+  title         = "The role of lateral ocean physics in the upper ocean
+                  thermal balance of a coupled ocean-atmosphere {GCM}",
+  pages         = "589--599",
+  journal       = "Climate Dynamics",
+  volume        = "17",
+  number        = "8",
+  author        = "E. Guilyardi and G. Madec and L. Terray",
+  year          = "2001",
+  month         = "may",
+  publisher     = "Springer Science and Business Media LLC",
+  issn          = "0930-7575",
+  doi           = "10.1007/pl00007930"
+}
+
+@article{         haney_JPO91,
+  title         = "On the Pressure Gradient Force over Steep Topography in
+                  Sigma Coordinate Ocean Models",
+  pages         = "610--619",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "21",
+  number        = "4",
+  author        = "R. L. Haney",
+  year          = "1991",
+  month         = "apr",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1991)021<0610:otpgfo>2.0.co;2"
+}
+
+@article{         hazeleger.drijfhout_JGR00,
+  title         = "A model study on internally generated variability in
+                  subtropical mode water formation",
+  pages         = "13965--13979",
+  journal       = "Journal of Geophysical Research",
+  volume        = "105",
+  number        = "C6",
+  author        = "W. Hazeleger and S. S. Drijfhout",
+  year          = "2000",
+  month         = "jun",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/2000jc900041"
+}
+
+@article{         hazeleger.drijfhout_JPO00,
+  title         = "Eddy subduction in a model of the subtropical gyre",
+  pages         = "677--695",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "30",
+  number        = "4",
+  author        = "W. Hazeleger and S. S. Drijfhout",
+  year          = "2000",
+  month         = "apr",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(2000)030<0677:esiamo>2.0.co;2"
+}
+
+@article{         hazeleger.drijfhout_JPO98,
+  title         = "Mode water variability in a model of the subtropical gyre:
+                  response to anomalous forcing",
+  pages         = "266--288",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "28",
+  number        = "2",
+  author        = "W. Hazeleger and S. S. Drijfhout",
+  year          = "1998",
+  month         = "feb",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1998)028<0266:mwviam>2.0.co;2"
+}
+
+@article{         hazeleger.drijfhout_JPO99,
+  title         = "Stochastically forced mode water variability",
+  pages         = "1772--1786",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "29",
+  number        = "8",
+  author        = "W. Hazeleger and S. S. Drijfhout",
+  year          = "1999",
+  month         = "aug",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1999)029<1772:sfmwv>2.0.co;2"
+}
+
+@article{         he.ding_JS01,
+  title         = "Using accurate arithmetics to improve numerical
+                  reproducibility and stability in parallel applications",
+  pages         = "259--277",
+  journal       = "The Journal of Supercomputing",
+  volume        = "18",
+  number        = "3",
+  author        = "Y. He and C. H. Q. Ding",
+  year          = "2001",
+  publisher     = "Springer Nature",
+  issn          = "0920-8542",
+  doi           = "10.1023/a:1008153532043"
+}
+
+@article{         hirt.amsden.ea_JCP74,
+  title         = "An arbitrary Lagrangian-Eulerian computing method for all
+                  flow speeds",
+  pages         = "227--253",
+  journal       = "Journal of Computational Physics",
+  volume        = "14",
+  number        = "3",
+  author        = "C. W. Hirt and A. A. Amsden and J. L. Cook",
+  year          = "1974",
+  month         = "mar",
+  publisher     = "Elsevier BV",
+  issn          = "0021-9991",
+  doi           = "10.1016/0021-9991(74)90051-5"
+}
+
+@article{         hofmeister.burchard.ea_OM10,
+  title         = "Non-uniform adaptive vertical grids for 3{D} numerical
+                  ocean models",
+  pages         = "70--86",
+  journal       = "Ocean Modelling",
+  volume        = "33",
+  number        = "1-2",
+  author        = "R. Hofmeister and H. Burchard and J.-M. Beckers",
+  year          = "2010",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2009.12.003"
+}
+
+@article{         holland.jenkins_JPO99,
+  title         = "Modeling thermodynamic ice-ocean interactions at the base
+                  of an ice shelf",
+  pages         = "1787--1800",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "29",
+  number        = "8",
+  author        = "D. M. Holland and A. Jenkins",
+  year          = "1999",
+  month         = "aug",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1999)029<1787:mtioia>2.0.co;2"
+}
+
+@techreport{      hunter_rpt06,
+  title         = "Specification for Test Models of Ice Shelf Cavities",
+  pages         = "17",
+  number        = "7",
+  author        = "J. R. Hunter",
+  institution   = "Antarctic Climate \& Ecosystems Cooperative Research
+                  Centre",
+  year          = "2006",
+  month         = "jun",
+  url           = "http://staff.acecrc.org.au/~bkgalton/ISOMIP/test_cavities.pdf"
+}
+
+@book{            ioc.iapso_bk10,
+  title         = "The international thermodynamic equation of seawater -
+                  2010: Calculation and use of thermodynamic properties",
+  pages         = "196",
+  editor        = "Intergovernmental Oceanographic Commission",
+  series        = "Manuals and Guides",
+  volume        = "56",
+  author        = "IOC, SCOR and IAPSO",
+  year          = "2010",
+  month         = "mar",
+  publisher     = "UNESCO",
+  url           = "https://unesdoc.unesco.org/ark:/48223/pf0000188170.locale=en"
+}
+
+@article{         jackson.rehmann_JPO14,
+  title         = "Experiments on differential scalar mixing in turbulence in
+                  a sheared, stratified flow",
+  pages         = "2661--2680",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "44",
+  number        = "10",
+  author        = "P. R. Jackson and C. R. Rehmann",
+  year          = "2014",
+  month         = "oct",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/jpo-d-14-0027.1"
+}
+
+@techreport{      janssen.breivik.ea_rpt13,
+  title         = "Air-sea interaction and surface waves",
+  pages         = "36",
+  series        = "ECMWF Technical Memoranda",
+  volume        = "712",
+  author        = "P. A. E. M. Janssen and {\O}. Breivik and K. Mogensen and
+                  F. Vitart and M. Alonso-Balmaseda and J.-R. Bidlot and S.
+                  Keeley and M. Leutbecher and L. Magnusson and F. Molteni",
+  institution   = "ECMWF Research Departement; Reading, United Kingdom",
+  year          = "2013",
+  month         = "nov",
+  doi           = "10.21957/0kg73joh"
+}
+
+@article{         jenkins.nicholls.ea_JPO10,
+  title         = "Observation and parameterization of ablation at the base
+                  of Ronne Ice Shelf, Antarctica",
+  pages         = "2298--2312",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "40",
+  number        = "10",
+  author        = "A. Jenkins and K. W. Nicholls and H. F. J. Corr",
+  year          = "2010",
+  month         = "oct",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/2010jpo4317.1"
+}
+
+@article{         jenkins_JGR91,
+  title         = "A one-dimensional model of ice shelf-ocean interaction",
+  pages         = "20671--20677",
+  journal       = "Journal of Geophysical Research",
+  volume        = "96",
+  number        = "C11",
+  author        = "A. Jenkins",
+  year          = "1991",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/91jc01842"
+}
+
+@article{         kantha.carniel_JMR03,
+  title         = "Comments on ``{A} generic length-scale equation for
+                  geophysical turbulence models'' by {L}. Umlauf and {H}.
+                  Burchard",
+  pages         = "693--702",
+  journal       = "Journal of Marine Research",
+  volume        = "61",
+  number        = "5",
+  author        = "L. Kantha and S. Carniel",
+  year          = "2003",
+  month         = "sep",
+  publisher     = "Journal of Marine Research/Yale",
+  issn          = "1543-9542",
+  doi           = "10.1357/002224003771816007"
+}
+
+@article{         kantha.clayson_JGR94,
+  title         = "An improved mixed layer model for geophysical
+                  applications",
+  pages         = "25235--25266",
+  journal       = "Journal of Geophysical Research",
+  volume        = "99",
+  number        = "C12",
+  author        = "L. H. Kantha and C. A. Clayson",
+  year          = "1994",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/94jc02257"
+}
+
+@article{         kasahara_MWR74,
+  title         = "Various vertical coordinate systems used for numerical
+                  weather prediction",
+  pages         = "509--522",
+  journal       = "Monthly Weather Review",
+  volume        = "102",
+  number        = "7",
+  author        = "A. Kasahara",
+  year          = "1974",
+  month         = "jul",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0493",
+  doi           = "10.1175/1520-0493(1974)102<0509:vvcsuf>2.0.co;2"
+}
+
+@article{         killworth.webb.ea_JPO91,
+  title         = "The development of a free-surface Bryan-Cox-Semtner ocean
+                  model",
+  pages         = "1333--1348",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "21",
+  number        = "9",
+  author        = "P. D. Killworth and D. J. Webb and D. Stainforth and S. M.
+                  Paterson",
+  year          = "1991",
+  month         = "sep",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1991)021<1333:tdoafs>2.0.co;2"
+}
+
+@article{         killworth_JPO92,
+  title         = "An equivalent-barotropic mode in the fine resolution
+                  Antarctic model",
+  pages         = "1379--1387",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "22",
+  number        = "11",
+  author        = "P. D. Killworth",
+  year          = "1992",
+  month         = "nov",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1992)022<1379:aebmit>2.0.co;2"
+}
+
+@inproceedings{   killworth_iprc89,
+  title         = "On the parameterization of deep convection in ocean
+                  models",
+  pages         = "59--74",
+  booktitle     = "Parameterization of small-scale processes",
+  editor        = "P. Muller and D. Henderson",
+  author        = "P. D. Killworth",
+  year          = "1989",
+  month         = "jan",
+  publisher     = "Hawaii Institute of Geophysics",
+  url           = "http://www.soest.hawaii.edu/PubServices/1989pdfs/Killworth.pdf"
+}
+
+@article{         koch-larrouy.lengaigne.ea_CD10,
+  title         = "Tidal mixing in the Indonesian Seas and its effect on the
+                  tropical climate system",
+  pages         = "891--904",
+  journal       = "Climate Dynamics",
+  volume        = "34",
+  number        = "6",
+  author        = "A. Koch-Larrouy and M. Lengaigne and P. Terray and G.
+                  Madec and S. Masson",
+  year          = "2010",
+  month         = "aug",
+  publisher     = "Springer Nature",
+  issn          = "1432-0894",
+  doi           = "10.1007/s00382-009-0642-4"
+}
+
+@article{         koch-larrouy.madec.ea_GRL07,
+  title         = "On the transformation of Pacific water into Indonesian
+                  ThroughFlow water by internal tidal mixing",
+  pages         = "L04604",
+  journal       = "Geophysical Research Letters",
+  volume        = "34",
+  number        = "4",
+  author        = "A. Koch-Larrouy and G. Madec and P. Bouruet-Aubertot and
+                  T. Gerkema and L. Bessi\`{e}res and R. Molcard",
+  year          = "2007",
+  month         = "feb",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0094-8276",
+  doi           = "10.1029/2006gl028405"
+}
+
+@article{         koch-larrouy.madec.ea_OD08*a,
+  title         = "Water mass transformation along the Indonesian ThroughFlow
+                  in an {OGCM}",
+  pages         = "289--309",
+  journal       = "Ocean Dynamics",
+  volume        = "58",
+  number        = "3-4",
+  author        = "A. Koch-Larrouy and G. Madec and B. Blanke and R. Molcard",
+  year          = "2008",
+  month         = "oct",
+  publisher     = "Springer Nature",
+  issn          = "1616-7228",
+  doi           = "10.1007/s10236-008-0155-4"
+}
+
+@article{         koch-larrouy.madec.ea_OD08*b,
+  title         = "Physical processes contributing to the water mass
+                  transformation of the Indonesian ThroughFlow",
+  pages         = "275--288",
+  journal       = "Ocean Dynamics",
+  volume        = "58",
+  number        = "3-4",
+  author        = "A. Koch-Larrouy and G. Madec and D. Iudicone and A.
+                  Atmadipoera and R. Molcard",
+  year          = "2008",
+  month         = "oct",
+  publisher     = "Springer Nature",
+  issn          = "1616-7228",
+  doi           = "10.1007/s10236-008-0154-5"
+}
+
+@article{         kolmogorov_IANS42,
+  title         = "Equations of turbulent motion in an incompressible fluid",
+  pages         = "56--58",
+  journal       = "Izvestiya Akademiya Nauk SSSR",
+  series        = "Fizika",
+  volume        = "6",
+  author        = "A. N. Kolmogorov",
+  year          = "1942"
+}
+
+@article{         kraus.turner_tellus67,
+  author = {Kraus, E.B. and Turner, J.},
+  journal = {Tellus},
+  pages = {98--106},
+  title = {A one dimensional model of the seasonal thermocline {II}. {T}he general theory and its consequences},
+  volume = {19},
+  year = {1967}
+}
+
+@article{        large.ea_RG97,
+  author        = "Large, W. G. and McWilliams, J. C. and Doney, S. C.",
+  doi           = "10.1029/94RG01872",
+  journal       = "Reviews of Geophysics",
+  number        = {4},
+  pages         = {363--403},
+  publisher     = {AGU},
+  title         = "Oceanic vertical mixing: {A} review and a model with a nonlocal boundary layer parameterization",
+  year          = "1994"
+}
+
+@techreport{      large.yeager_rpt04,
+  title         = "Diurnal to decadal global forcing for ocean and sea-ice
+                  models: the data sets and flux climatologies",
+  author        = "W. G. Large and S. G. Yeager",
+  institution   = "{NCAR} Climate and global dynamics division; Boulder, CO,
+                  United States",
+  year          = "2004",
+  month         = "may",
+  doi           = "10.5065/d6kk98q6"
+}
+
+@article{         lazar.madec.ea_JPO99,
+  title         = "The Deep Interior Downwelling, the Veronis Effect, and
+                  Mesoscale Tracer Transport Parameterizations in an {OGCM}",
+  pages         = "2945--2961",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "29",
+  number        = "11",
+  author        = "A. Lazar and G. Madec and P. Del\'{e}cluse",
+  year          = "1999",
+  month         = "nov",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1999)029<2945:tdidtv>2.0.co;2"
+}
+
+@phdthesis{       lazar_phd97,
+  title         = "La branche froide de la circulation thermohaline -
+                  sensibilit\'{e} \`{a} la diffusion turbulente dans un
+                  mod\`{e}le de circulation g\'{e}n\'{e}rale
+                  id\'{e}alis\'{e}e",
+  pages         = "269",
+  author        = "A. Lazar",
+  school        = "Universit\'{e} Pierre et Marie Curie, Paris, France",
+  year          = "1997",
+  url           = "http://www.theses.fr/1997PA066680"
+}
+
+@article{         le-sommer.penduff.ea_OM09,
+  title         = "How momentum advection schemes influence
+                  current-topography interactions at eddy permitting
+                  resolution",
+  pages         = "1--14",
+  journal       = "Ocean Modelling",
+  volume        = "29",
+  number        = "1",
+  author        = "J. {Le Sommer} and T. Penduff and S. Theetten and G. Madec
+                  and B. Barnier",
+  year          = "2009",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2008.11.007"
+}
+
+@article{         leclair.madec_OM09,
+  title         = "A conservative leapfrog time stepping method",
+  pages         = "88--94",
+  journal       = "Ocean Modelling",
+  volume        = "30",
+  number        = "2-3",
+  author        = "M. Leclair and G. Madec",
+  year          = "2009",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2009.06.006"
+}
+
+@article{         leclair.madec_OM11,
+  title         = "$\tilde{z}$-coordinate, an arbitrary Lagrangian-Eulerian
+                  coordinate separating high and low frequency motions",
+  pages         = "139--152",
+  journal       = "Ocean Modelling",
+  volume        = "37",
+  number        = "3-4",
+  author        = "M. Leclair and G. Madec",
+  year          = "2011",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2011.02.001"
+}
+
+@phdthesis{       leclair_phd10,
+  title         = "Introduction d'une coordonn\'{e}e verticale arbitrairement
+                  Lagrangienne Eul\'{e}rienne dans le code d'oc\'{e}an
+                  {NEMO}",
+  pages         = "163",
+  author        = "M. Leclair",
+  school        = "Universit\'{e} Pierre and Marie Curie, Paris, France",
+  year          = "2010",
+  url           = "http://www.theses.fr/2010PA066728"
+}
+
+@article{         lele_JCP92,
+  title         = "Compact finite difference schemes with spectral-like
+                  resolution",
+  pages         = "16--42",
+  journal       = "Journal of Computational Physics",
+  volume        = "103",
+  number        = "1",
+  author        = "S. K. Lele",
+  year          = "1992",
+  month         = "nov",
+  publisher     = "Elsevier BV",
+  issn          = "0021-9991",
+  doi           = "10.1016/0021-9991(92)90324-r"
+}
+
+@article{         lemarie.debreu.ea_OM12,
+  title         = "On the stability and accuracy of the harmonic and
+                  biharmonic isoneutral mixing operators in ocean models",
+  pages         = "9--35",
+  journal       = "Ocean Modelling",
+  volume        = "52-53",
+  author        = "F. Lemari\'{e} and L. Debreu and A. F. Shchepetkin and J.
+                  C. McWilliams",
+  year          = "2012",
+  month         = "aug",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2012.04.007"
+}
+
+@article{         lemarie.debreu.ea_OM15,
+  title         = "Stability constraints for oceanic numerical models:
+                  implications for the formulation of time and space
+                  discretizations",
+  pages         = "124--148",
+  journal       = "Ocean Modelling",
+  volume        = "92",
+  author        = "F. Lemari\'{e} and L. Debreu and G. Madec and J. Demange
+                  and J. M. Molines and M. Honnorat",
+  year          = "2015",
+  month         = "aug",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2015.06.006"
+}
+
+@article{         lengaigne.madec.ea_JGR03,
+  title         = "Impact of isopycnal mixing on the tropical ocean
+                  circulation",
+  pages         = "3345",
+  journal       = "Journal of Geophysical Research",
+  volume        = "108",
+  number        = "C11",
+  author        = "M. Lengaigne and G. Madec and G. Alory and C. Menkes",
+  year          = "2003",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/2002jc001704"
+}
+
+@article{         lengaigne.menkes.ea_CD07,
+  title         = "Influence of the oceanic biology on the tropical Pacific
+                  climate in a Coupled General Circulation Model",
+  pages         = "503--516",
+  journal       = "Climate Dynamics",
+  volume        = "28",
+  number        = "5",
+  author        = "M. Lengaigne and C. Menkes and O. Aumont and T. Gorgues
+                  and L. Bopp and J.-M. Andr\'{e} and G. Madec",
+  year          = "2007",
+  month         = "nov",
+  publisher     = "Springer Nature",
+  issn          = "1432-0894",
+  doi           = "10.1007/s00382-006-0200-2"
+}
+
+@article{         leonard_CMAME79,
+  title         = "A stable and accurate convective modelling procedure based
+                  on quadratic upstream interpolation",
+  pages         = "59--98",
+  journal       = "Computer Methods in Applied Mechanics and Engineering",
+  volume        = "19",
+  number        = "1",
+  author        = "B. P. Leonard",
+  year          = "1979",
+  month         = "jun",
+  publisher     = "Elsevier BV",
+  issn          = "0045-7825",
+  doi           = "10.1016/0045-7825(79)90034-3"
+}
+
+@article{         leonard_CMAME91,
+  title         = "The {ULTIMATE} conservative difference scheme applied to
+                  unsteady one-dimensional advection",
+  pages         = "17--74",
+  journal       = "Computer Methods in Applied Mechanics and Engineering",
+  volume        = "88",
+  number        = "1",
+  author        = "B. P. Leonard",
+  year          = "1991",
+  month         = "jun",
+  publisher     = "Elsevier BV",
+  issn          = "0045-7825",
+  doi           = "10.1016/0045-7825(91)90232-u"
+}
+
+@article{         lermusiaux_JMS01,
+  title         = "Evolving the subspace of the three-dimensional multiscale
+                  ocean variability: Massachusetts Bay",
+  pages         = "385--422",
+  journal       = "Journal of Marine Systems",
+  volume        = "29",
+  number        = "1-4",
+  author        = "P. F. J. Lermusiaux",
+  year          = "2001",
+  month         = "may",
+  publisher     = "Elsevier BV",
+  issn          = "0924-7963",
+  doi           = "10.1016/s0924-7963(01)00025-2"
+}
+
+@techreport{      levier.treguier.ea_rpt07,
+  title         = "Free surface and variable volume in the {NEMO} code",
+  pages         = "47",
+  author        = "B. Levier and A.-M. Tr\'{e}guier and G. Madec and V.
+                  Garnier",
+  institution   = "European Union: Marine Environment and Security for the
+                  European Area (MERSEA) Integrated Project",
+  year          = "2007",
+  month         = "may",
+  doi           = "10.5281/zenodo.3244182"
+}
+
+@article{         levy.estublier.ea_GRL01,
+  title         = "Choice of an advection scheme for biogeochemical models",
+  pages         = "3725--3728",
+  journal       = "Geophysical Research Letters",
+  volume        = "28",
+  number        = "19",
+  author        = "M. L\'{e}vy and A. Estublier and G Madec",
+  year          = "2001",
+  month         = "oct",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0094-8276",
+  doi           = "10.1029/2001gl012947"
+}
+
+@article{         levy.klein.ea_OM10,
+  title         = "Modifications of gyre circulation by sub-mesoscale
+                  physics",
+  pages         = "1--15",
+  journal       = "Ocean Modelling",
+  volume        = "34",
+  number        = "1-2",
+  author        = "M. L\'{e}vy and P. Klein and A.-M. Tr\'{e}guier and D.
+                  Iovino and G. Madec and S. Masson and K. Takahashi",
+  year          = "2010",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2010.04.001"
+}
+
+@article{         li.garrett_JMR93,
+  title         = "Cell merging and the jet/downwelling ratio in Langmuir
+                  circulation",
+  pages         = "737--769",
+  journal       = "Journal of Marine Research",
+  volume        = "51",
+  number        = "4",
+  author        = "M. Li and C. Garrett",
+  year          = "1993",
+  month         = "nov",
+  publisher     = "Journal of Marine Research/Yale",
+  issn          = "1543-9542",
+  doi           = "10.1357/0022240933223945"
+}
+
+@article{         losch_JGR08,
+  title         = "Modeling ice shelf cavities in a z coordinate Ocean
+                  General Circulation Model",
+  journal       = "Journal of Geophysical Research",
+  volume        = "113",
+  number        = "C8",
+  author        = "M. Losch",
+  year          = "2008",
+  month         = "aug",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/2007jc004368"
+}
+
+@article{         lott.madec.ea_OM90,
+  title         = "Topographic experiments in an Ocean General Circulation
+                  Model",
+  pages         = "1--4",
+  journal       = "Ocean Modelling",
+  volume        = "88",
+  author        = "F. Lott and G. Madec and J. Verron",
+  year          = "1990"
+}
+
+@article{	  lupkes.gryanik.ea_JGR12,
+  author 	= "L{\"{u}}pkes, Christof and Gryanik, Vladimir M. and Hartmann, J{\"{o}}rg and Andreas, Edgar L.",
+  doi 		= "10.1029/2012JD017630",
+  issn 		= "01480227",
+  journal 	= "Journal of Geophysical Research Atmospheres",
+  number 	= "13",
+  pages 	= "1--18",
+  title 	= "A parametrization, based on sea ice morphology, of the neutral atmospheric drag coefficients for weather prediction and climate models",
+  volume 	= "117",
+  year 		= "2012"
+}
+
+@article{	  lupkes.gryanik_JGR15,
+  author 	= "L{\"{u}}pkes, Christof and Gryanik, Vladimir M.",
+  doi 		= "10.1002/2014JD022418",
+  issn 		= "21562202",
+  journal 	= "Journal of Geophysical Research",
+  number 	= "2",
+  pages 	= "552--581",
+  title 	= "A stability-dependent parametrization of transfer coefficients formomentum and heat over polar sea ice to be used in climate models",
+  volume 	= "120",
+  year 		= "2015"
+}
+
+@article{         madec.chartier.ea_DAO91,
+  title         = "The effect of thermohaline forcing variability on deep
+                  water formation in the western Mediterranean Sea: a
+                  high-resolution three-dimensional numerical study",
+  pages         = "301--332",
+  journal       = "Dynamics of Atmospheres and Oceans",
+  volume        = "15",
+  number        = "3-5",
+  author        = "G. Madec and M. Chartier and M. Cr\'{e}pon",
+  year          = "1991",
+  month         = "apr",
+  publisher     = "Elsevier BV",
+  issn          = "0377-0265",
+  doi           = "10.1016/0377-0265(91)90024-a"
+}
+
+@inproceedings{   madec.crepon_iprc91,
+  title         = "Thermohaline-driven deep water formation in the
+                  northwestern Mediterranean Sea",
+  chapter       = "15",
+  pages         = "241--265",
+  booktitle     = "Deep convection and deep water formation in the oceans,
+                  Proceedings of the international Monterey colloquium on
+                  deep convection and deep water formation in the oceans",
+  editor        = "P.C. Chu and J.C. Gascard",
+  series        = "Elsevier Oceanography",
+  volume        = "57",
+  author        = "G. Madec and M. Cr\'{e}pon",
+  year          = "1991",
+  publisher     = "Elsevier",
+  issn          = "0422-9894",
+  isbn          = "978-0-444-88764-1",
+  doi           = "10.1016/s0422-9894(08)70071-0"
+}
+
+@article{         madec.delecluse.ea_JPO91,
+  title         = "A three-dimensional numerical study of deep-water
+                  formation in the northwestern Mediterranean Sea",
+  pages         = "1349--1371",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "21",
+  number        = "9",
+  author        = "G. Madec and P. Del\'{e}cluse and M. Cr\'{e}pon and M.
+                  Chartier",
+  year          = "1991",
+  month         = "sep",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1991)021<1349:atdnso>2.0.co;2"
+}
+
+@article{         madec.delecluse.ea_JPO96,
+  title         = "Large-Scale Preconditioning of Deep-Water Formation in the
+                  northwestern Mediterranean Sea",
+  pages         = "1393--1408",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "26",
+  number        = "8",
+  author        = "G. Madec and P. Del\'{e}cluse and M. Cr\'{e}pon and F.
+                  Lott",
+  year          = "1996",
+  month         = "aug",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1996)026<1393:lspodw>2.0.co;2"
+}
+
+@book{            madec.delecluse.ea_NPM98,
+  title         = "{OPA} 8.1 Ocean General Circulation Model reference
+                  manual",
+  pages         = "91",
+  journal       = "Note du Pole de Mod\'{e}lisation",
+  volume        = "11",
+  author        = "G. Madec and P. Del\'{e}cluse and M. Imbard and C.
+                  L\'{e}vy",
+  year          = "1998",
+  publisher     = "Institut Pierre Simon Laplace ({IPSL})",
+  issn          = "1288-1619",
+  url           = "http://cmc.ipsl.fr/images/publications/scientific_notes/note11.pdf"
+}
+
+@article{         madec.delecluse_IWN97,
+  title         = "The {OPA}/{ARPEGE} and {OPA}/{LMD} Global Ocean-Atmosphere
+                  Coupled Model",
+  pages         = "12--15",
+  journal       = "International WOCE Newsletter",
+  volume        = "26",
+  author        = "G. Madec and P. Del\'{e}cluse",
+  year          = "1997",
+  month         = "apr",
+  publisher     = "University of Southampton",
+  url           = "https://www.nodc.noaa.gov/woce/wdiu/wocedocs/newsltr/news26/news26.pdf"
+}
+
+@article{         madec.imbard_CD96,
+  title         = "A global ocean mesh to overcome the North Pole
+                  singularity",
+  pages         = "381--388",
+  journal       = "Climate Dynamics",
+  volume        = "12",
+  number        = "6",
+  author        = "G. Madec and M. Imbard",
+  year          = "1996",
+  month         = "may",
+  publisher     = "Springer Nature",
+  issn          = "1432-0894",
+  doi           = "10.1007/bf00211684"
+}
+
+@article{         maltrud.smith.ea_JGR98,
+  title         = "Global eddy-resolving ocean simulations driven by
+                  1985-1995 atmospheric winds",
+  pages         = "30825--30853",
+  journal       = "Journal of Geophysical Research",
+  volume        = "103",
+  number        = "C13",
+  author        = "M. E. Maltrud and R. D. Smith and A. J. Semtner and R. C.
+                  Malone",
+  year          = "1998",
+  month         = "dec",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/1998jc900013"
+}
+
+@article{         marchesiello.mcwilliams.ea_OM01,
+  title         = "Open boundary conditions for long-term integration of
+                  regional oceanic models",
+  pages         = "1--20",
+  journal       = "Ocean Modelling",
+  volume        = "3",
+  number        = "1-2",
+  author        = "P. Marchesiello and J. C. McWilliams and A. Shchepetkin",
+  year          = "2001",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/s1463-5003(00)00013-5"
+}
+
+@article{         marsaleix.auclair.ea_OM08,
+  title         = "Energy conservation issues in sigma-coordinate
+                  free-surface ocean models",
+  pages         = "61--89",
+  journal       = "Ocean Modelling",
+  volume        = "20",
+  number        = "1",
+  author        = "P. Marsaleix and F. Auclair and J. W. Floor and M. J.
+                  Herrmann and C. Estournel and I. Pairaud and C. Ulses",
+  year          = "2008",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2007.07.005"
+}
+
+@article{         marsh.ivchenko.ea_GMD15,
+  title         = "{NEMO}-{ICB} (v1.0): interactive icebergs in the {NEMO}
+                  ocean model globally configured at eddy-permitting
+                  resolution",
+  pages         = "1547--1562",
+  journal       = "Geoscientific Model Development",
+  volume        = "8",
+  number        = "5",
+  author        = "R. Marsh and V. O. Ivchenko and N. Skliris and S. Alderson
+                  and G. R. Bigg and G. Madec and A. T. Blaker and Y. Aksenov
+                  and B. Sinha and A. C. Coward and J. {Le Sommer} and N.
+                  Merino and V. B. Zalesny",
+  year          = "2015",
+  month         = "may",
+  publisher     = "Copernicus GmbH",
+  issn          = "1991-9603",
+  doi           = "10.5194/gmd-8-1547-2015"
+}
+
+@article{         marti.madec.ea_JGR92,
+  title         = "Comment on ``{N}et diffusivity in ocean general
+                  circulation models with nonuniform grids'' by {F}. {L}. Yin
+                  and {I}. {Y}. Fung",
+  pages         = "12763--12766",
+  journal       = "Journal of Geophysical Research",
+  volume        = "97",
+  number        = "C8",
+  author        = "O. Marti and G. Madec and P. Del\'{e}cluse",
+  year          = "1992",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/92jc00306"
+}
+
+@article{         martin.adcroft_OM10,
+  title         = "Parameterizing the fresh-water flux from land ice to ocean
+                  with interactive icebergs in a coupled climate model",
+  pages         = "111--124",
+  journal       = "Ocean Modelling",
+  volume        = "34",
+  number        = "3-4",
+  author        = "T. Martin and A. Adcroft",
+  year          = "2010",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2010.05.001"
+}
+
+@article{         mathiot.jenkins.ea_GMD17,
+  title         = "Explicit representation and parametrised impacts of under
+                  ice shelf seas in the \zstar coordinate ocean model {NEMO}
+                  3.6",
+  pages         = "2849--2874",
+  journal       = "Geoscientific Model Development",
+  volume        = "10",
+  number        = "7",
+  author        = "P. Mathiot and A. Jenkins and C. Harris and G. Madec",
+  year          = "2017",
+  month         = "jul",
+  publisher     = "Copernicus GmbH",
+  issn          = "1991-9603",
+  doi           = "10.5194/gmd-10-2849-2017"
+}
+
+@article{         mcdougall.taylor_JMR84,
+  title         = "Flux measurements across a finger interface at low values
+                  of the stability ratio",
+  pages         = "1--14",
+  journal       = "Journal of Marine Research",
+  volume        = "42",
+  number        = "1",
+  author        = "T. J. McDougall and J. R. Taylor",
+  year          = "1984",
+  month         = "feb",
+  publisher     = "Journal of Marine Research/Yale",
+  issn          = "1543-9542",
+  doi           = "10.1357/002224084788506095"
+}
+
+@article{         mcdougall_JPO87,
+  title         = "Neutral Surfaces",
+  pages         = "1950--1964",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "17",
+  number        = "11",
+  author        = "T. J. McDougall",
+  year          = "1987",
+  month         = "nov",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1987)017<1950:ns>2.0.co;2"
+}
+
+@article{mcwilliams.ea_JFM97,
+	author = {McWilliams, James C. and Sullivan, Peter P. and Moeng, Chin-Hoh},
+	doi = {10.1017/S0022112096004375},
+	journal = {Journal of Fluid Mechanics},
+	pages = {1--30},
+	title = {Langmuir turbulence in the ocean},
+	volume = {334},
+	year = {1997},
+}
+@article{         mellor.blumberg_JPO04,
+  title         = "Wave Breaking and Ocean Surface Layer Thermal Response",
+  pages         = "693--698",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "34",
+  number        = "3",
+  author        = "G. Mellor and A. Blumberg",
+  year          = "2004",
+  month         = "mar",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/2517.1"
+}
+
+@article{         mellor.yamada_RG82,
+  title         = "Development of a turbulence closure model for geophysical
+                  fluid problems",
+  pages         = "851--875",
+  journal       = "Reviews of Geophysics",
+  volume        = "20",
+  number        = "4",
+  author        = "G. L. Mellor and T. Yamada",
+  year          = "1982",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "8755-1209",
+  doi           = "10.1029/rg020i004p00851"
+}
+
+@article{         merryfield.holloway.ea_JPO99,
+  title         = "A Global Ocean Model with Double-Diffusive Mixing",
+  pages         = "1124--1142",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "29",
+  number        = "6",
+  author        = "W. J. Merryfield and G. Holloway and A. E. Gargett",
+  year          = "1999",
+  month         = "jun",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1999)029<1124:agomwd>2.0.co;2"
+}
+
+@book{            mesinger.arakawa_bk76,
+  booktitle     = "Numerical methods used in atmospheric models",
+  series        = "GARP Publication",
+  volume        = "1",
+  number        = "17",
+  author        = "F. Mesinger and A. Arakawa",
+  year          = "1976",
+  month         = "aug",
+  url           = "https://www.researchgate.net/publication/234333726_Numerical_Methods_Used_In_Atmospheric_Models"
+}
+
+@article{         morel.berthon_LO89,
+  title         = "Surface pigments, algal biomass profiles, and potential
+                  production of the euphotic layer: Relationships
+                  reinvestigated in view of remote-sensing applications",
+  pages         = "1545--1562",
+  journal       = "Limnology and Oceanography",
+  volume        = "34",
+  number        = "8",
+  author        = "A. Morel and J.-F. Berthon",
+  year          = "1989",
+  month         = "dec",
+  publisher     = "Wiley",
+  issn          = "0024-3590",
+  doi           = "10.4319/lo.1989.34.8.1545"
+}
+
+@article{         morel.maritorena_JGR01,
+  title         = "Bio-optical properties of oceanic waters: {A} reappraisal",
+  pages         = "7163--7180",
+  journal       = "Journal of Geophysical Research",
+  volume        = "106",
+  number        = "C4",
+  author        = "A. Morel and S. Maritorena",
+  year          = "2001",
+  month         = "apr",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/2000jc000319"
+}
+
+@article{         morel_JGR88,
+  title         = "Optical modeling of the upper ocean in relation to its
+                  biogenous matter content (case {I} waters)",
+  pages         = "10749--10768",
+  journal       = "Journal of Geophysical Research",
+  volume        = "93",
+  number        = "C9",
+  author        = "A. Morel",
+  year          = "1988",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/jc093ic09p10749"
+}
+
+@article{         murray_JCP96,
+  title         = "Explicit Generation of Orthogonal Grids for Ocean Models",
+  pages         = "251--273",
+  journal       = "Journal of Computational Physics",
+  volume        = "126",
+  number        = "2",
+  author        = "R. J. Murray",
+  year          = "1996",
+  month         = "jul",
+  publisher     = "Elsevier BV",
+  issn          = "0021-9991",
+  doi           = "10.1006/jcph.1996.0136"
+}
+
+@article{         oey_OM06,
+  title         = "An {OGCM} with movable land-sea boundaries",
+  pages         = "176--195",
+  journal       = "Ocean Modelling",
+  volume        = "13",
+  number        = "2",
+  author        = "L.-Y. Oey",
+  year          = "2006",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2006.01.001"
+}
+
+@article{         osborn_JPO80,
+  title         = "Estimates of the local rate of vertical diffusion from
+                  dissipation measurements",
+  pages         = "83--89",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "10",
+  number        = "1",
+  author        = "T. R. Osborn",
+  year          = "1980",
+  month         = "jan",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1980)010<0083:eotlro>2.0.co;2"
+}
+
+@article{         pacanowski.gnanadesikan_MWR98,
+  title         = "Transient response in a z-level ocean model that resolves
+                  topography with partial-cells",
+  pages         = "3248--3270",
+  journal       = "Monthly Weather Review",
+  volume        = "126",
+  number        = "12",
+  author        = "R. C. Pacanowski and A. Gnanadesikan",
+  year          = "1998",
+  month         = "dec",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0493",
+  doi           = "10.1175/1520-0493(1998)126<3248:triazl>2.0.co;2"
+}
+
+@article{         pacanowski.philander_JPO81,
+  title         = "Parameterization of Vertical Mixing in Numerical Models of
+                  Tropical Oceans",
+  pages         = "1443--1451",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "11",
+  number        = "11",
+  author        = "R. C. Pacanowski and S. G. H. Philander",
+  year          = "1981",
+  month         = "nov",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1981)011<1443:povmin>2.0.co;2"
+}
+
+@article{         paulson.simpson_JPO77,
+  title         = "Irradiance Measurements in the Upper Ocean",
+  pages         = "952--956",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "7",
+  number        = "6",
+  author        = "C. A. Paulson and J. J. Simpson",
+  year          = "1977",
+  month         = "nov",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1977)007<0952:imituo>2.0.co;2"
+}
+
+@article{         penduff.le-sommer.ea_OS07,
+  title         = "Influence of numerical schemes on current-topography
+                  interactions in 1/4\deg global ocean simulations",
+  pages         = "509--524",
+  journal       = "Ocean Science",
+  volume        = "3",
+  number        = "4",
+  author        = "T. Penduff and J. {Le Sommer} and B. Barnier and A.-M.
+                  Tr\'{e}guier and J.-M. Molines and G. Madec",
+  year          = "2007",
+  month         = "dec",
+  publisher     = "Copernicus GmbH",
+  issn          = "1812-0792",
+  doi           = "10.5194/os-3-509-2007"
+}
+
+@article{         phillips_TAMS59,
+  title         = "Dissipative operators and hyperbolic systems of partial
+                  differential equations",
+  pages         = "193--254",
+  journal       = "Transactions of the American Mathematical Society",
+  volume        = "90",
+  number        = "2",
+  author        = "R. S. Phillips",
+  year          = "1959",
+  month         = "feb",
+  publisher     = "American Mathematical Society (AMS)",
+  issn          = "0002-9947",
+  doi           = "10.1090/s0002-9947-1959-0104919-1"
+}
+
+@article{         qiao.yuan.ea_OD10,
+  title         = "A three-dimensional surface wave–ocean circulation coupled 
+                  model and its initial testing",
+  pages         = "1339--1335",
+  journal       = "Ocean Dynamics",
+  volume        = "60",
+  number        = "5",
+  author        = "F. Qiao and Y. Yuan and T. Ezer and C. Xia and 
+                   Y. Yang and X. Lu and Z. Song ",
+  year          = "2010",
+  month         = "oct",
+  publisher     = "Springer-Verlag",
+  issn          = "1616-7341",
+  doi           = "10.1007/s10236-010-0326-y"
+}
+
+@article{         redi_JPO82,
+  title         = "Oceanic isopycnal mixing by coordinate rotation",
+  pages         = "1154--1158",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "12",
+  number        = "10",
+  author        = "M. H. Redi",
+  year          = "1982",
+  month         = "oct",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1982)012<1154:oimbcr>2.0.co;2"
+}
+
+@article{         reffray.guillaume.ea_GMD15,
+  title         = "Modelling turbulent vertical mixing sensitivity using
+                   a 1-D version of NEMO",
+  pages         = "69--86",
+  journal       = "Geoscientific Model Development",
+  volume        = "8",
+  number        = "1",
+  author        = "G. Reffray. and R. Bourdalle-Badie and C. Calone",
+  year          = "2015",
+  month         = "jan",
+  publisher     = "Copernicus GmbH",
+  issn          = "1991-9603",
+  doi           = "10.5194/gmd-8-69-2015"
+}
+
+@book{            richtmyer.morton_bk67,
+  pages         = "405",
+  booktitle     = "Difference methods for initial-value problems",
+  edition       = "2",
+  series        = "Interscience tracts in pure and applied mathematics",
+  author        = "R. D. Richtmyer and K. W. Morton",
+  year          = "1967",
+  publisher     = "Interscience",
+  issn          = "0074-994X",
+  isbn          = "9780470720400",
+  url           = "https://books.google.fr/books?id=nd1QAAAAMAAJ"
+}
+
+@article{         robert_JMSJ66,
+  title         = "The integration of a low order spectral form of the
+                  primitive meteorological equations",
+  pages         = "237--245",
+  journal       = "Journal of the Meteorological Society of Japan",
+  volume        = "44",
+  number        = "5",
+  author        = "A. J. Robert",
+  year          = "1966",
+  publisher     = "Meteorological Society of Japan",
+  issn          = "2186-9057",
+  doi           = "10.2151/jmsj1965.44.5\_237"
+}
+
+@article{         rodgers.aumont.ea_B14,
+  title         = "Strong sensitivity of Southern Ocean carbon uptake and
+                  nutrient cycling to wind stirring",
+  pages         = "4077--4098",
+  journal       = "Biogeosciences",
+  volume        = "11",
+  number        = "15",
+  author        = "K. B. Rodgers and O. Aumont and S. E. Mikaloff Fletcher
+                  and Y. Plancherel and L. Bopp and C. {de Boyer
+                  Mont\'{e}gut} and D. Iudicone and R. F. Keeling and G.
+                  Madec and R. Wanninkhof",
+  year          = "2014",
+  month         = "aug",
+  publisher     = "Copernicus GmbH",
+  issn          = "1726-4189",
+  doi           = "10.5194/bg-11-4077-2014"
+}
+
+@article{         rodi_JGR87,
+  title         = "Examples of calculation methods for flow and mixing in
+                  stratified fluids",
+  pages         = "5305--5328",
+  journal       = "Journal of Geophysical Research",
+  volume        = "92",
+  number        = "C5",
+  author        = "W. Rodi",
+  year          = "1987",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/jc092ic05p05305"
+}
+
+@article{         roquet.madec.ea_JPO15,
+  title         = "Defining a simplified yet ``realistic'' equation of state
+                  for seawater",
+  pages         = "2564--2579",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "45",
+  number        = "10",
+  author        = "F. Roquet and G. Madec and L. Brodeau and J. Nycander",
+  year          = "2015",
+  month         = "oct",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/jpo-d-15-0080.1"
+}
+
+@article{         roquet.madec.ea_OM15,
+  title         = "Accurate polynomial expressions for the density and
+                  specific volume of seawater using the {TEOS}-10 standard",
+  pages         = "29--43",
+  journal       = "Ocean Modelling",
+  volume        = "90",
+  author        = "F. Roquet and G. Madec and T. J. McDougall and P. M.
+                  Barker",
+  year          = "2015",
+  month         = "jun",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2015.04.002"
+}
+
+@article{         roullet.madec_JGR00,
+  title         = "Salt conservation, free surface, and varying levels: {A}
+                  new formulation for Ocean General Circulation Models",
+  pages         = "23927--23942",
+  journal       = "Journal of Geophysical Research",
+  volume        = "105",
+  number        = "C10",
+  author        = "G. Roullet and G. Madec",
+  year          = "2000",
+  month         = "oct",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/2000jc900089"
+}
+
+@article{         sarmiento.bryan_JGR82,
+  title         = "An ocean transport model for the North Atlantic",
+  pages         = "394--409",
+  journal       = "Journal of Geophysical Research",
+  volume        = "87",
+  number        = "C1",
+  author        = "J. L. Sarmiento and K. Bryan",
+  year          = "1982",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/jc087ic01p00394"
+}
+
+@article{         saunders_JAS67,
+  title         = "The temperature at the ocean-air interface",
+  pages         = "269--273",
+  journal       = "Journal of the Atmospheric Sciences",
+  volume        = "24",
+  number        = "3",
+  author        = "P. M. Saunders",
+  year          = "1967",
+  month         = "may",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0469",
+  doi           = "10.1175/1520-0469(1967)024<0269:ttatoa>2.0.co;2"
+}
+
+@article{         shchepetkin.mcwilliams_OM05,
+  title         = "The regional oceanic modeling system ({ROMS}): a
+                  split-explicit, free-surface,
+                  topography-following-coordinate oceanic model",
+  pages         = "347--404",
+  journal       = "Ocean Modelling",
+  volume        = "9",
+  number        = "4",
+  author        = "A. F. Shchepetkin and J. C. McWilliams",
+  year          = "2005",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2004.08.002"
+}
+
+@inbook{          shchepetkin.mcwilliams_ibk09,
+  title         = "Computational kernel algorithms for fine-scale,
+                  multiprocess, longtime oceanic simulations",
+  chapter       = "2",
+  pages         = "121--183",
+  booktitle     = "Computational Methods for the Atmosphere and the Oceans",
+  editor        = "R. M. Temam and J. J. Tribbia",
+  series        = "Handbook of Numerical Analysis",
+  volume        = "14",
+  author        = "A. F. Shchepetkin and J. C. McWilliams",
+  year          = "2009",
+  publisher     = "Elsevier",
+  issn          = "1570-8659",
+  isbn          = "9780444518934",
+  doi           = "10.1016/s1570-8659(08)01202-0"
+}
+
+@article{         shchepetkin_OM15,
+  title         = "An Adaptive, Courant-number-dependent implicit
+  		 scheme for vertical advection in oceanic modeling",
+  pages         = "38--69",
+  journal       = "Ocean Modelling",
+  volume        = "91",
+  author        = "A. F. Shchepetkin",
+  year          = "2015",
+  month         = "july",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2015.03.006"
+}
+
+@article{         siddorn.furner_OM13,
+  title         = "An analytical stretching function that combines the best
+                  attributes of geopotential and terrain-following vertical
+                  coordinates",
+  pages         = "1--13",
+  journal       = "Ocean Modelling",
+  volume        = "66",
+  author        = "J. R. Siddorn and R. Furner",
+  year          = "2013",
+  month         = "jun",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2013.02.001"
+}
+
+@article{         simmons.jayne.ea_OM04,
+  title         = "Tidally driven mixing in a numerical model of the ocean
+                  general circulation",
+  pages         = "245--263",
+  journal       = "Ocean Modelling",
+  volume        = "6",
+  number        = "3-4",
+  author        = "H. L. Simmons and S. R. Jayne and L. C. {St Laurent} and
+                  A. J. Weaver",
+  year          = "2004",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/s1463-5003(03)00011-8"
+}
+
+@article{         smagorinsky_MW63,
+  title         = "General circulation experiments with the primitive equations: I. The basic experiment ",
+  pages         = "99--164",
+  journal       = "Monthly Weather Review",
+  volume        = "91",
+  number        = "3",
+  author        = "J. Smagorinsky",
+  year          = "1963",
+  month         = "mar",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0493",
+  doi           = "10.1175/1520-0493(1963)091<0099:GCEWTP>2.3.CO;2"
+}
+
+@article{         song.haidvogel_JCP94,
+  title         = "A semi-implicit ocean circulation model using a
+                  generalized topography-following coordinate system",
+  pages         = "228--244",
+  journal       = "Journal of Computational Physics",
+  volume        = "115",
+  number        = "1",
+  author        = "Y. Song and D. Haidvogel",
+  year          = "1994",
+  month         = "nov",
+  publisher     = "Elsevier BV",
+  issn          = "0021-9991",
+  doi           = "10.1006/jcph.1994.1189"
+}
+
+@article{         song_MWR98,
+  title         = "A General Pressure Gradient Formulation for Ocean Models.
+                  Part {I}: Scheme Design and Diagnostic Analysis",
+  pages         = "3213--3230",
+  journal       = "Monthly Weather Review",
+  volume        = "126",
+  number        = "12",
+  author        = "Y. T. Song",
+  year          = "1998",
+  month         = "dec",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0493",
+  doi           = "10.1175/1520-0493(1998)126<3213:agpgff>2.0.co;2"
+}
+
+@article{         st-laurent.nash_DSR04,
+  title         = "An examination of the radiative and dissipative properties
+                  of deep ocean internal tides",
+  pages         = "3029--3042",
+  journal       = "Deep Sea Research",
+  volume        = "51",
+  number        = "25-26",
+  author        = "L. C. {St Laurent} and J. D. Nash",
+  year          = "2004",
+  month         = "dec",
+  publisher     = "Elsevier BV",
+  issn          = "0967-0645",
+  doi           = "10.1016/j.dsr2.2004.09.008"
+}
+
+@article{         st-laurent.simmons.ea_GRL02,
+  title         = "Estimating tidally driven mixing in the deep ocean",
+  pages         = "2101--2104",
+  journal       = "Geophysical Research Letters",
+  volume        = "29",
+  number        = "23",
+  author        = "L. C. {St Laurent} and H. L. Simmons and S. R. Jayne",
+  year          = "2002",
+  month         = "dec",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0094-8276",
+  doi           = "10.1029/2002gl015633"
+}
+
+@article{         stacey_JPO99,
+  title         = "Simulations of the wind-forced near-surface circulation in
+                  Knight Inlet: {A} parameterization of the roughness length",
+  pages         = "1363--1367",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "29",
+  number        = "6",
+  author        = "M. W. Stacey",
+  year          = "1999",
+  month         = "jun",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1999)029<1363:sotwfn>2.0.co;2"
+}
+
+@article{         steele.morley.ea_JC01,
+  title         = "{PHC}: {A} global ocean hydrography with a high-quality
+                  Arctic Ocean",
+  pages         = "2079--2087",
+  journal       = "Journal of Climate",
+  volume        = "14",
+  number        = "9",
+  author        = "M. Steele and R. Morley and W. Ermold",
+  year          = "2001",
+  month         = "may",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0442",
+  doi           = "10.1175/1520-0442(2001)014<2079:pagohw>2.0.co;2"
+}
+
+@article{         stein.stein_N92,
+  title         = "A model for the global variation in oceanic depth and heat
+                  flow with lithospheric age",
+  pages         = "123--129",
+  journal       = "Nature",
+  volume        = "359",
+  number        = "6391",
+  author        = "C. A. Stein and S. Stein",
+  year          = "1992",
+  month         = "sep",
+  publisher     = "Springer Nature",
+  issn          = "1476-4687",
+  doi           = "10.1038/359123a0"
+}
+
+@inbook{          stokes_ibk09,
+  title         = "On the theory of oscillatory waves",
+  chapter       = "12",
+  pages         = "197--229",
+  booktitle     = "Mathematical and Physical Papers",
+  series        = "Cambridge Library Collection - Mathematics",
+  volume        = "1",
+  author        = "G. G. Stokes",
+  year          = "2009",
+  publisher     = "Cambridge University Press",
+  isbn          = "9780511702242",
+  doi           = "10.1017/cbo9780511702242.013"
+}
+
+@article{         takaya.bidlot.ea_JGR10,
+  title         = "Refinements to a prognostic scheme of skin sea surface
+                  temperature",
+  pages         = "C06009",
+  journal       = "Journal of Geophysical Research",
+  volume        = "115",
+  number        = "C6",
+  author        = "Y. Takaya and J-R. Bidlot and A. C. M. Beljaars and P. A.
+                  E. M. Janssen",
+  year          = "2010",
+  month         = "jun",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/2009jc005985"
+}
+
+@article{         talagrand_JAS72,
+  title         = "On the damping of high-frequency motions in
+                  four-dimensional assimilation of meteorological data",
+  pages         = "1571--1574",
+  journal       = "Journal of the Atmospheric Sciences",
+  volume        = "29",
+  number        = "8",
+  author        = "O. Talagrand",
+  year          = "1972",
+  month         = "nov",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0469",
+  doi           = "10.1175/1520-0469(1972)029<1571:otdohf>2.0.co;2"
+}
+
+@article{         treguier.dukowicz.ea_JGR96,
+  title         = "Properties of nonuniform grids used in ocean general
+                  circulation models",
+  pages         = "20877--20881",
+  journal       = "Journal of Geophysical Research",
+  volume        = "101",
+  number        = "C9",
+  author        = "A.-M. Tr\'{e}guier and J. K. Dukowicz and K. Bryan",
+  year          = "1996",
+  month         = "sep",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/96jc01753"
+}
+
+@article{         treguier.held.ea_JPO97,
+  title         = "Parameterization of Quasigeostrophic Eddies in Primitive
+                  Equation Ocean Models",
+  pages         = "567--580",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "27",
+  number        = "4",
+  author        = "A. M. Tr\'{e}guier and I. M. Held and V. D. Larichev",
+  year          = "1997",
+  month         = "apr",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1997)027<0567:poqeip>2.0.co;2"
+}
+
+@article{         treguier_JGR92,
+  title         = "Kinetic energy analysis of an eddy resolving, primitive
+                  equation model of the North Atlantic",
+  pages         = "687--701",
+  journal       = "Journal of Geophysical Research",
+  volume        = "97",
+  number        = "C1",
+  author        = "A. M. Tr\'{e}guier",
+  year          = "1992",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/91jc02350"
+}
+
+@article{         tu.tsuang_GRL05,
+  title         = "Cool-skin simulation by a one-column ocean model",
+  pages         = "L22602",
+  journal       = "Geophysical Research Letters",
+  volume        = "32",
+  number        = "22",
+  author        = "C.-Y. Tu and B.-J. Tsuang",
+  year          = "2005",
+  month         = "nov",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0094-8276",
+  doi           = "10.1029/2005gl024252"
+}
+
+@article{         umlauf.burchard_CSR05,
+  title         = "Second-order turbulence closure models for geophysical
+                  boundary layers. {A} review of recent work",
+  pages         = "795--827",
+  journal       = "Continental Shelf Research",
+  volume        = "25",
+  number        = "7-8",
+  author        = "L. Umlauf and H. Burchard",
+  year          = "2005",
+  month         = "may",
+  publisher     = "Elsevier BV",
+  issn          = "0278-4343",
+  doi           = "10.1016/j.csr.2004.08.004"
+}
+
+@article{         umlauf.burchard_JMR03,
+  title         = "A generic length-scale equation for geophysical turbulence
+                  models",
+  pages         = "235--265",
+  journal       = "Journal of Marine Research",
+  volume        = "61",
+  number        = "2",
+  author        = "L. Umlauf and H. Burchard",
+  year          = "2003",
+  month         = "mar",
+  publisher     = "Journal of Marine Research/Yale",
+  issn          = "0022-2402",
+  doi           = "10.1357/002224003322005087"
+}
+
+@book{            vallis_bk06,
+  booktitle     = "Atmospheric and Oceanic Fluid Dynamics",
+  author        = "G. K. Vallis",
+  year          = "2006",
+  publisher     = "Cambridge University Press",
+  isbn          = "9780511790447",
+  doi           = "10.1017/cbo9780511790447"
+}
+
+@article{         vancoppenolle.fichefet.ea_OM09*a,
+  title         = "Simulating the mass balance and salinity of Arctic and
+                  Antarctic sea ice. 1. Model description and validation",
+  pages         = "33--53",
+  journal       = "Ocean Modelling",
+  volume        = "27",
+  number        = "1-2",
+  author        = "M. Vancoppenolle and T. Fichefet and H. Goosse and S.
+                  Bouillon and G. Madec and M. A. Morales Maqueda",
+  year          = "2009",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2008.10.005"
+}
+
+@article{         vancoppenolle.fichefet.ea_OM09*b,
+  title         = "Simulating the mass balance and salinity of Arctic and
+                  Antarctic sea ice. 2. Importance of sea ice salinity
+                  variations",
+  pages         = "54--69",
+  journal       = "Ocean Modelling",
+  volume        = "27",
+  number        = "1-2",
+  author        = "M. Vancoppenolle and T. Fichefet and H. Goosse",
+  year          = "2009",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2008.11.003"
+}
+
+@article{         warner.defne.ea_CG13,
+  title         = "A wetting and drying scheme for {ROMS}",
+  pages         = "54--61",
+  journal       = "Computers \& Geosciences",
+  volume        = "58",
+  author        = "J. C. Warner and Z. Defne and K. Haas and H. G. Arango",
+  year          = "2013",
+  month         = "aug",
+  publisher     = "Elsevier BV",
+  issn          = "0098-3004",
+  doi           = "10.1016/j.cageo.2013.05.004"
+}
+
+@article{         warner.sherwood.ea_OM05,
+  title         = "Performance of four turbulence closure models implemented
+                  using a generic length scale method",
+  pages         = "81--113",
+  journal       = "Ocean Modelling",
+  volume        = "8",
+  number        = "1-2",
+  author        = "J. C. Warner and C. R. Sherwood and H. G. Arango and R. P.
+                  Signell",
+  year          = "2005",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "1463-5003",
+  doi           = "10.1016/j.ocemod.2003.12.003"
+}
+
+@article{         weatherly_JMR84,
+  title         = "An estimate of bottom frictional dissipation by Gulf
+                  Stream fluctuations",
+  pages         = "289--301",
+  journal       = "Journal of Marine Research",
+  volume        = "42",
+  number        = "2",
+  author        = "G. L. Weatherly",
+  year          = "1984",
+  month         = "may",
+  publisher     = "Journal of Marine Research/Yale",
+  issn          = "1543-9542",
+  doi           = "10.1357/002224084788502729"
+}
+
+@article{         weaver.eby_JPO97,
+  title         = "On the numerical implementation of advection schemes for
+                  use in conjuction with various mixing parameterizations in
+                  the {GFDL} ocean model",
+  pages         = "369--377",
+  journal       = "Journal of Physical Oceanography",
+  volume        = "27",
+  number        = "2",
+  author        = "A. J. Weaver and M. Eby",
+  year          = "1997",
+  month         = "feb",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0485",
+  doi           = "10.1175/1520-0485(1997)027<0369:otnioa>2.0.co;2"
+}
+
+@article{         webb.de-cuevas.ea_JAOT98,
+  title         = "Improved Advection Schemes for Ocean Models",
+  pages         = "1171--1187",
+  journal       = "Journal of Atmospheric and Oceanic Technology",
+  volume        = "15",
+  number        = "5",
+  author        = "D. J. Webb and B. A. {de Cuevas} and C. S. Richmond",
+  year          = "1998",
+  month         = "oct",
+  publisher     = "American Meteorological Society",
+  issn          = "1520-0426",
+  doi           = "10.1175/1520-0426(1998)015<1171:iasfom>2.0.co;2"
+}
+
+@article{         white.hoskins.ea_QJRMS05,
+  title         = "Consistent approximate models of the global atmosphere: shallow, deep,
+                  hydrostatic, quasi-hydrostatic and non-hydrostatic",
+  pages         = "2081--2107",
+  journal       = "Quarterly Journal of the Royal Meteorological Society",
+  volume        = "131",
+  author        = "A. A. White and B. J. Hoskins and I. Roulstone and A. Staniforth",
+  year          = "2005",
+  doi           = "10.1256/qj.04.49"
+}
+
+@article{         white.adcroft.ea_JCP09,
+  title         = "High-order regridding-remapping schemes for continuous
+                  isopycnal and generalized coordinates in ocean models",
+  pages         = "8665--8692",
+  journal       = "Journal of Computational Physics",
+  volume        = "228",
+  number        = "23",
+  author        = "L. White and A. Adcroft and R. Hallberg",
+  year          = "2009",
+  month         = "dec",
+  publisher     = "Elsevier BV",
+  issn          = "0021-9991",
+  doi           = "10.1016/j.jcp.2009.08.016"
+}
+
+@article{         wilcox_AJ88,
+  title         = "Reassessment of the scale-determining equation for
+                  advanced turbulence models",
+  pages         = "1299--1310",
+  journal       = "AIAA Journal",
+  volume        = "26",
+  number        = "11",
+  author        = "D. C. Wilcox",
+  year          = "1988",
+  month         = "nov",
+  publisher     = "American Institute of Aeronautics and Astronautics (AIAA)",
+  issn          = "1533-385X",
+  doi           = "10.2514/3.10041"
+}
+
+@article{         willebrand.barnier.ea_PO01,
+  title         = "Circulation characteristics in three eddy-permitting
+                  models of the North Atlantic",
+  pages         = "123--161",
+  journal       = "Progress in Oceanography",
+  volume        = "48",
+  number        = "2-3",
+  author        = "J. Willebrand and B. Barnier and C. B{\"{o}}ning and C.
+                  Dieterich and P. D. Killworth and C. Le Provost and Y. Jia
+                  and J.-M. Molines and A. L. New",
+  year          = "2001",
+  month         = "jan",
+  publisher     = "Elsevier BV",
+  issn          = "0079-6611",
+  doi           = "10.1016/s0079-6611(01)00003-9"
+}
+
+@article{         zalesak_JCP79,
+  title         = "Fully multidimensional flux-corrected transport algorithms
+                  for fluids",
+  pages         = "335--362",
+  journal       = "Journal of Computational Physics",
+  volume        = "31",
+  number        = "3",
+  author        = "S. T. Zalesak",
+  year          = "1979",
+  month         = "jun",
+  publisher     = "Elsevier BV",
+  issn          = "0021-9991",
+  doi           = "10.1016/0021-9991(79)90051-2"
+}
+
+@article{         zhang.endoh_JGR92,
+  title         = "A free surface General Circulation Model for the tropical
+                  Pacific Ocean",
+  pages         = "11237--11255",
+  journal       = "Journal of Geophysical Research",
+  volume        = "97",
+  number        = "C7",
+  author        = "R.-H. Zhang and M. Endoh",
+  year          = "1992",
+  publisher     = "American Geophysical Union (AGU)",
+  issn          = "0148-0227",
+  doi           = "10.1029/92jc00911"
+}

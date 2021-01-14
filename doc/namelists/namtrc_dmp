@@ -1,0 +1,8 @@
+!-----------------------------------------------------------------------
+&namtrc_dmp      !   passive tracer newtonian damping                   (ln_trcdmp=T)
+!-----------------------------------------------------------------------
+   nn_zdmp_tr    =    1      !  vertical   shape =0    damping throughout the water column
+                             !                   =1 no damping in the mixing layer (kz  criteria)
+                             !                   =2 no damping in the mixed  layer (rho crieria)
+   cn_resto_tr   = 'resto_tr.nc'    !  create a damping.coeff NetCDF file (=1) or not (=0)
+/

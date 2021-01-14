@@ -1,0 +1,14 @@
+!-----------------------------------------------------------------------
+&nambbc        !   bottom temperature boundary condition                (default: OFF)
+!-----------------------------------------------------------------------
+   ln_trabbc   = .false.   !  Apply a geothermal heating at the ocean bottom
+      nn_geoflx     = 2       !  geothermal heat flux: = 1 constant flux
+      !                       !                        = 2 read variable flux [mW/m2]
+      rn_geoflx_cst = 86.4e-3 !  Constant value of geothermal heat flux       [mW/m2]
+
+   cn_dir      = './'      !  root directory for the geothermal data location
+   !___________!_________________________!___________________!___________!_____________!________!___________!__________________!__________!_______________!
+   !           !  file name              ! frequency (hours) ! variable  ! time interp.!  clim  ! 'yearly'/ ! weights filename ! rotation ! land/sea mask !
+   !           !                         !  (if <0  months)  !   name    !   (logical) !  (T/F) ! 'monthly' !                  ! pairing  !    filename   !
+   sn_qgh      ='geothermal_heating.nc'  ,       -12.        , 'heatflow',   .false.   , .true. , 'yearly'  ,   ''             ,   ''     ,   ''
+/

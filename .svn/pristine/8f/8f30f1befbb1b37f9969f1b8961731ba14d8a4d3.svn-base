@@ -1,0 +1,56 @@
+\documentclass[../main/SI3_manual]{subfiles}
+
+\begin{document}
+
+% ================================================================
+% Dummy Chapter - To do list
+% ================================================================
+
+\chapter*{To-do-list for documentation}
+\label{chap:TDL}
+
+\begin{itemize}
+
+\item \textcolor{gray}{Documentation infrastructure ready by Jul 19, 2018.}
+
+\item \textcolor{gray}{Abstract: v1 written.}
+
+\item \textcolor{gray}{Disclaimer: v1 written.}
+
+\item Introduction: list of chapters and change between realeases to be written (1h)
+
+\item \textcolor{gray}{1. Model basics: v1 written.}
+
+\item \textcolor{gray}{Add namelist infrastructure as in NEMO doc (done)}
+
+\item \textcolor{gray}{2. Time, space and thickness space domain}
+
+\item 3. Ice dynamics: to be written (Clem \& Martin, 3h)
+
+\item 4. Ice transport: UM5 description to be written (Clem, 3h)
+
+\item 5. Ridging and rafting: V1 from previous doc. Should be refreshed. A bit too long. All namelist parameters are not explained (namdyn\_rdgrft).
+
+\item \textcolor{gray}{6. Radiative transfer: Full rewriting required (Martin \& Clem, 3-6h). Available elements from previous documentation, but mostly obsolete.}
+
+\item 7. Thermodynamics: Lots of rewriting required. Available elements from previous documentation, but mostly obsolete (Martin, 6h)
+
+\item 8. Interfaces: Full writing required 
+
+\item 9. Output and diagnostics: Full writing required
+
+\item 10. Single category (Martin, 3h). Full writing required.
+
+\item 11. BDY-AGRIF (Clem, 3h). Full writing required.
+
+\item 12. Miscellaneous. Full writing required.
+
+\item Melt ponds are not currently considered in the plan.
+
+\item Make sure all namelist parameters are properly described.
+
+\item Peer-review by SIWG members.
+
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,17 @@
+!-----------------------------------------------------------------------
+&nameos        !   ocean Equation Of Seawater                           (default: NO selection)
+!-----------------------------------------------------------------------
+   ln_teos10   = .false.         !  = Use TEOS-10
+   ln_eos80    = .false.         !  = Use EOS80
+   ln_seos     = .false.         !  = Use S-EOS (simplified Eq.)
+                                 !
+   !                     ! S-EOS coefficients (ln_seos=T):
+   !                             !  rd(T,S,Z)*rau0 = -a0*(1+.5*lambda*dT+mu*Z+nu*dS)*dT+b0*dS
+   rn_a0       =  1.6550e-1      !  thermal expension coefficient
+   rn_b0       =  7.6554e-1      !  saline  expension coefficient
+   rn_lambda1  =  5.9520e-2      !  cabbeling coeff in T^2  (=0 for linear eos)
+   rn_lambda2  =  7.4914e-4      !  cabbeling coeff in S^2  (=0 for linear eos)
+   rn_mu1      =  1.4970e-4      !  thermobaric coeff. in T (=0 for linear eos)
+   rn_mu2      =  1.1090e-5      !  thermobaric coeff. in S (=0 for linear eos)
+   rn_nu       =  2.4341e-3      !  cabbeling coeff in T*S  (=0 for linear eos)
+/

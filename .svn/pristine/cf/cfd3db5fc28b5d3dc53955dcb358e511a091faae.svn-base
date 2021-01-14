@@ -1,0 +1,207 @@
+\documentclass[../main/NEMO_manual]{subfiles}
+
+\begin{document}
+% ================================================================
+% Appendix D Coding Rules
+% ================================================================
+\chapter{Coding Rules}
+\label{apdx:D}
+
+\minitoc
+
+\newpage
+
+A "model life" is more than ten years.
+Its software, composed of a few hundred modules, is used by many people who are scientists or students and
+do not necessarily know every aspect of computing very well.
+Moreover, a well thought-out program is easier to read and understand, less difficult to modify,
+produces fewer bugs and is easier to maintain.
+Therefore, it is essential that the model development follows some rules:
+
+- well planned and designed
+
+- well written
+
+- well documented (both on- and off-line)
+
+- maintainable
+
+- easily portable
+
+- flexible.
+
+To satisfy part of these aims, \NEMO\ is written with a coding standard which is close to the ECMWF rules,
+named DOCTOR \citep{gibson_rpt86}. 
+These rules present some advantages like:
+
+- to provide a well presented program
+
+- to use rules for variable names which allow recognition of their type
+(integer, real, parameter, local or shared variables, etc. ). 
+
+This facilitates both the understanding and the debugging of an algorithm.
+
+% ================================================================
+% The program structure
+% ================================================================
+\section{Program structure}
+\label{sec:D_structure}
+
+Each program begins with a set of headline comments containing:
+
+- the program title
+
+- the purpose of the routine
+
+- the method and algorithms used
+
+- the detail of input and output interfaces
+
+- the external routines and functions used (if they exist)
+
+- references (if they exist)
+
+- the author name(s), the date of creation and any updates.
+
+- Each program is split into several well separated sections and
+sub-sections with an underlined title and specific labelled statements.
+
+- A program has not more than 200 to 300 lines.
+
+A template of a module style can be found on the NEMO depository in the following file:
+NEMO/OPA\_SRC/module\_example.
+% ================================================================
+% Coding conventions
+% ================================================================
+\section{Coding conventions}
+\label{sec:D_coding}
+
+- Use of the universal language \fninety, and try to avoid obsolescent features like statement functions,
+do not use GO TO and EQUIVALENCE statements.
+
+- A continuation line begins with the character {\&} indented by three spaces compared to the previous line,
+while the previous line ended with the character {\&}.
+
+- All the variables must be declared.
+The code is usually compiled with implicit none.
+ 
+- Never use continuation lines in the declaration of a variable.
+When searching a variable in the code through a \textit{grep} command, the declaration line will be found.
+
+- In the declaration of a PUBLIC variable, the comment part at the end of the line should start with
+the two characters "\verb?!:?".
+The following UNIX command, \\
+\verb?grep var_name *90 \ grep \!: ? \\
+will display the module name and the line where the var\_name declaration is.
+
+- Always use a three spaces indentation in DO loop, CASE, or IF-ELSEIF-ELSE-ENDIF statements.
+
+- use a space after a comma, except when it appears to separate the indices of an array.
+
+- use call to ctl\_stop routine instead of just a STOP.
+
+\newpage
+
+% ================================================================
+% Naming Conventions
+% ================================================================
+\section{Naming conventions}
+\label{sec:D_naming}
+
+The purpose of the naming conventions is to use prefix letters to classify model variables.
+These conventions allow the variable type to be easily known and rapidly identified.
+The naming conventions are summarised in the Table below:
+
+
+%--------------------------------------------------TABLE--------------------------------------------------
+\begin{table}[htbp]
+  \label{tab:VarName}
+  \begin{center}
+    \begin{tabular}{|p{45pt}|p{35pt}|p{45pt}|p{40pt}|p{40pt}|p{40pt}|p{40pt}|p{40pt}|}
+      \hline
+      Type \par / Status
+      & integer
+      & real
+      & logical
+      & character
+      & structure
+      & double \par precision
+      & complex \\
+      \hline
+      public  \par or  \par module variable
+      & \textbf{m n} \par \textit{but not} \par \textbf{nn\_ np\_}
+      & \textbf{a b e f g h o q r} \par \textbf{t} \textit{to} \textbf{x} \par but not \par \textbf{fs rn\_}
+      & \textbf{l} \par \textit{but not} \par \textbf{lp ld} \par \textbf{ ll ln\_}
+      & \textbf{c} \par \textit{but not} \par \textbf{cp cd} \par \textbf{cl cn\_}
+      & \textbf{s} \par \textit{but not} \par \textbf{sd sd} \par \textbf{sl sn\_}
+      & \textbf{d} \par \textit{but not} \par \textbf{dp dd} \par \textbf{dl dn\_}
+      & \textbf{y} \par \textit{but not} \par \textbf{yp yd} \par \textbf{yl yn} \\
+      \hline
+      dummy \par argument
+      & \textbf{k} \par \textit{but not} \par \textbf{kf}
+      & \textbf{p} \par \textit{but not} \par \textbf{pp pf}
+      & \textbf{ld}
+      & \textbf{cd}
+      & \textbf{sd}
+      & \textbf{dd}
+      & \textbf{yd} \\
+      \hline
+      local \par variable
+      & \textbf{i}
+      & \textbf{z}
+      & \textbf{ll}
+      & \textbf{cl}
+      & \textbf{sl}
+      & \textbf{dl}
+      & \textbf{yl} \\
+      \hline
+      loop \par control
+      & \textbf{j} \par \textit{but not} \par \textbf{jp} &&&&&& \\
+      \hline
+      parameter
+      & \textbf{jp np\_}
+      & \textbf{pp}
+      & \textbf{lp}
+      & \textbf{cp}
+      & \textbf{sp}
+      & \textbf{dp}
+      & \textbf{yp} \\
+      \hline
+      namelist
+      & \textbf{nn\_}
+      & \textbf{rn\_}
+      & \textbf{ln\_}
+      & \textbf{cn\_}
+      & \textbf{sn\_}
+      & \textbf{dn\_}
+      & \textbf{yn\_}
+      \\
+      \hline
+      CPP \par macro
+      & \textbf{kf}
+      & \textbf{fs} \par &&&&& \\
+      \hline
+    \end{tabular}
+    \label{tab:tab1}
+  \end{center}
+\end{table}
+%--------------------------------------------------------------------------------------------------------------
+
+N.B. Parameter here, in not only parameter in the \fortran acceptation,
+it is also used for code variables that are read in namelist and should never been modified during a simulation. 
+It is the case, for example, for the size of a domain (jpi,jpj,jpk).
+
+\newpage
+
+% ================================================================
+% The program structure
+% ================================================================
+%\section{Program structure}
+%\label{sec:Apdx_D_structure}
+
+%To be done....
+\biblio
+
+\pindex
+
+\end{document}

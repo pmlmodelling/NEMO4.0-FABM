@@ -1,0 +1,30 @@
+\documentclass[../main/SI3_manual]{subfiles}
+
+\begin{document}
+
+% ================================================================
+% Chapter 8 Ñ Interfaces
+% ================================================================
+
+\chapter{Ice-atmosphere and ice-ocean interfaces}
+\label{chap:INT}
+\chaptertoc
+
+\newpage
+$\ $\newline    % force a new line
+
+In this chapter, we give information on the representation of interfaces.
+
+\section{Ice-ocean interface}
+
+\section{Ice-atmosphere interface}
+
+Drags?
+
+Blowing snow parameter
+
+Flux redistributor
+
+Jules coupling
+
+\end{document}

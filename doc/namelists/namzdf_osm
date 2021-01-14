@@ -1,0 +1,19 @@
+!-----------------------------------------------------------------------
+&namzdf_osm    !   OSM vertical diffusion                               (ln_zdfosm =T)
+!-----------------------------------------------------------------------
+   ln_use_osm_la = .false.      !  Use namelist  rn_osm_la
+   rn_osm_la     = 0.3         !  Turbulent Langmuir number
+   rn_osm_dstokes     = 5.     !  Depth scale of Stokes drift (m)
+   nn_ave = 0                  ! choice of horizontal averaging on avt, avmu, avmv
+   ln_dia_osm = .true.         ! output OSMOSIS-OBL variables
+   rn_osm_hbl0 = 10.           ! initial hbl value
+   ln_kpprimix = .true.        ! Use KPP-style Ri# mixing below BL
+   rn_riinfty  = 0.7           ! Highest local Ri_g permitting shear instability
+   rn_difri  =  0.005          ! max Ri# diffusivity at Ri_g = 0 (m^2/s)
+   ln_convmix  = .true.        ! Use convective instability mixing below BL
+   rn_difconv = 1.             ! diffusivity when unstable below BL  (m2/s)
+   nn_osm_wave = 0             ! Method used to calculate Stokes drift
+      !                        !  = 2: Use ECMWF wave fields
+      !                        !  = 1: Pierson Moskowitz wave spectrum
+      !                        !  = 0: Constant La# = 0.3
+/

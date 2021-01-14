@@ -1,0 +1,22 @@
+!-----------------------------------------------------------------------
+&namp5zquota   !   parameters for nutrient limitations PISCES quota    - ln_p5z
+!-----------------------------------------------------------------------
+   qfnopt     =  7.E-6    ! Optimal Fe quota of nanophyto
+   qfpopt     =  7.E-6    ! Optimal Fe quota of picophyto
+   qfdopt     =  7.E-6    ! Optimal quota of diatoms
+   qnnmin     =  0.29     ! Minimal N quota for nano
+   qnnmax     =  1.39     ! Maximal N quota for nano
+   qpnmin     =  0.28     ! Minimal P quota for nano
+   qpnmax     =  1.06     ! Maximal P quota for nano
+   qnpmin     =  0.42     ! Minimal N quota for pico
+   qnpmax     =  1.39     ! Maximal N quota for pico
+   qppmin     =  0.25     ! Minimal P quota for pico
+   qppmax     =  0.7      ! Maximal P quota for pico
+   qndmin     =  0.25     ! Minimal N quota for diatoms
+   qndmax     =  1.39     ! Maximal N quota for diatoms
+   qpdmin     =  0.29     ! Minimal P quota for diatoms
+   qpdmax     =  1.32     ! Maximal P quota for diatoms
+   qfnmax     =  40E-6    ! Maximal Fe quota for nano
+   qfpmax     =  40E-6    ! Maximal Fe quota for pico
+   qfdmax     =  40E-6    ! Maximal Fe quota for diatoms
+/

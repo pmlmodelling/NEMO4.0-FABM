@@ -1,0 +1,2050 @@
+\documentclass[../main/NEMO_manual]{subfiles}
+
+\begin{document}
+
+\chapter{Output and Diagnostics (IOM, DIA, TRD, FLO)}
+\label{chap:DIA}
+
+%    {\em 4.0} & {\em Mirek Andrejczuk, Massimiliano Drudi} & {\em }  \\
+%    {\em }      & {\em Dorotea Iovino, Nicolas Martin} & {\em }  \\
+%    {\em 3.6} & {\em Gurvan Madec, Sebastien Masson } & {\em }  \\
+%    {\em 3.4} & {\em Gurvan Madec, Rachid Benshila, Andrew Coward } & {\em }  \\
+%    {\em }      & {\em Christian Ethe, Sebastien Masson } & {\em }  \\
+
+\thispagestyle{plain}
+
+\chaptertoc
+
+\paragraph{Changes record} ~\\
+
+{\footnotesize
+  \begin{tabularx}{\textwidth}{l||X|X}
+    Release & Author(s) & Modifications \\
+    \hline
+    {\em   4.0} & {\em ...} & {\em ...} \\
+    {\em   3.6} & {\em ...} & {\em ...} \\
+    {\em   3.4} & {\em ...} & {\em ...} \\
+    {\em <=3.4} & {\em ...} & {\em ...}
+  \end{tabularx}
+}
+
+\clearpage
+
+%% =================================================================================================
+\section{Model output}
+\label{sec:DIA_io_old}
+
+The model outputs are of three types: the restart file, the output listing, and the diagnostic output file(s).
+The restart file is used internally by the code when the user wants to start the model with
+initial conditions defined by a previous simulation.
+It contains all the information that is necessary in order for there to be no changes in the model results
+(even at the computer precision) between a run performed with several restarts and
+the same run performed in one step.
+It should be noted that this requires that the restart file contains two consecutive time steps for
+all the prognostic variables.
+
+The output listing and file(s) are predefined but should be checked and eventually adapted to the user's needs.
+The output listing is stored in the \textit{ocean.output} file.
+The information is printed from within the code on the logical unit \texttt{numout}.
+To locate these prints, use the UNIX command "\textit{grep -i numout}" in the source code directory.
+
+By default, diagnostic output files are written in NetCDF format.
+Since version 3.2, when defining \key{iomput}, an I/O server has been added which
+provides more flexibility in the choice of the fields to be written as well as how
+the writing work is distributed over the processors in massively parallel computing.
+A complete description of the use of this I/O server is presented in the next section.
+
+%\cmtgm{                    % start of gmcomment
+
+%% =================================================================================================
+\section{Standard model output (IOM)}
+\label{sec:DIA_iom}
+
+Since version 3.2, iomput is the \NEMO\ output interface of choice.
+It has been designed to be simple to use, flexible and efficient.
+The two main purposes of iomput are:
+
+\begin{enumerate}
+\item The complete and flexible control of the output files through external XML files adapted by
+  the user from standard templates.
+\item To achieve high performance and scalable output through the optional distribution of
+  all diagnostic output related tasks to dedicated processes.
+\end{enumerate}
+
+The first functionality allows the user to specify, without code changes or recompilation,
+aspects of the diagnostic output stream, such as:
+
+\begin{itemize}
+\item The choice of output frequencies that can be different for each file (including real months and years).
+\item The choice of file contents; includes complete flexibility over which data are written in which files
+  (the same data can be written in different files).
+\item The possibility to split output files at a chosen frequency.
+\item The possibility to extract a vertical or an horizontal subdomain.
+\item The choice of the temporal operation to perform, \eg: average, accumulate, instantaneous, min, max and once.
+\item Control over metadata via a large XML "database" of possible output fields.
+\end{itemize}
+
+In addition, iomput allows the user to add in the code the output of any new variable (scalar, 2D or 3D)
+in a very easy way.
+All details of iomput functionalities are listed in the following subsections.
+Examples of the XML files that control the outputs can be found in:
+\path{cfgs/ORCA2_ICE_PISCES/EXPREF/iodef.xml},
+\path{cfgs/SHARED/field_def_nemo-oce.xml},
+\path{cfgs/SHARED/field_def_nemo-pisces.xml},
+\path{cfgs/SHARED/field_def_nemo-ice.xml} and \path{cfgs/SHARED/domain_def_nemo.xml}. \\
+
+The second functionality targets output performance when running in parallel (\key{mpp\_mpi}).
+Iomput provides the possibility to specify N dedicated I/O processes (in addition to the \NEMO\ processes)
+to collect and write the outputs.
+With an appropriate choice of N by the user, the bottleneck associated with the writing of
+the output files can be greatly reduced.
+
+In version 3.6, the \rou{iom\_put} interface depends on
+an external code called \href{https://forge.ipsl.jussieu.fr/ioserver/browser/XIOS/branchs/xios-2.5}{XIOS-2.5}
+%(use of revision 618 or higher is required).
+This new IO server can take advantage of the parallel I/O functionality of NetCDF4 to
+create a single output file and therefore to bypass the rebuilding phase.
+Note that writing in parallel into the same NetCDF files requires that your NetCDF4 library is linked to
+an HDF5 library that has been correctly compiled (\ie\ with the configure option $--$enable-parallel).
+Note that the files created by iomput through XIOS are incompatible with NetCDF3.
+All post-processsing and visualization tools must therefore be compatible with NetCDF4 and not only NetCDF3.
+
+Even if not using the parallel I/O functionality of NetCDF4, using N dedicated I/O servers,
+where N is typically much less than the number of \NEMO\ processors, will reduce the number of output files created.
+This can greatly reduce the post-processing burden usually associated with using large numbers of \NEMO\ processors.
+Note that for smaller configurations, the rebuilding phase can be avoided,
+even without a parallel-enabled NetCDF4 library, simply by employing only one dedicated I/O server.
+
+%% =================================================================================================
+\subsection{XIOS: Reading and writing restart file}
+
+XIOS may be used to read single file restart produced by \NEMO. Currently only the variables written to
+file \forcode{numror} can be handled by XIOS. To activate restart reading using XIOS, set \np[=.true. ]{ln_xios_read}{ln\_xios\_read}
+in \textit{namelist\_cfg}. This setting will be ignored when multiple restart files are present, and default \NEMO
+functionality will be used for reading. There is no need to change iodef.xml file to use XIOS to read
+restart, all definitions are done within the \NEMO\ code. For high resolution configuration, however,
+there may be a need to add the following line in iodef.xml (xios context):
+
+\begin{xmllines}
+<variable id="recv_field_timeout"        type="double">1800</variable>
+\end{xmllines}
+
+This variable sets timeout for reading.
+
+If XIOS is to be used to read restart from file generated with an earlier \NEMO\ version (3.6 for instance),
+dimension \forcode{z} defined in restart file must be renamed to \forcode{nav_lev}.\\
+
+XIOS can also be used to write \NEMO\ restart. A namelist parameter \np{nn_wxios}{nn\_wxios} is used to determine the
+type of restart \NEMO\ will write. If it is set to 0, default \NEMO\ functionality will be used - each
+processor writes its own restart file; if it is set to 1 XIOS will write restart into a single file;
+for \np[=2]{nn_wxios}{nn\_wxios} the restart will be written by XIOS into multiple files, one for each XIOS server.
+Note, however, that \textbf{\NEMO\ will not read restart generated by XIOS when \np[=2]{nn_wxios}{nn\_wxios}}. The restart will
+have to be rebuild before continuing the run. This option aims to reduce number of restart files generated by \NEMO\ only,
+and may be useful when there is a need to change number of processors used to run simulation.
+
+If an additional variable must be written to a restart file, the following steps are needed:
+\begin{enumerate}
+\item Add variable name to a list of restart variables (in subroutine \rou{iom\_set\_rst\_vars,} \mdl{iom}) and
+define correct grid for the variable (\forcode{grid_N_3D} - 3D variable, \forcode{grid_N} - 2D variable, \forcode{grid_vector} -
+1D variable, \forcode{grid_scalar} - scalar),
+\item Add variable to the list of fields written by restart.  This can be done either in subroutine
+\rou{iom\_set\_rstw\_core} (\mdl{iom}) or by calling  \rou{iom\_set\_rstw\_active} (\mdl{iom}) with the name of a variable
+as an argument. This convention follows approach for writing restart using iom, where variables are
+written either by \rou{rst\_write} or by calling \rou{iom\_rstput} from individual routines.
+\end{enumerate}
+
+An older versions of XIOS do not support reading functionality. It's recommended to use at least XIOS2@1451.
+
+%% =================================================================================================
+\subsection{XIOS: XML Inputs-Outputs Server}
+
+%% =================================================================================================
+\subsubsection{Attached or detached mode?}
+
+Iomput is based on \href{http://forge.ipsl.jussieu.fr/ioserver/wiki}{XIOS},
+the io\_server developed by Yann Meurdesoif from IPSL.
+The behaviour of the I/O subsystem is controlled by settings in the external XML files listed above.
+Key settings in the iodef.xml file are the tags associated with each defined file.
+
+\xmlline|<variable id="using_server" type="bool"></variable>|
+
+The \texttt{using\_server} setting determines whether or not the server will be used in
+\textit{attached mode}
+(as a library) [\texttt{> false <}] or in \textit{detached mode}
+(as an external executable on N additional, dedicated cpus) [\texttt{ > true <}].
+The \textit{attached mode} is simpler to use but much less efficient for
+massively parallel applications.
+The type of each file can be either ''multiple\_file'' or ''one\_file''.
+
+In \textit{attached mode} and if the type of file is ''multiple\_file'',
+then each \NEMO\ process will also act as an IO server and produce its own set of output files.
+Superficially, this emulates the standard behaviour in previous versions.
+However, the subdomain written out by each process does not correspond to
+the \forcode{jpi x jpj x jpk} domain actually computed by the process (although it may if \forcode{jpni=1}).
+Instead each process will have collected and written out a number of complete longitudinal strips.
+If the ''one\_file'' option is chosen then all processes will collect their longitudinal strips and
+write (in parallel) to a single output file.
+
+In \textit{detached mode} and if the type of file is ''multiple\_file'',
+then each stand-alone XIOS process will collect data for a range of complete longitudinal strips and
+write to its own set of output files.
+If the ''one\_file'' option is chosen then all XIOS processes will collect their longitudinal strips and
+write (in parallel) to a single output file.
+Note running in detached mode requires launching a Multiple Process Multiple Data (MPMD) parallel job.
+The following subsection provides a typical example but the syntax will vary in different MPP environments.
+
+%% =================================================================================================
+\subsubsection{Number of cpu used by XIOS in detached mode}
+
+The number of cores used by the XIOS is specified when launching the model.
+The number of cores dedicated to XIOS should be from \texttildelow1/10 to \texttildelow1/50 of the number of
+cores dedicated to \NEMO.
+Some manufacturers suggest using O($\sqrt{N}$) dedicated IO processors for N processors but
+this is a general recommendation and not specific to \NEMO.
+It is difficult to provide precise recommendations because the optimal choice will depend on
+the particular hardware properties of the target system
+(parallel filesystem performance, available memory, memory bandwidth etc.)
+and the volume and frequency of data to be created.
+Here is an example of 2 cpus for the io\_server and 62 cpu for nemo using mpirun:
+\cmd|mpirun -np 62 ./nemo.exe : -np 2 ./xios_server.exe|
+
+%% =================================================================================================
+\subsubsection{Control of XIOS: the context in iodef.xml}
+
+As well as the \texttt{using\_server} flag, other controls on the use of XIOS are set in
+the XIOS context in \textit{iodef.xml}.
+See the XML basics section below for more details on XML syntax and rules.
+
+\begin{table}
+  \begin{tabularx}{\textwidth}{|lXl|}
+    \hline
+    variable name                                                           &
+    description                                                             &
+    example  \\
+    \hline
+    \hline
+    buffer\_size                                                            &
+    buffer size used by XIOS to send data from \NEMO\ to XIOS.
+    Larger is more efficient.
+    Note that needed/used buffer sizes are summarized at the end of the job &
+    25000000 \\
+    \hline
+    buffer\_server\_factor\_size                                            &
+    ratio between \NEMO\ and XIOS buffer size.
+    Should be 2.                                                            &
+    2        \\
+    \hline
+    info\_level                                                             &
+    verbosity level (0 to 100)                                              &
+    0        \\
+    \hline
+    using\_server                                                           &
+    activate attached(false) or detached(true) mode                         &
+    true     \\
+    \hline
+    using\_oasis                                                            &
+    XIOS is used with OASIS(true) or not (false)                            &
+    false    \\
+    \hline
+    oasis\_codes\_id                                                        &
+    when using oasis, define the identifier of \NEMO\ in the namcouple.
+    Note that the identifier of XIOS is xios.x                              &
+    oceanx   \\
+    \hline
+  \end{tabularx}
+\end{table}
+
+%% =================================================================================================
+\subsection{Practical issues}
+
+%% =================================================================================================
+\subsubsection{Installation}
+
+As mentioned, XIOS is supported separately and must be downloaded and compiled before it can be used with \NEMO.
+See the installation guide on the \href{http://forge.ipsl.jussieu.fr/ioserver/wiki}{XIOS} wiki for help and guidance.
+\NEMO\ will need to link to the compiled XIOS library.
+The \href{https://forge.ipsl.jussieu.fr/nemo/chrome/site/doc/NEMO/guide/html/install.html#extract-and-install-xios}
+{Extract and install XIOS} guide provides an example illustration of how this can be achieved.
+
+%% =================================================================================================
+\subsubsection{Add your own outputs}
+
+It is very easy to add your own outputs with iomput.
+Many standard fields and diagnostics are already prepared (\ie, steps 1 to 3 below have been done) and
+simply need to be activated by including the required output in a file definition in iodef.xml (step 4).
+To add new output variables, all 4 of the following steps must be taken.
+
+\begin{enumerate}
+\item in \NEMO\ code, add a \forcode{CALL iom_put( 'identifier', array )} where you want to output a 2D or 3D array.
+\item If necessary, add \forcode{USE iom ! I/O manager library} to the list of used modules in
+  the upper part of your module.
+\item in the field\_def.xml file, add the definition of your variable using the same identifier you used in the f90 code
+  (see subsequent sections for a details of the XML syntax and rules).
+  For example:
+\begin{xmllines}
+<field_definition>
+	<field_group id="grid_T" grid_ref="grid_T_3D"> <!-- T grid -->
+	...
+		<field id="identifier" long_name="blabla" ... />
+		...
+</field_definition>
+\end{xmllines}
+Note your definition must be added to the field\_group whose reference grid is consistent with the size of
+the array passed to iomput.
+The grid\_ref attribute refers to definitions set in iodef.xml which, in turn,
+reference grids and axes either defined in the code
+(iom\_set\_domain\_attr and iom\_set\_axis\_attr in \mdl{iom}) or defined in the domain\_def.xml file.
+\eg:
+\begin{xmllines}
+<grid id="grid_T_3D" domain_ref="grid_T" axis_ref="deptht"/>
+\end{xmllines}
+Note, if your array is computed within the surface module each \np{nn_fsbc}{nn\_fsbc} time\_step,
+add the field definition within the field\_group defined with the id "SBC":
+\xmlcode{<field_group id="SBC" ...>} which has been defined with the correct frequency of operations
+(iom\_set\_field\_attr in \mdl{iom})
+\item add your field in one of the output files defined in iodef.xml
+  (again see subsequent sections for syntax and rules)
+\begin{xmllines}
+<file id="file1" .../>
+...
+	<field field_ref="identifier" />
+	...
+</file>
+\end{xmllines}
+\end{enumerate}
+
+%% =================================================================================================
+\subsection{XML fundamentals}
+
+%% =================================================================================================
+\subsubsection{ XML basic rules}
+
+XML tags begin with the less-than character ("$<$") and end with the greater-than character ("$>$").
+You use tags to mark the start and end of elements, which are the logical units of information in an XML document.
+In addition to marking the beginning of an element, XML start tags also provide a place to specify attributes.
+An attribute specifies a single property for an element, using a name/value pair, for example:
+\xmlcode{<a b="x" c="y" d="z"> ... </a>}.
+See \href{http://www.xmlnews.org/docs/xml-basics.html}{here} for more details.
+
+%% =================================================================================================
+\subsubsection{Structure of the XML file used in \NEMO}
+
+The XML file used in XIOS is structured by 7 families of tags:
+context, axis, domain, grid, field, file and variable.
+Each tag family has hierarchy of three flavors (except for context):
+
+\begin{table}
+  \begin{tabular*}{\textwidth}{|p{0.15\textwidth}p{0.4\textwidth}p{0.35\textwidth}|}
+    \hline
+    flavor  & description                                                                 &
+                                                                                            example                          \\
+    \hline
+    \hline
+    root    & declaration of the root element that can contain element groups or elements &
+                                                                                            \xmlcode{<file_definition ... >} \\
+    \hline
+    group   & declaration of a group element that can contain element groups or elements  &
+                                                                                            \xmlcode{<file_group      ... >} \\
+    \hline
+    element & declaration of an element that can contain elements                         &
+                                                                                            \xmlcode{<file            ... >} \\
+    \hline
+  \end{tabular*}
+\end{table}
+
+Each element may have several attributes.
+Some attributes are mandatory, other are optional but have a default value and other are completely optional.
+Id is a special attribute used to identify an element or a group of elements.
+It must be unique for a kind of element.
+It is optional, but no reference to the corresponding element can be done if it is not defined.
+
+The XML file is split into context tags that are used to isolate IO definition from
+different codes or different parts of a code.
+No interference is possible between 2 different contexts.
+Each context has its own calendar and an associated timestep.
+In \NEMO, we used the following contexts (that can be defined in any order):
+
+\begin{table}
+  \begin{tabular}{|p{0.15\textwidth}p{0.4\textwidth}p{0.35\textwidth}|}
+    \hline
+    context         &	description                                                                &
+                                                                                                     example                              \\
+    \hline
+    \hline
+    context xios    &	context containing information for XIOS                                    &
+                                                                                                     \xmlcode{<context id="xios" ... >}   \\
+    \hline
+    context nemo    &	context containing IO information for \NEMO\ (mother grid when using AGRIF)  &
+                                                                                                     \xmlcode{<context id="nemo" ... >}   \\
+    \hline
+    context 1\_nemo &	context containing IO information for \NEMO\ child grid 1 (when using AGRIF) &
+                                                                                                     \xmlcode{<context id="1_nemo" ... >} \\
+    \hline
+    context n\_nemo &	context containing IO information for \NEMO\ child grid n (when using AGRIF) &
+                                                                                                     \xmlcode{<context id="n_nemo" ... >} \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\noindent The xios context contains only 1 tag:
+
+\begin{table}
+  \begin{tabular}{|p{0.15\textwidth}p{0.4\textwidth}p{0.35\textwidth}|}
+    \hline
+    context tag                                      &
+                                                       description                                      &
+                                                                                                          example                              \\
+    \hline
+    \hline
+    variable\_definition                             &
+                                                       define variables needed by XIOS.
+                                                       This can be seen as a kind of namelist for XIOS. &
+                                                                                                          \xmlcode{<variable_definition ... >} \\
+    \hline
+	\end{tabular}
+\end{table}
+
+\noindent Each context tag related to \NEMO\ (mother or child grids) is divided into 5 parts
+(that can be defined in any order):
+
+\begin{table}
+  \begin{tabular}{|p{0.15\textwidth}p{0.4\textwidth}p{0.35\textwidth}|}
+    \hline
+    context tag        &	description                                                               &
+                                                                                                       example                            \\
+    \hline
+    \hline
+    field\_definition  &	define all variables that can potentially be outputted                    &
+                                                                                                       \xmlcode{<field_definition ... >}  \\
+    \hline
+    file\_definition   &	define the netcdf files to be created and the variables they will contain &
+                                                                                                       \xmlcode{<file_definition ... >}   \\
+    \hline
+    axis\_definition   &	define vertical axis                                                      &
+                                                                                                       \xmlcode{<axis_definition ... >}   \\
+    \hline
+    domain\_definition &	define the horizontal grids                                               &
+                                                                                                       \xmlcode{<domain_definition ... >} \\
+    \hline
+    grid\_definition   &	define the 2D and 3D grids (association of an axis and a domain)          &
+                                                                                                       \xmlcode{<grid_definition ... >}   \\
+    \hline
+  \end{tabular}
+\end{table}
+
+%% =================================================================================================
+\subsubsection{Nesting XML files}
+
+The XML file can be split in different parts to improve its readability and facilitate its use.
+The inclusion of XML files into the main XML file can be done through the attribute src:
+\xmlline|<context src="./nemo_def.xml" />|
+
+\noindent In \NEMO, by default, the field definition is done in 3 separate files (
+\path{cfgs/SHARED/field_def_nemo-oce.xml},
+\path{cfgs/SHARED/field_def_nemo-pisces.xml} and
+\path{cfgs/SHARED/field_def_nemo-ice.xml} ) and the  domain definition is done in another file ( \path{cfgs/SHARED/domain_def_nemo.xml} )
+that
+are included in the main iodef.xml file through the following commands:
+\begin{xmllines}
+<context id="nemo" src="./context_nemo.xml"/>
+\end{xmllines}
+
+%% =================================================================================================
+\subsubsection{Use of inheritance}
+
+XML extensively uses the concept of inheritance.
+XML has a tree based structure with a parent-child oriented relation: all children inherit attributes from parent,
+but an attribute defined in a child replace the inherited attribute value.
+Note that the special attribute ''id'' is never inherited.
+\\
+\\
+example 1: Direct inheritance.
+
+\begin{xmllines}
+<field_definition operation="average" >
+	<field id="sst"                    />   <!-- averaged      sst -->
+	<field id="sss" operation="instant"/>   <!-- instantaneous sss -->
+</field_definition>
+\end{xmllines}
+
+The field ''sst'' which is part (or a child) of the field\_definition will inherit the value ''average'' of
+the attribute ''operation'' from its parent.
+Note that a child can overwrite the attribute definition inherited from its parents.
+In the example above, the field ''sss'' will for example output instantaneous values instead of average values.
+\\
+\\
+example 2: Inheritance by reference.
+
+\begin{xmllines}
+<field_definition>
+	<field id="sst" long_name="sea surface temperature" />
+	<field id="sss" long_name="sea surface salinity"    />
+</field_definition>
+<file_definition>
+	<file id="myfile" output_freq="1d" />
+		<field field_ref="sst"                            />  <!-- default def -->
+		<field field_ref="sss" long_name="my description" />  <!-- overwrite   -->
+	</file>
+</file_definition>
+\end{xmllines}
+
+Inherit (and overwrite, if needed) the attributes of a tag you are refering to.
+
+%% =================================================================================================
+\subsubsection{Use of groups}
+
+Groups can be used for 2 purposes.
+Firstly, the group can be used to define common attributes to be shared by the elements of
+the group through inheritance.
+In the following example, we define a group of field that will share a common grid ''grid\_T\_2D''.
+Note that for the field ''toce'', we overwrite the grid definition inherited from the group by ''grid\_T\_3D''.
+
+\begin{xmllines}
+<field_group id="grid_T" grid_ref="grid_T_2D">
+	<field id="toce" long_name="temperature"             unit="degC" grid_ref="grid_T_3D"/>
+	<field id="sst"  long_name="sea surface temperature" unit="degC"                     />
+	<field id="sss"  long_name="sea surface salinity"    unit="psu"                      />
+	<field id="ssh"  long_name="sea surface height"      unit="m"                        />
+	...
+\end{xmllines}
+
+Secondly, the group can be used to replace a list of elements.
+Several examples of groups of fields are proposed at the end of the XML field files (
+\path{cfgs/SHARED/field_def_nemo-oce.xml},
+\path{cfgs/SHARED/field_def_nemo-pisces.xml} and
+\path{cfgs/SHARED/field_def_nemo-ice.xml} ) .
+For example, a short list of the usual variables related to the U grid:
+
+\begin{xmllines}
+<field_group id="groupU" >
+	<field field_ref="uoce"  />
+	<field field_ref="ssu" />
+	<field field_ref="utau"  />
+</field_group>
+\end{xmllines}
+
+that can be directly included in a file through the following syntax:
+
+\begin{xmllines}
+<file id="myfile_U" output_freq="1d" />
+	<field_group group_ref="groupU" />
+	<field field_ref="uocetr_eff"   />  <!-- add another field -->
+</file>
+\end{xmllines}
+
+%% =================================================================================================
+\subsection{Detailed functionalities}
+
+The file \path{NEMOGCM/CONFIG/ORCA2_LIM/iodef_demo.xml} provides several examples of the use of
+the new functionalities offered by the XML interface of XIOS.
+
+%% =================================================================================================
+\subsubsection{Define horizontal subdomains}
+
+Horizontal subdomains are defined through the attributs zoom\_ibegin, zoom\_jbegin, zoom\_ni, zoom\_nj of
+the tag family domain.
+It must therefore be done in the domain part of the XML file.
+For example, in \path{cfgs/SHARED/domain_def.xml}, we provide the following example of a definition of
+a 5 by 5 box with the bottom left corner at point (10,10).
+
+\begin{xmllines}
+<domain id="myzoomT" domain_ref="grid_T">
+	<zoom_domain ibegin="10" jbegin="10" ni="5" nj="5" />
+\end{xmllines}
+
+The use of this subdomain is done through the redefinition of the attribute domain\_ref of the tag family field.
+For example:
+
+\begin{xmllines}
+<file id="myfile_vzoom" output_freq="1d" >
+	<field field_ref="toce" domain_ref="myzoomT"/>
+</file>
+\end{xmllines}
+
+Moorings are seen as an extrem case corresponding to a 1 by 1 subdomain.
+The Equatorial section, the TAO, RAMA and PIRATA moorings are already registered in the code and
+can therefore be outputted without taking care of their (i,j) position in the grid.
+These predefined domains can be activated by the use of specific domain\_ref:
+''EqT'', ''EqU'' or ''EqW'' for the equatorial sections and
+the mooring position for TAO, RAMA and PIRATA followed by ''T'' (for example: ''8s137eT'', ''1.5s80.5eT'' ...)
+
+\begin{xmllines}
+<file id="myfile_vzoom" output_freq="1d" >
+	<field field_ref="toce" domain_ref="0n180wT"/>
+</file>
+\end{xmllines}
+
+Note that if the domain decomposition used in XIOS cuts the subdomain in several parts and if
+you use the ''multiple\_file'' type for your output files,
+you will endup with several files you will need to rebuild using unprovided tools (like ncpdq and ncrcat,
+\href{http://nco.sourceforge.net/nco.html#Concatenation}{see nco manual}).
+We are therefore advising to use the ''one\_file'' type in this case.
+
+%% =================================================================================================
+\subsubsection{Define vertical zooms}
+
+Vertical zooms are defined through the attributs zoom\_begin and zoom\_n of the tag family axis.
+It must therefore be done in the axis part of the XML file.
+For example, in \path{cfgs/ORCA2_ICE_PISCES/EXPREF/iodef_demo.xml}, we provide the following example:
+
+\begin{xmllines}
+<axis_definition>
+	<axis id="deptht" long_name="Vertical T levels" unit="m" positive="down" />
+	<axis id="deptht_zoom" azix_ref="deptht" >
+		<zoom_axis zoom_begin="1" zoom_n="10" />
+	</axis>
+\end{xmllines}
+
+The use of this vertical zoom is done through the redefinition of the attribute axis\_ref of the tag family field.
+For example:
+
+\begin{xmllines}
+<file id="myfile_hzoom" output_freq="1d" >
+	<field field_ref="toce" axis_ref="deptht_myzoom"/>
+</file>
+\end{xmllines}
+
+%% =================================================================================================
+\subsubsection{Control of the output file names}
+
+The output file names are defined by the attributs ''name'' and ''name\_suffix'' of the tag family file.
+For example:
+
+\begin{xmllines}
+<file_group id="1d" output_freq="1d" name="myfile_1d" >
+	<file id="myfileA" name_suffix="_AAA" > <!-- will create file "myfile_1d_AAA"  -->
+		...
+	</file>
+	<file id="myfileB" name_suffix="_BBB" > <!-- will create file "myfile_1d_BBB" -->
+		...
+	</file>
+</file_group>
+\end{xmllines}
+
+However it is often very convienent to define the file name with the name of the experiment,
+the output file frequency and the date of the beginning and the end of the simulation
+(which are informations stored either in the namelist or in the XML file).
+To do so, we added the following rule:
+if the id of the tag file is ''fileN'' (where N = 1 to 999 on 1 to 3 digits) or
+one of the predefined sections or moorings (see next subsection),
+the following part of the name and the name\_suffix (that can be inherited) will be automatically replaced by:
+
+\begin{table}
+  \begin{tabularx}{\textwidth}{|lX|}
+    \hline
+    \centering placeholder string &
+    automatically replaced by                          \\
+    \hline
+    \hline
+    \centering @expname@          &
+    the experiment name (from cn\_exp in the namelist) \\
+    \hline
+    \centering @freq@             &
+    output frequency (from attribute output\_freq)     \\
+    \hline
+    \centering @startdate@        &
+    starting date of the simulation (from nn\_date0 in the restart or the namelist).
+    \newline
+    \verb?yyyymmdd?          format                   \\
+    \hline
+    \centering @startdatefull@    &
+    starting date of the simulation (from nn\_date0 in the restart or the namelist).
+    \newline
+    \verb?yyyymmdd_hh:mm:ss? format                    \\
+    \hline
+    \centering @enddate@          &
+    ending date of the simulation   (from nn\_date0 and nn\_itend  in the namelist).
+    \newline
+    \verb?yyyymmdd?          format                    \\
+    \hline
+    \centering @enddatefull@      &
+    ending date of the simulation   (from nn\_date0 and nn\_itend  in the namelist).
+    \newline
+    \verb?yyyymmdd_hh:mm:ss? format                    \\
+    \hline
+  \end{tabularx}
+\end{table}
+
+\noindent For example,
+\xmlline|<file id="myfile_hzoom" name="myfile_@expname@_@startdate@_freq@freq@" output_freq="1d" >|
+
+\noindent with the namelist:
+\begin{forlines}
+cn_exp    = "ORCA2"
+nn_date0  = 19891231
+ln_rstart = .false.
+\end{forlines}
+
+\noindent will give the following file name radical: \ifile{myfile\_ORCA2\_19891231\_freq1d}
+
+%% =================================================================================================
+\subsubsection{Other controls of the XML attributes from \NEMO}
+
+The values of some attributes are defined by subroutine calls within \NEMO
+(calls to iom\_set\_domain\_attr, iom\_set\_axis\_attr and iom\_set\_field\_attr in \mdl{iom}).
+Any definition given in the XML file will be overwritten.
+By convention, these attributes are defined to ''auto'' (for string) or ''0000'' (for integer) in the XML file
+(but this is not necessary).
+\\
+
+Here is the list of these attributes:
+\\
+
+\begin{table}
+  \begin{tabular}{|l|c|c|}
+    \hline
+    tag ids affected by automatic definition of some of their attributes &
+    name attribute                                                       &
+    attribute value                                                      \\
+    \hline
+    \hline
+    field\_definition                                                    &
+    freq\_op                                                             &
+    \np{rn_rdt}{rn\_rdt}                                                         \\
+    \hline
+    SBC                                                                  &
+    freq\_op                                                             &
+    \np{rn_rdt}{rn\_rdt} $\times$ \np{nn_fsbc}{nn\_fsbc}                                  \\
+    \hline
+    ptrc\_T                                                              &
+    freq\_op                                                             &
+    \np{rn_rdt}{rn\_rdt} $\times$ \np{nn_dttrc}{nn\_dttrc}                                 \\
+    \hline
+    diad\_T                                                              &
+    freq\_op                                                             &
+    \np{rn_rdt}{rn\_rdt} $\times$ \np{nn_dttrc}{nn\_dttrc}                                 \\
+    \hline
+    EqT, EqU, EqW                                                        &
+    jbegin, ni,                                                          &
+    according to the grid                                                \\
+                                                                         &
+    name\_suffix                                                         &
+                                                                         \\
+    \hline
+    TAO, RAMA and PIRATA moorings                                        &
+    zoom\_ibegin, zoom\_jbegin,                                          &
+    according to the grid                                                \\
+                                                                         &
+    name\_suffix                                                         &
+                                                                         \\
+    \hline
+  \end{tabular}
+\end{table}
+
+%% =================================================================================================
+\subsubsection{Advanced use of XIOS functionalities}
+
+%% =================================================================================================
+\subsection{XML reference tables}
+\label{subsec:DIA_IOM_xmlref}
+
+\begin{enumerate}
+\item Simple computation: directly define the computation when refering to the variable in the file definition.
+
+\begin{xmllines}
+<field field_ref="sst"  name="tosK"  unit="degK" > sst + 273.15 </field>
+<field field_ref="taum" name="taum2" unit="N2/m4" long_name="square of wind stress module" >	taum * taum </field>
+<field field_ref="qt"   name="stupid_check" > qt - qsr - qns </field>
+\end{xmllines}
+
+\item Simple computation: define a new variable and use it in the file definition.
+
+in field\_definition:
+
+\begin{xmllines}
+<field id="sst2" long_name="square of sea surface temperature" unit="degC2" >  sst * sst </field >
+\end{xmllines}
+
+in file\_definition:
+
+\begin{xmllines}
+<field field_ref="sst2" > sst2 </field>
+\end{xmllines}
+
+Note that in this case, the following syntaxe \xmlcode{<field field_ref="sst2" />} is not working as
+sst2 won't be evaluated.
+
+\item Change of variable precision:
+
+\begin{xmllines}
+<!-- force to keep real 8 -->
+<field field_ref="sst" name="tos_r8" prec="8" />
+<!-- integer 2  with add_offset and scale_factor attributes -->
+<field field_ref="sss" name="sos_i2" prec="2" add_offset="20." scale_factor="1.e-3" />
+\end{xmllines}
+
+Note that, then the code is crashing, writting real4 variables forces a numerical conversion from
+real8 to real4 which will create an internal error in NetCDF and will avoid the creation of the output files.
+Forcing double precision outputs with prec="8" (for example in the field\_definition) will avoid this problem.
+
+\item add user defined attributes:
+
+\begin{xmllines}
+<file_group id="1d" output_freq="1d" output_level="10" enabled=".true."> <!-- 1d files -->
+	<file id="file1" name_suffix="_grid_T" description="ocean T grid variables" >
+		<field field_ref="sst" name="tos" >
+			<variable id="my_attribute1" type="string"  > blabla </variable>
+			<variable id="my_attribute2" type="integer" > 3      </variable>
+			<variable id="my_attribute3" type="float"   > 5.0    </variable>
+		</field>
+		<variable id="my_global_attribute" type="string" > blabla_global </variable>
+	</file>
+</file_group>
+\end{xmllines}
+
+\item use of the ``@'' function: example 1, weighted temporal average
+
+ - define a new variable in field\_definition
+
+\begin{xmllines}
+<field id="toce_e3t" long_name="temperature * e3t" unit="degC*m" grid_ref="grid_T_3D" >toce * e3t</field>
+\end{xmllines}
+
+ - use it when defining your file.
+
+\begin{xmllines}
+<file_group id="5d" output_freq="5d"  output_level="10" enabled=".true." >  <!-- 5d files -->
+	<file id="file1" name_suffix="_grid_T" description="ocean T grid variables" >
+		<field field_ref="toce" operation="instant" freq_op="5d" > @toce_e3t / @e3t </field>
+	</file>
+</file_group>
+\end{xmllines}
+
+The freq\_op="5d" attribute is used to define the operation frequency of the ``@'' function: here 5 day.
+The temporal operation done by the ``@'' is the one defined in the field definition:
+here we use the default, average.
+So, in the above case, @toce\_e3t will do the 5-day mean of toce*e3t.
+Operation="instant" refers to the temporal operation to be performed on the field''@toce\_e3t / @e3t'':
+here the temporal average is alreday done by the ``@'' function so we just use instant to do the ratio of
+the 2 mean values.
+field\_ref="toce" means that attributes not explicitely defined, are inherited from toce field.
+Note that in this case, freq\_op must be equal to the file output\_freq.
+
+\item use of the ``@'' function: example 2, monthly SSH standard deviation
+
+ - define a new variable in field\_definition
+
+\begin{xmllines}
+<field id="ssh2" long_name="square of sea surface temperature" unit="degC2" > ssh * ssh </field >
+\end{xmllines}
+
+ - use it when defining your file.
+
+\begin{xmllines}
+<file_group id="1m" output_freq="1m"  output_level="10" enabled=".true." >  <!-- 1m files -->
+	<file id="file1" name_suffix="_grid_T" description="ocean T grid variables" >
+		<field field_ref="ssh" name="sshstd" long_name="sea_surface_temperature_standard_deviation"
+		operation="instant" freq_op="1m" >
+			sqrt( @ssh2 - @ssh * @ssh )
+		</field>
+	</file>
+</file_group>
+\end{xmllines}
+
+The freq\_op="1m" attribute is used to define the operation frequency of the ``@'' function: here 1 month.
+The temporal operation done by the ``@'' is the one defined in the field definition:
+here we use the default, average.
+So, in the above case, @ssh2 will do the monthly mean of ssh*ssh.
+Operation="instant" refers to the temporal operation to be performed on the field ''sqrt( @ssh2 - @ssh * @ssh )'':
+here the temporal average is alreday done by the ``@'' function so we just use instant.
+field\_ref="ssh" means that attributes not explicitely defined, are inherited from ssh field.
+Note that in this case, freq\_op must be equal to the file output\_freq.
+
+\item use of the ``@'' function: example 3, monthly average of SST diurnal cycle
+
+ - define 2 new variables in field\_definition
+
+\begin{xmllines}
+<field id="sstmax" field_ref="sst" long_name="max of sea surface temperature" operation="maximum" />
+<field id="sstmin" field_ref="sst" long_name="min of sea surface temperature" operation="minimum" />
+\end{xmllines}
+
+ - use these 2 new variables when defining your file.
+
+\begin{xmllines}
+<file_group id="1m" output_freq="1m"  output_level="10" enabled=".true." >  <!-- 1m files -->
+	<file id="file1" name_suffix="_grid_T" description="ocean T grid variables" >
+		<field field_ref="sst" name="sstdcy" long_name="amplitude of sst diurnal cycle" operation="average" freq_op="1d" >
+			@sstmax - @sstmin
+		</field>
+	</file>
+</file_group>
+\end{xmllines}
+
+\end{enumerate}
+
+The freq\_op="1d" attribute is used to define the operation frequency of the ``@'' function: here 1 day.
+The temporal operation done by the ``@'' is the one defined in the field definition:
+here maximum for sstmax and minimum for sstmin.
+So, in the above case, @sstmax will do the daily max and @sstmin the daily min.
+Operation="average" refers to the temporal operation to be performed on the field ``@sstmax - @sstmin'':
+here monthly mean (of daily max - daily min of the sst).
+field\_ref="sst" means that attributes not explicitely defined, are inherited from sst field.
+
+%% =================================================================================================
+\subsubsection{Tag list per family}
+
+\begin{table}
+  \begin{tabularx}{\textwidth}{|l|X|X|l|X|}
+    \hline
+    tag name                                                                                     &
+    description                                                                                  &
+    accepted attribute                                                                           &
+    child of                                                                                     &
+    parent of                       \\
+    \hline
+    \hline
+    simulation                                                                                   &
+    this tag is the root tag which encapsulates all the content of the XML file                  &
+    none                                                                                         &
+    none                                                                                         &
+    context                         \\
+    \hline
+    context                                                                                      &
+    encapsulates parts of the XML file dedicated to different codes or different parts of a code &
+    id (''xios'', ''nemo'' or ''n\_nemo'' for the nth AGRIF zoom), src, time\_origin             &
+    simulation                                                                                   &
+    all root tags: ... \_definition \\
+    \hline
+  \end{tabularx}
+  \caption{XIOS: context tags}
+\end{table}
+
+\begin{table}
+  \begin{tabularx}{\textwidth}{|l|X|X|X|l|}
+    \hline
+    tag name                                                                                &
+    description                                                                             &
+    accepted attribute                                                                      &
+    child of                                                                                &
+    parent of             \\
+    \hline
+    \hline
+    field\_definition                                                                       &
+    encapsulates the definition of all the fields that can potentially be outputted         &
+    axis\_ref, default\_value, domain\_ref, enabled, grid\_ref, level, operation, prec, src &
+    context                                                                                 &
+    field or field\_group \\
+    \hline
+    field\_group                                                                            &
+    encapsulates a group of fields                                                          &
+    axis\_ref, default\_value, domain\_ref, enabled, group\_ref, grid\_ref,
+    id, level, operation, prec, src                                                         &
+    field\_definition, field\_group, file                                                   &
+    field or field\_group \\
+    \hline
+    field                                                                                   &
+    define a specific field                                                                 &
+    axis\_ref, default\_value, domain\_ref, enabled, field\_ref, grid\_ref,
+    id, level, long\_name, name, operation, prec, standard\_name, unit                      &
+    field\_definition, field\_group, file                                                   &
+    none                  \\
+    \hline
+  \end{tabularx}
+  \caption{XIOS: field tags ("\texttt{field\_*}")}
+\end{table}
+
+\begin{table}
+  \begin{tabularx}{\textwidth}{|l|X|X|X|l|}
+    \hline
+    tag name                                                            &
+    description                                                         &
+    accepted attribute                                                  &
+    child of                                                            &
+    parent of           \\
+    \hline
+    \hline
+    file\_definition                                                    &
+    encapsulates the definition of all the files that will be outputted &
+    enabled, min\_digits, name, name\_suffix, output\_level,
+    split\_freq\_format, split\_freq, sync\_freq, type, src             &
+    context                                                             &
+    file or file\_group \\
+    \hline
+    file\_group                                                         &
+    encapsulates a group of files that will be outputted                &
+    enabled, description, id, min\_digits, name, name\_suffix, output\_freq, output\_level,
+    split\_freq\_format, split\_freq, sync\_freq, type, src             &
+    file\_definition, file\_group                                       &
+    file or file\_group \\
+    \hline
+    file                                                                &
+    define the contents of a file to be outputted                       &
+    enabled, description, id, min\_digits, name, name\_suffix, output\_freq, output\_level,
+    split\_freq\_format, split\_freq, sync\_freq, type, src             &
+    file\_definition, file\_group                                       &
+    field               \\
+    \hline
+  \end{tabularx}
+  \caption{XIOS: file tags ("\texttt{file\_*}")}
+\end{table}
+
+\begin{table}
+  \begin{tabularx}{\textwidth}{|l|X|X|X|X|}
+    \hline
+    tag name                                                                               &
+    description                                                                            &
+    accepted attribute                                                                     &
+    child of                                                                               &
+    parent of         \\
+    \hline
+    \hline
+    axis\_definition                                                                       &
+    define all the vertical axis potentially used by the variables                         &
+    src                                                                                    &
+    context                                                                                &
+    axis\_group, axis \\
+    \hline
+    axis\_group                                                                            &
+    encapsulates a group of vertical axis                                                  &
+    id, lon\_name, positive, src, standard\_name, unit, zoom\_begin, zoom\_end, zoom\_size &
+    axis\_definition, axis\_group                                                          &
+    axis\_group, axis \\
+    \hline
+    axis                                                                                   &
+    define a vertical axis                                                                 &
+    id, lon\_name, positive, src, standard\_name, unit, zoom\_begin, zoom\_end, zoom\_size &
+    axis\_definition, axis\_group                                                          &
+    none					\\
+    \hline
+  \end{tabularx}
+  \caption{XIOS: axis tags ("\texttt{axis\_*}")}
+\end{table}
+
+\begin{table}
+  \begin{tabularx}{\textwidth}{|l|X|X|X|X|}
+    \hline
+    tag name                                                            &
+    description                                                         &
+    accepted attribute                                                  &
+    child of                                                            &
+    parent of               \\
+    \hline
+    \hline
+    domain\_\-definition                                                &
+    define all the horizontal domains potentially used by the variables &
+    src                                                                 &
+    context                                                             &
+    domain\_\-group, domain \\
+    \hline
+    domain\_group                                                       &
+    encapsulates a group of horizontal domains                          &
+    id, lon\_name, src, zoom\_ibegin, zoom\_jbegin, zoom\_ni, zoom\_nj  &
+    domain\_\-definition, domain\_group                                 &
+    domain\_\-group, domain \\
+    \hline
+    domain                                                              &
+    define an horizontal domain                                         &
+    id, lon\_name, src, zoom\_ibegin, zoom\_jbegin, zoom\_ni, zoom\_nj  &
+    domain\_\-definition, domain\_group                                 &
+    none                    \\
+    \hline
+  \end{tabularx}
+  \caption{XIOS: domain tags ("\texttt{domain\_*)}"}
+\end{table}
+
+\begin{table}
+  \begin{tabularx}{\textwidth}{|l|X|X|X|X|}
+    \hline
+    tag name                                                                                     &
+    description                                                                                  &
+    accepted attribute                                                                           &
+    child of                                                                                     &
+    parent of                       \\
+    \hline
+    \hline
+    grid\_definition                                                                               &
+    define all the grid (association of a domain and/or an axis) potentially used by the variables &
+    src                                                                                            &
+    context                                                                                        &
+    grid\_group, grid	\\
+    \hline
+    grid\_group                                                                                    &
+    encapsulates a group of grids                                                                  &
+    id, domain\_ref,axis\_ref                                                                      &
+    grid\_definition, grid\_group                                                                  &
+    grid\_group, grid	\\
+    \hline
+    grid                                                                                           &
+    define a grid                                                                                  &
+    id, domain\_ref,axis\_ref                                                                      &
+    grid\_definition, grid\_group                                                                  &
+    none 					\\
+    \hline
+  \end{tabularx}
+  \caption{XIOS: grid tags ("\texttt{grid\_*}")}
+\end{table}
+
+%% =================================================================================================
+\subsubsection{Attributes list per family}
+
+\begin{table}
+  \begin{tabularx}{\textwidth}{|l|X|l|l|}
+    \hline
+    attribute name                           &
+    description                              &
+    example                                  &
+    accepted by            \\
+    \hline
+    \hline
+    axis\_ref                                &
+    refers to the id of a vertical axis      &
+    axis\_ref="deptht"                       &
+    field, grid families   \\
+    \hline
+    domain\_ref                              &
+    refers to the id of a domain             &
+    domain\_ref="grid\_T"                    &
+    field or grid families \\
+    \hline
+    field\_ref                               &
+    id of the field we want to add in a file &
+    field\_ref="toce"                        &
+    field                  \\
+    \hline
+    grid\_ref                                &
+    refers to the id of a grid               &
+    grid\_ref="grid\_T\_2D"                  &
+    field family           \\
+    \hline
+    group\_ref                               &
+    refer to a group of variables            &
+    group\_ref="mooring"                     &
+    field\_group           \\
+    \hline
+  \end{tabularx}
+  \caption{XIOS: reference attributes ("\texttt{*\_ref}")}
+\end{table}
+
+\begin{table}
+  \begin{tabularx}{\textwidth}{|l|X|l|l|}
+    \hline
+    attribute name                                     &
+    description                                        &
+    example                                            &
+    accepted by   \\
+    \hline
+    \hline
+    zoom\_ibegin                                       &
+    starting point along x direction of the zoom.
+    Automatically defined for TAO/RAMA/PIRATA moorings &
+    zoom\_ibegin="1"                                   &
+    domain family \\
+    \hline
+    zoom\_jbegin                                       &
+    starting point along y direction of the zoom.
+    Automatically defined for TAO/RAMA/PIRATA moorings &
+    zoom\_jbegin="1"                                   &
+    domain family \\
+    \hline
+    zoom\_ni                                           &
+    zoom extent along x direction                      &
+    zoom\_ni="1"                                       &
+    domain family \\
+    \hline
+    zoom\_nj                                           &
+    zoom extent along y direction                      &
+    zoom\_nj="1"                                       &
+    domain family \\
+    \hline
+  \end{tabularx}
+  \caption{XIOS: domain attributes ("\texttt{zoom\_*}")}
+\end{table}
+
+\begin{table}
+  \begin{tabularx}{\textwidth}{|l|X|l|l|}
+    \hline
+    attribute name                                                                                       &
+    description                                                                                          &
+    example                                                                                              &
+    accepted by                            \\
+    \hline
+    \hline
+    min\_digits                                                                                          &
+    specify the minimum of digits used in the core number in the name of the NetCDF file                 &
+    min\_digits="4"                                                                                      &
+    file family                            \\
+    \hline
+    name\_suffix                                                                                         &
+    suffix to be inserted after the name and before the cpu number and the ''.nc'' termination of a file &
+    name\_suffix="\_myzoom"                                                                              &
+    file family                            \\
+    \hline
+    output\_level                                                                                        &
+    output priority of variables in a file: 0 (high) to 10 (low).
+    All variables listed in the file with a level smaller or equal to output\_level will be output.
+    Other variables won't be output even if they are listed in the file.                                 &
+    output\_level="10"                                                                                   &
+    file family                            \\
+    \hline
+    split\_freq                                                                                          &
+    frequency at which to temporally split output files.
+    Units can be ts (timestep), y, mo, d, h, mi, s.
+    Useful for long runs to prevent over-sized output files.                                             &
+    split\_freq="1mo"                                                                                    &
+    file family                            \\
+    \hline
+    split\_freq\-\_format                                                                                &
+    date format used in the name of temporally split output files.
+    Can be specified using the following syntaxes: \%y, \%mo, \%d, \%h \%mi and \%s                      &
+    split\_freq\_format= "\%y\%mo\%d"                                                                    &
+    file family                            \\
+    \hline
+    sync\_freq                                                                                           &
+    NetCDF file synchronization frequency (update of the time\_counter).
+    Units can be ts (timestep), y, mo, d, h, mi, s.                                                      &
+    sync\_freq="10d"                                                                                     &
+    file family                            \\
+    \hline
+    type (1)                                                                                             &
+    specify if the output files are to be split spatially (multiple\_file) or not (one\_file)            &
+    type="multiple\_file"                                                                                &
+    file familly                           \\
+    \hline
+  \end{tabularx}
+  \caption{XIOS: file attributes}
+\end{table}
+
+\begin{table}
+  \begin{tabularx}{\textwidth}{|l|X|l|l|}
+    \hline
+    attribute name                                                                                       &
+    description                                                                                          &
+    example                                                                                              &
+    accepted by                            \\
+    \hline
+    \hline
+    default\_value                                                                                       &
+    missing\_value definition                                                                            &
+    default\_value="1.e20"                                                                               &
+    field family                           \\
+    \hline
+    level                                                                                                &
+    output priority of a field: 0 (high) to 10 (low)                                                     &
+    level="1"                                                                                            &
+    field family                           \\
+    \hline
+    operation                                                                                            &
+    type of temporal operation: average, accumulate, instantaneous, min, max and once                    &
+    operation="average"                                                                                  &
+    field family                           \\
+    \hline
+    output\_freq                                                                                         &
+    operation frequency. units can be ts (timestep), y, mo, d, h, mi, s.                                 &
+    output\_freq="1d12h"                                                                                 &
+    field family                           \\
+    \hline
+    prec                                                                                                 &
+    output precision: real 4 or real 8                                                                   &
+    prec="4"                                                                                             &
+    field family                           \\
+    \hline
+    long\_name                                                                                           &
+    define the long\_name attribute in the NetCDF file                                                   &
+    long\_name="Vertical T levels"                                                                       &
+    field                                  \\
+    \hline
+    standard\_name                                                                                       &
+    define the standard\_name attribute in the NetCDF file                                               &
+    standard\_name= "Eastward\_Sea\_Ice\_Transport"                                                      &
+    field                                  \\
+    \hline
+  \end{tabularx}
+  \caption{XIOS: field attributes}
+\end{table}
+
+\begin{table}
+  \begin{tabularx}{\textwidth}{|l|X|X|X|}
+    \hline
+    attribute name                                                                                       &
+    description                                                                                          &
+    example                                                                                              &
+    accepted by                            \\
+    \hline
+    \hline
+    enabled                                                                                              &
+    switch on/off the output of a field or a file                                                        &
+    enabled=".true."                                                                                     &
+    field, file families                   \\
+    \hline
+    description                                                                                          &
+    just for information, not used                                                                       &
+    description="ocean T grid variables"                                                                 &
+    all tags                               \\
+    \hline
+    id                                                                                                   &
+    allow to identify a tag                                                                              &
+    id="nemo"                                                                                            &
+    accepted by all tags except simulation \\
+    \hline
+    name                                                                                                 &
+    name of a variable or a file. If the name of a file is undefined, its id is used as a name           &
+    name="tos"                                                                                           &
+    field or file families                 \\
+    \hline
+    positive                                                                                             &
+    convention used for the orientation of vertival axis (positive downward in \NEMO).                   &
+    positive="down"                                                                                      &
+    axis family                            \\
+    \hline
+    src                                                                                                  &
+    allow to include a file                                                                              &
+    src="./field\_def.xml"                                                                               &
+    accepted by all tags except simulation \\
+    \hline
+    time\_origin                                                                                         &
+    specify the origin of the time counter                                                               &
+    time\_origin="1900-01-01 00:00:00"                                                                   &
+    context                                \\
+    \hline
+    type (2)                                                                                             &
+    define the type of a variable tag                                                                    &
+    type="boolean"                                                                                       &
+    variable                               \\
+    \hline
+    unit                                                                                                 &
+    unit of a variable or the vertical axis                                                              &
+    unit="m"                                                                                             &
+    field and axis families                \\
+    \hline
+  \end{tabularx}
+  \caption{XIOS: miscellaneous attributes}
+\end{table}
+
+%% =================================================================================================
+\subsection{CF metadata standard compliance}
+
+Output from the XIOS IO server is compliant with
+\href{http://cfconventions.org/Data/cf-conventions/cf-conventions-1.5/build/cf-conventions.html}{version 1.5} of
+the CF metadata standard.
+Therefore while a user may wish to add their own metadata to the output files (as demonstrated in example 4 of
+section \autoref{subsec:DIA_IOM_xmlref}) the metadata should, for the most part, comply with the CF-1.5 standard.
+
+Some metadata that may significantly increase the file size (horizontal cell areas and vertices) are controlled by
+the namelist parameter \np{ln_cfmeta}{ln\_cfmeta} in the \nam{run}{run} namelist.
+This must be set to true if these metadata are to be included in the output files.
+
+%% =================================================================================================
+\section[NetCDF4 support (\texttt{\textbf{key\_netcdf4}})]{NetCDF4 support (\protect\key{netcdf4})}
+\label{sec:DIA_nc4}
+
+Since version 3.3, support for NetCDF4 chunking and (loss-less) compression has been included.
+These options build on the standard NetCDF output and allow the user control over the size of the chunks via
+namelist settings.
+Chunking and compression can lead to significant reductions in file sizes for a small runtime overhead.
+For a fuller discussion on chunking and other performance issues the reader is referred to
+the NetCDF4 documentation found \href{https://www.unidata.ucar.edu/software/netcdf/docs/netcdf_perf_chunking.html}{here}.
+
+The new features are only available when the code has been linked with a NetCDF4 library
+(version 4.1 onwards, recommended) which has been built with HDF5 support (version 1.8.4 onwards, recommended).
+Datasets created with chunking and compression are not backwards compatible with NetCDF3 "classic" format but
+most analysis codes can be relinked simply with the new libraries and will then read both NetCDF3 and NetCDF4 files.
+\NEMO\ executables linked with NetCDF4 libraries can be made to produce NetCDF3 files by
+setting the \np{ln_nc4zip}{ln\_nc4zip} logical to false in the \nam{nc4}{nc4} namelist:
+
+\begin{listing}
+  \nlst{namnc4}
+  \caption{\forcode{&namnc4}}
+  \label{lst:namnc4}
+\end{listing}
+
+If \key{netcdf4} has not been defined, these namelist parameters are not read.
+In this case, \np{ln_nc4zip}{ln\_nc4zip} is set false and dummy routines for a few NetCDF4-specific functions are defined.
+These functions will not be used but need to be included so that compilation is possible with NetCDF3 libraries.
+
+When using NetCDF4 libraries, \key{netcdf4} should be defined even if the intention is to
+create only NetCDF3-compatible files.
+This is necessary to avoid duplication between the dummy routines and the actual routines present in the library.
+Most compilers will fail at compile time when faced with such duplication.
+Thus when linking with NetCDF4 libraries the user must define \key{netcdf4} and
+control the type of NetCDF file produced via the namelist parameter.
+
+Chunking and compression is applied only to 4D fields and
+there is no advantage in chunking across more than one time dimension since
+previously written chunks would have to be read back and decompressed before being added to.
+Therefore, user control over chunk sizes is provided only for the three space dimensions.
+The user sets an approximate number of chunks along each spatial axis.
+The actual size of the chunks will depend on global domain size for mono-processors or, more likely,
+the local processor domain size for distributed processing.
+The derived values are subject to practical minimum values (to avoid wastefully small chunk sizes) and
+cannot be greater than the domain size in any dimension.
+The algorithm used is:
+
+\begin{forlines}
+ichunksz(1) = MIN(idomain_size, MAX((idomain_size-1) / nn_nchunks_i + 1 ,16 ))
+ichunksz(2) = MIN(jdomain_size, MAX((jdomain_size-1) / nn_nchunks_j + 1 ,16 ))
+ichunksz(3) = MIN(kdomain_size, MAX((kdomain_size-1) / nn_nchunks_k + 1 , 1 ))
+ichunksz(4) = 1
+\end{forlines}
+
+\noindent As an example, setting:
+
+\begin{forlines}
+nn_nchunks_i=4, nn_nchunks_j=4 and nn_nchunks_k=31
+\end{forlines}
+
+\noindent for a standard ORCA2\_LIM configuration gives chunksizes of {\small\texttt 46x38x1} respectively in
+the mono-processor case (\ie\ global domain of {\small\texttt 182x149x31}).
+An illustration of the potential space savings that NetCDF4 chunking and compression provides is given in
+table \autoref{tab:DIA_NC4} which compares the results of two short runs of the ORCA2\_LIM reference configuration with
+a 4x2 mpi partitioning.
+Note the variation in the compression ratio achieved which reflects chiefly the dry to wet volume ratio of
+each processing region.
+
+\begin{table}
+  \centering
+  \begin{tabular}{lrrr}
+    Filename                    & NetCDF3	& NetCDF4  & Reduction \\
+                                & filesize	& filesize & \%        \\
+                                & (KB)		& (KB)	  &           \\
+    ORCA2\_restart\_0000.nc     & 16420 	& 8860 	  & 47\%      \\
+    ORCA2\_restart\_0001.nc     & 16064 	& 11456    & 29\%      \\
+    ORCA2\_restart\_0002.nc     & 16064		& 9744	  & 40\%      \\
+    ORCA2\_restart\_0003.nc     & 16420		& 9404	  & 43\%      \\
+    ORCA2\_restart\_0004.nc     & 16200 	& 5844	  & 64\%      \\
+    ORCA2\_restart\_0005.nc     & 15848 	& 8172	  & 49\%      \\
+    ORCA2\_restart\_0006.nc     & 15848 	& 8012 	  & 50\%      \\
+    ORCA2\_restart\_0007.nc     & 16200 	& 5148 	  & 69\%      \\
+    ORCA2\_2d\_grid\_T\_0000.nc & 2200 		& 1504	  & 32\%      \\
+    ORCA2\_2d\_grid\_T\_0001.nc & 2200 		& 1748	  & 21\%      \\
+    ORCA2\_2d\_grid\_T\_0002.nc & 2200 		& 1592	  & 28\%      \\
+    ORCA2\_2d\_grid\_T\_0003.nc & 2200 		& 1540	  & 30\%      \\
+    ORCA2\_2d\_grid\_T\_0004.nc & 2200 		& 1204	  & 46\%      \\
+    ORCA2\_2d\_grid\_T\_0005.nc & 2200 		& 1444	  & 35\%      \\
+    ORCA2\_2d\_grid\_T\_0006.nc & 2200 		& 1428	  & 36\%      \\
+    ORCA2\_2d\_grid\_T\_0007.nc & 2200		& 1148	  & 48\%      \\
+    ...                         & ...		& ...      & ...       \\
+    ORCA2\_2d\_grid\_W\_0000.nc & 4416		& 2240	  & 50\%      \\
+    ORCA2\_2d\_grid\_W\_0001.nc & 4416		& 2924	  & 34\%      \\
+    ORCA2\_2d\_grid\_W\_0002.nc & 4416		& 2512	  & 44\%      \\
+    ORCA2\_2d\_grid\_W\_0003.nc & 4416		& 2368	  & 47\%      \\
+    ORCA2\_2d\_grid\_W\_0004.nc & 4416		& 1432	  & 68\%      \\
+    ORCA2\_2d\_grid\_W\_0005.nc & 4416		& 1972	  & 56\%      \\
+    ORCA2\_2d\_grid\_W\_0006.nc & 4416		& 2028	  & 55\%      \\
+    ORCA2\_2d\_grid\_W\_0007.nc & 4416		& 1368	  & 70\%      \\
+  \end{tabular}
+  \caption{Filesize comparison between NetCDF3 and NetCDF4 with chunking and compression}
+  \label{tab:DIA_NC4}
+\end{table}
+
+When \key{iomput} is activated with \key{netcdf4} chunking and compression parameters for fields produced via
+\rou{iom\_put} calls are set via an equivalent and identically named namelist to \nam{nc4}{nc4} in
+\textit{xmlio\_server.def}.
+Typically this namelist serves the mean files whilst the \nam{nc4}{nc4} in the main namelist file continues to
+serve the restart files.
+This duplication is unfortunate but appropriate since, if using io\_servers, the domain sizes of
+the individual files produced by the io\_server processes may be different to those produced by
+the invidual processing regions and different chunking choices may be desired.
+
+%% =================================================================================================
+\section[Tracer/Dynamics trends (\forcode{&namtrd})]{Tracer/Dynamics trends (\protect\nam{trd}{trd})}
+\label{sec:DIA_trd}
+
+\begin{listing}
+  \nlst{namtrd}
+  \caption{\forcode{&namtrd}}
+  \label{lst:namtrd}
+\end{listing}
+
+Each trend of the dynamics and/or temperature and salinity time evolution equations can be send to
+\mdl{trddyn} and/or \mdl{trdtra} modules (see TRD directory) just after their computation
+(\ie\ at the end of each \textit{dyn....F90} and/or \textit{tra....F90} routines).
+This capability is controlled by options offered in \nam{trd}{trd} namelist.
+Note that the output are done with XIOS, and therefore the \key{iomput} is required.
+
+What is done depends on the \nam{trd}{trd} logical set to \forcode{.true.}:
+
+\begin{description}
+\item [{\np{ln_glo_trd}{ln\_glo\_trd}}]: at each \np{nn_trd}{nn\_trd} time-step a check of the basin averaged properties of
+  the momentum and tracer equations is performed.
+  This also includes a check of $T^2$, $S^2$, $\tfrac{1}{2} (u^2+v2)$,
+  and potential energy time evolution equations properties;
+\item [{\np{ln_dyn_trd}{ln\_dyn\_trd}}]: each 3D trend of the evolution of the two momentum components is output;
+\item [{\np{ln_dyn_mxl}{ln\_dyn\_mxl}}]: each 3D trend of the evolution of the two momentum components averaged over the mixed layer is output;
+\item [{\np{ln_vor_trd}{ln\_vor\_trd}}]: a vertical summation of the moment tendencies is performed,
+  then the curl is computed to obtain the barotropic vorticity tendencies which are output;
+\item [{\np{ln_KE_trd}{ln\_KE\_trd}}]  : each 3D trend of the Kinetic Energy equation is output;
+\item [{\np{ln_tra_trd}{ln\_tra\_trd}}]: each 3D trend of the evolution of temperature and salinity is output;
+\item [{\np{ln_tra_mxl}{ln\_tra\_mxl}}]: each 2D trend of the evolution of temperature and salinity averaged over the mixed layer is output;
+\end{description}
+
+Note that the mixed layer tendency diagnostic can also be used on biogeochemical models via
+the \key{trdtrc} and \key{trdmxl\_trc} CPP keys.
+
+\textbf{Note that} in the current version (v3.6), many changes has been introduced but not fully tested.
+In particular, options associated with \np{ln_dyn_mxl}{ln\_dyn\_mxl}, \np{ln_vor_trd}{ln\_vor\_trd}, and \np{ln_tra_mxl}{ln\_tra\_mxl} are not working,
+and none of the options have been tested with variable volume (\ie\ \np[=.true.]{ln_linssh}{ln\_linssh}).
+
+%% =================================================================================================
+\section[FLO: On-Line Floats trajectories (\texttt{\textbf{key\_floats}})]{FLO: On-Line Floats trajectories (\protect\key{floats})}
+\label{sec:DIA_FLO}
+
+\begin{listing}
+  \nlst{namflo}
+  \caption{\forcode{&namflo}}
+  \label{lst:namflo}
+\end{listing}
+
+The on-line computation of floats advected either by the three dimensional velocity field or constraint to
+remain at a given depth ($w = 0$ in the computation) have been introduced in the system during the CLIPPER project.
+Options are defined by \nam{flo}{flo} namelist variables.
+The algorithm used is based either on the work of \cite{blanke.raynaud_JPO97} (default option),
+or on a $4^th$ Runge-Hutta algorithm (\np[=.true.]{ln_flork4}{ln\_flork4}).
+Note that the \cite{blanke.raynaud_JPO97} algorithm have the advantage of providing trajectories which
+are consistent with the numeric of the code, so that the trajectories never intercept the bathymetry.
+
+%% =================================================================================================
+\subsubsection{Input data: initial coordinates}
+
+Initial coordinates can be given with Ariane Tools convention
+(IJK coordinates, (\np[=.true.]{ln_ariane}{ln\_ariane}) ) or with longitude and latitude.
+
+In case of Ariane convention, input filename is \textit{init\_float\_ariane}.
+Its format is: \\
+{ \texttt{I J K nisobfl itrash}}
+
+\noindent with:
+
+ - I,J,K  : indexes of initial position
+
+ - nisobfl: 0 for an isobar float, 1 for a float following the w velocity
+
+ - itrash : set to zero; it is a dummy variable to respect Ariane Tools convention
+
+\noindent Example: \\
+\noindent
+{
+  \texttt{
+    100.00000  90.00000  -1.50000 1.00000   0.00000   \\
+    102.00000  90.00000  -1.50000 1.00000   0.00000   \\
+    104.00000  90.00000  -1.50000 1.00000   0.00000   \\
+    106.00000  90.00000  -1.50000 1.00000   0.00000   \\
+    108.00000  90.00000  -1.50000 1.00000   0.00000}
+} \\
+
+In the other case (longitude and latitude), input filename is init\_float.
+Its format is: \\
+{ \texttt{Long Lat depth nisobfl ngrpfl itrash}}
+
+\noindent with:
+
+ - Long, Lat, depth  : Longitude, latitude, depth
+
+ - nisobfl: 0 for an isobar float, 1 for a float following the w velocity
+
+ - ngrpfl : number to identify searcher group
+
+ - itrash :set to 1; it is a dummy variable.
+
+\noindent Example: \\
+\noindent
+{
+  \texttt{
+    20.0 0.0 0.0 0 1 1    \\
+    -21.0 0.0 0.0 0 1 1    \\
+    -22.0 0.0 0.0 0 1 1    \\
+    -23.0 0.0 0.0 0 1 1    \\
+    -24.0 0.0 0.0 0 1 1 }
+} \\
+
+\np{jpnfl}{jpnfl} is the total number of floats during the run.
+When initial positions are read in a restart file (\np[=.true.]{ln_rstflo}{ln\_rstflo} ),
+\np{jpnflnewflo}{jpnflnewflo} can be added in the initialization file.
+
+%% =================================================================================================
+\subsubsection{Output data}
+
+\np{nn_writefl}{nn\_writefl} is the frequency of writing in float output file and \np{nn_stockfl}{nn\_stockfl} is the frequency of
+creation of the float restart file.
+
+Output data can be written in ascii files (\np[=.true.]{ln_flo_ascii}{ln\_flo\_ascii}).
+In that case, output filename is trajec\_float.
+
+Another possiblity of writing format is Netcdf (\np[=.false.]{ln_flo_ascii}{ln\_flo\_ascii}) with
+\key{iomput} and outputs selected in iodef.xml.
+Here it is an example of specification to put in files description section:
+
+\begin{xmllines}
+<group id="1d_grid_T" name="auto" description="ocean T grid variables" >   }
+	<file id="floats"  description="floats variables"> }
+		<field ref="traj_lon"   name="floats_longitude"   freq_op="86400" />}
+		<field ref="traj_lat"   name="floats_latitude"    freq_op="86400" />}
+		<field ref="traj_dep"   name="floats_depth"       freq_op="86400" />}
+		<field ref="traj_temp"  name="floats_temperature" freq_op="86400" />}
+		<field ref="traj_salt"  name="floats_salinity"    freq_op="86400" />}
+		<field ref="traj_dens"  name="floats_density"     freq_op="86400" />}
+		<field ref="traj_group" name="floats_group"       freq_op="86400" />}
+	</file>}
+</group>}
+\end{xmllines}
+
+%% =================================================================================================
+\section[Harmonic analysis of tidal constituents (\texttt{\textbf{key\_diaharm}})]{Harmonic analysis of tidal constituents (\protect\key{diaharm})}
+\label{sec:DIA_diag_harm}
+
+\begin{listing}
+  \nlst{nam_diaharm}
+  \caption{\forcode{&nam_diaharm}}
+  \label{lst:nam_diaharm}
+\end{listing}
+
+A module is available to compute the amplitude and phase of tidal waves.
+This on-line Harmonic analysis is actived with \key{diaharm}.
+
+Some parameters are available in namelist \nam{_diaharm}{\_diaharm}:
+
+ - \np{nit000_han}{nit000\_han} is the first time step used for harmonic analysis
+
+ - \np{nitend_han}{nitend\_han} is the  last time step used for harmonic analysis
+
+ - \np{nstep_han}{nstep\_han}  is the  time step frequency for harmonic analysis
+
+% - \np{nb_ana}{nb\_ana}     is the number of harmonics to analyse
+
+ - \np{tname}{tname}       is an array with names of tidal constituents to analyse
+
+ \np{nit000_han}{nit000\_han} and \np{nitend_han}{nitend\_han} must be between \np{nit000}{nit000} and \np{nitend}{nitend} of the simulation.
+ The restart capability is not implemented.
+
+ The Harmonic analysis solve the following equation:
+
+ \[
+   h_{i} - A_{0} + \sum^{nb\_ana}_{j=1}[A_{j}cos(\nu_{j}t_{j}-\phi_{j})] = e_{i}
+ \]
+
+With $A_{j}$, $\nu_{j}$, $\phi_{j}$, the amplitude, frequency and phase for each wave and $e_{i}$ the error.
+$h_{i}$ is the sea level for the time $t_{i}$ and $A_{0}$ is the mean sea level. \\
+We can rewrite this equation:
+
+\[
+  h_{i} - A_{0} + \sum^{nb\_ana}_{j=1}[C_{j}cos(\nu_{j}t_{j})+S_{j}sin(\nu_{j}t_{j})] = e_{i}
+\]
+
+with $A_{j}=\sqrt{C^{2}_{j}+S^{2}_{j}}$ and $\phi_{j}=arctan(S_{j}/C_{j})$.
+
+We obtain in output $C_{j}$ and $S_{j}$ for each tidal wave.
+
+%% =================================================================================================
+\section[Transports across sections (\texttt{\textbf{key\_diadct}})]{Transports across sections (\protect\key{diadct})}
+\label{sec:DIA_diag_dct}
+
+\begin{listing}
+  \nlst{nam_diadct}
+  \caption{\forcode{&nam_diadct}}
+  \label{lst:nam_diadct}
+\end{listing}
+
+A module is available to compute the transport of volume, heat and salt through sections.
+This diagnostic is actived with \key{diadct}.
+
+Each section is defined by the coordinates of its 2 extremities.
+The pathways between them are contructed using tools which can be found in \texttt{tools/SECTIONS\_DIADCT}
+and are written in a binary file \texttt{section\_ijglobal.diadct} which is later read in by
+\NEMO\ to compute on-line transports.
+
+The on-line transports module creates three output ascii files:
+
+- \texttt{volume\_transport} for volume transports (unit: $10^{6} m^{3} s^{-1}$)
+
+- \texttt{heat\_transport}   for   heat transports (unit: $10^{15} W$)
+
+- \texttt{salt\_transport}   for   salt transports (unit: $10^{9}Kg s^{-1}$) \\
+
+Namelist variables in \nam{_diadct}{\_diadct} control how frequently the flows are summed and the time scales over which
+they are averaged, as well as the level of output for debugging:
+\np{nn_dct}{nn\_dct}   : frequency of instantaneous transports computing
+\np{nn_dctwri}{nn\_dctwri}: frequency of writing ( mean of instantaneous transports )
+\np{nn_debug}{nn\_debug} : debugging of the section
+
+%% =================================================================================================
+\subsubsection{Creating a binary file containing the pathway of each section}
+
+In \texttt{tools/SECTIONS\_DIADCT/run},
+the file \textit{ {list\_sections.ascii\_global}} contains a list of all the sections that are to be computed
+(this list of sections is based on MERSEA project metrics).
+
+Another file is available for the GYRE configuration (\texttt{ {list\_sections.ascii\_GYRE}}).
+
+Each section is defined by: \\
+\noindent { \texttt{long1 lat1 long2 lat2 nclass (ok/no)strpond (no)ice section\_name}} \\
+with:
+
+ - \texttt{long1 lat1}, coordinates of the  first extremity of the section;
+
+ - \texttt{long2 lat2}, coordinates of the second extremity of the section;
+
+ - \texttt{nclass}    the number of bounds of your classes (\eg\ bounds for 2 classes);
+
+ - \texttt{okstrpond} to compute    heat and       salt transports, \texttt{nostrpond} if no;
+
+ - \texttt{ice}       to compute surface and volume ice transports, \texttt{noice}     if no. \\
+
+ \noindent The results of the computing of transports, and the directions of positive and
+ negative flow do not depend on the order of the 2 extremities in this file. \\
+
+\noindent If nclass $\neq$ 0, the next lines contain the class type and the nclass bounds: \\
+{
+  \texttt{
+    long1 lat1 long2 lat2 nclass (ok/no)strpond (no)ice section\_name \\
+    classtype                                                         \\
+    zbound1                                                           \\
+    zbound2                                                           \\
+    .                                                                 \\
+    .                                                                 \\
+    nclass-1                                                          \\
+    nclass}
+}
+
+\noindent where \texttt{classtype} can be:
+
+ - \texttt{zsal}  for          salinity classes
+
+ - \texttt{ztem}  for       temperature classes
+
+ - \texttt{zlay}  for             depth classes
+
+ - \texttt{zsigi} for    insitu density classes
+
+ - \texttt{zsigp} for potential density classes \\
+
+ The script \texttt{job.ksh} computes the pathway for each section and creates a binary file
+ \texttt{section\_ijglobal.diadct} which is read by \NEMO. \\
+
+ It is possible to use this tools for new configuations: \texttt{job.ksh} has to be updated with
+ the coordinates file name and path. \\
+
+ Examples of two sections, the ACC\_Drake\_Passage with no classes,
+ and the ATL\_Cuba\_Florida with 4 temperature clases (5 class bounds), are shown: \\
+ \noindent
+ {
+   \texttt{
+     -68.    -54.5   -60.    -64.7  00 okstrpond noice ACC\_Drake\_Passage \\
+     -80.5    22.5   -80.5    25.5  05 nostrpond noice ATL\_Cuba\_Florida  \\
+     ztem                                                                  \\
+     -2.0                                                                  \\
+     4.5                                                                  \\
+     7.0                                                                  \\
+     12.0                                                                  \\
+     40.0}
+ }
+
+%% =================================================================================================
+\subsubsection{To read the output files}
+
+The output format is: \\
+{
+  \texttt{
+    date, time-step number, section number,                \\
+    section name, section slope coefficient, class number, \\
+    class name, class bound 1 , classe bound2,             \\
+    transport\_direction1, transport\_direction2,          \\
+    transport\_total}
+}                                     \\
+
+For sections with classes, the first \texttt{nclass-1} lines correspond to the transport for each class and
+the last line corresponds to the total transport summed over all classes.
+For sections with no classes, class number \texttt{1} corresponds to \texttt{total class} and
+this class is called \texttt{N}, meaning \texttt{none}.
+
+- \texttt{transport\_direction1} is the positive part of the transport ($\geq$ 0).
+
+- \texttt{transport\_direction2} is the negative part of the transport ($\leq$ 0). \\
+
+\noindent The \texttt{section slope coefficient} gives information about the significance of transports signs and
+direction: \\
+
+\begin{table}
+  \begin{tabular}{|l|l|l|l|l|}
+    \hline
+    section slope coefficient      & section type & direction 1 & direction 2 & total transport    \\
+    \hline
+    0.                             & horizontal	 & northward	& southward   & postive: northward    \\
+    \hline
+    1000.                          & vertical     & eastward    & westward    & postive: eastward		\\
+    \hline
+    \texttt{$\neq$ 0, $\neq$ 1000.} & diagonal     & eastward    & westward	  & postive: eastward		\\
+    \hline
+  \end{tabular}
+\end{table}
+
+%% =================================================================================================
+\section{Diagnosing the steric effect in sea surface height}
+\label{sec:DIA_steric}
+
+Changes in steric sea level are caused when changes in the density of the water column imply an expansion or
+contraction of the column.
+It is essentially produced through surface heating/cooling and to a lesser extent through non-linear effects of
+the equation of state (cabbeling, thermobaricity...).
+Non-Boussinesq models contain all ocean effects within the ocean acting on the sea level.
+In particular, they include the steric effect.
+In contrast, Boussinesq models, such as \NEMO, conserve volume, rather than mass,
+and so do not properly represent expansion or contraction.
+The steric effect is therefore not explicitely represented.
+This approximation does not represent a serious error with respect to the flow field calculated by the model
+\citep{greatbatch_JGR94}, but extra attention is required when investigating sea level,
+as steric changes are an important contribution to local changes in sea level on seasonal and climatic time scales.
+This is especially true for investigation into sea level rise due to global warming.
+
+Fortunately, the steric contribution to the sea level consists of a spatially uniform component that
+can be diagnosed by considering the mass budget of the world ocean \citep{greatbatch_JGR94}.
+In order to better understand how global mean sea level evolves and thus how the steric sea level can be diagnosed,
+we compare, in the following, the non-Boussinesq and Boussinesq cases.
+
+Let denote
+$\mathcal{M}$ the total mass    of liquid seawater ($\mathcal{M} = \int_D \rho dv$),
+$\mathcal{V}$ the total volume  of        seawater      ($\mathcal{V} = \int_D dv$),
+$\mathcal{A}$ the total surface of       the ocean      ($\mathcal{A} = \int_S ds$),
+$\bar{\rho}$ the global mean  seawater (\textit{in situ}) density
+($\bar{\rho} = 1/\mathcal{V} \int_D \rho \,dv$), and
+$\bar{\eta}$ the global mean sea level
+($\bar{\eta} = 1/\mathcal{A} \int_S \eta \,ds$).
+
+A non-Boussinesq fluid conserves mass. It satisfies the following relations:
+
+\begin{equation}
+  \begin{split}
+    \mathcal{M} &=  \mathcal{V}  \;\bar{\rho} \\
+    \mathcal{V} &=  \mathcal{A}  \;\bar{\eta}
+  \end{split}
+  \label{eq:DIA_MV_nBq}
+\end{equation}
+
+Temporal changes in total mass is obtained from the density conservation equation:
+
+\begin{equation}
+  \frac{1}{e_3} \partial_t ( e_3\,\rho) + \nabla( \rho \, \textbf{U} )
+  = \left. \frac{\textit{emp}}{e_3}\right|_\textit{surface}
+  \label{eq:DIA_Co_nBq}
+\end{equation}
+
+where $\rho$ is the \textit{in situ} density, and \textit{emp} the surface mass exchanges with the other media of
+the Earth system (atmosphere, sea-ice, land).
+Its global averaged leads to the total mass change
+
+\begin{equation}
+  \partial_t \mathcal{M} = \mathcal{A} \;\overline{\textit{emp}}
+  \label{eq:DIA_Mass_nBq}
+\end{equation}
+
+where $\overline{\textit{emp}} = \int_S \textit{emp}\,ds$ is the net mass flux through the ocean surface.
+Bringing \autoref{eq:DIA_Mass_nBq} and the time derivative of \autoref{eq:DIA_MV_nBq} together leads to
+the evolution equation of the mean sea level
+
+\begin{equation}
+  \partial_t \bar{\eta} = \frac{\overline{\textit{emp}}}{ \bar{\rho}}
+  - \frac{\mathcal{V}}{\mathcal{A}} \;\frac{\partial_t \bar{\rho} }{\bar{\rho}}
+  \label{eq:DIA_ssh_nBq}
+\end{equation}
+
+The first term in equation \autoref{eq:DIA_ssh_nBq} alters sea level by adding or subtracting mass from the ocean.
+The second term arises from temporal changes in the global mean density; \ie\ from steric effects.
+
+In a Boussinesq fluid, $\rho$ is replaced by $\rho_o$ in all the equation except when $\rho$ appears multiplied by
+the gravity (\ie\ in the hydrostatic balance of the primitive Equations).
+In particular, the mass conservation equation, \autoref{eq:DIA_Co_nBq}, degenerates into the incompressibility equation:
+
+\[
+  \frac{1}{e_3} \partial_t ( e_3 ) + \nabla( \textbf{U} ) = \left. \frac{\textit{emp}}{\rho_o \,e_3}\right|_ \textit{surface}
+  % \label{eq:DIA_Co_Bq}
+\]
+
+and the global average of this equation now gives the temporal change of the total volume,
+
+\[
+  \partial_t \mathcal{V} = \mathcal{A} \;\frac{\overline{\textit{emp}}}{\rho_o}
+  % \label{eq:DIA_V_Bq}
+\]
+
+Only the volume is conserved, not mass, or, more precisely, the mass which is conserved is the Boussinesq mass,
+$\mathcal{M}_o = \rho_o \mathcal{V}$.
+The total volume (or equivalently the global mean sea level) is altered only by net volume fluxes across
+the ocean surface, not by changes in mean mass of the ocean: the steric effect is missing in a Boussinesq fluid.
+
+Nevertheless, following \citep{greatbatch_JGR94}, the steric effect on the volume can be diagnosed by
+considering the mass budget of the ocean.
+The apparent changes in $\mathcal{M}$, mass of the ocean, which are not induced by surface mass flux
+must be compensated by a spatially uniform change in the mean sea level due to expansion/contraction of the ocean
+\citep{greatbatch_JGR94}.
+In others words, the Boussinesq mass, $\mathcal{M}_o$, can be related to $\mathcal{M}$,
+the total mass of the ocean seen by the Boussinesq model, via the steric contribution to the sea level,
+$\eta_s$, a spatially uniform variable, as follows:
+
+\begin{equation}
+  \mathcal{M}_o = \mathcal{M} + \rho_o \,\eta_s \,\mathcal{A}
+  \label{eq:DIA_M_Bq}
+\end{equation}
+
+Any change in $\mathcal{M}$ which cannot be explained by the net mass flux through the ocean surface
+is converted into a mean change in sea level.
+Introducing the total density anomaly, $\mathcal{D}= \int_D d_a \,dv$,
+where $d_a = (\rho -\rho_o ) / \rho_o$ is the density anomaly used in \NEMO\ (cf. \autoref{subsec:TRA_eos})
+in \autoref{eq:DIA_M_Bq} leads to a very simple form for the steric height:
+
+\begin{equation}
+  \eta_s = - \frac{1}{\mathcal{A}} \mathcal{D}
+  \label{eq:DIA_steric_Bq}
+\end{equation}
+
+The above formulation of the steric height of a Boussinesq ocean requires four remarks.
+First, one can be tempted to define $\rho_o$ as the initial value of $\mathcal{M}/\mathcal{V}$,
+\ie\ set $\mathcal{D}_{t=0}=0$, so that the initial steric height is zero.
+We do not recommend that.
+Indeed, in this case $\rho_o$ depends on the initial state of the ocean.
+Since $\rho_o$ has a direct effect on the dynamics of the ocean
+(it appears in the pressure gradient term of the momentum equation)
+it is definitively not a good idea when inter-comparing experiments.
+We better recommend to fixe once for all $\rho_o$ to $1035\;Kg\,m^{-3}$.
+This value is a sensible choice for the reference density used in a Boussinesq ocean climate model since,
+with the exception of only a small percentage of the ocean, density in the World Ocean varies by no more than
+2$\%$ from this value (\cite{gill_bk82}, page 47).
+
+Second, we have assumed here that the total ocean surface, $\mathcal{A}$,
+does not change when the sea level is changing as it is the case in all global ocean GCMs
+(wetting and drying of grid point is not allowed).
+
+Third, the discretisation of \autoref{eq:DIA_steric_Bq} depends on the type of free surface which is considered.
+In the non linear free surface case, \ie\ \np[=.true.]{ln_linssh}{ln\_linssh}, it is given by
+
+\[
+  \eta_s = - \frac{ \sum_{i,\,j,\,k} d_a\; e_{1t} e_{2t} e_{3t} }{ \sum_{i,\,j,\,k}       e_{1t} e_{2t} e_{3t} }
+  % \label{eq:DIA_discrete_steric_Bq_nfs}
+\]
+
+whereas in the linear free surface,
+the volume above the \textit{z=0} surface must be explicitly taken into account to
+better approximate the total ocean mass and thus the steric sea level:
+
+\[
+  \eta_s = - \frac{ \sum_{i,\,j,\,k} d_a\; e_{1t}e_{2t}e_{3t} + \sum_{i,\,j} d_a\; e_{1t}e_{2t} \eta }
+                  { \sum_{i,\,j,\,k}       e_{1t}e_{2t}e_{3t} + \sum_{i,\,j}       e_{1t}e_{2t} \eta }
+  % \label{eq:DIA_discrete_steric_Bq_fs}
+\]
+
+The fourth and last remark concerns the effective sea level and the presence of sea-ice.
+In the real ocean, sea ice (and snow above it)  depresses the liquid seawater through its mass loading.
+This depression is a result of the mass of sea ice/snow system acting on the liquid ocean.
+There is, however, no dynamical effect associated with these depressions in the liquid ocean sea level,
+so that there are no associated ocean currents.
+Hence, the dynamically relevant sea level is the effective sea level,
+\ie\ the sea level as if sea ice (and snow) were converted to liquid seawater \citep{campin.marshall.ea_OM08}.
+However, in the current version of \NEMO\ the sea-ice is levitating above the ocean without mass exchanges between
+ice and ocean.
+Therefore the model effective sea level is always given by $\eta + \eta_s$, whether or not there is sea ice present.
+
+In AR5 outputs, the thermosteric sea level is demanded.
+It is steric sea level due to changes in ocean density arising just from changes in temperature.
+It is given by:
+
+\[
+  \eta_s = - \frac{1}{\mathcal{A}} \int_D d_a(T,S_o,p_o) \,dv
+  % \label{eq:DIA_thermosteric_Bq}
+\]
+
+where $S_o$ and $p_o$ are the initial salinity and pressure, respectively.
+
+Both steric and thermosteric sea level are computed in \mdl{diaar5}.
+
+%% =================================================================================================
+\section{Other diagnostics}
+\label{sec:DIA_diag_others}
+
+Aside from the standard model variables, other diagnostics can be computed on-line.
+The available ready-to-add diagnostics modules can be found in directory DIA.
+
+%% =================================================================================================
+\subsection[Depth of various quantities (\textit{diahth.F90})]{Depth of various quantities (\protect\mdl{diahth})}
+
+Among the available diagnostics the following ones are obtained when defining the \key{diahth} CPP key:
+
+- the mixed layer depth (based on a density criterion \citep{de-boyer-montegut.madec.ea_JGR04}) (\mdl{diahth})
+
+- the turbocline depth (based on a turbulent mixing coefficient criterion) (\mdl{diahth})
+
+- the depth of the 20\deg{C} isotherm (\mdl{diahth})
+
+- the depth of the thermocline (maximum of the vertical temperature gradient) (\mdl{diahth})
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=0.66\textwidth]{DIA_mask_subasins}
+  \caption[Decomposition of the World Ocean to compute transports as well as
+  the meridional stream-function]{
+    Decomposition of the World Ocean (here ORCA2) into sub-basin used in to
+    compute the heat and salt transports as well as the meridional stream-function:
+    Atlantic basin (red), Pacific basin (green),
+    Indian basin (blue), Indo-Pacific basin (blue+green).
+    Note that semi-enclosed seas (Red, Med and Baltic seas) as well as
+    Hudson Bay are removed from the sub-basins.
+    Note also that the Arctic Ocean has been split into Atlantic and
+    Pacific basins along the North fold line.
+  }
+  \label{fig:DIA_mask_subasins}
+\end{figure}
+
+%% =================================================================================================
+\subsection[CMIP specific diagnostics (\textit{diaar5.F90}, \textit{diaptr.F90})]{CMIP specific diagnostics (\protect\mdl{diaar5})}
+
+A series of diagnostics has been added in the \mdl{diaar5} and \mdl{diaptr}.
+In \mdl{diaar5} they correspond to outputs that are required for AR5 simulations (CMIP5)
+(see also \autoref{sec:DIA_steric} for one of them).
+The module \mdl{diaar5} is active when one of the following outputs is required :
+global total volume (voltot), global mean ssh (sshtot), global total mass (masstot), global mean temperature (temptot),
+global mean ssh steric (sshsteric), global mean ssh thermosteric (sshthster), global mean salinity (saltot),
+sea water pressure at sea floor (botpres), dynamic sea surface height (sshdyn).
+
+In \mdl{diaptr} when \np[=.true.]{ln_diaptr}{ln\_diaptr}
+(see the \nam{ptr}{ptr} namelist below) can be computed on-line the poleward heat and salt transports,
+their advective and diffusive component, and the meriodional stream function .
+When \np[=.true.]{ln_subbas}{ln\_subbas}, transports and stream function are computed for the Atlantic, Indian,
+Pacific and Indo-Pacific Oceans (defined north of 30\deg{S}) as well as for the World Ocean.
+The sub-basin decomposition requires an input file (\ifile{subbasins}) which contains three 2D mask arrays,
+the Indo-Pacific mask been deduced from the sum of the Indian and Pacific mask (\autoref{fig:DIA_mask_subasins}).
+
+\begin{listing}
+  \nlst{namptr}
+  \caption{\forcode{&namptr}}
+  \label{lst:namptr}
+\end{listing}
+
+%% =================================================================================================
+\subsection{25 hour mean output for tidal models}
+
+\begin{listing}
+  \nlst{nam_dia25h}
+  \caption{\forcode{&nam_dia25h}}
+  \label{lst:nam_dia25h}
+\end{listing}
+
+A module is available to compute a crudely detided M2 signal by obtaining a 25 hour mean.
+The 25 hour mean is available for daily runs by summing up the 25 hourly instantananeous hourly values from
+midnight at the start of the day to midight at the day end.
+This diagnostic is actived with the logical $ln\_dia25h$.
+
+%% =================================================================================================
+\subsection{Courant numbers}
+
+Courant numbers provide a theoretical indication of the model's numerical stability.
+The advective Courant numbers can be calculated according to
+
+\[
+  C_u = |u|\frac{\rdt}{e_{1u}}, \quad C_v = |v|\frac{\rdt}{e_{2v}}, \quad C_w = |w|\frac{\rdt}{e_{3w}}
+  % \label{eq:DIA_CFL}
+\]
+
+in the zonal, meridional and vertical directions respectively.
+The vertical component is included although it is not strictly valid as the vertical velocity is calculated from
+the continuity equation rather than as a prognostic variable.
+Physically this represents the rate at which information is propogated across a grid cell.
+Values greater than 1 indicate that information is propagated across more than one grid cell in a single time step.
+
+The variables can be activated by setting the \np{nn_diacfl}{nn\_diacfl} namelist parameter to 1 in the \nam{ctl}{ctl} namelist.
+The diagnostics will be written out to an ascii file named cfl\_diagnostics.ascii.
+In this file the maximum value of $C_u$, $C_v$, and $C_w$ are printed at each timestep along with the coordinates of
+where the maximum value occurs.
+At the end of the model run the maximum value of $C_u$, $C_v$, and $C_w$ for the whole model run is printed along
+with the coordinates of each.
+The maximum values from the run are also copied to the ocean.output file.
+
+\subinc{\input{../../global/epilogue}}
+
+\end{document}

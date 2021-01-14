@@ -1,0 +1,16 @@
+!-----------------------------------------------------------------------
+&namtrc_adv      !   advection scheme for passive tracer                (default: NO selection)
+!-----------------------------------------------------------------------
+   ln_trcadv_OFF =  .false.  !  No passive tracer advection
+   ln_trcadv_cen =  .false.  !  2nd order centered scheme
+      nn_cen_h   =  4               !  =2/4, horizontal 2nd order CEN / 4th order CEN
+      nn_cen_v   =  4               !  =2/4, vertical   2nd order CEN / 4th order COMPACT
+   ln_trcadv_fct =  .false.  !  FCT scheme
+      nn_fct_h   =  2               !  =2/4, horizontal 2nd / 4th order 
+      nn_fct_v   =  2               !  =2/4, vertical   2nd / COMPACT 4th order 
+   ln_trcadv_mus =  .false.  !  MUSCL scheme
+      ln_mus_ups =  .false.         !  use upstream scheme near river mouths
+   ln_trcadv_ubs =  .false.  !  UBS scheme
+      nn_ubs_v   =  2               !  =2  , vertical 2nd order FCT
+   ln_trcadv_qck =  .false.  !  QUICKEST scheme
+/

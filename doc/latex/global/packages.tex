@@ -1,0 +1,44 @@
+
+%% LaTeX packages in use
+%% ==============================================================================
+
+%% 'hyperref' pkg is loaded at the end of the preamble for higher compatibility
+
+%% KOMA-script
+\usepackage[footsepline=0.25pt, headsepline=0.25pt]{scrlayer-scrpage}
+
+%% customization (layout, header/footer styles & contents, background)
+%\usepackage{draftwatermark}
+\usepackage[margin = 2cm]{geometry}
+\usepackage[pages = some]{background}   %% 'some' for title page
+\usepackage[Bjornstrup]{fncychap}
+
+%% Fonts
+\usepackage{fontspec}
+%% Issue with fontawesome pkg: path to FontAwesome.otf has to be hard-coded
+\defaultfontfeatures{
+    Path = /usr/local/texlive/2019/texmf-dist/fonts/opentype/public/fontawesome/
+}
+\usepackage{academicons, fontawesome, newtxtext}
+
+%% Formatting
+\usepackage[inline]{enumitem}
+\usepackage{etoc, tabularx, xcolor}
+
+%% Graphics
+\usepackage{caption, graphicx, grffile}
+
+%% Labels
+\usepackage{lastpage, natbib}
+
+%% Mathematics
+\usepackage{amsmath, amssymb, mathtools}
+
+%% Versatility
+\usepackage{subfiles}
+
+%% Configuration
+\graphicspath{ {../../../} {../figures/} }
+
+%% Missing utmr8a font
+\usepackage{times}

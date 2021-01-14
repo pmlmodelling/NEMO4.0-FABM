@@ -1,0 +1,13 @@
+!-----------------------------------------------------------------------
+&namsbc_flx    !   surface boundary condition : flux formulation        (ln_flx =T)
+!-----------------------------------------------------------------------
+   cn_dir      = './'      !  root directory for the fluxes data location
+   !___________!_________________________!___________________!___________!_____________!________!___________!__________________!__________!_______________!
+   !           !  file name              ! frequency (hours) ! variable  ! time interp.!  clim  ! 'yearly'/ ! weights filename ! rotation ! land/sea mask !
+   !           !                         !  (if <0  months)  !   name    !   (logical) !  (T/F) ! 'monthly' !                  ! pairing  !    filename   !
+   sn_utau     = 'utau'                  ,        24.        , 'utau'    , .false.     , .false., 'yearly'  , ''               , ''       , ''
+   sn_vtau     = 'vtau'                  ,        24.        , 'vtau'    , .false.     , .false., 'yearly'  , ''               , ''       , ''
+   sn_qtot     = 'qtot'                  ,        24.        , 'qtot'    , .false.     , .false., 'yearly'  , ''               , ''       , ''
+   sn_qsr      = 'qsr'                   ,        24.        , 'qsr'     , .false.     , .false., 'yearly'  , ''               , ''       , ''
+   sn_emp      = 'emp'                   ,        24.        , 'emp'     , .false.     , .false., 'yearly'  , ''               , ''       , ''
+/

@@ -1,0 +1,44 @@
+
+\documentclass[../main/SI3_manual]{subfiles}
+
+\begin{document}
+
+% ================================================================
+% Abstract
+% ================================================================
+
+\chapter*{Abstract}
+
+SI$^3$ (Sea Ice modelling Integrated Initiative) is the sea ice engine of NEMO (Nucleus for European Modelling of the Ocean). It is adapted to regional and global sea ice and climate problems. It is intended to be a flexible tool for studying sea ice and its interactions with the other components of the Earth System over a wide range of space and time scales. SI$^3$ is based on the Arctic Ice Dynamics Joint EXperiment (AIDJEX) framework \citep{coon_1974}, combining the ice thickness distribution framework, the conservation of horizontal momentum, an elastic-viscous plastic rheology, and energy-conserving halo-thermodynamics. Prognostic variables are the two-dimensional horizontal velocity field, ice volume, area, enthalpy, salt content, snow volume and enthalpy. In the horizontal direction, the model uses a curvilinear orthogonal grid. In the vertical direction, the model uses equally-spaced layers. In thickness space, the model uses thickness categories with prescribed boundaries. Various physical and numerical choices are available to describe sea ice physics. SI$^3$ is interfaced with the NEMO ocean engine, and, via the OASIS coupler, with several atmospheric general circulation models. It also supports two-way grid embedding via the AGRIF software.
+
+%\vspace{-40pt}
+
+{\small
+} 
+
+% ================================================================
+% Disclaimer
+% ================================================================
+\chapter*{Disclaimer}
+
+Like all components of NEMO, the sea ice component is developed under the \href{http://www.cecill.info/}{CECILL license}, 
+which is a French adaptation of the GNU GPL (General Public License). Anyone may use it 
+freely for research purposes, and is encouraged to communicate back to the NEMO team 
+its own developments and improvements. The model and the present document have been 
+made available as a service to the community. We cannot certify that the code and its manual 
+are free of errors. Bugs are inevitable and some have undoubtedly survived the testing phase. 
+Users are encouraged to bring them to our attention. The authors assume no responsibility 
+for problems, errors, or incorrect usage of NEMO.
+
+\vspace{1cm}
+SI3 reference in papers and other publications is as follows:
+\vspace{0.5cm}
+
+The NEMO Sea Ice Working Group, 2018: SI$^3$ -- Sea Ice modelling Integrated Initiative -- The NEMO Sea Ice Engine, \textit{Note du P\^ole de mod\'{e}lisation}, Institut Pierre-Simon Laplace (IPSL), France, 
+No XX, ISSN No 1288-1619.\\
+
+\vspace{0.5cm}
+Additional information can be found on \href{http://www.nemo-ocean.eu/}{www.nemo-ocean.eu}.
+\vspace{0.5cm}
+
+\end{document}

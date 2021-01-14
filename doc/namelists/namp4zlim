@@ -1,0 +1,24 @@
+!-----------------------------------------------------------------------
+&namp4zlim     !   parameters for nutrient limitations for PISCES std  - ln_p4z
+!-----------------------------------------------------------------------
+   concnno3   =  1.e-6    ! Nitrate half saturation of nanophytoplankton
+   concdno3   =  3.E-6    ! Nitrate half saturation for diatoms
+   concnnh4   =  1.E-7    ! NH4 half saturation for phyto
+   concdnh4   =  3.E-7    ! NH4 half saturation for diatoms
+   concnfer   =  1.E-9    ! Iron half saturation for phyto
+   concdfer   =  3.E-9    ! Iron half saturation for diatoms
+   concbfe    =  1.E-11   ! Iron half-saturation for DOC remin.
+   concbnh4   =  2.E-8    ! NH4 half saturation for DOC remin.
+   concbno3   =  2.E-7    ! Nitrate half saturation for DOC remin.
+   xsizedia   =  1.E-6    ! Minimum size criteria for diatoms
+   xsizephy   =  1.E-6    ! Minimum size criteria for phyto
+   xsizern    =  3.0      ! Size ratio for nanophytoplankton
+   xsizerd    =  3.0      ! Size ratio for diatoms
+   xksi1      =  2.E-6    ! half saturation constant for Si uptake
+   xksi2      =  20E-6    ! half saturation constant for Si/C
+   xkdoc      =  417.E-6  ! half-saturation constant of DOC remineralization
+   qnfelim    =  7.E-6    ! Optimal quota of phyto
+   qdfelim    =  7.E-6    ! Optimal quota of diatoms
+   caco3r     =  0.3      ! mean rain ratio
+   oxymin     =  1.E-6    ! Half-saturation constant for anoxia
+/

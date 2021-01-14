@@ -1,0 +1,10 @@
+!-----------------------------------------------------------------------
+&nam_diaharm   !   Harmonic analysis of tidal constituents              (default: OFF)
+!-----------------------------------------------------------------------
+    ln_diaharm = .false.   ! Choose tidal harmonic output or not
+       nit000_han = 1      !    First time step used for harmonic analysis
+       nitend_han = 75     !    Last time step used for harmonic analysis
+       nstep_han  = 15     !    Time step frequency for harmonic analysis
+       tname(1)   = 'M2'   !    Name of tidal constituents
+       tname(2)   = 'K1'   !              ---
+/

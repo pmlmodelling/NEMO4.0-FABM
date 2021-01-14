@@ -1,0 +1,12 @@
+!------------------------------------------------------------------------------
+&namdyn_rhg     !   Ice rheology
+!------------------------------------------------------------------------------
+   ln_rhg_EVP       = .true.          !  EVP rheology
+      ln_aEVP       = .false.         !     adaptive rheology (Kimmritz et al. 2016 & 2017)
+      rn_creepl     =   2.0e-9        !     creep limit [1/s]
+      rn_ecc        =   2.0           !     eccentricity of the elliptical yield curve          
+      nn_nevp       = 120             !     number of EVP subcycles                             
+      rn_relast     =   0.333         !     ratio of elastic timescale to ice time step: Telast = dt_ice * rn_relast 
+                                      !        advised value: 1/3 (rn_nevp=120) or 1/9 (rn_nevp=300)
+   ln_rhg_chkcvg    = .false.         !  check convergence of rheology (outputs: file ice_cvg.nc & variable uice_cvg)
+/

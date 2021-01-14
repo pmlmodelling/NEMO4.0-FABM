@@ -1,0 +1,16 @@
+\documentclass[../main/SI3_manual]{subfiles}
+
+\begin{document}
+
+% ================================================================
+% Chapter 11 - BDY and AGRIF with SI$^3$
+% ================================================================
+
+\chapter{BDY and AGRIF with SI$^3$}
+\label{chap:REG}
+\chaptertoc
+
+\newpage
+$\ $\newline    % force a new line
+
+\end{document}

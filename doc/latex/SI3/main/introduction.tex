@@ -1,0 +1,63 @@
+
+% ================================================================
+% INTRODUCTION
+% ================================================================
+
+\chapter*{Introduction}
+
+\textcolor{red}{[ \textit{July 2018} ]} \\
+
+%Near the poles of the Earth, the seas and oceans freeze when seawater at the freezing point loses heat. The resulting forms of saline ice are collectively called \textit{sea ice} \citep{WMO70}, reaching up to a few meters in thickness, where as sea ice coverage is about 5\% of the global ocean, about 30 million square kilometers. All sea ice characteristics vary over a wide range of spatio-temporal scales, reflecting changes in heat, mass and momentum exchanges with the atmosphere and the ocean; the clearest temporal signal being an ample seasonal cycle. Sea ice formation and melting affects water mass formation in the ocean \citep{goosse_1999}. It not only impacts, but also reflects the state of the climate system \citep{budyko_1969,notz_2016}.  Sea ice also affects marine life, water chemistry and human activities in polar regions. Local populations use sea ice for travelling and hunting, whereas navigation and resource exploitation are dependent on sea ice conditions. For such reasons, ocean modelling systems, including \NEMO, must include a sea ice component.
+
+\SIcube\ is the result of the recommendation of the Sea Ice Working Group (SIWG) to
+reduce duplication and better use development resources.
+\SIcube\ merges the capabilities of the 3 formerly sea ice models used in \NEMO\ (CICE, GELATO and LIM).
+The \textbf{3} in \SIcube\ refers either to the three formerly used sea ice models and
+linkages between 3 different media (ocean-ice-snow).
+The model would be pronounced as ``SI cube'' for short (or ``Sea Ice cubed'' for slightly longer),
+otherwise it can be spelt ``SI three'' in situations where the superscript could be problematic.
+
+% Limitations & scope
+%There are limitations to the applicability of models such as \SIcube. The continuum approach is not invalid for grid cell size above at least 1 km, below which sea ice particles may include just a few floes, which is not sufficient \citep{lepparanta_2011}. Second, one must remember that our current knowledge of sea ice is not as complete as for the ocean: there are no fundamental equations such as Navier Stokes equations for sea ice. Besides, important features and processes span widely different scales, such as brine inclusions (1 $\mu$m-1 mm) \citep{perovich_1996}, horizontal thickness variations (1 m-100 km) \citep{percival_2008}, deformation and fracturing (10 m-1000 km) \citep{marsan_2004}. These impose complicated and often subjective subgrid-scale treatments. All in all, there is more empiricism in sea ice models than in ocean models.
+
+In order to handle all the subsequent required subjective choices, we applied the following guidelines or principles:
+\begin{itemize}
+\item Sea ice is frozen seawater that is in tight interaction with the underlying ocean. This close connexion suggests that the sea ice and ocean model components must be as consistent as possible. In practice, this is materialized by the close match between LIM and \NEMO, in terms of numerical choices, regarding the grid (Arakawa C-type) and the numerical discretization (finite differences with \NEMO\ scale factors).
+\item It is useful to be able to either prescribe the atmospheric state or to use an atmospheric model. For consistency and simplicity of the code, we choose to use formulations as close as possible in both cases.
+\item Different resolutions and time steps can be used. There are parameters that depend on such choices. We thrived to achieve a resolution and time-step independent code, by imposing a priori scaling on the resolution / time step dependence of such parameters.
+\item Energy, mass and salt must be conserved as much as possible.
+\end{itemize}
+
+This manual is organised as follows. \\
+
+List of chapters... \\
+
+There are no more CPP keys in the code. \\
+
+Namelists and output management follow \NEMO\ guidelines. \\
+
+Changes between releases. \\
+
+The list of people that should be acknowledged is too long, but a great number of people or more exactly a number of great people contributed to the code and should be gratefully acknowledged. As for today,
+the SIWG members are \textit{(July 2018)}.
+
+\begin{itemize}
+\begin{footnotesize}
+\item Yevgeny Aksenov (NOCS, Southampton, UK)
+\item Ed Blockley (Met Office, Exeter, UK, co-chair)
+\item Matthieu Chevallier (CNRM-GAME, M\'et\'eo France, Toulouse)
+\item Danny Feltham (CPOM, Reading, UK)
+\item Thierry Fichefet (UCL, Louvain-la-Neuve, Belgium)
+\item Gilles Garric (Mercator-Oc\'ean, Toulouse, France)
+\item Paul Holland (BAS, Cambridge, UK)
+\item Dorotea Iovino (CMCC, Bologna, Italy)
+\item Gurvan Madec (LOCEAN, CNRS, Paris, France)
+\item Fran\c cois Massonnet (UCL, Louain-la-Neuve, Belgium)
+\item Jeff Ridley (Met Office, Exeter, UK)
+\item Cl\'ement Rousset (LOCEAN, CNRS, Paris, France)
+\item David Salas (CNRM-GAME, M\'et\'eo France, Toulouse)
+\item David Schroeder (CPOM, Reading, UK)
+\item Steffen Tietsche (ECMWF, Reading, UK)
+\item Martin Vancoppenolle (LOCEAN, CNRS, Paris, France, co-chair)
+\end{footnotesize}
+\end{itemize}

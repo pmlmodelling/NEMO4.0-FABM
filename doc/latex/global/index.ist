@@ -1,0 +1,4 @@
+headings_flag 1
+heading_prefix "\\medskip\\hfill\\textnormal{"
+heading_suffix "}\\hfill\\smallskip\n"
+delim_0 "\\dotfill~"

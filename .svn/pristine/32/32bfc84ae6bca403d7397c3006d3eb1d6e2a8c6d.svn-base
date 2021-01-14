@@ -1,0 +1,10 @@
+\Preamble{xhtml,mathml}
+
+\Configure{@HEAD}{%
+\HCode{<script type="text/javascript"
+   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_CHTML">
+ </script>\Hnewline}}
+
+\begin{document}
+
+\EndPreamble

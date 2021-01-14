@@ -1,0 +1,10 @@
+!------------------------------------------------------------------------------
+&namthd         !   Ice thermodynamics
+!------------------------------------------------------------------------------
+   ln_icedH         = .true.          !  activate ice thickness change from growing/melting (T) or not (F)
+   ln_icedA         = .true.          !  activate lateral melting param. (T) or not (F)
+   ln_icedO         = .true.          !  activate ice growth in open-water (T) or not (F)
+   ln_icedS         = .true.          !  activate brine drainage (T) or not (F)
+   !                                   
+   ln_leadhfx       = .true.          !  heat in the leads is used to melt sea-ice before warming the ocean
+/

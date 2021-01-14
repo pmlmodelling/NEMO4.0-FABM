@@ -1,0 +1,28 @@
+!-----------------------------------------------------------------------
+&namp5zzoo     !   parameters for microzooplankton
+!-----------------------------------------------------------------------
+   part       =  0.5      ! part of calcite not dissolved in microzoo gutsa
+   grazrat    =  2.75     ! maximal zoo grazing rate
+   bmetexc    =  .true.   ! Metabolic use of excess carbon
+   resrat     =  0.03     ! exsudation rate of zooplankton
+   mzrat      =  0.005    ! zooplankton mortality rate
+   xprefc     =  0.1      ! Microzoo preference for POM
+   xprefn     =  1.       ! Microzoo preference for Nanophyto
+   xprefp     =  1.6      ! Microzoo preference for picophyto
+   xprefd     =  1.0      ! Microzoo preference for Diatoms
+   xprefz     =  0.3      ! Microzoo preference for microzooplankton
+   xthreshdia =  1.E-8    ! Diatoms feeding threshold for microzooplankton
+   xthreshphy =  1.E-8    ! Nanophyto feeding threshold for microzooplankton
+   xthreshpic =  1.E-8
+   xthreshzoo =  1.E-8    ! Nanophyto feeding threshold for microzooplankton
+   xthreshpoc =  1.E-8    ! POC feeding threshold for microzooplankton
+   xthresh    =  3.E-7    ! Food threshold for feeding
+   xkgraz     =  20.E-6   ! half sturation constant for grazing
+   epsher     =  0.5      ! Efficiency of microzoo growth
+   epshermin  =  0.2      ! Minimum efficiency of microzoo growth
+   ssigma     =  0.5      ! Fraction excreted as semi-labile DOM
+   srespir    =  0.2      ! Active respiration
+   unassc     =  0.3      ! non assimilated fraction of C by zoo
+   unassn     =  0.3      ! non assimilated fraction of C by zoo
+   unassp     =  0.3      ! non assimilated fraction of C by zoo
+/

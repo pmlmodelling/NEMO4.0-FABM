@@ -1,0 +1,11 @@
+!-----------------------------------------------------------------------
+&namlobopt     !   optical parameters
+!-----------------------------------------------------------------------
+   xkg0   = 0.0232     ! green absorption coefficient of water
+   xkr0   = 0.225      ! red absorption coefficent of water
+   xkgp   = 0.074      ! green absorption coefficient of chl
+   xkrp   = 0.037      ! red absorption coefficient of chl
+   xlg    = 0.674      ! green chl exposant for absorption
+   xlr    = 0.629      ! red chl exposant for absorption
+   rpig   = 0.7        ! chla/chla+pheo ratio
+/

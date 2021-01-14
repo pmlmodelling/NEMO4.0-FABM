@@ -1,0 +1,35 @@
+!-----------------------------------------------------------------------
+&namzdf        !   vertical physics manager                             (default: NO selection)
+!-----------------------------------------------------------------------
+   !                       ! adaptive-implicit vertical advection
+   ln_zad_Aimp = .false.      !  Courant number dependent scheme (Shchepetkin 2015)
+   !
+   !                       ! type of vertical closure (required)
+   ln_zdfcst   = .false.      !  constant mixing
+   ln_zdfric   = .false.      !  local Richardson dependent formulation (T =>   fill namzdf_ric)
+   ln_zdftke   = .false.      !  Turbulent Kinetic Energy closure       (T =>   fill namzdf_tke)
+   ln_zdfgls   = .false.      !  Generic Length Scale closure           (T =>   fill namzdf_gls)
+   ln_zdfosm   = .false.      !  OSMOSIS BL closure                     (T =>   fill namzdf_osm)
+   !
+   !                       ! convection
+   ln_zdfevd   = .false.      !  enhanced vertical diffusion
+      nn_evdm     =    0         ! apply on tracer (=0) or on tracer and momentum (=1)
+      rn_evd      =  100.        ! mixing coefficient [m2/s]
+   ln_zdfnpc   = .false.      !  Non-Penetrative Convective algorithm
+      nn_npc      =    1         ! frequency of application of npc
+      nn_npcp     =  365         ! npc control print frequency
+   !
+   ln_zdfddm   = .false.   ! double diffusive mixing
+      rn_avts  =    1.e-4     !  maximum avs (vertical mixing on salinity)
+      rn_hsbfr =    1.6       !  heat/salt buoyancy flux ratio
+   !
+   !                       ! gravity wave-driven vertical mixing
+   ln_zdfiwm   = .false.      ! internal wave-induced mixing            (T =>   fill namzdf_iwm)
+   ln_zdfswm   = .false.      ! surface  wave-induced mixing            (T => ln_wave=ln_sdw=T )
+   !
+   !                       ! coefficients
+   rn_avm0     =   1.2e-4     !  vertical eddy viscosity   [m2/s]       (background Kz if ln_zdfcst=F)
+   rn_avt0     =   1.2e-5     !  vertical eddy diffusivity [m2/s]       (background Kz if ln_zdfcst=F)
+   nn_avb      =    0         !  profile for background avt & avm (=1) or not (=0)
+   nn_havtb    =    0         !  horizontal shape for avtb (=1) or not (=0)
+/

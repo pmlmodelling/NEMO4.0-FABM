@@ -1,0 +1,18 @@
+!-----------------------------------------------------------------------
+&nam_asminc    !   assimilation increments                              ('key_asminc')
+!-----------------------------------------------------------------------
+    ln_bkgwri  = .false.   !  Logical switch for writing out background state
+    ln_trainc  = .false.   !  Logical switch for applying tracer increments
+    ln_dyninc  = .false.   !  Logical switch for applying velocity increments
+    ln_sshinc  = .false.   !  Logical switch for applying SSH increments
+    ln_asmdin  = .false.   !  Logical switch for Direct Initialization (DI)
+    ln_asmiau  = .false.   !  Logical switch for Incremental Analysis Updating (IAU)
+    nitbkg     = 0         !  Timestep of background in [0,nitend-nit000-1]
+    nitdin     = 0         !  Timestep of background for DI in [0,nitend-nit000-1]
+    nitiaustr  = 1         !  Timestep of start of IAU interval in [0,nitend-nit000-1]
+    nitiaufin  = 15        !  Timestep of end of IAU interval in [0,nitend-nit000-1]
+    niaufn     = 0         !  Type of IAU weighting function
+    ln_salfix  = .false.   !  Logical switch for ensuring that the sa > salfixmin
+    salfixmin  = -9999     !  Minimum salinity after applying the increments
+    nn_divdmp  = 0         !  Number of iterations of divergence damping operator
+/

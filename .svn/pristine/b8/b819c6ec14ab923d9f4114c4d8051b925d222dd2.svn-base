@@ -1,0 +1,10 @@
+!-----------------------------------------------------------------------
+&namtrc_ldf      !   lateral diffusion scheme for passive tracer        (default: NO selection)
+!-----------------------------------------------------------------------
+!                            !  Type of the operator:
+   ln_trcldf_OFF   =  .false.    !  No explicit diffusion
+   ln_trcldf_tra   =  .false.    !  use active tracer setting
+   !                         !  Coefficient (defined with namtra_ldf coefficient)
+   rn_ldf_multi    = 1.          !  multiplier of aht for TRC mixing coefficient
+   rn_fact_lap     = 1.          !  Equatorial enhanced zonal eddy diffusivity (lap only)
+/

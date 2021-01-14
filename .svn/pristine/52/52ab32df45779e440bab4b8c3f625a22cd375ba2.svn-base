@@ -1,0 +1,14 @@
+!-----------------------------------------------------------------------
+&nam_tide      !   tide parameters                                      (default: OFF)
+!-----------------------------------------------------------------------
+   ln_tide     = .false.      ! Activate tides
+      ln_tide_pot   = .true.                !  use tidal potential forcing
+         ln_scal_load  = .false.               ! Use scalar approximation for
+            rn_scal_load = 0.094               !     load potential
+         ln_read_load  = .false.               ! Or read load potential from file
+            cn_tide_load = 'tide_LOAD_grid_T.nc'  ! filename for load potential
+            !      
+      ln_tide_ramp  = .false.               !  Use linear ramp for tides at startup
+         rdttideramp   =    0.                 !  ramp duration in days
+      clname(1)     = 'DUMMY'               !  name of constituent - all tidal components must be set in namelist_cfg
+/

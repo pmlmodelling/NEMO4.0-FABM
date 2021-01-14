@@ -1,0 +1,19 @@
+!-----------------------------------------------------------------------
+&namtra_qsr    !   penetrative solar radiation                          (ln_traqsr =T)
+!-----------------------------------------------------------------------
+   !                       !  type of penetration                        (default: NO selection)
+   ln_qsr_rgb  = .false.      !  RGB light penetration (Red-Green-Blue)
+   ln_qsr_2bd  = .false.      !  2BD light penetration (two bands)
+   ln_qsr_bio  = .false.      !  bio-model light penetration
+   !                       !  RGB & 2BD choices:
+   rn_abs      =   0.58       !  RGB & 2BD: fraction absorbed in the very near surface
+   rn_si0      =   0.35       !  RGB & 2BD: shortess depth of extinction
+   nn_chldta   =      0       !  RGB : Chl data (=1) or cst value (=0)
+   rn_si1      =   23.0       !  2BD : longest depth of extinction
+   
+   cn_dir      = './'      !  root directory for the chlorophyl data location
+   !___________!_________________________!___________________!___________!_____________!________!___________!__________________!__________!_______________!
+   !           !  file name              ! frequency (hours) ! variable  ! time interp.!  clim  ! 'yearly'/ ! weights filename ! rotation ! land/sea mask !
+   !           !                         !  (if <0  months)  !   name    !   (logical) !  (T/F) ! 'monthly' !                  ! pairing  !    filename   !
+   sn_chl      ='chlorophyll'            ,        -1.        , 'CHLA'    ,   .true.    , .true. , 'yearly'  , ''               , ''       , ''
+/

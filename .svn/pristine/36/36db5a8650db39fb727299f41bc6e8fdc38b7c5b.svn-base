@@ -1,0 +1,20 @@
+%% Engine (folder name)
+\def \engine{TOP}
+
+%% Title and cover page settings
+\def \spacetop{  \vspace*{1.3cm} }
+\def \heading{Tracers in Ocean Paradigm (TOP)}
+\def \subheading{The NEMO passive tracers engine}
+\def \spacedown{ \vspace*{  1cm} }
+\def \authorswidth{0.15\linewidth}
+\def \rulelenght{110pt}
+\def \abstractwidth{0.7\linewidth}
+
+%% Color for document (frontpage banner, links and chapter boxes)
+\def \setmanualcolor{ \definecolor{manualcolor}{cmyk}{1, 0, 1, .4} }
+
+%% IPSL publication number
+\def \ipslnum{28}
+
+%% Zenodo ID, i.e. doi:10.5281/zenodo.\([0-9]*\)
+\def \zid{1471700}

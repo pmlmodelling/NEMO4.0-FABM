@@ -1,0 +1,25 @@
+!------------------------------------------------------------------------------
+&namdyn_rdgrft  !   Ice ridging/rafting
+!------------------------------------------------------------------------------
+          ! -- ice_rdgrft_strength -- !
+   ln_str_H79       = .true.          !  ice strength param.: Hibler_79   => P = pstar*<h>*exp(-c_rhg*A)                      
+      rn_pstar      =   2.0e+04       !     ice strength thickness parameter [N/m2]
+      rn_crhg       =   20.0          !     ice strength conc. parameter (-)
+                   ! -- ice_rdgrft -- !
+   rn_csrdg         =   0.5           !  fraction of shearing energy contributing to ridging
+              ! -- ice_rdgrft_prep -- !
+   ln_partf_lin     = .false.         !  Linear ridging participation function (Thorndike et al, 1975)
+      rn_gstar      =   0.15          !     fractional area of thin ice being ridged 
+   ln_partf_exp     = .true.          !  Exponential ridging participation function (Lipscomb, 2007)
+      rn_astar      =   0.03          !     exponential measure of ridging ice fraction [set to 0.05 if hstar=100]
+   ln_ridging       = .true.          !  ridging activated (T) or not (F)
+      rn_hstar      =  25.0           !     determines the maximum thickness of ridged ice [m] (Hibler, 1980)
+      rn_porordg    =   0.3           !     porosity of newly ridged ice (Lepparanta et al., 1995)
+      rn_fsnwrdg    =   0.5           !     snow volume fraction that survives in ridging
+      rn_fpndrdg    =   1.0           !     pond fraction that survives in ridging (small a priori)
+   ln_rafting       = .true.          !  rafting activated (T) or not (F)
+      rn_hraft      =   0.75          !     threshold thickness for rafting [m]
+      rn_craft      =   5.0           !     squeezing coefficient used in the rafting function
+      rn_fsnwrft    =   0.5           !     snow volume fraction that survives in rafting
+      rn_fpndrft    =   1.0           !     pond fraction that survives in rafting (0.5 a priori)
+/

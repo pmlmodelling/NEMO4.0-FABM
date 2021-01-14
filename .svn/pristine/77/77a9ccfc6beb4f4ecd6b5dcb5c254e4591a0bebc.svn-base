@@ -1,0 +1,32 @@
+%% Syntax highlighting configuration
+%% ==============================================================================
+
+\usepackage[outputdir=../build, chapter, newfloat]{minted}
+
+%% Global highlighting style
+\definecolor{bg}{HTML}{f8f8f8}
+\usemintedstyle{emacs}
+\setminted{bgcolor=bg, fontsize=\scriptsize, breaklines}
+\setminted[xml]{style=borland} %% Specific per language
+
+%% Oneliner
+\newmint[forline]{fortran}{}   % \forline|...|
+\newmint[xmlline]{xml}{}       % \xmlline|...|
+\newmint[cmd]{console}{}       % \cmd|...|
+
+%% Multi-lines
+\newminted[forlines]{fortran}{}   % \begin{forlines}
+\newminted[xmllines]{xml}{}       % \begin{xmllines}
+\newminted[cmds]{console}{}       % \begin{cmds}
+\newminted[clines]{c}{}           % \begin{clines}
+
+%% File
+\newmintedfile[forfile]{fortran}{}
+
+%% Inline
+\newmintinline[forcode]{fortran}{bgcolor=, fontsize=auto}   % \forcode{...}
+\newmintinline[xmlcode]{xml}{    bgcolor=, fontsize=auto}   % \xmlcode{...}
+\newmintinline[snippet]{console}{bgcolor=, fontsize=auto}   % \snippet{...}
+
+%% Namelists inclusion
+\newcommand{\nlst}[1]{\forfile{../../../namelists/#1}}

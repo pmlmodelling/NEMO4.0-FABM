@@ -1,0 +1,14 @@
+!------------------------------------------------------------------------------
+&namthd_zdf     !   Ice heat diffusion
+!------------------------------------------------------------------------------
+   ln_zdf_BL99      = .true.          !  Heat diffusion follows Bitz and Lipscomb 1999
+   ln_cndi_U64      = .false.         !  sea ice thermal conductivity: k = k0 + beta.S/T            (Untersteiner, 1964)
+   ln_cndi_P07      = .true.          !  sea ice thermal conductivity: k = k0 + beta1.S/T - beta2.T (Pringle et al., 2007)
+   rn_cnd_s         =   0.31          !  thermal conductivity of the snow (0.31 W/m/K, Maykut and Untersteiner, 1971)
+                                      !     Obs: 0.1-0.5 (Lecomte et al, JAMES 2013)
+   rn_kappa_i       =   1.0           !  radiation attenuation coefficient in sea ice                     [1/m]
+   rn_kappa_s       =  10.0           !  nn_qtrice = 0: radiation attenuation coefficient in snow         [1/m]
+   rn_kappa_smlt    =   7.0           !  nn_qtrice = 1: radiation attenuation coefficient in melting snow [1/m]
+   rn_kappa_sdry    =  10.0           !                 radiation attenuation coefficient in dry snow     [1/m]
+   ln_zdf_chkcvg    = .false.         !  check convergence of heat diffusion scheme (output variable: tice_cvg)
+/

@@ -1,0 +1,18 @@
+!-----------------------------------------------------------------------
+&namsbc_ssr    !   surface boundary condition : sea surface restoring   (ln_ssr =T)
+!-----------------------------------------------------------------------
+   nn_sstr     =     0     !  add a retroaction term to the surface heat flux (=1) or not (=0)
+      rn_dqdt     = -40.      !  magnitude of the retroaction on temperature   [W/m2/K]
+   nn_sssr     =     0     !  add a damping term to the surface freshwater flux (=2)
+      !                    !  or to SSS only (=1) or no damping term (=0)
+      rn_deds     =  -166.67  !  magnitude of the damping on salinity   [mm/day]
+      ln_sssr_bnd =  .true.   !  flag to bound erp term (associated with nn_sssr=2)
+      rn_sssr_bnd =   4.e0    !  ABS(Max/Min) value of the damping erp term [mm/day]
+
+   cn_dir      = './'      !  root directory for the SST/SSS data location
+   !___________!_________________________!___________________!___________!_____________!________!___________!__________________!__________!_______________!
+   !           !  file name              ! frequency (hours) ! variable  ! time interp.!  clim  ! 'yearly'/ ! weights filename ! rotation ! land/sea mask !
+   !           !                         !  (if <0  months)  !   name    !   (logical) !  (T/F) ! 'monthly' !                  ! pairing  !    filename   !
+   sn_sst      = 'sst_data'              ,        24.        ,  'sst'    ,    .false.  , .false., 'yearly'  ,    ''            ,    ''    ,     ''
+   sn_sss      = 'sss_data'              ,        -1.        ,  'sss'    ,    .true.   , .true. , 'yearly'  ,    ''            ,    ''    ,     ''
+/

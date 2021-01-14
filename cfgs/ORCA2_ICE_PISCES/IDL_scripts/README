@@ -1,0 +1,61 @@
+#----------------------------------------------------------------------
+# prerequired
+#----------------------------------------------------------------------
+First, you need either :
+- IDL (version 6.4 or above), see : http://www.exelisvis.com/ProductsServices/IDL.aspx
+  In this case, you also need to download SAXO which is a free package of IDL scripts:
+  define $PATH_SAXO, the path where you will download SAXO and get it through svn with the following command.
+  > PATH_SAXO=...
+  > svn checkout http://forge.ipsl.jussieu.fr/saxo/svn/trunk/SRC $PATH_SAXO/SAXO_DIR/SRC
+
+- or the IDL Virtual Machine which is free to use and does not require a license to run , see :
+  http://www.exelisvis.com/Support/HelpArticlesDetail/TabId/219/ArtMID/900/ArticleID/12395/The-IDL-Virtual-Machine.aspx
+  the virtual machine requites std_main.sav that is distributed with this README.
+
+Next, to use these idl tools, you need to download some climatogies and mask files;
+that you can find here: http://dodsp.idris.fr/reee512/NEMO_OUT/ORCA2_LIM/
+
+There is the wget command to get all those files (thanks to F. Pinsard)
+wget --recursive -l2 --no-directories --no-parent -A.nc -erobots=off http://dodsp.idris.fr/reee512/NEMO_OUT/ORCA2_LIM/
+
+You will aslo need the meshmask file (set ln_meshmask = TRUE in your namelist and run the model for at least 1 time step).
+
+#----------------------------------------------------------------------
+# define your std_plot_vardef.sh or std_ts_vardef.sh file
+#----------------------------------------------------------------------
+These files are needed to define your PATHs, the experiments and variables names you used in your experiment.
+ - std_plot_vardef.sh is used to do all plots based on temporal mean (maps, vertical profiles...).
+ - std_ts_vardef.sh is used to do all time-series type of plot.
+
+To build you own std_plot_vardef.sh or std_ts_vardef.sh file; use the examples provided such as:
+ - std_ts_vardef.sh_example1 or std_ts_vardef.sh_example2
+ - std_plot_vardef.sh_example1 or std_plot_vardef.sh_example2
+
+Note that if you use the IDL Virtual Machine, the variable SAXO_DIR defined in std_plot_vardef.sh or std_ts_vardef.sh is not used. Any definition will be ok.
+
+#----------------------------------------------------------------------
+# HOW TO USE 
+#----------------------------------------------------------------------
+./std_main.sh -plot -pdf
+or
+./std_main.sh -ts -pdf
+
+
+
+
+##########################################################################################################
+# short note for developers of this package on:
+#                   How to build the tarball required for IDL virtual Machine:
+##########################################################################################################
+#
+# we need to recreate std_main.sav as soon as we change IDL programmes files as
+# std_main.sav contains all ".pro" files aready compiled to be used with the virtual machine
+#
+. ./std_plot_vardef.sh # or . ./std_ts_vardef.sh 
+idl -IDL_STARTUP initenv
+IDL> .r std_main
+IDL> resolve_all
+IDL> save, /routines, filename='std_main.sav'
+IDL> exit
+#
+#----------------------------------------------------------------------

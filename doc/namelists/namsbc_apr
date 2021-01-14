@@ -1,0 +1,13 @@
+!-----------------------------------------------------------------------
+&namsbc_apr    !   Atmospheric pressure used as ocean forcing           (ln_apr_dyn =T)
+!-----------------------------------------------------------------------
+   rn_pref     = 101000.   !  reference atmospheric pressure   [N/m2]/
+   ln_ref_apr  = .false.   !  ref. pressure: global mean Patm (T) or a constant (F)
+   ln_apr_obc  = .false.   !  inverse barometer added to OBC ssh data
+
+   cn_dir = './'        !  root directory for the Patm data location
+   !___________!_________________________!___________________!___________!_____________!________!___________!__________________!__________!_______________!
+   !           !  file name              ! frequency (hours) ! variable  ! time interp.!  clim  ! 'yearly'/ ! weights filename ! rotation ! land/sea mask !
+   !           !                         !  (if <0  months)  !   name    !   (logical) !  (T/F) ! 'monthly' !                  ! pairing  !    filename   !
+   sn_apr      = 'patm'                  ,         -1.       ,'somslpre' ,   .true.    , .true. , 'yearly'  ,    ''            ,    ''    ,      ''
+/

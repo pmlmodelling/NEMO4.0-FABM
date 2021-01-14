@@ -1,0 +1,588 @@
+\documentclass[../main/NEMO_manual]{subfiles}
+
+\begin{document}
+
+\chapter{Curvilinear $s-$Coordinate Equations}
+\label{apdx:SCOORD}
+
+%    {\em 4.0} & {\em Mike Bell} & {\em review}  \\
+%    {\em 3.x} & {\em Gurvan Madec} & {\em original}  \\
+
+\thispagestyle{plain}
+
+\chaptertoc
+
+\paragraph{Changes record} ~\\
+
+{\footnotesize
+  \begin{tabularx}{\textwidth}{l||X|X}
+    Release & Author(s) & Modifications \\
+    \hline
+    {\em   4.0} & {\em ...} & {\em ...} \\
+    {\em   3.6} & {\em ...} & {\em ...} \\
+    {\em   3.4} & {\em ...} & {\em ...} \\
+    {\em <=3.4} & {\em ...} & {\em ...}
+  \end{tabularx}
+}
+
+\clearpage
+
+\section{Chain rule for $s-$coordinates}
+\label{sec:SCOORD_chain}
+
+In order to establish the set of Primitive Equation in curvilinear $s$-coordinates
+(\ie\ an orthogonal curvilinear coordinate in the horizontal and
+an Arbitrary Lagrangian Eulerian (ALE) coordinate in the vertical),
+we start from the set of equations established in \autoref{subsec:MB_zco_Eq} for
+the special case $k = z$ and thus $e_3 = 1$,
+and we introduce an arbitrary vertical coordinate $a = a(i,j,z,t)$.
+Let us define a new vertical scale factor by $e_3 = \partial z / \partial s$ (which now depends on $(i,j,z,t)$) and
+the horizontal slope of $s-$surfaces by:
+\begin{equation}
+  \label{eq:SCOORD_s_slope}
+  \sigma_1 =\frac{1}{e_1 } \; \left. {\frac{\partial z}{\partial i}} \right|_s
+  \quad \text{and} \quad
+  \sigma_2 =\frac{1}{e_2 } \; \left. {\frac{\partial z}{\partial j}} \right|_s .
+\end{equation}
+
+The model fields (e.g. pressure $p$) can be viewed as functions of $(i,j,z,t)$ (e.g. $p(i,j,z,t)$) or as
+functions of $(i,j,s,t)$ (e.g. $p(i,j,s,t)$). The symbol $\bullet$ will be used to represent any one of
+these fields.  Any ``infinitesimal'' change in $\bullet$ can be written in two forms:
+\begin{equation}
+  \label{eq:SCOORD_s_infin_changes}
+  \begin{aligned}
+    & \delta \bullet =  \delta i \left. \frac{ \partial \bullet }{\partial i} \right|_{j,s,t}
+                + \delta j \left. \frac{ \partial \bullet }{\partial i} \right|_{i,s,t}
+                + \delta s \left. \frac{ \partial \bullet }{\partial s} \right|_{i,j,t}
+                + \delta t \left. \frac{ \partial \bullet }{\partial t} \right|_{i,j,s} , \\
+    & \delta \bullet =  \delta i \left. \frac{ \partial \bullet }{\partial i} \right|_{j,z,t}
+                + \delta j \left. \frac{ \partial \bullet }{\partial i} \right|_{i,z,t}
+                + \delta z \left. \frac{ \partial \bullet }{\partial z} \right|_{i,j,t}
+                + \delta t \left. \frac{ \partial \bullet }{\partial t} \right|_{i,j,z} .
+  \end{aligned}
+\end{equation}
+Using the first form and considering a change $\delta i$ with $j, z$ and $t$ held constant, shows that
+\begin{equation}
+  \label{eq:SCOORD_s_chain_rule1}
+      \left. {\frac{\partial \bullet }{\partial i}} \right|_{j,z,t}  =
+      \left. {\frac{\partial \bullet }{\partial i}} \right|_{j,s,t}
+    + \left. {\frac{\partial s       }{\partial i}} \right|_{j,z,t} \;
+      \left. {\frac{\partial \bullet }{\partial s}} \right|_{i,j,t} .
+\end{equation}
+The term $\left. \partial s / \partial i \right|_{j,z,t}$ can be related to the slope of constant $s$ surfaces,
+(\autoref{eq:SCOORD_s_slope}), by applying the second of (\autoref{eq:SCOORD_s_infin_changes}) with $\bullet$ set to
+$s$ and $j, t$ held constant
+\begin{equation}
+\label{eq:SCOORD_delta_s}
+\delta s|_{j,t} =
+         \delta i \left. \frac{ \partial s }{\partial i} \right|_{j,z,t}
+       + \delta z \left. \frac{ \partial s }{\partial z} \right|_{i,j,t} .
+\end{equation}
+Choosing to look at a direction in the $(i,z)$ plane in which $\delta s = 0$ and using
+(\autoref{eq:SCOORD_s_slope}) we obtain
+\begin{equation}
+\left. \frac{ \partial s }{\partial i} \right|_{j,z,t} =
+         -  \left. \frac{ \partial z }{\partial i} \right|_{j,s,t} \;
+            \left. \frac{ \partial s }{\partial z} \right|_{i,j,t}
+	 = - \frac{e_1 }{e_3 }\sigma_1  .
+\label{eq:SCOORD_ds_di_z}
+\end{equation}
+Another identity, similar in form to (\autoref{eq:SCOORD_ds_di_z}), can be derived
+by choosing $\bullet$ to be $s$ and using the second form of (\autoref{eq:SCOORD_s_infin_changes}) to consider
+changes in which $i , j$ and $s$ are constant. This shows that
+\begin{equation}
+\label{eq:SCOORD_w_in_s}
+w_s = \left. \frac{ \partial z }{\partial t} \right|_{i,j,s} =
+- \left. \frac{ \partial z }{\partial s} \right|_{i,j,t}
+  \left. \frac{ \partial s }{\partial t} \right|_{i,j,z}
+  = - e_3 \left. \frac{ \partial s }{\partial t} \right|_{i,j,z} .
+\end{equation}
+
+In what follows, for brevity, indication of the constancy of the $i, j$ and $t$ indices is
+usually omitted. Using the arguments outlined above one can show that the chain rules needed to establish
+the model equations in the curvilinear $s-$coordinate system are:
+\begin{equation}
+  \label{eq:SCOORD_s_chain_rule2}
+  \begin{aligned}
+    &\left. {\frac{\partial \bullet }{\partial t}} \right|_z  =
+    \left. {\frac{\partial \bullet }{\partial t}} \right|_s
+	 + \frac{\partial \bullet }{\partial s}\; \frac{\partial s}{\partial t} , \\
+    &\left. {\frac{\partial \bullet }{\partial i}} \right|_z  =
+    \left. {\frac{\partial \bullet }{\partial i}} \right|_s
+    +\frac{\partial \bullet }{\partial s}\; \frac{\partial s}{\partial i}=
+    \left. {\frac{\partial \bullet }{\partial i}} \right|_s
+    -\frac{e_1 }{e_3 }\sigma_1 \frac{\partial \bullet }{\partial s} , \\
+    &\left. {\frac{\partial \bullet }{\partial j}} \right|_z  =
+    \left. {\frac{\partial \bullet }{\partial j}} \right|_s
+    + \frac{\partial \bullet }{\partial s}\;\frac{\partial s}{\partial j}=
+    \left. {\frac{\partial \bullet }{\partial j}} \right|_s
+    - \frac{e_2 }{e_3 }\sigma_2 \frac{\partial \bullet }{\partial s} , \\
+    &\;\frac{\partial \bullet }{\partial z}  \;\; = \frac{1}{e_3 }\frac{\partial \bullet }{\partial s} .
+  \end{aligned}
+\end{equation}
+
+%% =================================================================================================
+\section{Continuity equation in $s-$coordinates}
+\label{sec:SCOORD_continuity}
+
+Using (\autoref{eq:SCOORD_s_chain_rule1}) and
+the fact that the horizontal scale factors $e_1$ and $e_2$ do not depend on the vertical coordinate,
+the divergence of the velocity relative to the ($i$,$j$,$z$) coordinate system is transformed as follows in order to
+obtain its expression in the curvilinear $s-$coordinate system:
+
+\begin{subequations}
+  \begin{align*}
+    {
+    \begin{array}{*{20}l}
+      \nabla \cdot {\mathrm {\mathbf U}}
+      &= \frac{1}{e_1 \,e_2 }  \left[ \left. {\frac{\partial (e_2 \,u)}{\partial i}} \right|_z
+        +\left. {\frac{\partial(e_1 \,v)}{\partial j}} \right|_z  \right]
+        + \frac{\partial w}{\partial z} \\ \\
+      &     = \frac{1}{e_1 \,e_2 }  \left[
+		  \left.   \frac{\partial (e_2 \,u)}{\partial i}    \right|_s
+		  - \frac{e_1 }{e_3 } \sigma_1 \frac{\partial (e_2 \,u)}{\partial s}
+        + \left.   \frac{\partial (e_1 \,v)}{\partial j}    \right|_s
+		  - \frac{e_2 }{e_3 } \sigma_2 \frac{\partial (e_1 \,v)}{\partial s}	\right]
+        + \frac{\partial w}{\partial s} \; \frac{\partial s}{\partial z} \\ \\
+      &     = \frac{1}{e_1 \,e_2 }   \left[
+		  \left.   \frac{\partial (e_2 \,u)}{\partial i}    \right|_s
+        + \left.   \frac{\partial (e_1 \,v)}{\partial j}    \right|_s       	\right]
+        + \frac{1}{e_3 }\left[        \frac{\partial w}{\partial s}
+        -  \sigma_1 \frac{\partial u}{\partial s}
+        -  \sigma_2 \frac{\partial v}{\partial s}      \right] \\ \\
+      &     = \frac{1}{e_1 \,e_2 \,e_3 }   \left[
+		  \left.   \frac{\partial (e_2 \,e_3 \,u)}{\partial i}    \right|_s
+		  -\left.    e_2 \,u    \frac{\partial e_3 }{\partial i}     \right|_s
+        + \left.  \frac{\partial (e_1 \,e_3 \,v)}{\partial j}    \right|_s
+		  - \left.    e_1 v      \frac{\partial e_3 }{\partial j}    \right|_s   \right] \\
+      & \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad
+        + \frac{1}{e_3 } \left[        \frac{\partial w}{\partial s}
+        -  \sigma_1 \frac{\partial u}{\partial s}
+        -  \sigma_2 \frac{\partial v}{\partial s}      \right]      \\
+      %
+      \intertext{Noting that $
+      \frac{1}{e_1} \left.{ \frac{\partial e_3}{\partial i}} \right|_s
+      =\frac{1}{e_1} \left.{ \frac{\partial^2 z}{\partial i\,\partial s}} \right|_s
+      =\frac{\partial}{\partial s} \left( {\frac{1}{e_1 } \left.{ \frac{\partial z}{\partial i} }\right|_s } \right)
+      =\frac{\partial \sigma_1}{\partial s}
+      $ and $
+      \frac{1}{e_2 }\left. {\frac{\partial e_3 }{\partial j}} \right|_s
+      =\frac{\partial \sigma_2}{\partial s}
+      $, it becomes:}
+    %
+      \nabla \cdot {\mathrm {\mathbf U}}
+      & = \frac{1}{e_1 \,e_2 \,e_3 }  \left[
+		  \left.  \frac{\partial (e_2 \,e_3 \,u)}{\partial i} \right|_s
+        +\left.  \frac{\partial (e_1 \,e_3 \,v)}{\partial j} \right|_s        \right] \\
+      & \qquad \qquad \qquad \qquad \quad
+        +\frac{1}{e_3 }\left[ {\frac{\partial w}{\partial s}-u\frac{\partial \sigma_1 }{\partial s}-v\frac{\partial \sigma_2 }{\partial s}-\sigma_1 \frac{\partial u}{\partial s}-\sigma_2 \frac{\partial v}{\partial s}} \right] \\
+      \\
+      & = \frac{1}{e_1 \,e_2 \,e_3 }  \left[
+		  \left.  \frac{\partial (e_2 \,e_3 \,u)}{\partial i} \right|_s
+        +\left.  \frac{\partial (e_1 \,e_3 \,v)}{\partial j} \right|_s        \right]
+        + \frac{1}{e_3 } \; \frac{\partial}{\partial s}   \left[  w -  u\;\sigma_1  - v\;\sigma_2  \right]
+    \end{array}
+        }
+  \end{align*}
+\end{subequations}
+
+Here, $w$ is the vertical velocity relative to the $z-$coordinate system.
+Using the first form of (\autoref{eq:SCOORD_s_infin_changes})
+and the definitions (\autoref{eq:SCOORD_s_slope}) and (\autoref{eq:SCOORD_w_in_s}) for $\sigma_1$, $\sigma_2$ and  $w_s$,
+one can show that the vertical velocity, $w_p$ of a point
+moving with the horizontal velocity of the fluid along an $s$ surface is given by
+\begin{equation}
+\label{eq:SCOORD_w_p}
+\begin{split}
+w_p  = & \left. \frac{ \partial z }{\partial t} \right|_s
+     + \frac{u}{e_1} \left. \frac{ \partial z }{\partial i} \right|_s
+     + \frac{v}{e_2} \left. \frac{ \partial z }{\partial j} \right|_s \\
+     = & w_s + u \sigma_1 + v \sigma_2 .
+\end{split}
+\end{equation}
+ The vertical velocity across this surface is denoted by
+\begin{equation}
+  \label{eq:SCOORD_w_s}
+  \omega  = w - w_p = w - ( w_s + \sigma_1 \,u + \sigma_2 \,v )  .
+\end{equation}
+Hence
+\begin{equation}
+\frac{1}{e_3 } \frac{\partial}{\partial s}   \left[  w -  u\;\sigma_1  - v\;\sigma_2  \right] =
+\frac{1}{e_3 } \frac{\partial}{\partial s} \left[  \omega + w_s \right] =
+   \frac{1}{e_3 } \left[ \frac{\partial \omega}{\partial s}
+ + \left. \frac{ \partial }{\partial t} \right|_s \frac{\partial z}{\partial s} \right] =
+   \frac{1}{e_3 } \frac{\partial \omega}{\partial s} + \frac{1}{e_3 } \left. \frac{ \partial e_3}{\partial t} . \right|_s
+\end{equation}
+
+Using (\autoref{eq:SCOORD_w_s}) in our expression for $\nabla \cdot {\mathrm {\mathbf U}}$ we obtain
+our final expression for the divergence of the velocity in the curvilinear $s-$coordinate system:
+\begin{equation}
+      \nabla \cdot {\mathrm {\mathbf U}} =
+         \frac{1}{e_1 \,e_2 \,e_3 }    \left[
+		  \left.  \frac{\partial (e_2 \,e_3 \,u)}{\partial i} \right|_s
+        +\left.  \frac{\partial (e_1 \,e_3 \,v)}{\partial j} \right|_s        \right]
+        + \frac{1}{e_3 } \frac{\partial \omega }{\partial s}
+        + \frac{1}{e_3 } \left. \frac{\partial e_3}{\partial t} \right|_s .
+\end{equation}
+
+As a result, the continuity equation \autoref{eq:MB_PE_continuity} in the $s-$coordinates is:
+\begin{equation}
+  \label{eq:SCOORD_sco_Continuity}
+  \frac{1}{e_3 } \frac{\partial e_3}{\partial t}
+  + \frac{1}{e_1 \,e_2 \,e_3 }\left[
+    {\left. {\frac{\partial (e_2 \,e_3 \,u)}{\partial i}} \right|_s
+      +  \left. {\frac{\partial (e_1 \,e_3 \,v)}{\partial j}} \right|_s } \right]
+  +\frac{1}{e_3 }\frac{\partial \omega }{\partial s} = 0 .
+\end{equation}
+An additional term has appeared that takes into account
+the contribution of the time variation of the vertical coordinate to the volume budget.
+
+%% =================================================================================================
+\section{Momentum equation in $s-$coordinate}
+\label{sec:SCOORD_momentum}
+
+Here we only consider the first component of the momentum equation,
+the generalization to the second one being straightforward.
+
+$\bullet$ \textbf{Total derivative in vector invariant form}
+
+Let us consider \autoref{eq:MB_dyn_vect}, the first component of the momentum equation in the vector invariant form.
+Its total $z-$coordinate time derivative,
+$\left. \frac{D u}{D t} \right|_z$ can be transformed as follows in order to obtain
+its expression in the curvilinear $s-$coordinate system:
+
+\begin{subequations}
+  \begin{align*}
+    {
+    \begin{array}{*{20}l}
+      \left. \frac{D u}{D t} \right|_z
+      &= \left. {\frac{\partial u }{\partial t}} \right|_z
+        - \left. \zeta \right|_z v
+        + \frac{1}{2e_1} \left.{ \frac{\partial (u^2+v^2)}{\partial i}} \right|_z
+        + w \;\frac{\partial u}{\partial z} \\ \\
+      &= \left. {\frac{\partial u }{\partial t}} \right|_z
+        -  \frac{1}{e_1 \,e_2 }\left[ { \left.{ \frac{\partial (e_2 \,v)}{\partial i} }\right|_z
+        -\left.{ \frac{\partial (e_1 \,u)}{\partial j} }\right|_z } \right] \; v
+        +  \frac{1}{2e_1} \left.{ \frac{\partial (u^2+v^2)}{\partial i} } \right|_z
+        +  w \;\frac{\partial u}{\partial z}      \\
+        %
+      \intertext{introducing the chain rule (\autoref{eq:SCOORD_s_chain_rule1}) }
+      %
+      &= \left. {\frac{\partial u }{\partial t}} \right|_z
+        - \frac{1}{e_1\,e_2}\left[ { \left.{ \frac{\partial (e_2 \,v)}{\partial i} } \right|_s
+        -\left.{ \frac{\partial (e_1 \,u)}{\partial j} } \right|_s } \right.
+        \left. {-\frac{e_1}{e_3}\sigma_1 \frac{\partial (e_2 \,v)}{\partial s}
+        +\frac{e_2}{e_3}\sigma_2 \frac{\partial (e_1 \,u)}{\partial s}} \right] \; v  \\
+      & \qquad \qquad \qquad \qquad
+        {
+        + \frac{1}{2e_1} \left(                                  \left.  \frac{\partial (u^2+v^2)}{\partial i} \right|_s
+        - \frac{e_1}{e_3}\sigma_1 \frac{\partial (u^2+v^2)}{\partial s}               \right)
+        + \frac{w}{e_3 } \;\frac{\partial u}{\partial s}
+        } \\ \\
+      &= \left. {\frac{\partial u }{\partial t}} \right|_z
+        - \left. \zeta \right|_s \;v
+        + \frac{1}{2\,e_1}\left. {\frac{\partial (u^2+v^2)}{\partial i}} \right|_s \\
+      &\qquad \qquad \qquad \quad
+        + \frac{w}{e_3 } \;\frac{\partial u}{\partial s}
+        + \left[   {\frac{\sigma_1 }{e_3 }\frac{\partial v}{\partial s}
+        - \frac{\sigma_2 }{e_3 }\frac{\partial u}{\partial s}}   \right]\;v
+        - \frac{\sigma_1 }{2e_3 }\frac{\partial (u^2+v^2)}{\partial s} \\ \\
+      &= \left. {\frac{\partial u }{\partial t}} \right|_z
+        - \left. \zeta \right|_s \;v
+        + \frac{1}{2\,e_1}\left. {\frac{\partial (u^2+v^2)}{\partial i}} \right|_s \\
+      &\qquad \qquad \qquad \quad
+        + \frac{1}{e_3} \left[    {w\frac{\partial u}{\partial s}
+        +\sigma_1 v\frac{\partial v}{\partial s} - \sigma_2 v\frac{\partial u}{\partial s}
+        - \sigma_1 u\frac{\partial u}{\partial s} - \sigma_1 v\frac{\partial v}{\partial s}} \right] \\ \\
+      &= \left. {\frac{\partial u }{\partial t}} \right|_z
+        - \left. \zeta \right|_s \;v
+        + \frac{1}{2\,e_1}\left. {\frac{\partial (u^2+v^2)}{\partial i}} \right|_s
+        + \frac{1}{e_3} \left[  w - \sigma_2 v - \sigma_1 u  \right]
+        \; \frac{\partial u}{\partial s} .  \\
+        %
+      \intertext{Introducing $\omega$, the dia-s-surface velocity given by (\autoref{eq:SCOORD_w_s}) }
+      %
+      &= \left. {\frac{\partial u }{\partial t}} \right|_z
+        - \left. \zeta \right|_s \;v
+        + \frac{1}{2\,e_1}\left. {\frac{\partial (u^2+v^2)}{\partial i}} \right|_s
+        + \frac{1}{e_3 } \left( \omega + w_s \right) \frac{\partial u}{\partial s}   \\
+    \end{array}
+    }
+  \end{align*}
+\end{subequations}
+Applying the time derivative chain rule (first equation of (\autoref{eq:SCOORD_s_chain_rule1})) to $u$ and
+using (\autoref{eq:SCOORD_w_in_s}) provides the expression of the last term of the right hand side,
+\[
+  {
+    \begin{array}{*{20}l}
+      \frac{w_s}{e_3}  \;\frac{\partial u}{\partial s}
+      = - \left. \frac{\partial s}{\partial t} \right|_z \;  \frac{\partial u }{\partial s}
+      = \left. {\frac{\partial u }{\partial t}} \right|_s  - \left. {\frac{\partial u }{\partial t}} \right|_z \ .
+    \end{array}
+  }
+\]
+This leads to the $s-$coordinate formulation of the total $z-$coordinate time derivative,
+\ie\ the total $s-$coordinate time derivative :
+\begin{align}
+  \label{eq:SCOORD_sco_Dt_vect}
+  \left. \frac{D u}{D t} \right|_s
+  = \left. {\frac{\partial u }{\partial t}} \right|_s
+  - \left. \zeta \right|_s \;v
+  + \frac{1}{2\,e_1}\left. {\frac{\partial (u^2+v^2)}{\partial i}} \right|_s
+  + \frac{1}{e_3 } \omega \;\frac{\partial u}{\partial s} .
+\end{align}
+Therefore, the vector invariant form of the total time derivative has exactly the same mathematical form in
+$z-$ and $s-$coordinates.
+This is not the case for the flux form as shown in next paragraph.
+
+$\bullet$ \textbf{Total derivative in flux form}
+
+Let us start from the total time derivative in the curvilinear $s-$coordinate system we have just establish.
+Following the procedure used to establish (\autoref{eq:MB_flux_form}), it can be transformed into :
+% \begin{subequations}
+\begin{align*}
+  {
+  \begin{array}{*{20}l}
+    \left. \frac{D u}{D t} \right|_s  &= \left. {\frac{\partial u }{\partial t}} \right|_s
+    & -  \zeta \;v
+      + \frac{1}{2\;e_1 } \frac{\partial \left( {u^2+v^2} \right)}{\partial i}
+      + \frac{1}{e_3} \omega \;\frac{\partial u}{\partial s} \\ \\
+                                      &= \left. {\frac{\partial u }{\partial t}} \right|_s
+    &+\frac{1}{e_1\;e_2}  \left(    \frac{\partial \left( {e_2 \,u\,u } \right)}{\partial i}
+      + \frac{\partial \left( {e_1 \,u\,v } \right)}{\partial j}     \right)
+      + \frac{1}{e_3 } \frac{\partial \left( {\omega\,u} \right)}{\partial s} \\ \\
+                                      &&- \,u \left[     \frac{1}{e_1 e_2 } \left(    \frac{\partial(e_2 u)}{\partial i}
+                                         + \frac{\partial(e_1 v)}{\partial j}    \right)
+                                         + \frac{1}{e_3}        \frac{\partial \omega}{\partial s}                       \right] \\ \\
+                                      &&- \frac{v}{e_1 e_2 }\left(    v	\;\frac{\partial e_2 }{\partial i}
+                                         -u	\;\frac{\partial e_1 }{\partial j} 	\right) . \\
+  \end{array}
+  }
+\end{align*}
+Introducing the vertical scale factor inside the horizontal derivative of the first two terms
+(\ie\ the horizontal divergence), it becomes :
+\begin{align*}
+  {
+  \begin{array}{*{20}l}
+    % \begin{align*} {\begin{array}{*{20}l}
+    %     {\begin{array}{*{20}l} \left. \frac{D u}{D t} \right|_s
+    &= \left. {\frac{\partial u }{\partial t}} \right|_s
+    &+ \frac{1}{e_1\,e_2\,e_3}  \left(  \frac{\partial( e_2 e_3 \,u^2 )}{\partial i}
+      + \frac{\partial( e_1 e_3 \,u v )}{\partial j}
+      -  e_2 u u \frac{\partial e_3}{\partial i}
+      -  e_1 u v \frac{\partial e_3 }{\partial j}    \right)
+      + \frac{1}{e_3} \frac{\partial \left( {\omega\,u} \right)}{\partial s} \\ \\
+    && - \,u \left[  \frac{1}{e_1 e_2 e_3} \left(   \frac{\partial(e_2 e_3 \, u)}{\partial i}
+       + \frac{\partial(e_1 e_3 \, v)}{\partial j}
+       -  e_2 u \;\frac{\partial e_3 }{\partial i}
+       -  e_1 v \;\frac{\partial e_3 }{\partial j}   \right)
+       + \frac{1}{e_3}        \frac{\partial \omega}{\partial s}                       \right] \\ \\
+    && - \frac{v}{e_1 e_2 }\left( 	v  \;\frac{\partial e_2 }{\partial i}
+       -u  \;\frac{\partial e_1 }{\partial j} 	\right) \\ \\
+    &= \left. {\frac{\partial u }{\partial t}} \right|_s
+    &+ \frac{1}{e_1\,e_2\,e_3}  \left(  \frac{\partial( e_2 e_3 \,u\,u )}{\partial i}
+      + \frac{\partial( e_1 e_3 \,u\,v )}{\partial j}    \right)
+      + \frac{1}{e_3 } \frac{\partial \left( {\omega\,u} \right)}{\partial s} \\ \\
+    && - \,u \left[  \frac{1}{e_1 e_2 e_3} \left(   \frac{\partial(e_2 e_3 \, u)}{\partial i}
+       + \frac{\partial(e_1 e_3 \, v)}{\partial j}  \right)
+       + \frac{1}{e_3}        \frac{\partial \omega}{\partial s}                       \right]
+       - \frac{v}{e_1 e_2 }\left( 	v   \;\frac{\partial e_2 }{\partial i}
+       -u   \;\frac{\partial e_1 }{\partial j} 	\right)     .             \\
+     %
+    \intertext {Introducing a more compact form for the divergence of the momentum fluxes,
+    and using (\autoref{eq:SCOORD_sco_Continuity}), the $s-$coordinate continuity equation,
+    it becomes : }
+  %
+    &= \left. {\frac{\partial u }{\partial t}} \right|_s
+    &+ \left.  \nabla \cdot \left(   {{\mathrm {\mathbf U}}\,u}   \right)    \right|_s
+      + \,u \frac{1}{e_3 } \frac{\partial e_3}{\partial t}
+      - \frac{v}{e_1 e_2 }\left(    v  \;\frac{\partial e_2 }{\partial i}
+      -u  \;\frac{\partial e_1 }{\partial j} 	\right)
+    \\
+  \end{array}
+  }
+\end{align*}
+which leads to the $s-$coordinate flux formulation of the total $s-$coordinate time derivative,
+\ie\ the total $s-$coordinate time derivative in flux form:
+\begin{flalign}
+  \label{eq:SCOORD_sco_Dt_flux}
+  \left. \frac{D u}{D t} \right|_s   = \frac{1}{e_3}  \left. \frac{\partial ( e_3\,u)}{\partial t} \right|_s
+  + \left.  \nabla \cdot \left(   {{\mathrm {\mathbf U}}\,u}   \right)    \right|_s
+  - \frac{v}{e_1 e_2 }\left(    v  \;\frac{\partial e_2 }{\partial i}
+    -u  \;\frac{\partial e_1 }{\partial j}            \right).
+\end{flalign}
+which is the total time derivative expressed in the curvilinear $s-$coordinate system.
+It has the same form as in the $z-$coordinate but for
+the vertical scale factor that has appeared inside the time derivative which
+comes from the modification of (\autoref{eq:SCOORD_sco_Continuity}),
+the continuity equation.
+
+$\bullet$ \textbf{horizontal pressure gradient}
+
+The horizontal pressure gradient term can be transformed as follows:
+\[
+  \begin{split}
+    -\frac{1}{\rho_o \, e_1 }\left. {\frac{\partial p}{\partial i}} \right|_z
+    & =-\frac{1}{\rho_o e_1 }\left[ {\left. {\frac{\partial p}{\partial i}} \right|_s -\frac{e_1 }{e_3 }\sigma_1 \frac{\partial p}{\partial s}} \right] \\
+    & =-\frac{1}{\rho_o \,e_1 }\left. {\frac{\partial p}{\partial i}} \right|_s +\frac{\sigma_1 }{\rho_o \,e_3 }\left( {-g\;\rho \;e_3 } \right) \\
+    &=-\frac{1}{\rho_o \,e_1 }\left. {\frac{\partial p}{\partial i}} \right|_s -\frac{g\;\rho }{\rho_o }\sigma_1 .
+  \end{split}
+\]
+Applying similar manipulation to the second component and
+replacing $\sigma_1$ and $\sigma_2$ by their expression \autoref{eq:SCOORD_s_slope}, it becomes:
+\begin{equation}
+  \label{eq:SCOORD_grad_p_1}
+  \begin{split}
+    -\frac{1}{\rho_o \, e_1 } \left. {\frac{\partial p}{\partial i}} \right|_z
+    &=-\frac{1}{\rho_o \,e_1 } \left(     \left.              {\frac{\partial p}{\partial i}} \right|_s
+      + g\;\rho  \;\left. {\frac{\partial z}{\partial i}} \right|_s    \right) \\
+             %
+    -\frac{1}{\rho_o \, e_2 }\left. {\frac{\partial p}{\partial j}} \right|_z
+    &=-\frac{1}{\rho_o \,e_2 } \left(    \left.               {\frac{\partial p}{\partial j}} \right|_s
+      + g\;\rho \;\left. {\frac{\partial z}{\partial j}} \right|_s   \right) . \\
+  \end{split}
+\end{equation}
+
+An additional term appears in (\autoref{eq:SCOORD_grad_p_1}) which accounts for
+the tilt of $s-$surfaces with respect to geopotential $z-$surfaces.
+
+As in $z$-coordinate,
+the horizontal pressure gradient can be split in two parts following \citet{marsaleix.auclair.ea_OM08}.
+Let defined a density anomaly, $d$, by $d=(\rho - \rho_o)/ \rho_o$,
+and a hydrostatic pressure anomaly, $p_h'$, by $p_h'= g \; \int_z^\eta d \; e_3 \; dk$.
+The pressure is then given by:
+\[
+  \begin{split}
+    p &= g\; \int_z^\eta \rho \; e_3 \; dk = g\; \int_z^\eta \rho_o \left( d + 1 \right) \; e_3 \; dk   \\
+    &= g \, \rho_o \; \int_z^\eta d \; e_3 \; dk + \rho_o g \, \int_z^\eta e_3 \; dk .
+  \end{split}
+\]
+Therefore, $p$ and $p_h'$ are linked through:
+\begin{equation}
+  \label{eq:SCOORD_pressure}
+  p = \rho_o \; p_h' + \rho_o \, g \, ( \eta - z )
+\end{equation}
+and the hydrostatic pressure balance expressed in terms of $p_h'$ and $d$ is:
+\[
+  \frac{\partial p_h'}{\partial k} = - d \, g \, e_3 .
+\]
+
+Substituing \autoref{eq:SCOORD_pressure} in \autoref{eq:SCOORD_grad_p_1} and
+using the definition of the density anomaly it becomes an expression in two parts:
+\begin{equation}
+  \label{eq:SCOORD_grad_p_2}
+  \begin{split}
+    -\frac{1}{\rho_o \, e_1 } \left. {\frac{\partial p}{\partial i}} \right|_z
+    &=-\frac{1}{e_1 } \left(     \left.              {\frac{\partial p_h'}{\partial i}} \right|_s
+      + g\; d  \;\left. {\frac{\partial z}{\partial i}} \right|_s    \right)  - \frac{g}{e_1 } \frac{\partial \eta}{\partial i} ,  \\
+             %
+    -\frac{1}{\rho_o \, e_2 }\left. {\frac{\partial p}{\partial j}} \right|_z
+    &=-\frac{1}{e_2 } \left(    \left.               {\frac{\partial p_h'}{\partial j}} \right|_s
+      + g\; d \;\left. {\frac{\partial z}{\partial j}} \right|_s   \right)  - \frac{g}{e_2 } \frac{\partial \eta}{\partial j} . \\
+  \end{split}
+\end{equation}
+This formulation of the pressure gradient is characterised by the appearance of
+a term depending on the sea surface height only
+(last term on the right hand side of expression \autoref{eq:SCOORD_grad_p_2}).
+This term will be loosely termed \textit{surface pressure gradient} whereas
+the first term will be termed the \textit{hydrostatic pressure gradient} by analogy to
+the $z$-coordinate formulation.
+In fact, the true surface pressure gradient is $1/\rho_o \nabla (\rho \eta)$,
+and $\eta$ is implicitly included in the computation of $p_h'$ through the upper bound of the vertical integration.
+
+$\bullet$ \textbf{The other terms of the momentum equation}
+
+The coriolis and forcing terms as well as the the vertical physics remain unchanged as
+they involve neither time nor space derivatives.
+The form of the lateral physics is discussed in \autoref{apdx:DIFFOPERS}.
+
+$\bullet$ \textbf{Full momentum equation}
+
+To sum up, in a curvilinear $s$-coordinate system,
+the vector invariant momentum equation solved by the model has the same mathematical expression as
+the one in a curvilinear $z-$coordinate, except for the pressure gradient term:
+\begin{subequations}
+  \label{eq:SCOORD_dyn_vect}
+  \begin{multline}
+    \label{eq:SCOORD_PE_dyn_vect_u}
+    \frac{\partial u}{\partial t}=
+    +   \left( {\zeta +f} \right)\,v
+    -   \frac{1}{2\,e_1} \frac{\partial}{\partial i} \left(  u^2+v^2   \right)
+    -   \frac{1}{e_3} \omega \frac{\partial u}{\partial k}       \\
+    -   \frac{1}{e_1 } \left(    \frac{\partial p_h'}{\partial i} + g\; d  \; \frac{\partial z}{\partial i}    \right)
+    -   \frac{g}{e_1 } \frac{\partial \eta}{\partial i}
+    +   D_u^{\vect{U}}  +   F_u^{\vect{U}} ,
+  \end{multline}
+  \begin{multline}
+    \label{eq:SCOORD_dyn_vect_v}
+    \frac{\partial v}{\partial t}=
+    -   \left( {\zeta +f} \right)\,u
+    -   \frac{1}{2\,e_2 }\frac{\partial }{\partial j}\left(  u^2+v^2  \right)
+    -   \frac{1}{e_3 } \omega \frac{\partial v}{\partial k}         \\
+    -   \frac{1}{e_2 } \left(    \frac{\partial p_h'}{\partial j} + g\; d  \; \frac{\partial z}{\partial j}    \right)
+    -   \frac{g}{e_2 } \frac{\partial \eta}{\partial j}
+    +  D_v^{\vect{U}}  +   F_v^{\vect{U}} .
+  \end{multline}
+\end{subequations}
+whereas the flux form momentum equation differs from it by
+the formulation of both the time derivative and the pressure gradient term:
+\begin{subequations}
+  \label{eq:SCOORD_dyn_flux}
+  \begin{multline}
+    \label{eq:SCOORD_PE_dyn_flux_u}
+    \frac{1}{e_3} \frac{\partial \left(  e_3\,u  \right) }{\partial t} =
+    - \nabla \cdot \left(   {{\mathrm {\mathbf U}}\,u}   \right)
+    +   \left\{ {f + \frac{1}{e_1 e_2 }\left(    v  \;\frac{\partial e_2 }{\partial i}
+          -u  \;\frac{\partial e_1 }{\partial j}            \right)} \right\} \,v     \\
+    -   \frac{1}{e_1 } \left(    \frac{\partial p_h'}{\partial i} + g\; d  \; \frac{\partial z}{\partial i}    \right)
+    -   \frac{g}{e_1 } \frac{\partial \eta}{\partial i}
+    +   D_u^{\vect{U}}  +   F_u^{\vect{U}} ,
+  \end{multline}
+  \begin{multline}
+    \label{eq:SCOORD_dyn_flux_v}
+    \frac{1}{e_3}\frac{\partial \left(  e_3\,v  \right) }{\partial t}=
+    -  \nabla \cdot \left(   {{\mathrm {\mathbf U}}\,v}   \right)
+    -   \left\{ {f + \frac{1}{e_1 e_2 }\left(    v  \;\frac{\partial e_2 }{\partial i}
+          -u  \;\frac{\partial e_1 }{\partial j}            \right)} \right\} \,u     \\
+    -   \frac{1}{e_2 } \left(    \frac{\partial p_h'}{\partial j} + g\; d  \; \frac{\partial z}{\partial j}    \right)
+    -   \frac{g}{e_2 } \frac{\partial \eta}{\partial j}
+    +  D_v^{\vect{U}}  +   F_v^{\vect{U}} .
+  \end{multline}
+\end{subequations}
+Both formulation share the same hydrostatic pressure balance expressed in terms of
+hydrostatic pressure and density anomalies, $p_h'$ and $d=( \frac{\rho}{\rho_o}-1 )$:
+\begin{equation}
+  \label{eq:SCOORD_dyn_zph}
+  \frac{\partial p_h'}{\partial k} = - d \, g \, e_3 .
+\end{equation}
+
+It is important to realize that the change in coordinate system has only concerned the position on the vertical.
+It has not affected (\textbf{i},\textbf{j},\textbf{k}), the orthogonal curvilinear set of unit vectors.
+($u$,$v$) are always horizontal velocities so that their evolution is driven by \emph{horizontal} forces,
+in particular the pressure gradient.
+By contrast, $\omega$ is not $w$, the third component of the velocity, but the dia-surface velocity component,
+\ie\ the volume flux across the moving $s$-surfaces per unit horizontal area.
+
+%% =================================================================================================
+\section{Tracer equation}
+\label{sec:SCOORD_tracer}
+
+The tracer equation is obtained using the same calculation as for the continuity equation and then
+regrouping the time derivative terms in the left hand side :
+
+\begin{multline}
+  \label{eq:SCOORD_tracer}
+  \frac{1}{e_3} \frac{\partial \left(  e_3 T  \right)}{\partial t}
+  = -\frac{1}{e_1 \,e_2 \,e_3}
+  \left[           \frac{\partial }{\partial i} \left( {e_2 \,e_3 \;Tu} \right)
+    +   \frac{\partial }{\partial j} \left( {e_1 \,e_3 \;Tv} \right)               \right]       \\
+  -  \frac{1}{e_3}  \frac{\partial }{\partial k} \left(                   Tw  \right)
+  +  D^{T} +F^{T}
+\end{multline}
+
+The expression for the advection term is a straight consequence of (\autoref{eq:SCOORD_sco_Continuity}),
+the expression of the 3D divergence in the $s-$coordinates established above.
+
+\subinc{\input{../../global/epilogue}}
+
+\end{document}
