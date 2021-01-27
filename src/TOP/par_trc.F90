@@ -14,6 +14,10 @@ MODULE par_trc
    USE par_c14           ! C14 tracer    parameters
    USE par_age           ! AGE tracer    parameters
    USE par_my_trc        ! MY_TRC model  parameters
+   ! +++>>> FABM
+   USE par_fabm      ! FABM
+   ! FABM <<<+++
+
    !
 
    IMPLICIT NONE

@@ -54,6 +54,9 @@ CONTAINS
       INTEGER, INTENT(in) ::   kt   ! ocean time-step index
       !
       CHARACTER (len=22) :: charout
+      ! +++>>> FABM
+      INTEGER :: jn
+      ! FABM <<<+++
       !!----------------------------------------------------------------------
       !
       IF( ln_timing )   CALL timing_start('trc_rad')
@@ -63,6 +66,16 @@ CONTAINS
       IF( ln_c14     )   CALL trc_rad_sms( kt, trb, trn, jp_c14 , jp_c14                )  !  C14
       IF( ln_pisces  )   CALL trc_rad_sms( kt, trb, trn, jp_pcs0, jp_pcs1, cpreserv='Y' )  !  PISCES model
       IF( ln_my_trc  )   CALL trc_rad_sms( kt, trb, trn, jp_myt0, jp_myt1               )  !  MY_TRC model
+      !
+      ! +++>>> FABM
+      IF( ln_fabm  )   THEN
+        DO jn=1,jp_fabm ! state variable loop
+          IF (lk_rad_fabm(jn)) THEN
+           CALL trc_rad_sms( kt, trb, trn, jn+jp_fabm_m1 , jn+jp_fabm_m1 )
+          ENDIF
+        END DO
+      END IF
+      ! FABM <<<+++
       !
       IF(ln_ctl) THEN      ! print mean trends (used for debugging)
          WRITE(charout, FMT="('rad')")

@@ -25,6 +25,10 @@ MODULE trcini
    USE lib_mpp         ! distribued memory computing library
    USE trcice          ! tracers in sea ice
    USE trcbc,   only : trc_bc_ini ! generalized Boundary Conditions
+   ! +++>>> FABM
+   USE trcsms_fabm     ! FABM initialisation
+   USE trcini_fabm     ! FABM initialisation
+   ! FABM <<<+++
  
    IMPLICIT NONE
    PRIVATE
@@ -57,6 +61,10 @@ CONTAINS
       IF(lwp) WRITE(numout,*) 'trc_init : initial set up of the passive tracers'
       IF(lwp) WRITE(numout,*) '~~~~~~~~'
       !
+      ! +++>>> FABM
+      ! Allow FABM to update numbers of biogeochemical tracers, diagnostics (jptra etc.)
+      IF( ln_fabm ) CALL nemo_fabm_init
+      ! FABM <<<+++
       CALL trc_nam       ! read passive tracers namelists
       CALL top_alloc()   ! allocate TOP arrays
       !
@@ -163,6 +171,10 @@ CONTAINS
       IF( ll_cfc         )   CALL trc_ini_cfc        !  CFC's
       IF( ln_c14         )   CALL trc_ini_c14        !  C14 model
       IF( ln_age         )   CALL trc_ini_age        !  AGE
+      ! +++>>> FABM
+      IF( ln_fabm    )   CALL trc_ini_fabm       ! FABM tracers
+      ! FABM <<<+++
+
       !
       IF(lwp) THEN                   ! control print
          WRITE(numout,*)
@@ -248,7 +260,15 @@ CONTAINS
         trb(:,:,:,:) = trn(:,:,:,:)
         ! 
       ENDIF
-      !
+      ! FABM +++>>>
+      ! Initialisation of FABM diagnostics and tracer boundary conditions (so that you can use initial condition as boundary)
+      IF( ln_fabm )     THEN
+          wndm=0._wp !uninitialised field at this point
+          qsr=0._wp !uninitialised field at this point
+          CALL trc_bc_ini(jptra)  ! initialise bdy data
+          CALL compute_fabm ! only needed to set-up diagnostics
+      ENDIF
+      ! FABM <<<+++
       tra(:,:,:,:) = 0._wp
       !                                                         ! Partial top/bottom cell: GRADh(trn)
    END SUBROUTINE trc_ini_state

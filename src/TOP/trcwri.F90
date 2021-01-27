@@ -21,6 +21,9 @@ MODULE trcwri
    USE trcwri_c14
    USE trcwri_age
    USE trcwri_my_trc
+   ! +++>>> FABM
+   USE trcwri_fabm
+   ! FABM <<<+++
 
    IMPLICIT NONE
    PRIVATE
@@ -69,6 +72,9 @@ CONTAINS
       IF( ln_c14     )   CALL trc_wri_c14        ! surface fluxes of C14
       IF( ln_age     )   CALL trc_wri_age        ! AGE tracer
       IF( ln_my_trc  )   CALL trc_wri_my_trc     ! MY_TRC  tracers
+      ! +++>>>FABM
+      IF( ln_fabm    )   CALL trc_wri_fabm      ! FABM tracers
+      ! FABM <<<+++
       !
       IF( ln_timing )   CALL timing_stop('trc_wri')
       !

@@ -9,14 +9,15 @@ MODULE trc
    !!----------------------------------------------------------------------
    USE par_oce
    USE par_trc
-   USE bdy_oce, only: jp_bdy, ln_bdy, nb_bdy, OBC_DATA
+   USE bdy_oce, only: ln_bdy, nb_bdy, OBC_DATA
    
    IMPLICIT NONE
    PUBLIC
 
    PUBLIC   trc_alloc   ! called by nemogcm.F90
 
-   !                                     !!- logical units of passive tracers
+   !! logical units of passive tracers
+   !! ----------------------------------
    INTEGER, PUBLIC ::   numnat_ref = -1   !: reference passive tracer namelist_top_ref
    INTEGER, PUBLIC ::   numnat_cfg = -1   !: reference passive tracer namelist_top_cfg
    INTEGER, PUBLIC ::   numont     = -1   !: reference passive tracer namelist output output.namelist.top
@@ -78,11 +79,9 @@ MODULE trc
          REAL(wp)         :: trc_prescr   ! prescribed ice trc cc
          CHARACTER(len=2) :: ctrc_o       ! choice of ocean trc cc
    END TYPE
-   !
    REAL(wp)        , PUBLIC, ALLOCATABLE, SAVE, DIMENSION(:) ::   trc_ice_ratio    !: ice-ocean tracer ratio
    REAL(wp)        , PUBLIC, ALLOCATABLE, SAVE, DIMENSION(:) ::   trc_ice_prescr   !: prescribed ice trc cc
    CHARACTER(len=2), PUBLIC, ALLOCATABLE, SAVE, DIMENSION(:) ::   cn_trc_o         !: choice of ocean tracer cc
-
 
    !! information for outputs
    !! --------------------------------------------------
@@ -90,12 +89,20 @@ MODULE trc
       CHARACTER(len=20) ::   clsname   ! short name
       CHARACTER(len=80) ::   cllname   ! long name
       CHARACTER(len=20) ::   clunit    ! unit
-      LOGICAL           ::   llinit    ! read in a file or not
-      LOGICAL           ::   llsbc     ! read in a file or not
-      LOGICAL           ::   llcbc     ! read in a file or not
-      LOGICAL           ::   llobc     ! read in a file or not
+! --->>> FABM
+!       LOGICAL              :: llinit   !: read in a file or not
+!       LOGICAL              :: llsbc   !: read in a file or not
+!       LOGICAL              :: llcbc   !: read in a file or not
+!       LOGICAL              :: llobc   !: read in a file or not
+! +++ FABM
+       LOGICAL              :: llinit=.FALSE.   !: read in a file or not
+       LOGICAL              :: llsbc=.FALSE.   !: read in a file or not
+       LOGICAL              :: llcbc=.FALSE.   !: read in a file or not
+       LOGICAL              :: llobc=.FALSE.   !: read in a file or not
+       LOGICAL              :: llsave=.FALSE.   !: save the tracer or not
+! FABM <<<+++
    END TYPE PTRACER
-   !
+   
    CHARACTER(len=20), PUBLIC, ALLOCATABLE, SAVE, DIMENSION(:) ::   ctrcnm   !: tracer name 
    CHARACTER(len=80), PUBLIC, ALLOCATABLE, SAVE, DIMENSION(:) ::   ctrcln   !: trccer field long name
    CHARACTER(len=20), PUBLIC, ALLOCATABLE, SAVE, DIMENSION(:) ::   ctrcun   !: tracer unit
@@ -150,7 +157,8 @@ CONTAINS
          &      trc_i(jpi,jpj,jptra)  , trc_o(jpi,jpj,jptra)                          ,       &
          &      gtru (jpi,jpj,jptra)  , gtrv (jpi,jpj,jptra)                          ,       &
          &      gtrui(jpi,jpj,jptra)  , gtrvi(jpi,jpj,jptra)                          ,       &
-         &      trc_ice_ratio(jptra)  , trc_ice_prescr(jptra) , cn_trc_o(jptra)       ,       &
+!        &      trc_ice_ratio(jptra)  , trc_ice_prescr(jptra) , cn_trc_o(jptra)       ,       & ! --- FABM  
+         &      trc_ice_ratio(jpmaxtrc)  , trc_ice_prescr(jpmaxtrc) , cn_trc_o(jpmaxtrc) ,    & ! +++ FABM
          &      sbc_trc_b(jpi,jpj,jptra), sbc_trc(jpi,jpj,jptra)                      ,       &  
          &      cvol(jpi,jpj,jpk)     , trai(jptra)           , qsr_mean(jpi,jpj)     ,       &
          &      ctrcnm(jptra)         , ctrcln(jptra)         , ctrcun(jptra)         ,       &

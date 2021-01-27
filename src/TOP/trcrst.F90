@@ -22,6 +22,9 @@ MODULE trcrst
    USE trc
    USE iom
    USE daymod
+   ! +++>>> FABM
+   USE trcrst_fabm
+   ! FABM <<<+++
    USE lib_mpp
    
    IMPLICIT NONE
@@ -119,7 +122,10 @@ CONTAINS
       END DO
       !
       CALL iom_delay_rst( 'READ', 'TOP', numrtr )   ! read only TOP delayed global communication variables
-      
+      ! +++>>> FABM
+      IF (ln_fabm) CALL trc_rst_read_fabm
+      ! FABM <<<+++
+      !
    END SUBROUTINE trc_rst_read
 
    SUBROUTINE trc_rst_wri( kt )
@@ -144,6 +150,11 @@ CONTAINS
          CALL iom_rstput( kt, nitrst, numrtw, 'TRB'//ctrcnm(jn), trb(:,:,:,jn) )
       END DO
       !
+      ! +++>>> FABM
+      IF (ln_fabm) CALL trc_rst_wri_fabm(kt)
+      ! FABM <<<+++
+      !
+
       CALL iom_delay_rst( 'WRITE', 'TOP', numrtw )   ! save only TOP delayed global communication variables
     
       IF( kt == nitrst ) THEN

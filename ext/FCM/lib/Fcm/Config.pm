@@ -477,7 +477,7 @@ sub new {
         FC_COMPILE   => '-c',              # FC flag, compile only
         FC_OUTPUT    => '-o',              # FC flag, specify output file name
         FC_INCLUDE   => '-I',              # FC flag, specify "include" path
-        FC_MODSEARCH => '',                # FC flag, specify "module" path
+        FC_MODSEARCH => '-J',                # FC flag, specify "module" path
         FC_DEFINE    => '-D',              # FC flag, define macro
 
         LD           => '',                # linker

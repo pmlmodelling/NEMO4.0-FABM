@@ -21,7 +21,11 @@ MODULE trcnam
    USE trc         ! passive tracers common variables
    USE trd_oce     !       
    USE trdtrc_oce  !
+   ! +++>>> FABM
+   USE trcnam_fabm       ! FABM SMS namelist
+   ! FABM <<<+++
    USE iom         ! I/O manager
+
 #if defined key_mpp_mpi
    USE lib_mpp, ONLY: ncom_dttrc
 #endif
@@ -146,7 +150,7 @@ CONTAINS
       !!---------------------------------------------------------------------
       INTEGER ::   ios, ierr, icfc       ! Local integer
       !!
-      NAMELIST/namtrc/jp_bgc, ln_pisces, ln_my_trc, ln_age, ln_cfc11, ln_cfc12, ln_sf6, ln_c14, &
+      NAMELIST/namtrc/jp_bgc, ln_pisces, ln_my_trc, ln_fabm, ln_age, ln_cfc11, ln_cfc12, ln_sf6, ln_c14, & ! +++ FABM ln_fabm added
          &            sn_tracer, ln_trcdta, ln_trcdmp, ln_trcdmp_clo, jp_dia3d, jp_dia2d
       !!---------------------------------------------------------------------
       ! Dummy settings to fill tracers data structure
@@ -166,8 +170,10 @@ CONTAINS
       IF(lwm) WRITE( numont, namtrc )
 
       ! Control settings
-      IF( ln_pisces .AND. ln_my_trc )   CALL ctl_stop( 'Choose only ONE BGC model - PISCES or MY_TRC' )
-      IF( .NOT. ln_pisces .AND. .NOT. ln_my_trc )   jp_bgc = 0
+      ! +++>>> FABM
+      IF( ln_pisces .AND. ln_fabm )   CALL ctl_stop( 'Choose only ONE BGC model - PISCES or FABM' )
+      IF( .NOT. ln_pisces .AND. .NOT. ln_fabm )   jp_bgc = 0
+      ! FABM <<<+++
       ll_cfc = ln_cfc11 .OR. ln_cfc12 .OR. ln_sf6
       !
       jptra       =  0
@@ -181,11 +187,13 @@ CONTAINS
          jp_pcs0   = 1
          jp_pcs1   = jp_pisces
       ENDIF
-      IF( ln_my_trc )  THEN
+      ! +++>>> FABM
+      IF( ln_fabm )  THEN
           jp_my_trc = jp_bgc
           jp_myt0   = 1
           jp_myt1   = jp_my_trc
       ENDIF
+      ! FABM <<<+++
       !
       jptra  = jp_bgc
       !
@@ -213,7 +221,10 @@ CONTAINS
          WRITE(numout,*) '      Total number of passive tracers              jptra         = ', jptra
          WRITE(numout,*) '      Total number of BGC tracers                  jp_bgc        = ', jp_bgc
          WRITE(numout,*) '      Simulating PISCES model                      ln_pisces     = ', ln_pisces
-         WRITE(numout,*) '      Simulating MY_TRC  model                     ln_my_trc     = ', ln_my_trc
+      ! ++++>>> FABM
+      !  WRITE(numout,*) '      Simulating MY_TRC  model                     ln_my_trc     = ', ln_my_trc
+         WRITE(numout,*) '      Simulating FABM  model                       ln_fabm       = ', ln_fabm
+      ! FABM <<+++
          WRITE(numout,*) '      Simulating water mass age                    ln_age        = ', ln_age
          WRITE(numout,*) '      Simulating CFC11 passive tracer              ln_cfc11      = ', ln_cfc11
          WRITE(numout,*) '      Simulating CFC12 passive tracer              ln_cfc12      = ', ln_cfc12
@@ -232,7 +243,9 @@ CONTAINS
         IF(lwm) CALL ctl_opn( numonr, 'output.namelist.trc', 'UNKNOWN', 'FORMATTED', 'SEQUENTIAL', -1, numout, .FALSE. )
         !
       ENDIF
-      !
+      ! +++>>> FABM
+      if (ln_fabm) CALL trc_nam_fabm_override
+      ! FABM <<<+++
    END SUBROUTINE trc_nam_trc
 
 
@@ -245,6 +258,7 @@ CONTAINS
       !! ** Method  : - read passive tracer namelist 
       !!              - read namelist of each defined SMS model
       !!                ( (PISCES, CFC, MY_TRC )
+      !!                 MY_TRC replaced with FABM in this verison
       !!---------------------------------------------------------------------
 #if defined key_trdmxl_trc  || defined key_trdtrc
       INTEGER  ::   ios, ierr                 ! Local integer
@@ -258,7 +272,10 @@ CONTAINS
       IF(lwp) WRITE(numout,*) 'trc_nam_trd : read the passive tracer diagnostics options'
       IF(lwp) WRITE(numout,*) '~~~~~~~~~~~'
       !
-      ALLOCATE( ln_trdtrc(jptra) ) 
+      ! +++>>> FABM
+      !   ALLOCATE( ln_trdtrc(jptra) ) 
+      ALLOCATE( ln_trdtrc(jpmaxtrc) )
+      ! FABM <<<+++
       !
       REWIND( numnat_ref )              ! Namelist namtrc_trd in reference namelist : Passive tracer trends
       READ  ( numnat_ref, namtrc_trd, IOSTAT = ios, ERR = 905)

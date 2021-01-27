@@ -19,6 +19,9 @@ MODULE trcsms
    USE trcsms_c14         ! C14 
    USE trcsms_age         ! AGE
    USE trcsms_my_trc      ! MY_TRC  tracers
+   ! +++>>>> FABM
+   USE trcsms_fabm        ! FABM tracers
+   ! FABM <<<+++
    USE prtctl_trc         ! Print control for debbuging
 
    IMPLICIT NONE
@@ -53,6 +56,9 @@ CONTAINS
       IF( ln_c14     )   CALL trc_sms_c14    ( kt )    ! surface fluxes of C14
       IF( ln_age     )   CALL trc_sms_age    ( kt )    ! Age tracer
       IF( ln_my_trc  )   CALL trc_sms_my_trc ( kt )    ! MY_TRC  tracers
+      ! +++>>> FABM
+      IF( ln_fabm    )   CALL trc_sms_fabm ( kt )      ! FABM tracers
+      ! FABM <<<+++
 
       IF(ln_ctl) THEN      ! print mean trends (used for debugging)
          WRITE(charout, FMT="('sms ')")
