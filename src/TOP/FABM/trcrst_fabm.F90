@@ -3,7 +3,8 @@ MODULE trcrst_fabm
    !!                      ***  MODULE trcrst_fabm  ***
    !! Read and write additional restart fields used by FABM
    !!======================================================================
-   !! History :
+   !! History :   1.0  !  2015-04  (PML) Original code
+   !! History :   1.1  !  2020-06  (PML) Update to FABM 1.0, improved performance
    !!----------------------------------------------------------------------
 #if defined key_fabm
    !!----------------------------------------------------------------------

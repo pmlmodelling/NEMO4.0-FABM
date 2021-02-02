@@ -18,9 +18,11 @@ MODULE inputs_fabm
    USE iom
    USE fldread
    USE par_fabm
-   USE fabm
+   USE fabm, only: type_fabm_horizontal_variable_id
 
    IMPLICIT NONE
+
+#  include "vectopt_loop_substitute.h90"
 
    PRIVATE
 
@@ -29,9 +31,9 @@ MODULE inputs_fabm
    PUBLIC update_inputs
    PUBLIC trc_rnf_fabm
 
-   #if defined key_trdtrc && defined key_iomput
+#if defined key_trdtrc && defined key_iomput
       REAL(wp), PUBLIC, ALLOCATABLE, SAVE, TARGET, DIMENSION(:,:,:) :: tr_inp
-   #endif
+#endif
 
    TYPE, PUBLIC :: type_input_variable
       TYPE(FLD), ALLOCATABLE, DIMENSION(:) :: sf
@@ -39,8 +41,8 @@ MODULE inputs_fabm
    END TYPE
 
    TYPE, PUBLIC, EXTENDS(type_input_variable) :: type_input_data
-      TYPE(type_horizontal_variable_id)   :: horizontal_id
-      TYPE(type_input_data), POINTER   :: next => null()
+      TYPE(type_fabm_horizontal_variable_id) :: horizontal_id
+      TYPE(type_input_data), POINTER         :: next => null()
    END TYPE
    TYPE (type_input_data), POINTER, PUBLIC :: first_input_data => NULL()
 
@@ -86,8 +88,8 @@ MODULE inputs_fabm
            ! Transfer namelist settings to new input_data object
            ALLOCATE(input_data, STAT=ierr)
            IF( ierr > 0 ) CALL ctl_stop( 'STOP', 'inputs_fabm:initialize_inputs: unable to allocate input_data object for variable '//TRIM(name) )
-           input_data%horizontal_id = fabm_get_horizontal_variable_id(model,name)
-           IF (.NOT.fabm_is_variable_used(input_data%horizontal_id)) THEN
+           input_data%horizontal_id = model%get_horizontal_variable_id(name)
+           IF (.NOT.model%is_variable_used(input_data%horizontal_id)) THEN
               ! This variable was not found among FABM's horizontal variables (at least, those that are read by one or more FABM modules)
               CALL ctl_stop('STOP', 'inputs_fabm:initialize_inputs: variable "'//TRIM(name)//'" was not found among horizontal FABM variables.')
            END IF
@@ -129,7 +131,7 @@ MODULE inputs_fabm
            ! provide NEMO with position of the respective state variable
            ! within tracer field
            DO jn=1,jp_fabm
-             IF (TRIM(name) == TRIM(model%state_variables(jn)%name)) THEN
+             IF (TRIM(name) == TRIM(model%interior_state_variables(jn)%name)) THEN
                river_data%jp_pos = jp_fabm_m1+jn
              END IF
            END DO
@@ -172,7 +174,7 @@ MODULE inputs_fabm
       DO WHILE (ASSOCIATED(input_data))
          ! Provide FABM with pointer to field that will receive prescribed data.
          ! NB source=data_source_user guarantees that the prescribed data takes priority over any data FABM may already have for that variable.
-         CALL fabm_link_horizontal_data(model,input_data%horizontal_id,input_data%sf(1)%fnow(:,:,1),source=data_source_user)
+         CALL model%link_horizontal_data(input_data%horizontal_id,input_data%sf(1)%fnow(:,:,1),source=data_source_user)
          input_data => input_data%next
       END DO
 
@@ -225,8 +227,8 @@ MODULE inputs_fabm
         tr_inp = 0.0_wp
 #endif
         IF( kt == nit000 .OR. ( kt /= nit000 ) ) THEN
-            DO jj = 1, jpj
-              DO ji = 1, jpi
+            DO jj = 2, jpjm1
+              DO ji = fs_2, fs_jpim1
                 ! convert units and divide by surface area
                 ! loading / cell volume * vertical fraction of riverload
                 ! dtrc / dt (river) = riverload / e1e2t / e3t * e3t * h_rnf
@@ -234,7 +236,13 @@ MODULE inputs_fabm
                 zcoef = river_data%rn_trrnfac / e1e2t(ji,jj) / h_rnf(ji,jj)
                 DO jk = 1,nk_rnf(ji,jj)
                   ! Add river loadings
-                  tra(ji,jj,jk,river_data%jp_pos) = tra(ji,jj,jk,river_data%jp_pos) + river_data%sf(1)%fnow(ji,jj,1)*zcoef
+                  if (river_data%rn_trrnfac>=0) then
+                    tra(ji,jj,jk,river_data%jp_pos) = tra(ji,jj,jk,river_data%jp_pos) + river_data%sf(1)%fnow(ji,jj,1)*zcoef
+                  else
+                    !this is for the no river dilution option, where we give the runoff as riverload and we multiply by the current concentration
+                    ! no need to use the full zcoeff because the run off is already surface specific, 1000. is to convert kg freshwater to m3
+                    tra(ji,jj,jk,river_data%jp_pos) = tra(ji,jj,jk,river_data%jp_pos) + river_data%sf(1)%fnow(ji,jj,1)/1000._wp*trn(ji,jj,jk,river_data%jp_pos) / h_rnf(ji,jj)
+                  endif
 #if defined key_trdtrc && defined key_iomput
                   tr_inp(ji,jj,jk) = river_data%sf(1)%fnow(ji,jj,1)*zcoef
 #endif

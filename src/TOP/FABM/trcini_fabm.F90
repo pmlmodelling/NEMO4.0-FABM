@@ -3,7 +3,8 @@ MODULE trcini_fabm
    !!                         ***  MODULE trcini_fabm  ***
    !! TOP :   initialisation of the FABM tracers
    !!======================================================================
-   !! History :   2.0  !  2007-12  (C. Ethe, G. Madec) Original code
+   !! History :   1.0  !  2015-04  (PML) Original code
+   !! History :   1.1  !  2020-06  (PML) Update to FABM 1.0, improved performance
    !!----------------------------------------------------------------------
 #if defined key_fabm
    !!----------------------------------------------------------------------
@@ -16,9 +17,9 @@ MODULE trcini_fabm
    USE trc
    USE par_fabm
    USE trcsms_fabm
-   USE fabm_config,ONLY: fabm_create_model_from_yaml_file
-   USE fabm,ONLY: type_external_variable, fabm_initialize_library
-   USE inputs_fabm,ONLY: initialize_inputs,link_inputs, &
+   USE fabm, only: fabm_create_model, type_fabm_variable
+   USE fabm_driver
+   USE inputs_fabm,ONLY: initialize_inputs, link_inputs, &
      type_input_variable,type_input_data,type_river_data, &
      first_input_data,first_river_data
 #if defined key_git_version
@@ -27,18 +28,23 @@ MODULE trcini_fabm
    USE fabm_types,ONLY: type_version,first_module_version
 #endif
 
-
    IMPLICIT NONE
    PRIVATE
 
 #if defined key_git_version
-#include "gitversion.h90"
+#  include "gitversion.h90"
    CHARACTER(len=*),parameter :: git_commit_id = _NEMO_COMMIT_ID_
    CHARACTER(len=*),parameter :: git_branch_name = _NEMO_BRANCH_
 #endif
 
    PUBLIC   trc_ini_fabm   ! called by trcini.F90 module
-   PUBLIC   nemo_fabm_init
+   PUBLIC   nemo_fabm_configure
+
+   TYPE,extends(type_base_driver) :: type_nemo_fabm_driver
+   contains
+      procedure :: fatal_error => nemo_fabm_driver_fatal_error
+      procedure :: log_message => nemo_fabm_driver_log_message
+   end type
 
    !!----------------------------------------------------------------------
    !! NEMO/TOP 3.3 , NEMO Consortium (2010)
@@ -47,41 +53,45 @@ MODULE trcini_fabm
    !!----------------------------------------------------------------------
 CONTAINS
 
-   SUBROUTINE nemo_fabm_init()
+   SUBROUTINE nemo_fabm_configure()
       INTEGER :: jn
       INTEGER, PARAMETER :: xml_unit = 1979
       TYPE (type_input_data),POINTER :: input_data
       TYPE (type_river_data),POINTER :: river_data
       CLASS (type_input_variable),POINTER :: input_pointer
 
-      ! Allow FABM to parse fabm.yaml. This ensures numbers of variables are known.
-      call fabm_create_model_from_yaml_file(model)
+      ALLOCATE(type_nemo_fabm_driver::driver)
 
-      jp_fabm = size(model%state_variables)
+      ! Allow FABM to parse fabm.yaml. This ensures numbers of variables are known.
+      model => fabm_create_model()
+
+      jp_fabm = size(model%interior_state_variables)
       jp_fabm_bottom = size(model%bottom_state_variables)
       jp_fabm_surface = size(model%surface_state_variables)
       jp_fabm0 = jptra + 1
       jp_fabm1 = jptra + jp_fabm
       jp_fabm_m1=jptra
       jptra = jptra + jp_fabm
-      jp_dia2d = jp_dia2d + size(model%horizontal_diagnostic_variables)
-      jp_dia3d = jp_dia3d + size(model%diagnostic_variables)
-      jp_diabio = jp_diabio + jp_fabm
+      jpdia2d = jpdia2d + size(model%horizontal_diagnostic_variables)
+      jpdia3d = jpdia3d + size(model%interior_diagnostic_variables)
+      jpdiabio = jpdiabio + jp_fabm
 
-      !Initialize input data structures.
+      ! Read inputs (river and additional 2D forcing) from fabm_input.nml
+      ! This must be done before writing field_def_fabm.xml, as that file
+      ! also describes the additional input variables.
       call initialize_inputs
 
       IF (lwp) THEN
          ! write field_def_fabm.xml on lead process
-         OPEN(UNIT=xml_unit,FILE='field_def_fabm.xml',ACTION='WRITE',STATUS='REPLACE')
+         OPEN(UNIT=xml_unit, FILE='field_def_fabm.xml', ACTION='WRITE', STATUS='REPLACE')
 
          WRITE (xml_unit,1000) '<field_definition level="1" prec="4" operation="average" enabled=".TRUE." default_value="1.e20" >'
 
          WRITE (xml_unit,1000) ' <field_group id="ptrc_T" grid_ref="grid_T_3D">'
          DO jn=1,jp_fabm
-            CALL write_variable_xml(xml_unit,model%state_variables(jn))
+            CALL write_variable_xml(xml_unit,model%interior_state_variables(jn))
 #if defined key_trdtrc
-            CALL write_trends_xml(xml_unit,model%state_variables(jn))
+            CALL write_trends_xml(xml_unit,model%interior_state_variables(jn))
 #endif
          END DO
          WRITE (xml_unit,1000) ' </field_group>'
@@ -96,11 +106,19 @@ CONTAINS
          WRITE (xml_unit,1000) ' </field_group>'
 
          WRITE (xml_unit,1000) ' <field_group id="diad_T" grid_ref="grid_T_2D">'
-         DO jn=1,size(model%diagnostic_variables)
-            CALL write_variable_xml(xml_unit,model%diagnostic_variables(jn),3)
+         DO jn=1,size(model%interior_diagnostic_variables)
+            CALL write_variable_xml(xml_unit,model%interior_diagnostic_variables(jn),3)
          END DO
          DO jn=1,size(model%horizontal_diagnostic_variables)
             CALL write_variable_xml(xml_unit,model%horizontal_diagnostic_variables(jn))
+         END DO
+         DO jn=1,size(model%interior_state_variables)
+            WRITE (xml_unit,'(A)') '  <field id="'//TRIM(model%interior_state_variables(jn)%name)//'_VINT" long_name="depth-integrated ' &
+                    //TRIM(model%interior_state_variables(jn)%long_name)//'" unit="'//TRIM(model%interior_state_variables(jn)%units)//'*m" default_value="0.0" />'
+         END DO
+         DO jn=1,size(model%interior_diagnostic_variables)
+            WRITE (xml_unit,'(A)') '  <field id="'//TRIM(model%interior_diagnostic_variables(jn)%name)//'_VINT" long_name="depth-integrated &
+                    '//TRIM(model%interior_diagnostic_variables(jn)%long_name)//'" unit="'//TRIM(model%interior_diagnostic_variables(jn)%units)//'*m" default_value="0.0" />'
          END DO
          WRITE (xml_unit,1000) ' </field_group>'
 
@@ -133,12 +151,12 @@ CONTAINS
 
 1000 FORMAT (A)
 
-   END SUBROUTINE nemo_fabm_init
+   END SUBROUTINE nemo_fabm_configure
 
    SUBROUTINE write_variable_xml(xml_unit,variable,flag_grid_ref)
       INTEGER,INTENT(IN) :: xml_unit
       INTEGER,INTENT(IN),OPTIONAL :: flag_grid_ref
-      CLASS (type_external_variable),INTENT(IN) :: variable
+      CLASS (type_fabm_variable),INTENT(IN) :: variable
 
       CHARACTER(LEN=20) :: missing_value,string_dimensions
       INTEGER :: number_dimensions
@@ -171,13 +189,21 @@ CONTAINS
    SUBROUTINE write_trends_xml(xml_unit,variable,flag_grid_ref)
       INTEGER,INTENT(IN) :: xml_unit
       INTEGER,INTENT(IN),OPTIONAL :: flag_grid_ref
-      CLASS (type_external_variable),INTENT(IN) :: variable
+      CLASS (type_fabm_variable),INTENT(IN) :: variable
 
       INTEGER :: number_dimensions,i
       CHARACTER(LEN=20) :: missing_value,string_dimensions
+#if defined key_tracer_budget
+      CHARACTER(LEN=3),DIMENSION(10),PARAMETER :: trd_tags = (/ &
+        'LDF','BBL','FOR','ZDF','DMP','SMS','ATF', &
+        'RDB','RDN','VMV' /)
+      CHARACTER(LEN=3),DIMENSION(3),PARAMETER :: trd_e3t_tags = (/ &
+        'XAD','YAD','ZAD' /)
+#else
       CHARACTER(LEN=3),DIMENSION(13),PARAMETER :: trd_tags = (/ &
         'XAD','YAD','ZAD','LDF','BBL','FOR','ZDF','DMP','SMS','ATF', &
         'RDB','RDN','VMV' /)
+#endif
 
       ! Check variable dimension for grid_ref specificaiton.
       ! Default is to not specify the grid_ref in the field definition.
@@ -192,12 +218,29 @@ CONTAINS
       SELECT CASE (number_dimensions)
       CASE (3)
         DO i=1,size(trd_tags)
-         WRITE (xml_unit,'(A)') '  <field id="'//TRIM(trd_tags(i))//'_'//TRIM(variable%name)//'" long_name="'//TRIM(variable%long_name)//' '//TRIM(trd_tags(i))//' trend" unit="'//TRIM(variable%units)//'/s" default_value="'//TRIM(ADJUSTL(missing_value))//'" grid_ref="grid_T_3D" />'
+         WRITE (xml_unit,'(A)') '  <field id="'//TRIM(trd_tags(i))//'_'//TRIM(variable%name)//'" long_name="'//TRIM(variable%long_name)//' '//TRIM(trd_tags(i))//' trend" &
+                 unit="'//TRIM(variable%units)//'/s" default_value="'//TRIM(ADJUSTL(missing_value))//'" grid_ref="grid_T_3D" />'
         END DO
+#if defined key_tracer_budget
+        DO i=1,size(trd_e3t_tags)
+         WRITE (xml_unit,'(A)') '  <field id="'//TRIM(trd_e3t_tags(i))//'_'//TRIM(variable%name)//'_e3t" long_name="'//TRIM(variable%long_name)//' cell depth integrated '//TRIM(trd_e3t_tags(i))//' trend" &
+                 unit="'//TRIM(variable%units)//'*m/s" default_value="'//TRIM(ADJUSTL(missing_value))//'" grid_ref="grid_T_3D" />'
+        END DO
+        WRITE (xml_unit,'(A)') '  <field id="'//TRIM(variable%name)//'_e3t" long_name="'//TRIM(variable%long_name)//' cell depth integrated" &
+                unit="'//TRIM(variable%units)//'*m" default_value="'//TRIM(ADJUSTL(missing_value))//'" grid_ref="grid_T_3D" />'
+#endif
       CASE (-1)
         DO i=1,size(trd_tags)
-         WRITE (xml_unit,'(A)') '  <field id="'//TRIM(trd_tags(i))//'_'//TRIM(variable%name)//'" long_name="'//TRIM(variable%long_name)//' '//TRIM(trd_tags(i))//' trend" unit="'//TRIM(variable%units)//'/s" default_value="'//TRIM(ADJUSTL(missing_value))//'" />'
+         WRITE (xml_unit,'(A)') '  <field id="'//TRIM(trd_tags(i))//'_'//TRIM(variable%name)//'" long_name="'//TRIM(variable%long_name)//' '//TRIM(trd_tags(i))//' trend" &
+                 unit="'//TRIM(variable%units)//'/s" default_value="'//TRIM(ADJUSTL(missing_value))//'" />'
         END DO
+#if defined key_tracer_budget
+        DO i=1,size(trd_e3t_tags)
+         WRITE (xml_unit,'(A)') '  <field id="'//TRIM(trd_e3t_tags(i))//'_'//TRIM(variable%name)//'_e3t" long_name="'//TRIM(variable%long_name)//' cell depth integrated '//TRIM(trd_e3t_tags(i))//' trend" &
+                 unit="'//TRIM(variable%units)//'*m/s" default_value="'//TRIM(ADJUSTL(missing_value))//'" />'
+        END DO
+        WRITE (xml_unit,'(A)') '  <field id="'//TRIM(variable%name)//'_e3t" long_name="'//TRIM(variable%long_name)//' cell depth integrated" unit="'//TRIM(variable%units)//'*m" default_value="'//TRIM(ADJUSTL(missing_value))//'" />'
+#endif
       CASE default
          IF(lwp) WRITE(numout,*) ' trc_ini_fabm: Failing to initialise trends of variable '//TRIM(variable%name)//': Output of '//TRIM(ADJUSTL(string_dimensions))//'-dimensional trends not supported!!!'
       END SELECT
@@ -239,15 +282,12 @@ CONTAINS
       !!
       !! ** Purpose :   initialization for FABM model
       !!
-      !! ** Method  : - Read the namcfc namelist and check the parameter values
+      !! ** Method  : - Allocate FABM arrays, configure domain, send data
       !!----------------------------------------------------------------------
 #if defined key_git_version
-      TYPE (type_version),POINTER :: version
+      TYPE (type_version), POINTER :: version
 #endif
       INTEGER :: jn
-
-      !                       ! Allocate FABM arrays
-      IF( trc_sms_fabm_alloc() /= 0 )   CALL ctl_stop( 'STOP', 'trc_ini_fabm: unable to allocate FABM arrays' )
 
       IF(lwp) WRITE(numout,*)
       IF(lwp) WRITE(numout,*) ' trc_ini_fabm: initialisation of FABM model'
@@ -255,49 +295,62 @@ CONTAINS
 #if defined key_git_version
       IF(lwp) WRITE(numout,*) ' NEMO version:   ',git_commit_id,' (',git_branch_name,' branch)'
       IF(lwp) WRITE(numout,*) ' FABM version:   ',fabm_commit_id,' (',fabm_branch_name,' branch)'
-#endif
-
-      call fabm_initialize_library()
-#if defined key_git_version
       version => first_module_version
-
       do while (associated(version))
          IF(lwp) WRITE(numout,*)  ' '//trim(version%module_name)//' version:   ',trim(version%version_string)
          version => version%next
       end do
 #endif
 
+      ! Allocate FABM arrays
+      IF(trc_sms_fabm_alloc() /= 0) CALL ctl_stop( 'STOP', 'trc_ini_fabm: unable to allocate FABM arrays' )
+
       ! Log mapping of FABM states:
       IF (lwp) THEN
-         IF (jp_fabm.gt.0) WRITE(numout,*) " FABM tracers:"
+         IF (jp_fabm > 0) WRITE(numout,*) " FABM tracers:"
          DO jn=1,jp_fabm
-            WRITE(numout,*) "   State",jn,":",trim(model%state_variables(jn)%name), &
-               " (",trim(model%state_variables(jn)%long_name), &
-               ") [",trim(model%state_variables(jn)%units),"]"
-         ENDDO
-         IF (jp_fabm_surface.gt.0) WRITE(numout,*) "FABM seasurface states:"
+            WRITE(numout,*) "   State",jn,":",trim(model%interior_state_variables(jn)%name), &
+               " (",trim(model%interior_state_variables(jn)%long_name), &
+               ") [",trim(model%interior_state_variables(jn)%units),"]"
+         END DO
+         IF (jp_fabm_surface > 0) WRITE(numout,*) "FABM seasurface states:"
          DO jn=1,jp_fabm_surface
             WRITE(numout,*) "   State",jn,":",trim(model%surface_state_variables(jn)%name), &
                " (",trim(model%surface_state_variables(jn)%long_name), &
                ") [",trim(model%surface_state_variables(jn)%units),"]"
-         ENDDO
-         IF (jp_fabm_bottom.gt.0) WRITE(numout,*) "FABM seafloor states:"
+         END DO
+         IF (jp_fabm_bottom > 0) WRITE(numout,*) "FABM seafloor states:"
          DO jn=1,jp_fabm_bottom
             WRITE(numout,*) "   State",jn,":",trim(model%bottom_state_variables(jn)%name), &
                " (",trim(model%bottom_state_variables(jn)%long_name), &
                ") [",trim(model%bottom_state_variables(jn)%units),"]"
-         ENDDO
-      ENDIF
+         END DO
+      END IF
 
    END SUBROUTINE trc_ini_fabm
+
+   SUBROUTINE nemo_fabm_driver_fatal_error(self, location, message)
+      CLASS (type_nemo_fabm_driver), INTENT(INOUT) :: self
+      CHARACTER(len=*),              INTENT(IN)    :: location, message
+
+      CALL ctl_stop('STOP', TRIM(location)//': '//TRIM(message))
+      STOP
+   END SUBROUTINE
+
+   SUBROUTINE nemo_fabm_driver_log_message(self, message)
+      CLASS (type_nemo_fabm_driver), INTENT(INOUT) :: self
+      CHARACTER(len=*),              INTENT(IN)    :: message
+
+      IF(lwp) WRITE (numout,*) TRIM(message)
+   END SUBROUTINE
 
 #else
    !!----------------------------------------------------------------------
    !!   Dummy module                                        No FABM model
    !!----------------------------------------------------------------------
 CONTAINS
-   SUBROUTINE nemo_fabm_init
-   END SUBROUTINE nemo_fabm_init
+   SUBROUTINE nemo_fabm_configure
+   END SUBROUTINE nemo_fabm_configure
 
    SUBROUTINE trc_ini_fabm            ! Empty routine
    END SUBROUTINE trc_ini_fabm
