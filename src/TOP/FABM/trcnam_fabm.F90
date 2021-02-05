@@ -3,10 +3,8 @@ MODULE trcnam_fabm
    !!                      ***  MODULE trcnam_fabm  ***
    !! TOP :   initialisation of some run parameters for FABM bio-model
    !!======================================================================
-   !! History :   1.0  !  2015-04  (PML) Original code
-   !! History :   1.1  !  2020-06  (PML) Update to FABM 1.0, improved performance
+   !! History :   2.0  !  2007-12  (C. Ethe, G. Madec) Original code
    !!----------------------------------------------------------------------
-   USE trc             ! TOP variables
 #if defined key_fabm
    !!----------------------------------------------------------------------
    !!   'key_fabm'   :                                       FABM model
@@ -15,9 +13,11 @@ MODULE trcnam_fabm
    !!----------------------------------------------------------------------
    USE oce_trc         ! Ocean variables
    USE par_trc         ! TOP parameters
+   USE trc             ! TOP variables
 
    USE par_fabm
    USE trcsms_fabm
+
 
    IMPLICIT NONE
    PRIVATE
@@ -26,9 +26,9 @@ MODULE trcnam_fabm
    PUBLIC   trc_nam_fabm_override ! called by trcnam.F90 module
 
    !!----------------------------------------------------------------------
-   !! NEMO/TOP 3.3 , NEMO Consortium (2010)
+   !! NEMO/TOP 4.0 , NEMO Consortium (2018)
    !! $Id$ 
-   !! Software governed by the CeCILL licence (NEMOGCM/NEMO_CeCILL.txt)
+   !! Software governed by the CeCILL licence (see ./LICENSE)
    !!----------------------------------------------------------------------
 
 CONTAINS
@@ -82,7 +82,7 @@ CONTAINS
    END  SUBROUTINE  trc_nam_fabm
 
    SUBROUTINE trc_nam_fabm_override (dummy)
-       TYPE(PTRACER), DIMENSION(jpmaxtrc), INTENT(INOUT), optional :: dummy
+       TYPE(PTRACER), DIMENSION(jpmaxtrc), INTENT(INOUT), optional :: dummy   
    END SUBROUTINE trc_nam_fabm_override
 #endif  
 

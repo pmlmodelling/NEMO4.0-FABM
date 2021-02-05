@@ -3,8 +3,7 @@ MODULE trcwri_fabm
    !!                       *** MODULE trcwri_fabm ***
    !!    fabm :   Output of FABM tracers
    !!======================================================================
-   !! History :   1.0  !  2015-04  (PML) Original code
-   !! History :   1.1  !  2020-06  (PML) Update to FABM 1.0, improved performance
+   !! History :   1.0  !  2009-05 (C. Ethe)  Original code
    !!----------------------------------------------------------------------
 #if defined key_top && key_fabm && defined key_iomput
    !!----------------------------------------------------------------------
@@ -14,7 +13,6 @@ MODULE trcwri_fabm
    !!----------------------------------------------------------------------
    USE trc         ! passive tracers common variables 
    USE iom         ! I/O manager
-   USE trdtrc_oce
    USE trcsms_fabm, only: trc_sms_fabm_check_mass
    USE par_fabm
    USE st2d_fabm
@@ -33,7 +31,6 @@ MODULE trcwri_fabm
 
    PUBLIC trc_wri_fabm 
 
-#  include "top_substitute.h90"
 CONTAINS
 
    SUBROUTINE wri_fabm_fl(kt,fl)
@@ -51,7 +48,7 @@ CONTAINS
       REAL(wp), DIMENSION(jpi,jpj,jpk)    :: trpool !temporary storage pool 3D
       REAL(wp), DIMENSION(jpi,jpj)    :: st2dpool !temporary storage pool 2D
       !!---------------------------------------------------------------------
- 
+
       ! write the tracer concentrations in the file
       ! ---------------------------------------
 ! depth integrated
@@ -71,7 +68,8 @@ CONTAINS
 
    END SUBROUTINE wri_fabm_fl
 
-   SUBROUTINE wri_fabm(kt)
+
+   SUBROUTINE trc_wri_fabm
       !!---------------------------------------------------------------------
       !!                     ***  ROUTINE trc_wri_trc  ***
       !!
@@ -80,6 +78,7 @@ CONTAINS
       INTEGER, INTENT( in )               :: kt
       INTEGER              :: jn, jk
       REAL(wp), DIMENSION(jpi,jpj)    :: vint
+      !!---------------------------------------------------------------------
 
 #if defined key_tracer_budget
       IF( kt == nittrc000 ) THEN
@@ -88,6 +87,7 @@ CONTAINS
       tr_temp(:,:,:,:)=trn(:,:,:,jp_fabm0:jp_fabm1) ! slwa save for tracer budget (unfiltered trn)
       fabm_st2d_temp(:,:,:)=fabm_st2dn(:,:,:)
 #endif
+
       DO jn = 1, jp_fabm
          ! Save 3D field
          CALL iom_put(model%interior_state_variables(jn)%name, trn(:,:,:,jp_fabm_m1+jn))
@@ -108,36 +108,37 @@ CONTAINS
          CALL iom_put( model%bottom_state_variables(jn)%name, fabm_st2dn(:,:,jp_fabm_surface+jn) )
       END DO
 
-      CALL trc_sms_fabm_check_mass
+      ! write 3D diagnostics in the file
+      ! ---------------------------------------
+      DO jn = 1, size(model%interior_diagnostic_variables)
+         IF (model%interior_diagnostic_variables(jn)%save) &
+             CALL iom_put( model%interior_diagnostic_variables(jn)%name, model%get_interior_diagnostic_data(jn))
+      END DO
 
-   END SUBROUTINE wri_fabm
+      ! write 2D diagnostics in the file
+      ! ---------------------------------------
+      DO jn = 1, size(model%horizontal_diagnostic_variables)
+         IF (model%horizontal_diagnostic_variables(jn)%save) &
+             CALL iom_put( model%horizontal_diagnostic_variables(jn)%name, model%get_horizontal_diagnostic_data(jn))
+      END DO
+      !
+
+      CALL trc_sms_fabm_check_mass
+   END SUBROUTINE trc_wri_fabm
 
 #else
    !!----------------------------------------------------------------------
    !!  Dummy module :                                     No passive tracer
    !!----------------------------------------------------------------------
-   INTERFACE trc_wri_fabm
-       MODULE PROCEDURE wri_fabm,wri_fabm_fl
-   END INTERFACE trc_wri_fabm
-
    PUBLIC trc_wri_fabm
-
-   CONTAINS
-
-   SUBROUTINE wri_fabm_fl(kt,fl)
-      INTEGER, INTENT( in )               :: fl
-      INTEGER, INTENT( in )               :: kt
-   END SUBROUTINE wri_fabm_fl
-
-   SUBROUTINE wri_fabm(kt)                 ! Empty routine  
-      INTEGER, INTENT( in )               :: kt
-   END SUBROUTINE wri_fabm
-
+CONTAINS
+   SUBROUTINE trc_wri_fabm                     ! Empty routine  
+   END SUBROUTINE trc_wri_fabm
 #endif
 
    !!----------------------------------------------------------------------
-   !! NEMO/TOP 3.3 , NEMO Consortium (2010)
+   !! NEMO/TOP 4.0 , NEMO Consortium (2018)
    !! $Id: trcwri_fabm.F90 3160 2011-11-20 14:27:18Z cetlod $ 
-   !! Software governed by the CeCILL licence (NEMOGCM/NEMO_CeCILL.txt)
+   !! Software governed by the CeCILL licence (see ./LICENSE)
    !!======================================================================
 END MODULE trcwri_fabm

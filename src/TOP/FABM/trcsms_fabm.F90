@@ -4,7 +4,6 @@ MODULE trcsms_fabm
    !! TOP :   Main module of the FABM tracers
    !!======================================================================
    !! History :   1.0  !  2015-04  (PML) Original code
-   !! History :   1.1  !  2020-06  (PML) Update to FABM 1.0, improved performance
    !!----------------------------------------------------------------------
 #if defined key_fabm
    !!----------------------------------------------------------------------
@@ -24,7 +23,7 @@ MODULE trcsms_fabm
 #endif
 
    USE oce, only: tsn  ! Needed?
-   USE sbc_oce, only: lk_oasis,fr_i
+   USE sbc_oce, only: lk_oasis
    USE dom_oce
    USE zdf_oce
    USE iom
@@ -33,28 +32,27 @@ MODULE trcsms_fabm
    USE st2D_fabm
    USE inputs_fabm
    USE vertical_movement_fabm
-
-   !USE fldread         !  time interpolation
+   USE fabm
 
    IMPLICIT NONE
 
-#  include "domzgr_substitute.h90"
 #  include "vectopt_loop_substitute.h90"
 
    PRIVATE
 
-   PUBLIC   trc_sms_fabm            ! called by trcsms.F90 module
-   PUBLIC   trc_sms_fabm_alloc      ! called by trcini_fabm.F90 module
-   PUBLIC   trc_sms_fabm_check_mass ! called by trcwri_fabm.F90
+   PUBLIC   trc_sms_fabm       ! called by trcsms.F90 module
+   PUBLIC   trc_sms_fabm_alloc ! called by trcini_fabm.F90 module
+   PUBLIC   trc_sms_fabm_check_mass
+   PUBLIC   st2d_fabm_nxt ! 2D state intergration
+   PUBLIC   compute_fabm ! Compute FABM sources, sinks and diagnostics
 
-   ! Work arrays
-   REAL(wp), ALLOCATABLE, DIMENSION(:,:) :: flux          ! Cross-interface flux of pelagic variables (# m-2 s-1)
-   REAL(wp), ALLOCATABLE, DIMENSION(:,:) :: current_total ! Totals of conserved quantities
+   REAL(wp), PUBLIC, ALLOCATABLE, SAVE, DIMENSION(:,:) :: flux    ! Cross-interface flux of pelagic variables (# m-2 s-1)
+   REAL(wp), ALLOCATABLE, SAVE, TARGET, DIMENSION(:,:)   :: current_total   ! Work array for mass aggregation
 
-   ! Arrays for environmental variables that are computed by the coupler
-   REAL(wp), PUBLIC, TARGET, ALLOCATABLE, DIMENSION(:,:,:) :: prn,rho
-   REAL(wp), PUBLIC, TARGET, ALLOCATABLE, DIMENSION(:,:) :: taubot
-   REAL(wp), PUBLIC, TARGET :: daynumber_in_year
+   ! Arrays for environmental variables
+   REAL(wp), PUBLIC, ALLOCATABLE, SAVE, TARGET, DIMENSION(:,:,:) :: prn,rho
+   REAL(wp), PUBLIC, ALLOCATABLE, SAVE, TARGET, DIMENSION(:,:) :: taubot
+   REAL(wp), PUBLIC :: daynumber_in_year
 
    ! State repair counters
    INTEGER, SAVE :: repair_interior_count = 0
@@ -69,9 +67,9 @@ MODULE trcsms_fabm
    LOGICAL, SAVE :: started = .false.
 
    !!----------------------------------------------------------------------
-   !! NEMO/TOP 3.3 , NEMO Consortium (2010)
+   !! NEMO/TOP 4.0 , NEMO Consortium (2018)
    !! $Id$
-   !! Software governed by the CeCILL licence     (NEMOGCM/NEMO_CeCILL.txt)
+   !! Software governed by the CeCILL licence     (see ./LICENSE)
    !!----------------------------------------------------------------------
 CONTAINS
 
@@ -110,8 +108,8 @@ CONTAINS
       CALL st2d_fabm_nxt( kt )
 
       IF( l_trdtrc )  CALL wrk_alloc( jpi, jpj, jpk, ztrfabm )
-
-      CALL trc_bc_read  ( kt )       ! tracers: surface and lateral Boundary Conditions
+      
+      CALL trc_bc       ( kt )       ! tracers: surface and lateral Boundary Conditions
       CALL trc_rnf_fabm ( kt ) ! River forcings
 
       ! Send 3D diagnostics to output (these apply to time "n")
@@ -154,7 +152,7 @@ CONTAINS
       INTEGER, INTENT(in) :: kt   ! ocean time-step index
 
       INTEGER :: ji,jj,jk,jn
-      LOGICAL :: valid, repaired
+      TYPE(type_state) :: valid_state
       REAL(wp) :: zalfg,zztmpx,zztmpy
 
       ! Validate current model state (setting argument to .TRUE. enables repair=clipping)
@@ -216,8 +214,6 @@ CONTAINS
 
       CALL model%prepare_inputs(real(kt, wp),nyear,nmonth,nday,REAL(nsec_day,wp))
 
-      ! TODO: retrieve 3D shortwave and store in etot3
-
       ! Zero rate array of interface-attached state variables
       fabm_st2Da = 0._wp
 
@@ -233,7 +229,7 @@ CONTAINS
             END DO
          END DO
 
-         ! Process surface (get_surface_sources increments rather than sets, so zero flux array first)
+         ! Process surface (fabm_do_surface increments rather than sets, so zero flux array first)
          flux = 0._wp
          CALL model%get_surface_sources(fs_2,fs_jpim1,jj,flux,fabm_st2Da(fs_2:fs_jpim1,jj,1:jp_fabm_surface))
          ! Divide surface fluxes by height of surface layer and add to source terms.
@@ -244,11 +240,11 @@ CONTAINS
          END DO
       END DO
 
-      ! Compute interior source terms (NB get_interior_sources increments rather than sets)
+      ! Compute interior source terms (NB fabm_do increments rather than sets)
       DO jk=1,jpkm1
-         DO jj=2,jpjm1
+          DO jj=2,jpjm1
             CALL model%get_interior_sources(fs_2,fs_jpim1,jj,jk,tra(fs_2:fs_jpim1,jj,jk,jp_fabm0:jp_fabm1))
-         END DO
+          END DO
       END DO
 
       CALL model%finalize_outputs()
@@ -379,7 +375,6 @@ CONTAINS
       IF (model%variable_needs_values(fabm_standard_variables%pressure)) ALLOCATE(prn(jpi, jpj, jpk))
       IF (ALLOCATED(prn) .or. model%variable_needs_values(fabm_standard_variables%density)) ALLOCATE(rho(jpi, jpj, jpk))
       IF (model%variable_needs_values(fabm_standard_variables%bottom_stress)) ALLOCATE(taubot(jpi, jpj))
-      ! ALLOCATE( tab(...) , STAT=trc_sms_fabm_alloc )
 
       ! Allocate arrays to hold state for surface-attached and bottom-attached state variables
       ALLOCATE(fabm_st2Dn(jpi, jpj, jp_fabm_surface+jp_fabm_bottom))
@@ -407,20 +402,18 @@ CONTAINS
       CALL model%set_domain_start(fs_2, 2, 1)
       CALL model%set_domain_stop(fs_jpim1, jpjm1, jpkm1)
 
-      ! Provide FABM with the vertical indices of the bottom, and the land-sea mask.
-      CALL model%set_bottom_index(mbkt)  ! NB mbkt extents should match dimension lengths provided to set_domain
-      CALL model%set_mask(tmask,tmask(:,:,1)) ! NB tmask extents should match dimension lengths provided to set_domain
+      ! Provide FABM with the vertical indices of the surface and bottom, and the land-sea mask.
+      call model%set_bottom_index(mbkt)  ! NB mbkt extents should match dimension lengths provided to model%set_domain
+      call model%set_mask(tmask,tmask(:,:,1)) ! NB tmask extents should match dimension lengths provided to model%set_domain
 
-      ! Initialize state and send pointers to state data to FABM
-      ! We mask land points in states with zeros, as per with NEMO "convention"
-      ! NB we cannot call model%initialize_*_state at this point, because model%start has not been called yet.
-      DO jn=1,jp_fabm
-         trn(:,:,:,jp_fabm_m1+jn) = model%interior_state_variables(jn)%initial_value * tmask
-         CALL model%link_interior_state_data(jn,trn(:,:,:,jp_fabm_m1+jn))
-      END DO
+      ! Send pointers to state data to FABM
+      do jn=1,jp_fabm
+        trn(:,:,:,jp_fabm_m1+jn) = model%interior_state_variables(jn)%initial_value * tmask
+        call model%link_interior_state_data(jn,trn(:,:,:,jp_fabm_m1+jn))
+      end do
       DO jn=1,jp_fabm_surface
-         fabm_st2Dn(:,:,jn) = model%surface_state_variables(jn)%initial_value * tmask(:,:,1)
-         CALL model%link_surface_state_data(jn,fabm_st2Dn(:,:,jn))
+        fabm_st2Dn(:,:,jn) = model%surface_state_variables(jn)%initial_value * tmask(:,:,1)
+        CALL model%link_surface_state_data(jn,fabm_st2Dn(:,:,jn))
       END DO
       DO jn=1,jp_fabm_bottom
          fabm_st2Dn(:,:,jp_fabm_surface+jn) = model%bottom_state_variables(jn)%initial_value * tmask(:,:,1)
@@ -444,8 +437,8 @@ CONTAINS
       CALL model%link_horizontal_data(fabm_standard_variables%ice_area_fraction, fr_i(:,:))
 
       ! Obtain user-specified input variables (read from NetCDF file)
-      CALL link_inputs
-      CALL update_inputs(nit000, .FALSE.)
+      call link_inputs
+      call update_inputs( nit000, .false. )
 
       ! Set mask for negativity corrections to the relevant states
       lk_rad_fabm(:) = .FALSE.
@@ -455,7 +448,6 @@ CONTAINS
           IF(lwp) WRITE(numout,*) 'FABM clipping for '//TRIM(model%interior_state_variables(jn)%name)//' activated.'
         END IF
       END DO
-
 
       ! Copy initial condition for interface-attached state variables to "previous" state field
       ! NB NEMO does this itself for pelagic state variables (trb) in TOP_SRC/trcini.F90.

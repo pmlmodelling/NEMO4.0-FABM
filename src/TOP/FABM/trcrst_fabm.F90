@@ -3,8 +3,7 @@ MODULE trcrst_fabm
    !!                      ***  MODULE trcrst_fabm  ***
    !! Read and write additional restart fields used by FABM
    !!======================================================================
-   !! History :   1.0  !  2015-04  (PML) Original code
-   !! History :   1.1  !  2020-06  (PML) Update to FABM 1.0, improved performance
+   !! History :
    !!----------------------------------------------------------------------
 #if defined key_fabm
    !!----------------------------------------------------------------------
@@ -28,9 +27,9 @@ MODULE trcrst_fabm
    PUBLIC   trc_rst_wri_fabm    ! called by trcrst.F90 module
 
    !!----------------------------------------------------------------------
-   !! NEMO/TOP 3.3 , NEMO Consortium (2010)
+   !! NEMO/TOP 4.0 , NEMO Consortium (2018)
    !! $Id$
-   !! Software governed by the CeCILL licence (NEMOGCM/NEMO_CeCILL.txt)
+   !! Software governed by the CeCILL licence (see ./LICENSE)
    !!----------------------------------------------------------------------
 
 CONTAINS

@@ -9,7 +9,7 @@ MODULE trc
    !!----------------------------------------------------------------------
    USE par_oce
    USE par_trc
-   USE bdy_oce, only: ln_bdy, nb_bdy, OBC_DATA
+   USE bdy_oce, only: jp_bdy, ln_bdy, nb_bdy, OBC_DATA
    
    IMPLICIT NONE
    PUBLIC

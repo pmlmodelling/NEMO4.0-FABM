@@ -13,6 +13,7 @@ MODULE vertical_movement_fabm
    USE par_trc
    USE oce_trc
    USE trc
+   USE fabm
    USE par_fabm
    USE dom_oce
 #if defined key_trdtrc && defined key_iomput
@@ -22,7 +23,6 @@ MODULE vertical_movement_fabm
 
    IMPLICIT NONE
 
-#  include "domzgr_substitute.h90"
 #  include "vectopt_loop_substitute.h90"
 
    PRIVATE
@@ -48,7 +48,7 @@ MODULE vertical_movement_fabm
       !!              advection scheme.
       !!----------------------------------------------------------------------
       !
-      INTEGER, INTENT(in) ::   kt     ! ocean time-step index
+      INTEGER, INTENT(in) ::   kt   ! ocean time-step index
       INTEGER, INTENT(in) ::   method ! advection method (1: 1st order upstream, 3: 3rd order TVD with QUICKEST limiter)
 
       INTEGER :: ji,jj,jk,jn,k_floor
@@ -62,11 +62,10 @@ MODULE vertical_movement_fabm
 #endif
 
       IF( neuler == 0 .AND. kt == nittrc000 ) THEN
-         z2dt = rdt                  ! set time step size (Euler)
+          z2dt = rdt                  ! set time step size (Euler)
       ELSE
-         z2dt = 2._wp * rdt          ! set time step size (Leapfrog)
+          z2dt = 2._wp * rdt          ! set time step size (Leapfrog)
       ENDIF
-
       ! Compute interior vertical velocities and include them in source array.
       DO jj=2,jpjm1 ! j-loop
          ! Get vertical velocities at layer centres (entire i-k slice).
@@ -76,7 +75,7 @@ MODULE vertical_movement_fabm
          DO ji=fs_2,fs_jpim1 ! i-loop
             ! Only process this horizontal point (ji,jj) if number of layers exceeds 1
             k_floor = mbkt(ji,jj)
-            IF (k_floor > 1) THEN
+            IF (k_floor > 1) THEN ! Level check
                ! Linearly interpolate to velocities at the interfaces between layers
                ! Note:
                !    - interface k sits between cell centre k and k+1 (k=0 for surface)
@@ -106,11 +105,10 @@ MODULE vertical_movement_fabm
                   ! Store change due to vertical movement as diagnostic
                   IF( lk_trdtrc .AND. ln_trdtrc( jp_fabm_m1+jn)) tr_vmv(ji,jj,1:k_floor,jn) = dc(1:k_floor)
 #endif
-               END DO ! State loop
+              END DO ! State loop
             END IF ! Level check
          END DO ! i-loop
       END DO ! j-loop
-
 #if defined key_trdtrc && defined key_iomput
       DO jn=1,jp_fabm ! State loop
         IF( lk_trdtrc .AND. ln_trdtrc(jp_fabm_m1+jn) ) THEN
@@ -275,6 +273,7 @@ MODULE vertical_movement_fabm
       ! Estimate rate of change from pseudo state updates (source splitting):
       trend = (c - c_old) / dt
    END SUBROUTINE
+
 
 #endif
 END MODULE

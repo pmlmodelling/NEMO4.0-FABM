@@ -3,8 +3,7 @@ MODULE trcini_fabm
    !!                         ***  MODULE trcini_fabm  ***
    !! TOP :   initialisation of the FABM tracers
    !!======================================================================
-   !! History :   1.0  !  2015-04  (PML) Original code
-   !! History :   1.1  !  2020-06  (PML) Update to FABM 1.0, improved performance
+   !! History :   2.0  !  2007-12  (C. Ethe, G. Madec) Original code
    !!----------------------------------------------------------------------
 #if defined key_fabm
    !!----------------------------------------------------------------------
@@ -17,9 +16,9 @@ MODULE trcini_fabm
    USE trc
    USE par_fabm
    USE trcsms_fabm
-   USE fabm, only: fabm_create_model, type_fabm_variable
+   USE fabm, ONLY: fabm_create_model, type_fabm_variable
    USE fabm_driver
-   USE inputs_fabm,ONLY: initialize_inputs, link_inputs, &
+   USE inputs_fabm,ONLY: initialize_inputs,link_inputs, &
      type_input_variable,type_input_data,type_river_data, &
      first_input_data,first_river_data
 #if defined key_git_version
@@ -28,11 +27,12 @@ MODULE trcini_fabm
    USE fabm_types,ONLY: type_version,first_module_version
 #endif
 
+
    IMPLICIT NONE
    PRIVATE
 
 #if defined key_git_version
-#  include "gitversion.h90"
+#include "gitversion.h90"
    CHARACTER(len=*),parameter :: git_commit_id = _NEMO_COMMIT_ID_
    CHARACTER(len=*),parameter :: git_branch_name = _NEMO_BRANCH_
 #endif
@@ -47,9 +47,9 @@ MODULE trcini_fabm
    end type
 
    !!----------------------------------------------------------------------
-   !! NEMO/TOP 3.3 , NEMO Consortium (2010)
+   !! NEMO/TOP 4.0 , NEMO Consortium (2018)
    !! $Id$
-   !! Software governed by the CeCILL licence     (NEMOGCM/NEMO_CeCILL.txt)
+   !! Software governed by the CeCILL licence     (see ./LICENSE)
    !!----------------------------------------------------------------------
 CONTAINS
 
@@ -59,8 +59,6 @@ CONTAINS
       TYPE (type_input_data),POINTER :: input_data
       TYPE (type_river_data),POINTER :: river_data
       CLASS (type_input_variable),POINTER :: input_pointer
-
-      ALLOCATE(type_nemo_fabm_driver::driver)
 
       ! Allow FABM to parse fabm.yaml. This ensures numbers of variables are known.
       model => fabm_create_model()
@@ -72,9 +70,9 @@ CONTAINS
       jp_fabm1 = jptra + jp_fabm
       jp_fabm_m1=jptra
       jptra = jptra + jp_fabm
-      jpdia2d = jpdia2d + size(model%horizontal_diagnostic_variables)
-      jpdia3d = jpdia3d + size(model%interior_diagnostic_variables)
-      jpdiabio = jpdiabio + jp_fabm
+      jp_dia2d = jp_dia2d + size(model%horizontal_diagnostic_variables)
+      jp_dia3d = jp_dia3d + size(model%interior_diagnostic_variables)
+      jp_diabio = jp_diabio + jp_fabm
 
       ! Read inputs (river and additional 2D forcing) from fabm_input.nml
       ! This must be done before writing field_def_fabm.xml, as that file
@@ -83,7 +81,7 @@ CONTAINS
 
       IF (lwp) THEN
          ! write field_def_fabm.xml on lead process
-         OPEN(UNIT=xml_unit, FILE='field_def_fabm.xml', ACTION='WRITE', STATUS='REPLACE')
+         OPEN(UNIT=xml_unit,FILE='field_def_fabm.xml',ACTION='WRITE',STATUS='REPLACE')
 
          WRITE (xml_unit,1000) '<field_definition level="1" prec="4" operation="average" enabled=".TRUE." default_value="1.e20" >'
 
@@ -282,10 +280,10 @@ CONTAINS
       !!
       !! ** Purpose :   initialization for FABM model
       !!
-      !! ** Method  : - Allocate FABM arrays, configure domain, send data
+      !! ** Method  : - Read the namcfc namelist and check the parameter values
       !!----------------------------------------------------------------------
 #if defined key_git_version
-      TYPE (type_version), POINTER :: version
+      TYPE (type_version),POINTER :: version
 #endif
       INTEGER :: jn
 
@@ -307,25 +305,25 @@ CONTAINS
 
       ! Log mapping of FABM states:
       IF (lwp) THEN
-         IF (jp_fabm > 0) WRITE(numout,*) " FABM tracers:"
+         IF (jp_fabm.gt.0) WRITE(numout,*) " FABM tracers:"
          DO jn=1,jp_fabm
             WRITE(numout,*) "   State",jn,":",trim(model%interior_state_variables(jn)%name), &
                " (",trim(model%interior_state_variables(jn)%long_name), &
                ") [",trim(model%interior_state_variables(jn)%units),"]"
-         END DO
-         IF (jp_fabm_surface > 0) WRITE(numout,*) "FABM seasurface states:"
+         ENDDO
+         IF (jp_fabm_surface.gt.0) WRITE(numout,*) "FABM seasurface states:"
          DO jn=1,jp_fabm_surface
             WRITE(numout,*) "   State",jn,":",trim(model%surface_state_variables(jn)%name), &
                " (",trim(model%surface_state_variables(jn)%long_name), &
                ") [",trim(model%surface_state_variables(jn)%units),"]"
-         END DO
-         IF (jp_fabm_bottom > 0) WRITE(numout,*) "FABM seafloor states:"
+         ENDDO
+         IF (jp_fabm_bottom.gt.0) WRITE(numout,*) "FABM seafloor states:"
          DO jn=1,jp_fabm_bottom
             WRITE(numout,*) "   State",jn,":",trim(model%bottom_state_variables(jn)%name), &
                " (",trim(model%bottom_state_variables(jn)%long_name), &
                ") [",trim(model%bottom_state_variables(jn)%units),"]"
-         END DO
-      END IF
+         ENDDO
+      ENDIF
 
    END SUBROUTINE trc_ini_fabm
 
