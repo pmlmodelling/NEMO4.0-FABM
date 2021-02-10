@@ -33,7 +33,7 @@ MODULE trcwri_fabm
 
 CONTAINS
 
-   SUBROUTINE wri_fabm_fl(kt,fl)
+   SUBROUTINE wri_fabm_fl (kt, fl)
       !!---------------------------------------------------------------------
       !!                     ***  ROUTINE trc_wri_trc  ***
       !!
@@ -55,8 +55,8 @@ CONTAINS
 ! for strict budgetting write this out at end of timestep as an average between 'now' and 'after' at kt
       DO jn = 1, jp_fabm
         IF(ln_trdtrc (jp_fabm_m1+jn))THEN
-         trpool(:,:,:) = 0.5 * ( trn(:,:,:,jp_fabm_m1+jn)*fse3t_a(:,:,:) + &
-                             tr_temp(:,:,:,jn)*fse3t(:,:,:) )
+         trpool(:,:,:) = 0.5 * ( trn(:,:,:,jp_fabm_m1+jn)*e3t_n_a(:,:,:) + &
+                             tr_temp(:,:,:,jn)*e3t_n(:,:,:) )
          cltra = TRIM( model%interior_state_variables(jn)%name )//"_e3t"     ! depth integrated output
          IF( kt == nittrc000 ) write(6,*)'output pool ',cltra
          CALL iom_put( cltra, trpool)
@@ -69,7 +69,7 @@ CONTAINS
    END SUBROUTINE wri_fabm_fl
 
 
-   SUBROUTINE trc_wri_fabm
+   SUBROUTINE wri_fabm (kt)
       !!---------------------------------------------------------------------
       !!                     ***  ROUTINE trc_wri_trc  ***
       !!
@@ -87,7 +87,6 @@ CONTAINS
       tr_temp(:,:,:,:)=trn(:,:,:,jp_fabm0:jp_fabm1) ! slwa save for tracer budget (unfiltered trn)
       fabm_st2d_temp(:,:,:)=fabm_st2dn(:,:,:)
 #endif
-
       DO jn = 1, jp_fabm
          ! Save 3D field
          CALL iom_put(model%interior_state_variables(jn)%name, trn(:,:,:,jp_fabm_m1+jn))
@@ -96,7 +95,7 @@ CONTAINS
          IF (iom_use(TRIM(model%interior_state_variables(jn)%name)//'_VINT')) THEN
             vint = 0._wp
             DO jk = 1, jpkm1
-               vint = vint + trn(:,:,jk,jp_fabm_m1+jn) * fse3t(:,:,jk) * tmask(:,:,jk)
+               vint = vint + trn(:,:,jk,jp_fabm_m1+jn) * e3t_n(:,:,jk) * tmask(:,:,jk)
             END DO
             CALL iom_put(TRIM(model%interior_state_variables(jn)%name)//'_VINT', vint)
          END IF
@@ -124,16 +123,28 @@ CONTAINS
       !
 
       CALL trc_sms_fabm_check_mass
-   END SUBROUTINE trc_wri_fabm
+   END SUBROUTINE wri_fabm
 
 #else
    !!----------------------------------------------------------------------
    !!  Dummy module :                                     No passive tracer
    !!----------------------------------------------------------------------
+   INTERFACE trc_wri_fabm
+       MODULE PROCEDURE wri_fabm,wri_fabm_fl
+   END INTERFACE trc_wri_fabm
+
    PUBLIC trc_wri_fabm
-CONTAINS
-   SUBROUTINE trc_wri_fabm                     ! Empty routine  
-   END SUBROUTINE trc_wri_fabm
+
+   CONTAINS
+
+   SUBROUTINE wri_fabm_fl (kt, fl)
+      INTEGER, INTENT( in )               :: fl
+      INTEGER, INTENT( in )               :: kt
+   END SUBROUTINE wri_fabm_fl
+
+   SUBROUTINE wri_fabm (kt)                 ! Empty routine  
+      INTEGER, INTENT( in )               :: kt
+   END SUBROUTINE wri_fabm
 #endif
 
    !!----------------------------------------------------------------------

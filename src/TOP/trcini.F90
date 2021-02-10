@@ -63,7 +63,7 @@ CONTAINS
       !
       ! +++>>> FABM
       ! Allow FABM to update numbers of biogeochemical tracers, diagnostics (jptra etc.)
-      IF( ln_fabm ) CALL nemo_fabm_init
+      IF( ln_fabm ) CALL nemo_fabm_configure
       ! FABM <<<+++
       CALL trc_nam       ! read passive tracers namelists
       CALL top_alloc()   ! allocate TOP arrays
@@ -266,7 +266,7 @@ CONTAINS
           wndm=0._wp !uninitialised field at this point
           qsr=0._wp !uninitialised field at this point
           CALL trc_bc_ini(jptra)  ! initialise bdy data
-          CALL compute_fabm ! only needed to set-up diagnostics
+      !    CALL compute_fabm(kt) ! only needed to set-up diagnostics
       ENDIF
       ! FABM <<<+++
       tra(:,:,:,:) = 0._wp

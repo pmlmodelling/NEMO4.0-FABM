@@ -30,8 +30,9 @@ MODULE par_trc
    INTEGER, PUBLIC             :: jp_my_trc       !: number of passive tracers in MY_TRC model
    INTEGER, PUBLIC             :: jp_bgc          !: number of passive tracers for the BGC model
 
-   INTEGER, PUBLIC             :: jp_dia3d        !: number of 3D diagnostic variables
-   INTEGER, PUBLIC             :: jp_dia2d        !: number of 2D diagnostic variables
+   INTEGER, PUBLIC             :: jp_dia3d = 0        !: number of 3D diagnostic variables
+   INTEGER, PUBLIC             :: jp_dia2d = 0       !: number of 2D diagnostic variables
+   INTEGER, PUBLIC             :: jp_diabio = 0        !: number of BGC diagnostic variables
 
    LOGICAL, PUBLIC             :: ln_pisces       !: PISCES flag 
    LOGICAL, PUBLIC             :: ln_age          !: AGE flag 

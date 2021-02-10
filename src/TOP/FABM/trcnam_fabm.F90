@@ -44,13 +44,13 @@ CONTAINS
       IF (l_ext) then
          CALL ctl_opn( nmlunit, 'namelist_fabm_ref', 'OLD', 'FORMATTED', 'SEQUENTIAL', -1, 6, .FALSE.)
          READ(nmlunit, nml=namfabm, iostat=ios)
-         IF( ios /= 0 ) CALL ctl_nam ( ios , 'namfabm in namelist_fabm_ref', .TRUE. )
+         IF( ios /= 0 ) CALL ctl_nam ( ios , 'namfabm in namelist_fabm_ref')
       END IF
       INQUIRE( FILE='namelist_fabm_cfg', EXIST=l_ext )
       IF (l_ext) then
          CALL ctl_opn( nmlunit, 'namelist_fabm_cfg', 'OLD', 'FORMATTED', 'SEQUENTIAL', -1, 6, .FALSE.)
          READ(nmlunit, nml=namfabm, iostat=ios)
-         IF( ios /= 0 ) CALL ctl_nam ( ios , 'namfabm in namelist_fabm_cfg', .TRUE. )
+         IF( ios /= 0 ) CALL ctl_nam ( ios , 'namfabm in namelist_fabm_cfg')
       END IF
       IF (nn_adv /= 1 .and. nn_adv /= 3) CALL ctl_stop( 'STOP', 'trc_ini_fabm: nn_adv must be 1 or 3.' )
    END SUBROUTINE trc_nam_fabm
@@ -81,7 +81,7 @@ CONTAINS
    SUBROUTINE trc_nam_fabm                      ! Empty routine
    END  SUBROUTINE  trc_nam_fabm
 
-   SUBROUTINE trc_nam_fabm_override (dummy)
+   SUBROUTINE trc_nam_fabm_override(dummy)
        TYPE(PTRACER), DIMENSION(jpmaxtrc), INTENT(INOUT), optional :: dummy   
    END SUBROUTINE trc_nam_fabm_override
 #endif  

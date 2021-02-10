@@ -32,13 +32,23 @@ MODULE trcwri
 
 CONTAINS
 
+#if defined key_tracer_budget
+   SUBROUTINE trc_wri( kt , fl)  !slwa
+#else
    SUBROUTINE trc_wri( kt )
+#endif
       !!---------------------------------------------------------------------
       !!                     ***  ROUTINE trc_wri  ***
       !! 
       !! ** Purpose :   output passive tracers fields and dynamical trends
       !!---------------------------------------------------------------------
       INTEGER, INTENT( in )     :: kt
+      ! +++>>>FABM
+#if defined key_tracer_budget
+      INTEGER, INTENT( in ), OPTIONAL     :: fl  ! slwa
+#endif
+      ! FABM <<<+++
+
       !
       INTEGER                   :: jn
       CHARACTER (len=20)        :: cltra
@@ -71,11 +81,21 @@ CONTAINS
       IF( ll_cfc     )   CALL trc_wri_cfc        ! surface fluxes of CFC
       IF( ln_c14     )   CALL trc_wri_c14        ! surface fluxes of C14
       IF( ln_age     )   CALL trc_wri_age        ! AGE tracer
-      IF( ln_my_trc  )   CALL trc_wri_my_trc     ! MY_TRC  tracers
+#if defined key_tracer_budget
       ! +++>>>FABM
-      IF( ln_fabm    )   CALL trc_wri_fabm      ! FABM tracers
+      IF( PRESENT(fl) ) THEN
+         IF( ln_fabm    )   CALL trc_wri_fabm (kt, fl) ! MY_TRC  tracers for budget
+!         IF( ln_my_trc ) CALL trc_wri_my_trc (kt, fl)    ! MY_TRC  tracers for budget
+      ELSE
+         IF( ln_fabm    )   CALL trc_wri_fabm (kt) ! FABM  tracers for budget
+!         IF( ln_my_trc  )   CALL trc_wri_my_trc (kt) ! MY_TRC  tracers
+      ENDIF
+#else
+      IF( ln_fabm  )   CALL trc_wri_fabm (kt)     ! FABM  tracers
+!      IF( ln_my_trc  )   CALL trc_wri_my_trc(kt)     ! MY_TRC  tracers
       ! FABM <<<+++
       !
+#endif
       IF( ln_timing )   CALL timing_stop('trc_wri')
       !
    END SUBROUTINE trc_wri

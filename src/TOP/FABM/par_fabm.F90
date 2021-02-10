@@ -14,6 +14,8 @@ MODULE par_fabm
                       jp_fabm_surface, jp_fabm_bottom, &
                       jp_fabm_m1
 
+   LOGICAL, PUBLIC, ALLOCATABLE, DIMENSION(:) ::   lk_rad_fabm !: FABM negativity correction flag array
+
 #if defined key_fabm
    CLASS (type_fabm_model), POINTER :: model !FABM model instance
 

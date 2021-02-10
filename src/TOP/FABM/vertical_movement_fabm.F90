@@ -81,7 +81,7 @@ MODULE vertical_movement_fabm
                !    - interface k sits between cell centre k and k+1 (k=0 for surface)
                !    - k [1,jpkm1] increases downwards
                !    - upward velocity is positive, downward velocity is negative
-               h(1:k_floor) = fse3t(ji,jj,1:k_floor)
+               h(1:k_floor) = e3t_n(ji,jj,1:k_floor)
                zwgt_if(1:k_floor-1) = h(2:k_floor) / (h(1:k_floor-1) + h(2:k_floor))
 
                ! Advect:
