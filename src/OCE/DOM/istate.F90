@@ -23,6 +23,7 @@ MODULE istate
    USE oce            ! ocean dynamics and active tracers 
    USE dom_oce        ! ocean space and time domain 
    USE daymod         ! calendar
+   USE divhor         ! horizontal divergence            (div_hor routine)
    USE dtatsd         ! data temperature and salinity   (dta_tsd routine)
    USE dtauvd         ! data: U & V current             (dta_uvd routine)
    USE domvvl          ! varying vertical mesh
@@ -44,7 +45,7 @@ MODULE istate
 #  include "vectopt_loop_substitute.h90"
    !!----------------------------------------------------------------------
    !! NEMO/OCE 4.0 , NEMO Consortium (2018)
-   !! $Id: istate.F90 13101 2020-06-12 11:10:44Z rblod $
+   !! $Id: istate.F90 10068 2018-08-28 14:09:04Z nicolasmartin $
    !! Software governed by the CeCILL license (see ./LICENSE)
    !!----------------------------------------------------------------------
 CONTAINS
@@ -64,6 +65,8 @@ CONTAINS
       IF(lwp) WRITE(numout,*)
       IF(lwp) WRITE(numout,*) 'istate_init : Initialization of the dynamics and tracers'
       IF(lwp) WRITE(numout,*) '~~~~~~~~~~~'
+
+      CALL day_init       ! need this to read initial conditions with interpolation
 
 !!gm  Why not include in the first call of dta_tsd ?  
 !!gm  probably associated with the use of internal damping...
@@ -121,6 +124,9 @@ CONTAINS
          sshn (:,:)     = sshb(:,:)   
          un   (:,:,:)   = ub  (:,:,:)
          vn   (:,:,:)   = vb  (:,:,:)
+         hdivn(:,:,jpk) = 0._wp               ! bottom divergence set one for 0 to zero at jpk level
+         CALL div_hor( 0 )                    ! compute interior hdivn value  
+!!gm                                    hdivn(:,:,:) = 0._wp
 
 !!gm POTENTIAL BUG :
 !!gm  ISSUE :  if sshb /= 0  then, in non linear free surface, the e3._n, e3._b should be recomputed

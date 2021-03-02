@@ -42,7 +42,7 @@ MODULE bdydta
    PUBLIC   bdy_dta          ! routine called by step.F90 and dynspg_ts.F90
    PUBLIC   bdy_dta_init     ! routine called by nemogcm.F90
 
-   INTEGER , PARAMETER ::   jpbdyfld  = 17    ! maximum number of files to read 
+   INTEGER , PARAMETER ::   jpbdyfld  = 16    ! maximum number of files to read 
    INTEGER , PARAMETER ::   jp_bdyssh = 1     ! 
    INTEGER , PARAMETER ::   jp_bdyu2d = 2     ! 
    INTEGER , PARAMETER ::   jp_bdyv2d = 3     !
@@ -59,7 +59,6 @@ MODULE bdydta
    INTEGER , PARAMETER ::   jp_bdys_i = 14    ! 
    INTEGER , PARAMETER ::   jp_bdyaip = 15    ! 
    INTEGER , PARAMETER ::   jp_bdyhip = 16    ! 
-   INTEGER , PARAMETER ::   jp_bdyhil = 17    ! 
 #if ! defined key_si3
    INTEGER , PARAMETER ::   jpl = 1
 #endif
@@ -70,7 +69,7 @@ MODULE bdydta
 
    !!----------------------------------------------------------------------
    !! NEMO/OCE 4.0 , NEMO Consortium (2018)
-   !! $Id: bdydta.F90 13284 2020-07-09 15:12:23Z smasson $ 
+   !! $Id: bdydta.F90 11794 2019-10-25 10:26:39Z jchanut $ 
    !! Software governed by the CeCILL license (see ./LICENSE)
    !!----------------------------------------------------------------------
 CONTAINS
@@ -95,6 +94,8 @@ CONTAINS
       !
       INTEGER ::  jbdy, jfld, jstart, jend, ib, jl    ! dummy loop indices
       INTEGER ::  ii, ij, ik, igrd, ipl               ! local integers
+      INTEGER,   DIMENSION(jpbgrd)     ::   ilen1 
+      INTEGER,   DIMENSION(:), POINTER ::   nblen, nblenrim  ! short cuts
       TYPE(OBC_DATA)         , POINTER ::   dta_alias        ! short cut
       TYPE(FLD), DIMENSION(:), POINTER ::   bf_alias
       !!---------------------------------------------------------------------------
@@ -110,26 +111,28 @@ CONTAINS
 
          DO jbdy = 1, nb_bdy
             !
+            nblen    => idx_bdy(jbdy)%nblen
+            nblenrim => idx_bdy(jbdy)%nblenrim
+            !
             IF( nn_dyn2d_dta(jbdy) == 0 ) THEN 
+               ilen1(:) = nblen(:)
                IF( dta_bdy(jbdy)%lneed_ssh ) THEN 
                   igrd = 1
-                  DO ib = 1, idx_bdy(jbdy)%nblenrim(igrd)   ! ssh is allocated and used only on the rim
+                  DO ib = 1, ilen1(igrd)
                      ii = idx_bdy(jbdy)%nbi(ib,igrd)
                      ij = idx_bdy(jbdy)%nbj(ib,igrd)
                      dta_bdy(jbdy)%ssh(ib) = sshn(ii,ij) * tmask(ii,ij,1)         
                   END DO
                ENDIF
-               IF( ASSOCIATED(dta_bdy(jbdy)%u2d) ) THEN   ! no SIZE with a unassociated pointer. v2d and u2d can differ on subdomain
+               IF( dta_bdy(jbdy)%lneed_dyn2d) THEN 
                   igrd = 2
-                  DO ib = 1, SIZE(dta_bdy(jbdy)%u2d)      ! u2d is used either over the whole bdy or only on the rim
+                  DO ib = 1, ilen1(igrd)
                      ii = idx_bdy(jbdy)%nbi(ib,igrd)
                      ij = idx_bdy(jbdy)%nbj(ib,igrd)
                      dta_bdy(jbdy)%u2d(ib) = un_b(ii,ij) * umask(ii,ij,1)         
                   END DO
-               ENDIF
-               IF( ASSOCIATED(dta_bdy(jbdy)%v2d) ) THEN   ! no SIZE with a unassociated pointer. v2d and u2d can differ on subdomain
                   igrd = 3
-                  DO ib = 1, SIZE(dta_bdy(jbdy)%v2d)      ! v2d is used either over the whole bdy or only on the rim
+                  DO ib = 1, ilen1(igrd)
                      ii = idx_bdy(jbdy)%nbi(ib,igrd)
                      ij = idx_bdy(jbdy)%nbj(ib,igrd)
                      dta_bdy(jbdy)%v2d(ib) = vn_b(ii,ij) * vmask(ii,ij,1)         
@@ -138,9 +141,10 @@ CONTAINS
             ENDIF
             !
             IF( nn_dyn3d_dta(jbdy) == 0 ) THEN 
+               ilen1(:) = nblen(:)
                IF( dta_bdy(jbdy)%lneed_dyn3d ) THEN 
                   igrd = 2 
-                  DO ib = 1, idx_bdy(jbdy)%nblen(igrd)
+                  DO ib = 1, ilen1(igrd)
                      DO ik = 1, jpkm1
                         ii = idx_bdy(jbdy)%nbi(ib,igrd)
                         ij = idx_bdy(jbdy)%nbj(ib,igrd)
@@ -148,7 +152,7 @@ CONTAINS
                      END DO
                   END DO
                   igrd = 3 
-                  DO ib = 1, idx_bdy(jbdy)%nblen(igrd)
+                  DO ib = 1, ilen1(igrd)
                      DO ik = 1, jpkm1
                         ii = idx_bdy(jbdy)%nbi(ib,igrd)
                         ij = idx_bdy(jbdy)%nbj(ib,igrd)
@@ -159,14 +163,15 @@ CONTAINS
             ENDIF
 
             IF( nn_tra_dta(jbdy) == 0 ) THEN 
+               ilen1(:) = nblen(:)
                IF( dta_bdy(jbdy)%lneed_tra ) THEN
                   igrd = 1 
-                  DO ib = 1, idx_bdy(jbdy)%nblen(igrd)
+                  DO ib = 1, ilen1(igrd)
                      DO ik = 1, jpkm1
                         ii = idx_bdy(jbdy)%nbi(ib,igrd)
                         ij = idx_bdy(jbdy)%nbj(ib,igrd)
-                        dta_bdy(jbdy)%tem(ib,ik) = tsn(ii,ij,ik,jp_tem) * tmask(ii,ij,ik)         
-                        dta_bdy(jbdy)%sal(ib,ik) = tsn(ii,ij,ik,jp_sal) * tmask(ii,ij,ik)         
+                        dta_bdy(jbdy)%tem(ib,ik) = tsn(ii,ij,ik,jp_bdytem) * tmask(ii,ij,ik)         
+                        dta_bdy(jbdy)%sal(ib,ik) = tsn(ii,ij,ik,jp_bdysal) * tmask(ii,ij,ik)         
                      END DO
                   END DO
                ENDIF
@@ -174,10 +179,11 @@ CONTAINS
 
 #if defined key_si3
             IF( nn_ice_dta(jbdy) == 0 ) THEN    ! set ice to initial values
+               ilen1(:) = nblen(:)
                IF( dta_bdy(jbdy)%lneed_ice ) THEN
                   igrd = 1   
                   DO jl = 1, jpl
-                     DO ib = 1, idx_bdy(jbdy)%nblen(igrd)
+                     DO ib = 1, ilen1(igrd)
                         ii = idx_bdy(jbdy)%nbi(ib,igrd)
                         ij = idx_bdy(jbdy)%nbj(ib,igrd)
                         dta_bdy(jbdy)%a_i(ib,jl) =  a_i (ii,ij,jl) * tmask(ii,ij,1) 
@@ -190,7 +196,6 @@ CONTAINS
                         ! melt ponds
                         dta_bdy(jbdy)%aip(ib,jl) =  a_ip(ii,ij,jl) * tmask(ii,ij,1) 
                         dta_bdy(jbdy)%hip(ib,jl) =  h_ip(ii,ij,jl) * tmask(ii,ij,1) 
-                        dta_bdy(jbdy)%hil(ib,jl) =  h_il(ii,ij,jl) * tmask(ii,ij,1) 
                      END DO
                   END DO
                ENDIF
@@ -216,41 +221,37 @@ CONTAINS
          ! --------------------------------------------------
          !
          ! if runoff condition: change river flow we read (in m3/s) into barotropic velocity (m/s)
-         IF( cn_tra(jbdy) == 'runoff' ) THEN   ! runoff
+         IF( cn_tra(jbdy) == 'runoff' .AND. TRIM(bf_alias(jp_bdyu2d)%clrootname) /= 'NOT USED' ) THEN   ! runoff and we read u/v2d
             !
-            IF( ASSOCIATED(dta_bdy(jbdy)%u2d) ) THEN   ! no SIZE with a unassociated pointer. v2d and u2d can differ on subdomain
-               igrd = 2                         ! zonal flow (m3/s) to barotropic zonal velocity (m/s)
-               DO ib = 1, SIZE(dta_alias%u2d)   ! u2d is used either over the whole bdy or only on the rim
-                  ii   = idx_bdy(jbdy)%nbi(ib,igrd)
-                  ij   = idx_bdy(jbdy)%nbj(ib,igrd)
-                  dta_alias%u2d(ib) = dta_alias%u2d(ib) / ( e2u(ii,ij) * hu_0(ii,ij) )
-               END DO
-            ENDIF
-            IF( ASSOCIATED(dta_bdy(jbdy)%v2d) ) THEN   ! no SIZE with a unassociated pointer. v2d and u2d can differ on subdomain
-               igrd = 3                         ! meridional flow (m3/s) to barotropic meridional velocity (m/s)
-               DO ib = 1, SIZE(dta_alias%v2d)   ! v2d is used either over the whole bdy or only on the rim
-                  ii   = idx_bdy(jbdy)%nbi(ib,igrd)
-                  ij   = idx_bdy(jbdy)%nbj(ib,igrd)
-                  dta_alias%v2d(ib) = dta_alias%v2d(ib) / ( e1v(ii,ij) * hv_0(ii,ij) )
-               END DO
-            ENDIF
+            igrd = 2                      ! zonal flow (m3/s) to barotropic zonal velocity (m/s)
+            DO ib = 1, idx_bdy(jbdy)%nblen(igrd)
+               ii   = idx_bdy(jbdy)%nbi(ib,igrd)
+               ij   = idx_bdy(jbdy)%nbj(ib,igrd)
+               dta_alias%u2d(ib) = dta_alias%u2d(ib) / ( e2u(ii,ij) * hu_0(ii,ij) )
+            END DO
+            igrd = 3                      ! meridional flow (m3/s) to barotropic meridional velocity (m/s)
+            DO ib = 1, idx_bdy(jbdy)%nblen(igrd)
+               ii   = idx_bdy(jbdy)%nbi(ib,igrd)
+               ij   = idx_bdy(jbdy)%nbj(ib,igrd)
+               dta_alias%v2d(ib) = dta_alias%v2d(ib) / ( e1v(ii,ij) * hv_0(ii,ij) )
+            END DO
          ENDIF
 
          ! tidal harmonic forcing ONLY: initialise arrays
          IF( nn_dyn2d_dta(jbdy) == 2 ) THEN   ! we did not read ssh, u/v2d 
-            IF( ASSOCIATED(dta_alias%ssh) ) dta_alias%ssh(:) = 0._wp
-            IF( ASSOCIATED(dta_alias%u2d) ) dta_alias%u2d(:) = 0._wp
-            IF( ASSOCIATED(dta_alias%v2d) ) dta_alias%v2d(:) = 0._wp
+            IF( dta_alias%lneed_ssh   ) dta_alias%ssh(:) = 0._wp
+            IF( dta_alias%lneed_dyn2d ) dta_alias%u2d(:) = 0._wp
+            IF( dta_alias%lneed_dyn2d ) dta_alias%v2d(:) = 0._wp
          ENDIF
 
          ! If full velocities in boundary data, then split it into barotropic and baroclinic component
          IF( bf_alias(jp_bdyu3d)%ltotvel ) THEN     ! if we read 3D total velocity (can be true only if u3d was read)
             !
             igrd = 2                       ! zonal velocity
+            dta_alias%u2d(:) = 0._wp       ! compute barotrope zonal velocity and put it in u2d
             DO ib = 1, idx_bdy(jbdy)%nblen(igrd)
                ii   = idx_bdy(jbdy)%nbi(ib,igrd)
                ij   = idx_bdy(jbdy)%nbj(ib,igrd)
-               dta_alias%u2d(ib) = 0._wp   ! compute barotrope zonal velocity and put it in u2d
                DO ik = 1, jpkm1
                   dta_alias%u2d(ib) = dta_alias%u2d(ib) + e3u_n(ii,ij,ik) * umask(ii,ij,ik) * dta_alias%u3d(ib,ik)
                END DO
@@ -260,10 +261,10 @@ CONTAINS
                END DO
             END DO
             igrd = 3                       ! meridional velocity
+            dta_alias%v2d(:) = 0._wp       ! compute barotrope meridional velocity and put it in v2d
             DO ib = 1, idx_bdy(jbdy)%nblen(igrd)
                ii   = idx_bdy(jbdy)%nbi(ib,igrd)
                ij   = idx_bdy(jbdy)%nbj(ib,igrd)
-               dta_alias%v2d(ib) = 0._wp   ! compute barotrope meridional velocity and put it in v2d
                DO ik = 1, jpkm1
                   dta_alias%v2d(ib) = dta_alias%v2d(ib) + e3v_n(ii,ij,ik) * vmask(ii,ij,ik) * dta_alias%v3d(ib,ik)
                END DO
@@ -291,7 +292,7 @@ CONTAINS
          ENDIF
 
 #if defined key_si3
-         IF( dta_alias%lneed_ice .AND. idx_bdy(jbdy)%nblen(1) > 0 ) THEN
+         IF( dta_alias%lneed_ice ) THEN
             ! fill temperature and salinity arrays
             IF( TRIM(bf_alias(jp_bdyt_i)%clrootname) == 'NOT USED' )   bf_alias(jp_bdyt_i)%fnow(:,1,:) = rice_tem (jbdy)
             IF( TRIM(bf_alias(jp_bdyt_s)%clrootname) == 'NOT USED' )   bf_alias(jp_bdyt_s)%fnow(:,1,:) = rice_tem (jbdy)
@@ -300,23 +301,15 @@ CONTAINS
             IF( TRIM(bf_alias(jp_bdyaip)%clrootname) == 'NOT USED' )   bf_alias(jp_bdyaip)%fnow(:,1,:) = rice_apnd(jbdy) * & ! rice_apnd is the pond fraction
                &                                                                         bf_alias(jp_bdya_i)%fnow(:,1,:)     !   ( a_ip = rice_apnd * a_i )
             IF( TRIM(bf_alias(jp_bdyhip)%clrootname) == 'NOT USED' )   bf_alias(jp_bdyhip)%fnow(:,1,:) = rice_hpnd(jbdy)
-            IF( TRIM(bf_alias(jp_bdyhil)%clrootname) == 'NOT USED' )   bf_alias(jp_bdyhil)%fnow(:,1,:) = rice_hlid(jbdy)
-
-            ! if T_i is read and not T_su, set T_su = T_i
-            IF( TRIM(bf_alias(jp_bdyt_i)%clrootname) /= 'NOT USED' .AND. TRIM(bf_alias(jp_bdytsu)%clrootname) == 'NOT USED' ) &
-               &   bf_alias(jp_bdytsu)%fnow(:,1,:) = bf_alias(jp_bdyt_i)%fnow(:,1,:)
-            ! if T_s is read and not T_su, set T_su = T_s
-            IF( TRIM(bf_alias(jp_bdyt_s)%clrootname) /= 'NOT USED' .AND. TRIM(bf_alias(jp_bdytsu)%clrootname) == 'NOT USED' ) &
-               &   bf_alias(jp_bdytsu)%fnow(:,1,:) = bf_alias(jp_bdyt_s)%fnow(:,1,:)
-            ! if T_i is read and not T_s, set T_s = T_i
-            IF( TRIM(bf_alias(jp_bdyt_i)%clrootname) /= 'NOT USED' .AND. TRIM(bf_alias(jp_bdyt_s)%clrootname) == 'NOT USED' ) &
-               &   bf_alias(jp_bdyt_s)%fnow(:,1,:) = bf_alias(jp_bdyt_i)%fnow(:,1,:)
-            ! if T_su is read and not T_s, set T_s = T_su
-            IF( TRIM(bf_alias(jp_bdytsu)%clrootname) /= 'NOT USED' .AND. TRIM(bf_alias(jp_bdyt_s)%clrootname) == 'NOT USED' ) &
-               &   bf_alias(jp_bdyt_s)%fnow(:,1,:) = bf_alias(jp_bdytsu)%fnow(:,1,:)
             ! if T_su is read and not T_i, set T_i = (T_su + T_freeze)/2
             IF( TRIM(bf_alias(jp_bdytsu)%clrootname) /= 'NOT USED' .AND. TRIM(bf_alias(jp_bdyt_i)%clrootname) == 'NOT USED' ) &
                &   bf_alias(jp_bdyt_i)%fnow(:,1,:) = 0.5_wp * ( bf_alias(jp_bdytsu)%fnow(:,1,:) + 271.15 )
+            ! if T_su is read and not T_s, set T_s = T_su
+            IF( TRIM(bf_alias(jp_bdytsu)%clrootname) /= 'NOT USED' .AND. TRIM(bf_alias(jp_bdyt_s)%clrootname) == 'NOT USED' ) &
+               &   bf_alias(jp_bdyt_s)%fnow(:,1,:) = bf_alias(jp_bdytsu)%fnow(:,1,:)
+            ! if T_s is read and not T_su, set T_su = T_s
+            IF( TRIM(bf_alias(jp_bdyt_s)%clrootname) /= 'NOT USED' .AND. TRIM(bf_alias(jp_bdytsu)%clrootname) == 'NOT USED' ) &
+               &   bf_alias(jp_bdytsu)%fnow(:,1,:) = bf_alias(jp_bdyt_s)%fnow(:,1,:)
             ! if T_s is read and not T_i, set T_i = (T_s + T_freeze)/2
             IF( TRIM(bf_alias(jp_bdyt_s)%clrootname) /= 'NOT USED' .AND. TRIM(bf_alias(jp_bdyt_i)%clrootname) == 'NOT USED' ) &
                &   bf_alias(jp_bdyt_i)%fnow(:,1,:) = 0.5_wp * ( bf_alias(jp_bdyt_s)%fnow(:,1,:) + 271.15 )
@@ -325,23 +318,19 @@ CONTAINS
             IF ( .NOT.ln_pnd ) THEN
                bf_alias(jp_bdyaip)%fnow(:,1,:) = 0._wp
                bf_alias(jp_bdyhip)%fnow(:,1,:) = 0._wp
-               bf_alias(jp_bdyhil)%fnow(:,1,:) = 0._wp
-            ENDIF
-            IF ( .NOT.ln_pnd_lids ) THEN
-               bf_alias(jp_bdyhil)%fnow(:,1,:) = 0._wp
             ENDIF
             
             ! convert N-cat fields (input) into jpl-cat (output)
             ipl = SIZE(bf_alias(jp_bdya_i)%fnow, 3)            
             IF( ipl /= jpl ) THEN      ! ice: convert N-cat fields (input) into jpl-cat (output)
-               CALL ice_var_itd( bf_alias(jp_bdyh_i)%fnow(:,1,:), bf_alias(jp_bdyh_s)%fnow(:,1,:), bf_alias(jp_bdya_i)%fnow(:,1,:), & ! in
-                  &              dta_alias%h_i                  , dta_alias%h_s                  , dta_alias%a_i                  , & ! out
-                  &              bf_alias(jp_bdyt_i)%fnow(:,1,:), bf_alias(jp_bdyt_s)%fnow(:,1,:), &                                  ! in (optional)
-                  &              bf_alias(jp_bdytsu)%fnow(:,1,:), bf_alias(jp_bdys_i)%fnow(:,1,:), &                                  ! in     -
-                  &              bf_alias(jp_bdyaip)%fnow(:,1,:), bf_alias(jp_bdyhip)%fnow(:,1,:), bf_alias(jp_bdyhil)%fnow(:,1,:), & ! in     -
-                  &              dta_alias%t_i                  , dta_alias%t_s                  , &                                  ! out    -
-                  &              dta_alias%tsu                  , dta_alias%s_i                  , &                                  ! out    -
-                  &              dta_alias%aip                  , dta_alias%hip                  , dta_alias%hil )                    ! out    -
+               CALL ice_var_itd( bf_alias(jp_bdyh_i)%fnow(:,1,:), bf_alias(jp_bdyh_s)%fnow(:,1,:), bf_alias(jp_bdya_i)%fnow(:,1,:), &
+                  &              dta_alias%h_i                  , dta_alias%h_s                  , dta_alias%a_i                  , &
+                  &              bf_alias(jp_bdyt_i)%fnow(:,1,:), bf_alias(jp_bdyt_s)%fnow(:,1,:), &
+                  &              bf_alias(jp_bdytsu)%fnow(:,1,:), bf_alias(jp_bdys_i)%fnow(:,1,:), &
+                  &              bf_alias(jp_bdyaip)%fnow(:,1,:), bf_alias(jp_bdyhip)%fnow(:,1,:), &
+                  &              dta_alias%t_i                  , dta_alias%t_s                  , &
+                  &              dta_alias%tsu                  , dta_alias%s_i                  , &
+                  &              dta_alias%aip                  , dta_alias%hip )
             ENDIF
          ENDIF
 #endif
@@ -351,21 +340,43 @@ CONTAINS
          IF (ln_dynspg_ts) THEN      ! Fill temporary arrays with slow-varying bdy data                           
             DO jbdy = 1, nb_bdy      ! Tidal component added in ts loop
                IF ( nn_dyn2d_dta(jbdy) .GE. 2 ) THEN
-                  IF( ASSOCIATED(dta_bdy(jbdy)%ssh) ) dta_bdy_s(jbdy)%ssh(:) = dta_bdy(jbdy)%ssh(:)
-                  IF( ASSOCIATED(dta_bdy(jbdy)%u2d) ) dta_bdy_s(jbdy)%u2d(:) = dta_bdy(jbdy)%u2d(:)
-                  IF( ASSOCIATED(dta_bdy(jbdy)%v2d) ) dta_bdy_s(jbdy)%v2d(:) = dta_bdy(jbdy)%v2d(:)
+                  nblen => idx_bdy(jbdy)%nblen
+                  nblenrim => idx_bdy(jbdy)%nblenrim
+                  IF( cn_dyn2d(jbdy) == 'frs' ) THEN ; ilen1(:)=nblen(:) ; ELSE ; ilen1(:)=nblenrim(:) ; ENDIF 
+                  IF ( dta_bdy(jbdy)%lneed_ssh   ) dta_bdy_s(jbdy)%ssh(1:ilen1(1)) = dta_bdy(jbdy)%ssh(1:ilen1(1))
+                  IF ( dta_bdy(jbdy)%lneed_dyn2d ) dta_bdy_s(jbdy)%u2d(1:ilen1(2)) = dta_bdy(jbdy)%u2d(1:ilen1(2))
+                  IF ( dta_bdy(jbdy)%lneed_dyn2d ) dta_bdy_s(jbdy)%v2d(1:ilen1(3)) = dta_bdy(jbdy)%v2d(1:ilen1(3))
                ENDIF
             END DO
          ELSE ! Add tides if not split-explicit free surface else this is done in ts loop
-            !
+           !
             CALL bdy_dta_tides( kt=kt, kt_offset=kt_offset )
          ENDIF
       ENDIF
       !
+
+      !------------------------------------------
+      ! NB - add a shift to the boundary + free elevation Enda, JT from NEMO RAN 3.6
+      DO jbdy = 1, nb_bdy
+         IF( dta_bdy(jbdy)%lneed_ssh ) THEN
+             nblen => idx_bdy(jbdy)%nblenrim
+             igrd  = 1
+             DO ib = 1, nblen(igrd)
+                ii = idx_bdy(jbdy)%nbi(ib,igrd)
+                ij = idx_bdy(jbdy)%nbj(ib,igrd)
+                dta_bdy(jbdy)%ssh(ib) = dta_bdy(jbdy)%ssh(ib) + rn_ssh_shift(jbdy) * tmask(ii,ij,1)
+                IF( .NOT. dta_bdy(jbdy)%lforced_ssh ) dta_bdy(jbdy)%ssh(ib) = sshn(ii,ij) * tmask(ii,ij,1)
+             END DO
+         END IF
+      END DO
+      !--- END NB
+      !
       IF( ln_timing )   CALL timing_stop('bdy_dta')
       !
-   END SUBROUTINE bdy_dta
-   
+      END SUBROUTINE bdy_dta
+
+
+
 
    SUBROUTINE bdy_dta_init
       !!----------------------------------------------------------------------
@@ -385,7 +396,7 @@ CONTAINS
       LOGICAL                                ::   ln_full_vel   ! =T => full velocities in 3D boundary data
       !                                                         ! =F => baroclinic velocities in 3D boundary data
       LOGICAL                                ::   ln_zinterp    ! =T => requires a vertical interpolation of the bdydta
-      REAL(wp)                               ::   rn_ice_tem, rn_ice_sal, rn_ice_age, rn_ice_apnd, rn_ice_hpnd, rn_ice_hlid
+      REAL(wp)                               ::   rn_ice_tem, rn_ice_sal, rn_ice_age, rn_ice_apnd, rn_ice_hpnd 
       INTEGER                                ::   ipk,ipl       !
       INTEGER                                ::   idvar         ! variable ID
       INTEGER                                ::   indims        ! number of dimensions of the variable
@@ -395,17 +406,16 @@ CONTAINS
       LOGICAL                                ::   lluld         ! is the variable using the unlimited dimension
       LOGICAL                                ::   llneed        !
       LOGICAL                                ::   llread        !
-      LOGICAL                                ::   llfullbdy     !
       TYPE(FLD_N), DIMENSION(1), TARGET  ::   bn_tem, bn_sal, bn_u3d, bn_v3d   ! must be an array to be used with fld_fill
       TYPE(FLD_N), DIMENSION(1), TARGET  ::   bn_ssh, bn_u2d, bn_v2d           ! informations about the fields to be read
-      TYPE(FLD_N), DIMENSION(1), TARGET  ::   bn_a_i, bn_h_i, bn_h_s, bn_t_i, bn_t_s, bn_tsu, bn_s_i, bn_aip, bn_hip, bn_hil       
+      TYPE(FLD_N), DIMENSION(1), TARGET  ::   bn_a_i, bn_h_i, bn_h_s, bn_t_i, bn_t_s, bn_tsu, bn_s_i, bn_aip, bn_hip       
       TYPE(FLD_N), DIMENSION(:), POINTER ::   bn_alias                        ! must be an array to be used with fld_fill
       TYPE(FLD  ), DIMENSION(:), POINTER ::   bf_alias
       !
-      NAMELIST/nambdy_dta/ cn_dir, bn_tem, bn_sal, bn_u3d, bn_v3d, bn_ssh, bn_u2d, bn_v2d,                 &
-                         & bn_a_i, bn_h_i, bn_h_s, bn_t_i, bn_t_s, bn_tsu, bn_s_i, bn_aip, bn_hip, bn_hil, &
-                         & rn_ice_tem, rn_ice_sal, rn_ice_age, rn_ice_apnd, rn_ice_hpnd, rn_ice_hlid,      &
-                         & ln_full_vel, ln_zinterp
+      NAMELIST/nambdy_dta/ cn_dir, bn_tem, bn_sal, bn_u3d, bn_v3d, bn_ssh, bn_u2d, bn_v2d 
+      NAMELIST/nambdy_dta/ bn_a_i, bn_h_i, bn_h_s, bn_t_i, bn_t_s, bn_tsu, bn_s_i, bn_aip, bn_hip
+      NAMELIST/nambdy_dta/ rn_ice_tem, rn_ice_sal, rn_ice_age, rn_ice_apnd, rn_ice_hpnd
+      NAMELIST/nambdy_dta/ ln_full_vel, ln_zinterp
       !!---------------------------------------------------------------------------
       !
       IF(lwp) WRITE(numout,*)
@@ -455,17 +465,13 @@ CONTAINS
                IF( indims == 4 .OR. ( indims == 3 .AND. .NOT. lluld ) ) THEN   ;   ipl = i4dimsz(3)   ! xylt or xyl
                ELSE                                                            ;   ipl = 1            ! xy or xyt
                ENDIF
-               bf(jp_bdya_i,jbdy)%clrootname = 'NOT USED'   ! reset to default value as this subdomain may not need to read this bdy
             ENDIF
          ENDIF
 
 #if defined key_si3
          IF( .NOT.ln_pnd ) THEN
-            rn_ice_apnd = 0. ; rn_ice_hpnd = 0. ; rn_ice_hlid = 0.
-            CALL ctl_warn( 'rn_ice_apnd & rn_ice_hpnd = 0 & rn_ice_hlid = 0 when no ponds' )
-         ENDIF
-         IF( .NOT.ln_pnd_lids ) THEN
-            rn_ice_hlid = 0.
+            rn_ice_apnd = 0. ; rn_ice_hpnd = 0.
+            CALL ctl_warn( 'rn_ice_apnd & rn_ice_hpnd = 0 when no ponds' )
          ENDIF
 #endif
 
@@ -475,8 +481,7 @@ CONTAINS
          rice_age (jbdy) = rn_ice_age
          rice_apnd(jbdy) = rn_ice_apnd
          rice_hpnd(jbdy) = rn_ice_hpnd
-         rice_hlid(jbdy) = rn_ice_hlid
-
+         
          
          DO jfld = 1, jpbdyfld
 
@@ -500,26 +505,24 @@ CONTAINS
                cl3 = 'u2d'
                igrd = 2                                                    ! U point
                ipk = 1                                                     ! surface data
-               llneed = dta_bdy(jbdy)%lneed_dyn2d                          ! dta_bdy(jbdy)%u2d will be needed
+               llneed = dta_bdy(jbdy)%lneed_dyn2d                          ! dta_bdy(jbdy)%ssh will be needed
                llread = .NOT. ln_full_vel .AND. MOD(nn_dyn2d_dta(jbdy),2) == 1   ! don't get u2d from u3d and read NetCDF file
                bf_alias => bf(jp_bdyu2d,jbdy:jbdy)                         ! alias for u2d structure of bdy number jbdy
                bn_alias => bn_u2d                                          ! alias for u2d structure of nambdy_dta
-               llfullbdy = ln_full_vel .OR. cn_dyn2d(jbdy) == 'frs'        ! need u2d over the whole bdy or only over the rim?
-               IF( llfullbdy ) THEN  ;   iszdim = idx_bdy(jbdy)%nblen(igrd)
-               ELSE                  ;   iszdim = idx_bdy(jbdy)%nblenrim(igrd)
+               IF( ln_full_vel ) THEN  ;   iszdim = idx_bdy(jbdy)%nblen(igrd)      ! will be computed from u3d -> need on the full bdy
+               ELSE                    ;   iszdim = idx_bdy(jbdy)%nblenrim(igrd)   ! used only on the rim
                ENDIF
             ENDIF
             IF( jfld == jp_bdyv2d ) THEN
                cl3 = 'v2d'
                igrd = 3                                                    ! V point
                ipk = 1                                                     ! surface data
-               llneed = dta_bdy(jbdy)%lneed_dyn2d                          ! dta_bdy(jbdy)%v2d will be needed
+               llneed = dta_bdy(jbdy)%lneed_dyn2d                          ! dta_bdy(jbdy)%ssh will be needed
                llread = .NOT. ln_full_vel .AND. MOD(nn_dyn2d_dta(jbdy),2) == 1   ! don't get v2d from v3d and read NetCDF file
                bf_alias => bf(jp_bdyv2d,jbdy:jbdy)                         ! alias for v2d structure of bdy number jbdy
                bn_alias => bn_v2d                                          ! alias for v2d structure of nambdy_dta 
-               llfullbdy = ln_full_vel .OR. cn_dyn2d(jbdy) == 'frs'        ! need v2d over the whole bdy or only over the rim?
-               IF( llfullbdy ) THEN  ;   iszdim = idx_bdy(jbdy)%nblen(igrd)
-               ELSE                  ;   iszdim = idx_bdy(jbdy)%nblenrim(igrd)
+               IF( ln_full_vel ) THEN  ;   iszdim = idx_bdy(jbdy)%nblen(igrd)      ! will be computed from v3d -> need on the full bdy
+               ELSE                    ;   iszdim = idx_bdy(jbdy)%nblenrim(igrd)   ! used only on the rim
                ENDIF
             ENDIF
             ! =====================
@@ -577,7 +580,7 @@ CONTAINS
             ! =====================
             IF(  jfld == jp_bdya_i .OR. jfld == jp_bdyh_i .OR. jfld == jp_bdyh_s .OR. &
                & jfld == jp_bdyt_i .OR. jfld == jp_bdyt_s .OR. jfld == jp_bdytsu .OR. &
-               & jfld == jp_bdys_i .OR. jfld == jp_bdyaip .OR. jfld == jp_bdyhip .OR. jfld == jp_bdyhil ) THEN
+               & jfld == jp_bdys_i .OR. jfld == jp_bdyaip .OR. jfld == jp_bdyhip      ) THEN
                igrd = 1                                                    ! T point
                ipk = ipl                                                   ! jpl-cat data
                llneed = dta_bdy(jbdy)%lneed_ice                            ! ice will be needed
@@ -629,13 +632,8 @@ CONTAINS
                bf_alias => bf(jp_bdyhip,jbdy:jbdy)                         ! alias for hip structure of bdy number jbdy
                bn_alias => bn_hip                                          ! alias for hip structure of nambdy_dta 
             ENDIF
-            IF( jfld == jp_bdyhil ) THEN
-               cl3 = 'hil'
-               bf_alias => bf(jp_bdyhil,jbdy:jbdy)                         ! alias for hil structure of bdy number jbdy
-               bn_alias => bn_hil                                          ! alias for hil structure of nambdy_dta 
-            ENDIF
 
-            IF( llneed .AND. iszdim > 0 ) THEN                             ! dta_bdy(jbdy)%xxx will be needed
+            IF( llneed ) THEN                                              ! dta_bdy(jbdy)%xxx will be needed
                !                                                           !   -> must be associated with an allocated target
                ALLOCATE( bf_alias(1)%fnow( iszdim, 1, ipk ) )              ! allocate the target
                !
@@ -700,11 +698,6 @@ CONTAINS
                IF( jfld == jp_bdyhip ) THEN
                   IF( ipk == jpl ) THEN   ;   dta_bdy(jbdy)%hip => bf_alias(1)%fnow(:,1,:)
                   ELSE                    ;   ALLOCATE( dta_bdy(jbdy)%hip(iszdim,jpl) )
-                  ENDIF
-               ENDIF
-               IF( jfld == jp_bdyhil ) THEN
-                  IF( ipk == jpl ) THEN   ;   dta_bdy(jbdy)%hil => bf_alias(1)%fnow(:,1,:)
-                  ELSE                    ;   ALLOCATE( dta_bdy(jbdy)%hil(iszdim,jpl) )
                   ENDIF
                ENDIF
             ENDIF

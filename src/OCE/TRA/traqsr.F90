@@ -46,7 +46,11 @@ MODULE traqsr
    LOGICAL , PUBLIC ::   ln_qsr_rgb   !: Red-Green-Blue light absorption flag  
    LOGICAL , PUBLIC ::   ln_qsr_2bd   !: 2 band         light absorption flag
    LOGICAL , PUBLIC ::   ln_qsr_bio   !: bio-model      light absorption flag
+   !--- NB : KD490
+   LOGICAL , PUBLIC ::   ln_qsr_kd490 !: read from fil the light penetration KD490
+   !--- END NB
    INTEGER , PUBLIC ::   nn_chldta    !: use Chlorophyll data (=1) or not (=0)
+
    REAL(wp), PUBLIC ::   rn_abs       !: fraction absorbed in the very near surface (RGB & 2 bands)
    REAL(wp), PUBLIC ::   rn_si0       !: very near surface depth of extinction      (RGB & 2 bands)
    REAL(wp), PUBLIC ::   rn_si1       !: deepest depth of extinction (water type I)       (2 bands)
@@ -57,19 +61,25 @@ MODULE traqsr
    INTEGER, PARAMETER ::   np_RGBc = 2   ! R-G-B     light penetration with Chlorophyll data
    INTEGER, PARAMETER ::   np_2BD  = 3   ! 2 bands   light penetration
    INTEGER, PARAMETER ::   np_BIO  = 4   ! bio-model light penetration
+   !--- NB : KD490
+   INTEGER, PARAMETER ::   np_KD490 = 5   ! KD490 light penetration from file
+   !--- END NB
    !
    INTEGER  ::   nqsr    ! user choice of the type of light penetration
    REAL(wp) ::   xsi0r   ! inverse of rn_si0
    REAL(wp) ::   xsi1r   ! inverse of rn_si1
    !
-   REAL(wp) , PUBLIC, DIMENSION(3,61)   ::   rkrgb    ! tabulated attenuation coefficients for RGB absorption
+   REAL(wp) , DIMENSION(3,61)           ::   rkrgb    ! tabulated attenuation coefficients for RGB absorption
    TYPE(FLD), ALLOCATABLE, DIMENSION(:) ::   sf_chl   ! structure of input Chl (file informations, fields read)
+!--- NB : KD490
+   TYPE(FLD), ALLOCATABLE, DIMENSION(:) ::   sf_kd490 ! structure of input kd490 (file informations, fields read)
+!--- END NB
 
    !! * Substitutions
 #  include "vectopt_loop_substitute.h90"
    !!----------------------------------------------------------------------
    !! NEMO/OCE 4.0 , NEMO Consortium (2018)
-   !! $Id: traqsr.F90 13331 2020-07-22 14:00:04Z cetlod $
+   !! $Id: traqsr.F90 11536 2019-09-11 13:54:18Z smasson $
    !! Software governed by the CeCILL license (see ./LICENSE)
    !!----------------------------------------------------------------------
 CONTAINS
@@ -254,6 +264,48 @@ CONTAINS
             END DO
          END DO
          !
+      ! NB : Add KD490, from SW NEMO 3.6 RAN
+      CASE( np_KD490 )                      !  use KD490 data read in   !
+         !                                  ! ------------------------- !
+         !
+         ALLOCATE( ze0(jpi,jpj,jpk) , ze1(jpi,jpj,jpk) , zea(jpi,jpj,jpk) )
+         !
+         nksr = jpk - 1
+         !
+         CALL fld_read( kt, 1, sf_kd490 )   ! Read kd490 data and provide it at the current time step
+         !
+         zcoef  = ( 1. - rn_abs )
+         ze0(:,:,1) = rn_abs * qsr(:,:)
+         ze1(:,:,1) = zcoef  * qsr(:,:)
+         zea(:,:,1) =          qsr(:,:)
+         !
+         DO jk = 2, nksr+1
+            DO jj = 2, jpjm1
+              DO ji = 1, jpi
+                  zc0 = ze0(ji,jj,jk-1) * EXP( - e3t_n(ji,jj,jk-1) * xsi0r     )
+                  zc1 = ze1(ji,jj,jk-1) * EXP( - e3t_n(ji,jj,jk-1) * sf_kd490(1)%fnow(ji,jj,1) )
+                  ze0(ji,jj,jk) = zc0
+                  ze1(ji,jj,jk) = zc1
+                  zea(ji,jj,jk) = ( zc0 + zc1 ) * tmask(ji,jj,jk)
+               END DO
+            END DO
+         END DO
+         ! clem: store attenuation coefficient of the first ocean level
+!         IF ( ln_qsr_ice ) THEN
+!              DO jj = 1, jpj
+!                 DO ji = 1, jpi
+!                    zzc0 = rn_abs * EXP( - e3t_n(ji,jj,1) * xsi0r     )
+!                    zzc1 = zcoef  * EXP( - e3t_n(ji,jj,1) * sf_kd490(1)%fnow(ji,jj,1) )
+!                    fraqsr_1lev(ji,jj) = 1.0 - ( zzc0 + zzc1 ) * tmask(ji,jj,2)
+!                 END DO
+!              END DO
+!         ENDIF
+         !
+         DO jk = 1, nksr                                        ! compute and add qsr trend to ta
+            qsr_hc(:,:,jk) = r1_rau0_rcp * ( zea(:,:,jk) - zea(:,:,jk+1) )
+         END DO
+         zea(:,:,nksr+1:jpk) = 0.e0     !
+      !
       END SELECT
       !
       !                          !-----------------------------!
@@ -330,8 +382,14 @@ CONTAINS
       !
       CHARACTER(len=100) ::   cn_dir   ! Root directory for location of ssr files
       TYPE(FLD_N)        ::   sn_chl   ! informations about the chlorofyl field to be read
+      !-- NB
+      TYPE(FLD_N)        ::   sn_kd490 ! informations about the kd490 field to be read
+      !-- END NB
       !!
       NAMELIST/namtra_qsr/  sn_chl, cn_dir, ln_qsr_rgb, ln_qsr_2bd, ln_qsr_bio,  &
+      !--- NB
+         &                  ln_qsr_kd490, sn_kd490,                              &
+      !--- END NB
          &                  nn_chldta, rn_abs, rn_si0, rn_si1
       !!----------------------------------------------------------------------
       !
@@ -352,6 +410,9 @@ CONTAINS
          WRITE(numout,*) '      RGB (Red-Green-Blue) light penetration       ln_qsr_rgb = ', ln_qsr_rgb
          WRITE(numout,*) '      2 band               light penetration       ln_qsr_2bd = ', ln_qsr_2bd
          WRITE(numout,*) '      bio-model            light penetration       ln_qsr_bio = ', ln_qsr_bio
+      !-- NB : KD490
+         WRITE(numout,*) '      Read KD490           light penetration     ln_qsr_kd490 = ', ln_qsr_kd490
+      !-- END NB
          WRITE(numout,*) '      RGB : Chl data (=1) or cst value (=0)        nn_chldta  = ', nn_chldta
          WRITE(numout,*) '      RGB & 2 bands: fraction of light (rn_si1)    rn_abs     = ', rn_abs
          WRITE(numout,*) '      RGB & 2 bands: shortess depth of extinction  rn_si0     = ', rn_si0
@@ -363,6 +424,9 @@ CONTAINS
       IF( ln_qsr_rgb  )   ioptio = ioptio + 1
       IF( ln_qsr_2bd  )   ioptio = ioptio + 1
       IF( ln_qsr_bio  )   ioptio = ioptio + 1
+      !-- NB : KD490
+      IF( ln_qsr_kd490 )  ioptio = ioptio + 1
+      !-- END NB
       !
       IF( ioptio /= 1 )   CALL ctl_stop( 'Choose ONE type of light penetration in namelist namtra_qsr',  &
          &                               ' 2 bands, 3 RGB bands or bio-model light penetration' )
@@ -371,6 +435,9 @@ CONTAINS
       IF( ln_qsr_rgb .AND. nn_chldta == 1 )   nqsr = np_RGBc
       IF( ln_qsr_2bd                      )   nqsr = np_2BD
       IF( ln_qsr_bio                      )   nqsr = np_BIO
+      !-- NB : KD490
+      IF( ln_qsr_kd490                    )   nqsr = np_KD490 
+      !-- END NB
       !
       !                             ! Initialisation
       xsi0r = 1._wp / rn_si0
@@ -415,13 +482,21 @@ CONTAINS
          !
          IF(lwp) WRITE(numout,*) '   ==>>>   bio-model light penetration'
          IF( .NOT.lk_top )   CALL ctl_stop( 'No bio model : ln_qsr_bio = true impossible ' )
-         !                                   
-         CALL trc_oce_rgb( rkrgb )                 ! tabulated attenuation coef.
-         !                                   
-         nksr = trc_oce_ext_lev( r_si2, 33._wp )   ! level of light extinction
          !
-         IF(lwp) WRITE(numout,*) '        level of light extinction = ', nksr, ' ref depth = ', gdepw_1d(nksr+1), ' m'
-         !
+      !-- NB : KD490
+      CASE( np_KD490 )                 !==  KD490 light penetration  ==!
+         IF(lwp) WRITE(numout,*) '        KD490 read in a file'
+         ALLOCATE( sf_kd490(1), STAT=ierror )
+         IF( ierror > 0 ) THEN
+             CALL ctl_stop( 'tra_qsr_init: unable to allocate sf_kd490 structure' )   ;   RETURN
+         ENDIF
+         ALLOCATE( sf_kd490(1)%fnow(jpi,jpj,1)   )
+         IF( sn_kd490%ln_tint )ALLOCATE( sf_kd490(1)%fdta(jpi,jpj,1,2) )
+         !                                        ! fill sf_kd490 with sn_kd490 and control print
+             CALL fld_fill( sf_kd490, (/ sn_kd490 /), cn_dir, 'tra_qsr_init',   &
+               &                                         'Solar penetration function of read KD490', 'namtra_qsr' )
+      !-- END NB
+      !
       END SELECT
       !
       qsr_hc(:,:,:) = 0._wp     ! now qsr heat content set to zero where it will not be computed

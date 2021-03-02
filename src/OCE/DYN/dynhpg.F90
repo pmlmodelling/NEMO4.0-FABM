@@ -75,7 +75,7 @@ MODULE dynhpg
 #  include "vectopt_loop_substitute.h90"
    !!----------------------------------------------------------------------
    !! NEMO/OCE 4.0 , NEMO Consortium (2018)
-   !! $Id: dynhpg.F90 13095 2020-06-11 12:08:55Z jamesharle $
+   !! $Id: dynhpg.F90 11536 2019-09-11 13:54:18Z smasson $
    !! Software governed by the CeCILL license (see ./LICENSE)
    !!----------------------------------------------------------------------
 CONTAINS
@@ -1032,7 +1032,7 @@ CONTAINS
           ELSEIF( jk < jpkm1 ) THEN
              DO jkk = jk+1, jpk
                 zrhh(ji,jj,jkk) = interp1(gde3w_n(ji,jj,jkk  ), gde3w_n(ji,jj,jkk-1),   &
-                   &                      gde3w_n(ji,jj,jkk-2), zrhh    (ji,jj,jkk-1), zrhh(ji,jj,jkk-2))
+                   &                      gde3w_n(ji,jj,jkk-2), zrhh   (ji,jj,jkk-1), zrhh(ji,jj,jkk-2))
              END DO
           ENDIF
         END DO
@@ -1089,16 +1089,10 @@ CONTAINS
       ! Prepare zsshu_n and zsshv_n
       DO jj = 2, jpjm1
         DO ji = 2, jpim1
-!!gm BUG ?    if it is ssh at u- & v-point then it should be:
-!          zsshu_n(ji,jj) = (e1e2t(ji,jj) * sshn(ji,jj) + e1e2t(ji+1,jj) * sshn(ji+1,jj)) * &
-!                         & r1_e1e2u(ji,jj) * umask(ji,jj,1) * 0.5_wp 
-!          zsshv_n(ji,jj) = (e1e2t(ji,jj) * sshn(ji,jj) + e1e2t(ji,jj+1) * sshn(ji,jj+1)) * &
-!                         & r1_e1e2v(ji,jj) * vmask(ji,jj,1) * 0.5_wp 
-!!gm not this:
-          zsshu_n(ji,jj) = (e1e2u(ji,jj) * sshn(ji,jj) + e1e2u(ji+1, jj) * sshn(ji+1,jj)) * &
-                         & r1_e1e2u(ji,jj) * umask(ji,jj,1) * 0.5_wp 
-          zsshv_n(ji,jj) = (e1e2v(ji,jj) * sshn(ji,jj) + e1e2v(ji+1, jj) * sshn(ji,jj+1)) * &
-                         & r1_e1e2v(ji,jj) * vmask(ji,jj,1) * 0.5_wp 
+           zsshu_n(ji,jj) = (e1e2t(ji,jj) * sshn(ji,jj) + e1e2t(ji+1,jj) * sshn(ji+1,jj)) * &
+                          & r1_e1e2u(ji,jj) * umask(ji,jj,1) * 0.5_wp 
+           zsshv_n(ji,jj) = (e1e2t(ji,jj) * sshn(ji,jj) + e1e2t(ji,jj+1) * sshn(ji,jj+1)) * &
+                          & r1_e1e2v(ji,jj) * vmask(ji,jj,1) * 0.5_wp 
         END DO
       END DO
 
@@ -1129,7 +1123,7 @@ CONTAINS
         END DO
       END DO
 
-      DO jk = 1, jpkm1
+      DO jk = 1, jpkm1 ! JDHA work out what this block does ??
         DO jj = 2, jpjm1
           DO ji = 2, jpim1
             zu(ji,jj,jk) = MIN(  zu(ji,jj,jk) , MAX( -zdept(ji,jj,jk) , -zdept(ji+1,jj,jk) )  )
@@ -1176,7 +1170,7 @@ CONTAINS
                jk1 = jk
                DO WHILE ( -zdept(jid,jj,jk1) < zuijk )
                  IF( jk1 == 1 ) THEN
-                   zdeps = zdept(jid,jj,1) + MIN(zuijk, sshn(jid,jj)*znad)
+                   zdeps = zdept(jid,jj,1) + MIN(zuijk, sshn(jid,jj)*znad)   !JDHA is this correct?
                    zrhdt1 = zrhh(jid,jj,1) - interp3(zdept(jid,jj,1), asp(jid,jj,1), &
                                                      bsp(jid,jj,1),   csp(jid,jj,1), &
                                                      dsp(jid,jj,1)) * zdeps
@@ -1302,6 +1296,10 @@ CONTAINS
       jpj   = size(fsp,2)
       jpkm1 = MAX( 1, size(fsp,3) - 1 )
       !
+      asp(:,:,:) = 0._wp
+      bsp(:,:,:) = 0._wp
+      csp(:,:,:) = 0._wp
+      dsp(:,:,:) = 0._wp
       IF (polynomial_type == 1) THEN     ! Constrained Cubic Spline
          DO ji = 1, jpi
             DO jj = 1, jpj
@@ -1320,9 +1318,10 @@ CONTAINS
            !         zdf(jk) = zdf1 * zdf2 / ( ( 1._wp - zalpha ) * zdf1 + zalpha * zdf2 )
            !       ENDIF
            !    END DO
-
+           zdf(:) = 0._wp
            !!Simply geometric average
-               DO jk = 2, jpkm1-1
+               DO jk = 2, mbkt(ji,jj)-1 ! JDHA TEST
+!              DO jk = 2, jpkm1-1
                   zdf1 = (fsp(ji,jj,jk  ) - fsp(ji,jj,jk-1)) / (xsp(ji,jj,jk  ) - xsp(ji,jj,jk-1))
                   zdf2 = (fsp(ji,jj,jk+1) - fsp(ji,jj,jk  )) / (xsp(ji,jj,jk+1) - xsp(ji,jj,jk  ))
 
@@ -1335,10 +1334,13 @@ CONTAINS
 
                zdf(1)     = 1.5_wp * ( fsp(ji,jj,2) - fsp(ji,jj,1) ) / &
                           &          ( xsp(ji,jj,2) - xsp(ji,jj,1) )           -  0.5_wp * zdf(2)
-               zdf(jpkm1) = 1.5_wp * ( fsp(ji,jj,jpkm1) - fsp(ji,jj,jpkm1-1) ) / &
-                          &          ( xsp(ji,jj,jpkm1) - xsp(ji,jj,jpkm1-1) ) - 0.5_wp * zdf(jpkm1 - 1)
+               zdf(mbkt(ji,jj)) = 1.5_wp * ( fsp(ji,jj,mbkt(ji,jj)) - fsp(ji,jj,mbkt(ji,jj)-1) ) / &
+                          &          ( xsp(ji,jj,mbkt(ji,jj)) - xsp(ji,jj,mbkt(ji,jj)-1) ) - 0.5_wp * zdf(mbkt(ji,jj) - 1)
+!              zdf(jpkm1) = 1.5_wp * ( fsp(ji,jj,jpkm1) - fsp(ji,jj,jpkm1-1) ) / &
+!                         &          ( xsp(ji,jj,jpkm1) - xsp(ji,jj,jpkm1-1) ) - 0.5_wp * zdf(jpkm1 - 1)
 
-               DO jk = 1, jpkm1 - 1
+               DO jk = 1, mbkt(ji,jj) - 1 !JDHA TEST
+!              DO jk = 1, jpkm1 - 1
                  zdxtmp = xsp(ji,jj,jk+1) - xsp(ji,jj,jk)
                  ztmp1  = (zdf(jk+1) + 2._wp * zdf(jk)) / zdxtmp
                  ztmp2  =  6._wp * (fsp(ji,jj,jk+1) - fsp(ji,jj,jk)) / zdxtmp / zdxtmp
@@ -1467,4 +1469,3 @@ CONTAINS
 
    !!======================================================================
 END MODULE dynhpg
-

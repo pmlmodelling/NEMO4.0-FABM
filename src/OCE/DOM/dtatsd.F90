@@ -21,7 +21,8 @@ MODULE dtatsd
    !
    USE in_out_manager  ! I/O manager
    USE lib_mpp         ! MPP library
-
+   USE iom
+   
    IMPLICIT NONE
    PRIVATE
 
@@ -30,13 +31,20 @@ MODULE dtatsd
 
    !                                  !!* namtsd  namelist : Temperature & Salinity Data *
    LOGICAL , PUBLIC ::   ln_tsd_init   !: T & S data flag
+   LOGICAL , PUBLIC ::   ln_tsd_interp !: vertical interpolation flag
    LOGICAL , PUBLIC ::   ln_tsd_dmp    !: internal damping toward input data flag
+   INTEGER , PUBLIC ::   nn_tsd_zone    !: 1=AMM7 July on-shelf, 2=AMM7 July off-shelf, 3=AMM7 Jan on-shelf, 4=AMM7 Jan off-shelf
+   REAL(wp), PUBLIC ::   rn_sal_sf, rn_mld_sf, rn_maxdep_sf, rn_c0_sf, rn_c1_sf
 
    TYPE(FLD), ALLOCATABLE, DIMENSION(:) ::   sf_tsd   ! structure of input SST (file informations, fields read)
+   INTEGER                                 ::   jpk_init , inum_dta
+   INTEGER                                 ::   id ,linum   ! local integers
+   INTEGER                                 ::   zdim(4)
+
 
    !!----------------------------------------------------------------------
    !! NEMO/OCE 4.0 , NEMO Consortium (2018)
-   !! $Id: dtatsd.F90 11536 2019-09-11 13:54:18Z smasson $ 
+   !! $Id: dtatsd.F90 10213 2018-10-23 14:40:09Z aumont $ 
    !! Software governed by the CeCILL license (see ./LICENSE)
    !!----------------------------------------------------------------------
 CONTAINS
@@ -52,17 +60,19 @@ CONTAINS
       !!----------------------------------------------------------------------
       LOGICAL, INTENT(in), OPTIONAL ::   ld_tradmp   ! force the initialization when tradp is used
       !
-      INTEGER ::   ios, ierr0, ierr1, ierr2, ierr3   ! local integers
+      INTEGER ::   ios, ierr0, ierr1, ierr2, ierr3, ierr4, ierr5   ! local integers
       !!
       CHARACTER(len=100)            ::   cn_dir          ! Root directory for location of ssr files
-      TYPE(FLD_N), DIMENSION( jpts) ::   slf_i           ! array of namelist informations on the fields to read
-      TYPE(FLD_N)                   ::   sn_tem, sn_sal
+      TYPE(FLD_N), DIMENSION(jpts+2)::   slf_i           ! array of namelist informations on the fields to read
+      TYPE(FLD_N)                   ::   sn_tem, sn_sal, sn_dep, sn_msk
+      
       !!
-      NAMELIST/namtsd/   ln_tsd_init, ln_tsd_dmp, cn_dir, sn_tem, sn_sal
+      NAMELIST/namtsd/   ln_tsd_init, ln_tsd_interp, ln_tsd_dmp, cn_dir, sn_tem, sn_sal, sn_dep, sn_msk, nn_tsd_zone,   &
+                         rn_sal_sf, rn_mld_sf, rn_maxdep_sf, rn_c0_sf, rn_c1_sf 
       !!----------------------------------------------------------------------
       !
       !  Initialisation
-      ierr0 = 0  ;  ierr1 = 0  ;  ierr2 = 0  ;  ierr3 = 0
+      ierr0 = 0  ;  ierr1 = 0  ;  ierr2 = 0  ;  ierr3 = 0  ; ierr4 = 0  ;  ierr5 = 0 
       !
       REWIND( numnam_ref )              ! Namelist namtsd in reference namelist : 
       READ  ( numnam_ref, namtsd, IOSTAT = ios, ERR = 901)
@@ -79,8 +89,9 @@ CONTAINS
          WRITE(numout,*) 'dta_tsd_init : Temperature & Salinity data '
          WRITE(numout,*) '~~~~~~~~~~~~ '
          WRITE(numout,*) '   Namelist namtsd'
-         WRITE(numout,*) '      Initialisation of ocean T & S with T &S input data   ln_tsd_init = ', ln_tsd_init
-         WRITE(numout,*) '      damping of ocean T & S toward T &S input data        ln_tsd_dmp  = ', ln_tsd_dmp
+         WRITE(numout,*) '      Initialisation of ocean T & S with T &S input data   ln_tsd_init   = ', ln_tsd_init
+         WRITE(numout,*) '      Interpolation of initial conditions in the vertical  ln_tsd_interp = ', ln_tsd_interp
+         WRITE(numout,*) '      damping of ocean T & S toward T &S input data        ln_tsd_dmp    = ', ln_tsd_dmp
          WRITE(numout,*)
          IF( .NOT.ln_tsd_init .AND. .NOT.ln_tsd_dmp ) THEN
             WRITE(numout,*)
@@ -93,21 +104,51 @@ CONTAINS
             &           'we keep the restart T & S values and set ln_tsd_init to FALSE' )
          ln_tsd_init = .FALSE.
       ENDIF
+      IF( ln_tsd_interp .AND. ln_tsd_dmp ) THEN
+            CALL ctl_stop( 'dta_tsd_init: Tracer damping and vertical interpolation not yet configured' )   ;   RETURN
+      ENDIF
+      IF( ln_tsd_interp .AND. LEN(TRIM(sn_msk%wname)) > 0 ) THEN
+            CALL ctl_stop( 'dta_tsd_init: Using vertical interpolation and weights files not recommended' )   ;   RETURN
+      ENDIF
       !
       !                             ! allocate the arrays (if necessary)
       IF( ln_tsd_init .OR. ln_tsd_dmp ) THEN
          !
-         ALLOCATE( sf_tsd(jpts), STAT=ierr0 )
+         IF( ln_tsd_interp ) THEN
+           ALLOCATE( sf_tsd(jpts+2), STAT=ierr0 ) ! to carry the addtional depth information
+         ELSE
+           ALLOCATE( sf_tsd(jpts  ), STAT=ierr0 ) 
+         ENDIF 
          IF( ierr0 > 0 ) THEN
             CALL ctl_stop( 'dta_tsd_init: unable to allocate sf_tsd structure' )   ;   RETURN
          ENDIF
          !
-                                ALLOCATE( sf_tsd(jp_tem)%fnow(jpi,jpj,jpk)   , STAT=ierr0 )
-         IF( sn_tem%ln_tint )   ALLOCATE( sf_tsd(jp_tem)%fdta(jpi,jpj,jpk,2) , STAT=ierr1 )
-                                ALLOCATE( sf_tsd(jp_sal)%fnow(jpi,jpj,jpk)   , STAT=ierr2 )
-         IF( sn_sal%ln_tint )   ALLOCATE( sf_tsd(jp_sal)%fdta(jpi,jpj,jpk,2) , STAT=ierr3 )
+         slf_i(jp_tem) = sn_tem   ;   slf_i(jp_sal) = sn_sal
+         IF( ln_tsd_interp ) slf_i(jp_dep) = sn_dep   ;   slf_i(jp_msk) = sn_msk
+         CALL fld_fill( sf_tsd, slf_i, cn_dir, 'dta_tsd', 'Temperature & Salinity data', 'namtsd' )
+
+         IF( ln_tsd_interp ) THEN
+            CALL fld_clopn ( sf_tsd(jp_dep) ) 
+            IF(lwp) WRITE(numout,*) 'INFO: ', sf_tsd(jp_dep)%num, sn_dep%clvar
+            id = iom_varid( sf_tsd(jp_dep)%num, sn_dep%clvar, zdim )
+            jpk_init = zdim(3)
+            IF(lwp) WRITE(numout,*) 'Dimension of veritcal coordinate in ICs: ', jpk_init
+            !
+                                 ALLOCATE( sf_tsd(jp_tem)%fnow(jpi,jpj,jpk_init  ) , STAT=ierr0 )
+            IF( sn_tem%ln_tint ) ALLOCATE( sf_tsd(jp_tem)%fdta(jpi,jpj,jpk_init,2) , STAT=ierr1 )
+                                 ALLOCATE( sf_tsd(jp_sal)%fnow(jpi,jpj,jpk_init  ) , STAT=ierr2 )
+            IF( sn_sal%ln_tint ) ALLOCATE( sf_tsd(jp_sal)%fdta(jpi,jpj,jpk_init,2) , STAT=ierr3 )  
+                                 ALLOCATE( sf_tsd(jp_dep)%fnow(jpi,jpj,jpk_init  ) , STAT=ierr4 )
+                                 ALLOCATE( sf_tsd(jp_msk)%fnow(jpi,jpj,jpk_init  ) , STAT=ierr5 )
+         ELSE
+                                 ALLOCATE( sf_tsd(jp_tem)%fnow(jpi,jpj,jpk)   , STAT=ierr0 )
+            IF( sn_tem%ln_tint ) ALLOCATE( sf_tsd(jp_tem)%fdta(jpi,jpj,jpk,2) , STAT=ierr1 )
+                                 ALLOCATE( sf_tsd(jp_sal)%fnow(jpi,jpj,jpk)   , STAT=ierr2 )
+            IF( sn_sal%ln_tint ) ALLOCATE( sf_tsd(jp_sal)%fdta(jpi,jpj,jpk,2) , STAT=ierr3 )  
+         ENDIF ! ln_tsd_interp
+
          !
-         IF( ierr0 + ierr1 + ierr2 + ierr3 > 0 ) THEN
+         IF( ierr0 + ierr1 + ierr2 + ierr3 + ierr4 + ierr5 > 0 ) THEN
             CALL ctl_stop( 'dta_tsd : unable to allocate T & S data arrays' )   ;   RETURN
          ENDIF
          !                         ! fill sf_tsd with sn_tem & sn_sal and control print
@@ -137,10 +178,9 @@ CONTAINS
       INTEGER                              , INTENT(in   ) ::   kt     ! ocean time-step
       REAL(wp), DIMENSION(jpi,jpj,jpk,jpts), INTENT(  out) ::   ptsd   ! T & S data
       !
-      INTEGER ::   ji, jj, jk, jl, jkk   ! dummy loop indicies
+      INTEGER ::   ji, jj, jk, jl, jk_init   ! dummy loop indicies
       INTEGER ::   ik, il0, il1, ii0, ii1, ij0, ij1   ! local integers
       REAL(wp)::   zl, zi                             ! local scalars
-      REAL(wp), DIMENSION(jpk) ::  ztp, zsp   ! 1D workspace
       !!----------------------------------------------------------------------
       !
       CALL fld_read( kt, 1, sf_tsd )      !==   read T & S data at kt time step   ==!
@@ -175,49 +215,50 @@ CONTAINS
       ENDIF
 !!gm end
       !
-      ptsd(:,:,:,jp_tem) = sf_tsd(jp_tem)%fnow(:,:,:)    ! NO mask
-      ptsd(:,:,:,jp_sal) = sf_tsd(jp_sal)%fnow(:,:,:) 
-      !
-      IF( ln_sco ) THEN                   !==   s- or mixed s-zps-coordinate   ==!
+      IF( ln_tsd_interp ) THEN
          !
          IF( kt == nit000 .AND. lwp )THEN
             WRITE(numout,*)
-            WRITE(numout,*) 'dta_tsd: interpolates T & S data onto the s- or mixed s-z-coordinate mesh'
+            WRITE(numout,*) 'dta_tsd: interpolates T & S data onto current mesh'
          ENDIF
-         !
-         DO jj = 1, jpj                         ! vertical interpolation of T & S
-            DO ji = 1, jpi
-               DO jk = 1, jpk                        ! determines the intepolated T-S profiles at each (i,j) points
+         DO jk = 1, jpk                        ! determines the intepolated T-S profiles at each (i,j) points
+            DO jj= 1, jpj
+               DO ji= 1, jpi
                   zl = gdept_0(ji,jj,jk)
-                  IF(     zl < gdept_1d(1  ) ) THEN          ! above the first level of data
-                     ztp(jk) =  ptsd(ji,jj,1    ,jp_tem)
-                     zsp(jk) =  ptsd(ji,jj,1    ,jp_sal)
-                  ELSEIF( zl > gdept_1d(jpk) ) THEN          ! below the last level of data
-                     ztp(jk) =  ptsd(ji,jj,jpkm1,jp_tem)
-                     zsp(jk) =  ptsd(ji,jj,jpkm1,jp_sal)
-                  ELSE                                      ! inbetween : vertical interpolation between jkk & jkk+1
-                     DO jkk = 1, jpkm1                                  ! when  gdept(jkk) < zl < gdept(jkk+1)
-                        IF( (zl-gdept_1d(jkk)) * (zl-gdept_1d(jkk+1)) <= 0._wp ) THEN
-                           zi = ( zl - gdept_1d(jkk) ) / (gdept_1d(jkk+1)-gdept_1d(jkk))
-                           ztp(jk) = ptsd(ji,jj,jkk,jp_tem) + ( ptsd(ji,jj,jkk+1,jp_tem) - ptsd(ji,jj,jkk,jp_tem) ) * zi 
-                           zsp(jk) = ptsd(ji,jj,jkk,jp_sal) + ( ptsd(ji,jj,jkk+1,jp_sal) - ptsd(ji,jj,jkk,jp_sal) ) * zi
+                  IF( zl < sf_tsd(jp_dep)%fnow(ji,jj,1) ) THEN                     ! above the first level of data
+                     ptsd(ji,jj,jk,jp_tem) = sf_tsd(jp_tem)%fnow(ji,jj,1) 
+                     ptsd(ji,jj,jk,jp_sal) = sf_tsd(jp_sal)%fnow(ji,jj,1)
+                  ELSEIF( zl > sf_tsd(jp_dep)%fnow(ji,jj,jpk_init) ) THEN          ! below the last level of data
+                     ptsd(ji,jj,jk,jp_tem) = sf_tsd(jp_tem)%fnow(ji,jj,jpk_init)
+                     ptsd(ji,jj,jk,jp_sal) = sf_tsd(jp_sal)%fnow(ji,jj,jpk_init)
+                  ELSE                                                             ! inbetween : vertical interpolation between jk_init & jk_init+1
+                     DO jk_init = 1, jpk_init-1                                    ! when  gdept(jk_init) < zl < gdept(jk_init+1)
+                        IF( sf_tsd(jp_msk)%fnow(ji,jj,jk_init+1) == 0 ) THEN       ! if there is no data fill down
+                           sf_tsd(jp_tem)%fnow(ji,jj,jk_init+1) = sf_tsd(jp_tem)%fnow(ji,jj,jk_init)
+                           sf_tsd(jp_sal)%fnow(ji,jj,jk_init+1) = sf_tsd(jp_sal)%fnow(ji,jj,jk_init)
+                        ENDIF
+                        IF( (zl-sf_tsd(jp_dep)%fnow(ji,jj,jk_init)) * (zl-sf_tsd(jp_dep)%fnow(ji,jj,jk_init+1)) <= 0._wp ) THEN
+                           zi = ( zl - sf_tsd(jp_dep)%fnow(ji,jj,jk_init) ) / &
+                        &       (sf_tsd(jp_dep)%fnow(ji,jj,jk_init+1)-sf_tsd(jp_dep)%fnow(ji,jj,jk_init))
+                           ptsd(ji,jj,jk,jp_tem) = sf_tsd(jp_tem)%fnow(ji,jj,jk_init) + &
+                        &                          (sf_tsd(jp_tem)%fnow(ji,jj,jk_init+1)-sf_tsd(jp_tem)%fnow(ji,jj,jk_init)) * zi
+                           ptsd(ji,jj,jk,jp_sal) = sf_tsd(jp_sal)%fnow(ji,jj,jk_init) + &
+                        &                          (sf_tsd(jp_sal)%fnow(ji,jj,jk_init+1)-sf_tsd(jp_sal)%fnow(ji,jj,jk_init)) * zi
                         ENDIF
                      END DO
                   ENDIF
-               END DO
-               DO jk = 1, jpkm1
-                  ptsd(ji,jj,jk,jp_tem) = ztp(jk) * tmask(ji,jj,jk)     ! mask required for mixed zps-s-coord
-                  ptsd(ji,jj,jk,jp_sal) = zsp(jk) * tmask(ji,jj,jk)
-               END DO
-               ptsd(ji,jj,jpk,jp_tem) = 0._wp
-               ptsd(ji,jj,jpk,jp_sal) = 0._wp
-            END DO
+               ENDDO
+            ENDDO
          END DO
-         ! 
-      ELSE                                !==   z- or zps- coordinate   ==!
-         !                             
-         ptsd(:,:,:,jp_tem) = ptsd(:,:,:,jp_tem) * tmask(:,:,:)    ! Mask
-         ptsd(:,:,:,jp_sal) = ptsd(:,:,:,jp_sal) * tmask(:,:,:)
+         !
+         ptsd(:,:,:,jp_tem) = ptsd(:,:,:,jp_tem) *tmask(:,:,:)
+         ptsd(:,:,:,jp_sal) = ptsd(:,:,:,jp_sal) *tmask(:,:,:)
+      ELSE                                
+         !
+         CALL ctl_warn('dta_tsd: T & S data are assumed to be on the current mesh. No interpolation performed')
+         !                  
+         ptsd(:,:,:,jp_tem) = sf_tsd(jp_tem)%fnow(:,:,:)  * tmask(:,:,:)  ! Mask
+         ptsd(:,:,:,jp_sal) = sf_tsd(jp_sal)%fnow(:,:,:)  * tmask(:,:,:)
          !
          IF( ln_zps ) THEN                      ! zps-coordinate (partial steps) interpolation at the last ocean level
             DO jj = 1, jpj
@@ -247,6 +288,8 @@ CONTAINS
          IF( sf_tsd(jp_tem)%ln_tint )   DEALLOCATE( sf_tsd(jp_tem)%fdta )
                                         DEALLOCATE( sf_tsd(jp_sal)%fnow )     ! S arrays in the structure
          IF( sf_tsd(jp_sal)%ln_tint )   DEALLOCATE( sf_tsd(jp_sal)%fdta )
+         IF( ln_tsd_interp )            DEALLOCATE( sf_tsd(jp_dep)%fnow )     ! T arrays in the structure
+         IF( ln_tsd_interp )            DEALLOCATE( sf_tsd(jp_msk)%fnow )     ! T arrays in the structure
                                         DEALLOCATE( sf_tsd              )     ! the structure itself
       ENDIF
       !

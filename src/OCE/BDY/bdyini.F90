@@ -44,7 +44,7 @@ MODULE bdyini
    INTEGER, DIMENSION(jp_nseg) ::   jpjsob, jpisdt, jpisft, npckgs   !
    !!----------------------------------------------------------------------
    !! NEMO/OCE 4.0 , NEMO Consortium (2018)
-   !! $Id: bdyini.F90 12142 2019-12-10 11:50:13Z smasson $ 
+   !! $Id: bdyini.F90 11536 2019-09-11 13:54:18Z smasson $ 
    !! Software governed by the CeCILL license (see ./LICENSE)
    !!----------------------------------------------------------------------
 CONTAINS
@@ -68,6 +68,12 @@ CONTAINS
          &             cn_ice, nn_ice_dta,                                     &
          &             ln_vol, nn_volctl, nn_rimwidth
          !
+!     NB Propagating ENDA's stuff from 3.6
+      NAMELIST/nambdy_ssh/ ln_ssh_bdy, rn_ssh_shift
+      INTEGER  ::   ib_bdy
+!     END NB
+
+
       INTEGER  ::   ios                 ! Local integer output status for namelist read
       !!----------------------------------------------------------------------
 
@@ -96,6 +102,32 @@ CONTAINS
       READ  ( numnam_cfg, nambdy, IOSTAT = ios, ERR = 902 )
 902   IF( ios >  0 )   CALL ctl_nam ( ios , 'nambdy in configuration namelist' )
       IF(lwm) WRITE ( numond, nambdy )
+
+
+!     NB Propagating ENDA's stuff from 3.6
+      REWIND( numnam_ref )              ! Namelist nambdy in reference namelist :Unstructured open boundaries
+      READ  ( numnam_ref, nambdy_ssh, IOSTAT = ios, ERR = 905)
+905   IF( ios /= 0 ) CALL ctl_nam ( ios , 'nambdy_ssh in reference namelist' )
+
+      REWIND( numnam_cfg )              ! Namelist nambdy in configuration namelist :Unstructured open boundaries
+      READ  ( numnam_cfg, nambdy_ssh, IOSTAT = ios, ERR = 906)
+906   IF( ios /= 0 ) CALL ctl_nam ( ios , 'nambdy_ssh in configuration namelist' )
+      IF(lwm) WRITE ( numond, nambdy_ssh )
+
+      IF(lwp) WRITE(numout,*)
+      IF(lwp) WRITE(numout,*) 'nambdy_ssh : use of ssh boundaries'
+      IF(lwp) WRITE(numout,*) '~~~~~~~~'
+      IF(lwp) WRITE(numout,*) '      ln_ssh_bdy: '
+      DO ib_bdy = 1,nb_bdy
+        IF(lwp) WRITE(numout,*) '      ln_ssh_bdy  (',ib_bdy,'): ',ln_ssh_bdy(ib_bdy)
+      IF(lwp) WRITE(numout,*) '      rn_ssh_shift: '
+      ENDDO
+      DO ib_bdy = 1,nb_bdy
+        IF(lwp) WRITE(numout,*) '      rn_ssh_shift(',ib_bdy,'): ',rn_ssh_shift(ib_bdy)
+      ENDDO
+      IF(lwp) WRITE(numout,*) '~~~~~~~~'
+      IF(lwp) WRITE(numout,*)
+!     END NB
 
       IF( .NOT. Agrif_Root() ) ln_bdy = .FALSE.   ! forced for Agrif children
 
@@ -200,6 +232,16 @@ CONTAINS
 
          dta_bdy(ib_bdy)%lneed_ssh   = cn_dyn2d(ib_bdy) == 'flather'
          dta_bdy(ib_bdy)%lneed_dyn2d = cn_dyn2d(ib_bdy) /= 'none'
+
+         ! NB propagating JT override dta_bdy(ib_bdy)%ll_ssh with namelist value (ln_ssh_bdy)
+         dta_bdy(ib_bdy)%lforced_ssh = ln_ssh_bdy(ib_bdy)
+         IF(lwp) WRITE(numout,*) 'nambdy_ssh : use of ssh boundaries'
+         IF(lwp) WRITE(numout,*) '~~~~~~~~'
+         IF(lwp) WRITE(numout,*) '      ib_bdy: ',ib_bdy
+         IF(lwp) WRITE(numout,*) '      dta_bdy(ib_bdy)%lneed_ssh  : ',dta_bdy(ib_bdy)%lneed_ssh
+         IF(lwp) WRITE(numout,*) '      dta_bdy(ib_bdy)%lforced_ssh: ',dta_bdy(ib_bdy)%lforced_ssh
+         IF(lwp) WRITE(numout,*) '~~~~~~~~'
+         ! END NB
 
          IF( lwp .AND. dta_bdy(ib_bdy)%lneed_dyn2d ) THEN
             SELECT CASE( nn_dyn2d_dta(ib_bdy) )                   ! 
@@ -397,8 +439,7 @@ CONTAINS
       !---------------
       jpbdta = MAXVAL(nblendta(1:jpbgrd,1:nb_bdy))
       ALLOCATE( nbidta(jpbdta, jpbgrd, nb_bdy), nbjdta(jpbdta, jpbgrd, nb_bdy), nbrdta(jpbdta, jpbgrd, nb_bdy) )
-      nbrdta(:,:,:) = 0   ! initialize nbrdta as it may not be completely defined for each bdy
-      
+    
       ! Calculate global boundary index arrays or read in from file
       !------------------------------------------------------------               
       ! 1. Read global index arrays from boundary coordinates file.

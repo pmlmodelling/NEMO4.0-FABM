@@ -18,7 +18,6 @@ MODULE zdfgls
    USE oce            ! ocean dynamics and active tracers 
    USE dom_oce        ! ocean space and time domain
    USE domvvl         ! ocean space and time domain : variable volume layer
-   USE zdfdrg  , ONLY : ln_drg_OFF            ! top/bottom free-slip flag
    USE zdfdrg  , ONLY : r_z0_top , r_z0_bot   ! top/bottom roughness
    USE zdfdrg  , ONLY : rCdU_top , rCdU_bot   ! top/bottom friction
    USE sbc_oce        ! surface boundary condition: ocean
@@ -53,7 +52,6 @@ MODULE zdfgls
    INTEGER  ::   nn_bc_surf        ! surface boundary condition (=0/1)
    INTEGER  ::   nn_bc_bot         ! bottom boundary condition (=0/1)
    INTEGER  ::   nn_z0_met         ! Method for surface roughness computation
-   INTEGER  ::   nn_z0_ice         ! Roughness accounting for sea ice
    INTEGER  ::   nn_stab_func      ! stability functions G88, KC or Canuto (=0/1/2)
    INTEGER  ::   nn_clos           ! closure 0/1/2/3 MY82/k-eps/k-w/gen
    REAL(wp) ::   rn_clim_galp      ! Holt 2008 value for k-eps: 0.267
@@ -62,7 +60,6 @@ MODULE zdfgls
    REAL(wp) ::   rn_charn          ! Charnock constant for surface breaking waves mixing : 1400. (standard) or 2.e5 (Stacey value)
    REAL(wp) ::   rn_crban          ! Craig and Banner constant for surface breaking waves mixing
    REAL(wp) ::   rn_hsro           ! Minimum surface roughness
-   REAL(wp) ::   rn_hsri           ! Ice ocean roughness
    REAL(wp) ::   rn_frac_hs        ! Fraction of wave height as surface roughness (if nn_z0_met > 1) 
 
    REAL(wp) ::   rcm_sf        =  0.73_wp     ! Shear free turbulence parameters
@@ -109,7 +106,7 @@ MODULE zdfgls
 #  include "vectopt_loop_substitute.h90"
    !!----------------------------------------------------------------------
    !! NEMO/OCE 4.0 , NEMO Consortium (2018)
-   !! $Id: zdfgls.F90 13511 2020-09-24 08:55:10Z smasson $
+   !! $Id$
    !! Software governed by the CeCILL license (see ./LICENSE)
    !!----------------------------------------------------------------------
 CONTAINS
@@ -152,7 +149,6 @@ CONTAINS
       REAL(wp), DIMENSION(jpi,jpj)     ::   zkar
       REAL(wp), DIMENSION(jpi,jpj)     ::   zflxs       ! Turbulence fluxed induced by internal waves 
       REAL(wp), DIMENSION(jpi,jpj)     ::   zhsro       ! Surface roughness (surface waves)
-      REAL(wp), DIMENSION(jpi,jpj)     ::   zice_fra    ! Tapering of wave breaking under sea ice
       REAL(wp), DIMENSION(jpi,jpj,jpk) ::   eb          ! tke at time before
       REAL(wp), DIMENSION(jpi,jpj,jpk) ::   hmxl_b      ! mixing length at time before
       REAL(wp), DIMENSION(jpi,jpj,jpk) ::   eps         ! dissipation rate
@@ -168,41 +164,33 @@ CONTAINS
       ustar2_top (:,:) = 0._wp   ;   zwall_psi(:,:,:) = 0._wp
       ustar2_bot (:,:) = 0._wp
 
-      SELECT CASE ( nn_z0_ice )
-      CASE( 0 )   ;   zice_fra(:,:) = 0._wp
-      CASE( 1 )   ;   zice_fra(:,:) =        TANH( fr_i(:,:) * 10._wp )
-      CASE( 2 )   ;   zice_fra(:,:) =              fr_i(:,:)
-      CASE( 3 )   ;   zice_fra(:,:) = MIN( 4._wp * fr_i(:,:) , 1._wp )
-      END SELECT
-      
       ! Compute surface, top and bottom friction at T-points
-      DO jj = 2, jpjm1              !==  surface ocean friction
-         DO ji = fs_2, fs_jpim1           ! vector opt.         
+      DO jj = 2, jpjm1          
+         DO ji = fs_2, fs_jpim1   ! vector opt.         
+            !
+            ! surface friction
             ustar2_surf(ji,jj) = r1_rau0 * taum(ji,jj) * tmask(ji,jj,1)
+            !   
+!!gm Rq we may add here r_ke0(_top/_bot) ?  ==>> think about that...
+          ! bottom friction (explicit before friction)
+!CEOD          zmsku = ( 2._wp - umask(ji-1,jj,mbkt(ji,jj)) * umask(ji,jj,mbkt(ji,jj)) )
+!CEOD          zmskv = ( 2._wp - vmask(ji,jj-1,mbkt(ji,jj)) * vmask(ji,jj,mbkt(ji,jj)) )     ! (CAUTION: CdU<0)
+!CEOD a bug? that would be 2,0 but surely want 1/2,0
+          zmsku = 0.5*( 2._wp - umask(ji-1,jj,mbkt(ji,jj)) * umask(ji,jj,mbkt(ji,jj)) )
+          zmskv = 0.5*( 2._wp - vmask(ji,jj-1,mbkt(ji,jj)) * vmask(ji,jj,mbkt(ji,jj)) )     ! (CAUTION: CdU<0)
+          ustar2_bot(ji,jj) = - rCdU_bot(ji,jj) * SQRT(  ( zmsku*( ub(ji,jj,mbkt(ji,jj))+ub(ji-1,jj,mbkt(ji,jj)) ) )**2  &
+             &                                         + ( zmskv*( vb(ji,jj,mbkt(ji,jj))+vb(ji,jj-1,mbkt(ji,jj)) ) )**2  )
          END DO
       END DO
-      !   
-!!gm Rq we may add here r_ke0(_top/_bot) ?  ==>> think about that...
-      !    
-      IF( .NOT.ln_drg_OFF ) THEN    !== top/bottom friction   (explicit before friction)
-         DO jj = 2, jpjm1                      ! bottom friction
-            DO ji = fs_2, fs_jpim1   ! vector opt.         
-               zmsku = ( 2._wp - umask(ji-1,jj,mbkt(ji,jj)) * umask(ji,jj,mbkt(ji,jj)) )
-               zmskv = ( 2._wp - vmask(ji,jj-1,mbkt(ji,jj)) * vmask(ji,jj,mbkt(ji,jj)) )     ! (CAUTION: CdU<0)
-               ustar2_bot(ji,jj) = - rCdU_bot(ji,jj) * SQRT(  ( zmsku*( ub(ji,jj,mbkt(ji,jj))+ub(ji-1,jj,mbkt(ji,jj)) ) )**2  &
-                  &                                         + ( zmskv*( vb(ji,jj,mbkt(ji,jj))+vb(ji,jj-1,mbkt(ji,jj)) ) )**2  )
+      IF( ln_isfcav ) THEN       !top friction
+         DO jj = 2, jpjm1
+            DO ji = fs_2, fs_jpim1   ! vector opt.
+               zmsku = ( 2. - umask(ji-1,jj,mikt(ji,jj)) * umask(ji,jj,mikt(ji,jj)) )
+               zmskv = ( 2. - vmask(ji,jj-1,mikt(ji,jj)) * vmask(ji,jj,mikt(ji,jj)) )     ! (CAUTION: CdU<0)
+               ustar2_top(ji,jj) = - rCdU_top(ji,jj) * SQRT(  ( zmsku*( ub(ji,jj,mikt(ji,jj))+ub(ji-1,jj,mikt(ji,jj)) ) )**2  &
+                  &                                         + ( zmskv*( vb(ji,jj,mikt(ji,jj))+vb(ji,jj-1,mikt(ji,jj)) ) )**2  )
             END DO
          END DO
-         IF( ln_isfcav ) THEN       !top friction
-            DO jj = 2, jpjm1
-               DO ji = fs_2, fs_jpim1   ! vector opt.
-                  zmsku = ( 2._wp - umask(ji-1,jj,mikt(ji,jj)) * umask(ji,jj,mikt(ji,jj)) )
-                  zmskv = ( 2._wp - vmask(ji,jj-1,mikt(ji,jj)) * vmask(ji,jj,mikt(ji,jj)) )     ! (CAUTION: CdU<0)
-                  ustar2_top(ji,jj) = - rCdU_top(ji,jj) * SQRT(  ( zmsku*( ub(ji,jj,mikt(ji,jj))+ub(ji-1,jj,mikt(ji,jj)) ) )**2  &
-                     &                                         + ( zmskv*( vb(ji,jj,mikt(ji,jj))+vb(ji,jj-1,mikt(ji,jj)) ) )**2  )
-               END DO
-            END DO
-         ENDIF
       ENDIF
    
       SELECT CASE ( nn_z0_met )      !==  Set surface roughness length  ==!
@@ -217,15 +205,12 @@ CONTAINS
          zdep (:,:) = 30.*TANH( 2.*0.3/(28.*SQRT(MAX(ustar2_surf(:,:),rsmall))) )         ! Wave age (eq. 10)
          zhsro(:,:) = MAX(rsbc_zs2 * ustar2_surf(:,:) * zdep(:,:)**1.5, rn_hsro)          ! zhsro = rn_frac_hs * Hsw (eq. 11)
       CASE ( 3 )             ! Roughness given by the wave model (coupled or read in file)
-         zhsro(:,:) = MAX(rn_frac_hs * hsw(:,:), rn_hsro)   ! (rn_frac_hs=1.6 see Eq. (5) of Rascle et al. 2008 )
+         zhsro(:,:) = rn_frac_hs * hsw(:,:)   ! (rn_frac_hs=1.6 see Eq. (5) of Rascle et al. 2008 )
       END SELECT
       !
-      ! adapt roughness where there is sea ice
-      zhsro(:,:) = ( (1._wp-zice_fra(:,:)) * zhsro(:,:) + zice_fra(:,:) * rn_hsri )*tmask(:,:,1)  + (1._wp - tmask(:,:,1))*rn_hsro
-      !
       DO jk = 2, jpkm1              !==  Compute dissipation rate  ==!
-         DO jj = 2, jpjm1
-            DO ji = 2, jpim1
+         DO jj = 1, jpjm1
+            DO ji = 1, jpim1
                eps(ji,jj,jk)  = rc03 * en(ji,jj,jk) * SQRT( en(ji,jj,jk) ) / hmxl_n(ji,jj,jk)
             END DO
          END DO
@@ -317,14 +302,14 @@ CONTAINS
       !
       CASE ( 0 )             ! Dirichlet boundary condition (set e at k=1 & 2) 
       ! First level
-      en   (:,:,1) = MAX(  rn_emin , rc02r * ustar2_surf(:,:) * (1._wp + (1._wp-zice_fra(:,:))*rsbc_tke1)**r2_3  )
+      en   (:,:,1) = MAX(  rn_emin , rc02r * ustar2_surf(:,:) * (1._wp + rsbc_tke1)**r2_3  )
       zd_lw(:,:,1) = en(:,:,1)
       zd_up(:,:,1) = 0._wp
       zdiag(:,:,1) = 1._wp
       ! 
       ! One level below
-      en   (:,:,2) =  MAX(  rc02r * ustar2_surf(:,:) * (  1._wp + (1._wp-zice_fra(:,:))*rsbc_tke1 * ((zhsro(:,:)+gdepw_n(:,:,2)) &
-         &                 / zhsro(:,:) )**(1.5_wp*ra_sf)  )**(2._wp/3._wp) , rn_emin   )
+      en   (:,:,2) =  MAX(  rc02r * ustar2_surf(:,:) * (  1._wp + rsbc_tke1 * ((zhsro(:,:)+gdepw_n(:,:,2))   &
+         &                 / zhsro(:,:) )**(1.5_wp*ra_sf)  )**(2._wp/3._wp)                      , rn_emin   )
       zd_lw(:,:,2) = 0._wp 
       zd_up(:,:,2) = 0._wp
       zdiag(:,:,2) = 1._wp
@@ -333,7 +318,7 @@ CONTAINS
       CASE ( 1 )             ! Neumann boundary condition (set d(e)/dz)
       !
       ! Dirichlet conditions at k=1
-      en   (:,:,1) = MAX(  rc02r * ustar2_surf(:,:) * (1._wp + (1._wp-zice_fra(:,:))*rsbc_tke1)**r2_3 , rn_emin  )
+      en   (:,:,1) = MAX(  rc02r * ustar2_surf(:,:) * (1._wp + rsbc_tke1)**r2_3 , rn_emin  )
       zd_lw(:,:,1) = en(:,:,1)
       zd_up(:,:,1) = 0._wp
       zdiag(:,:,1) = 1._wp
@@ -343,7 +328,7 @@ CONTAINS
       zdiag(:,:,2) = zdiag(:,:,2) +  zd_lw(:,:,2) ! Remove zd_lw from zdiag
       zd_lw(:,:,2) = 0._wp
       zkar (:,:)   = (rl_sf + (vkarmn-rl_sf)*(1.-EXP(-rtrans*gdept_n(:,:,1)/zhsro(:,:)) ))
-      zflxs(:,:)   = rsbc_tke2 * (1._wp-zice_fra(:,:)) * ustar2_surf(:,:)**1.5_wp * zkar(:,:) &
+      zflxs(:,:)   = rsbc_tke2 * ustar2_surf(:,:)**1.5_wp * zkar(:,:) &
           &                    * (  ( zhsro(:,:)+gdept_n(:,:,1) ) / zhsro(:,:)  )**(1.5_wp*ra_sf)
 !!gm why not   :                        * ( 1._wp + gdept_n(:,:,1) / zhsro(:,:) )**(1.5_wp*ra_sf)
       en(:,:,2) = en(:,:,2) + zflxs(:,:) / e3w_n(:,:,2)
@@ -405,6 +390,9 @@ CONTAINS
                ibotm1 = mbkt(ji,jj)          ! k-1 bottom level of w-point but >=1
                !
                z_en =  MAX( rc02r * ustar2_bot(ji,jj), rn_emin )
+!CEOD???? eh z_en is not used! surely should be as in 3.6 ....
+
+               en(ji,jj,ibot) = MAX( rc02r * ustar2_bot(ji,jj), rn_emin )
                !
                ! Bottom level Dirichlet condition:
                !     Bottom level (ibot)      &      Just above it (ibotm1)   
@@ -444,14 +432,14 @@ CONTAINS
             END DO
          END DO
       END DO
-      DO jk = 2, jpkm1                             ! Second recurrence : Lk = RHSk - Lk / Dk-1 * Lk-1
+      DO jk = 2, jpk                               ! Second recurrence : Lk = RHSk - Lk / Dk-1 * Lk-1
          DO jj = 2, jpjm1
             DO ji = fs_2, fs_jpim1    ! vector opt.
                zd_lw(ji,jj,jk) = en(ji,jj,jk) - zd_lw(ji,jj,jk) / zdiag(ji,jj,jk-1) * zd_lw(ji,jj,jk-1)
             END DO
          END DO
       END DO
-      DO jk = jpkm1, 2, -1                         ! thrid recurrence : Ek = ( Lk - Uk * Ek+1 ) / Dk
+      DO jk = jpk-1, 2, -1                         ! thrid recurrence : Ek = ( Lk - Uk * Ek+1 ) / Dk
          DO jj = 2, jpjm1
             DO ji = fs_2, fs_jpim1    ! vector opt.
                en(ji,jj,jk) = ( zd_lw(ji,jj,jk) - zd_up(ji,jj,jk) * en(ji,jj,jk+1) ) / zdiag(ji,jj,jk)
@@ -594,8 +582,7 @@ CONTAINS
          ! Set psi vertical flux at the surface:
          zkar (:,:)   = rl_sf + (vkarmn-rl_sf)*(1._wp-EXP(-rtrans*gdept_n(:,:,1)/zhsro(:,:) )) ! Lengh scale slope
          zdep (:,:)   = ((zhsro(:,:) + gdept_n(:,:,1)) / zhsro(:,:))**(rmm*ra_sf)
-         zflxs(:,:)   = (rnn + (1._wp-zice_fra(:,:))*rsbc_tke1 * (rnn + rmm*ra_sf) * zdep(:,:)) &
-            &           *(1._wp + (1._wp-zice_fra(:,:))*rsbc_tke1*zdep(:,:))**(2._wp*rmm/3._wp-1_wp)
+         zflxs(:,:)   = (rnn + rsbc_tke1 * (rnn + rmm*ra_sf) * zdep(:,:))*(1._wp + rsbc_tke1*zdep(:,:))**(2._wp*rmm/3._wp-1_wp)
          zdep (:,:)   = rsbc_psi1 * (zwall_psi(:,:,1)*p_avm(:,:,1)+zwall_psi(:,:,2)*p_avm(:,:,2)) * &
             &           ustar2_surf(:,:)**rmm * zkar(:,:)**rnn * (zhsro(:,:) + gdept_n(:,:,1))**(rnn-1.)
          zflxs(:,:)   = zdep(:,:) * zflxs(:,:)
@@ -672,14 +659,14 @@ CONTAINS
             END DO
          END DO
       END DO
-      DO jk = 2, jpkm1                             ! Second recurrence : Lk = RHSk - Lk / Dk-1 * Lk-1
+      DO jk = 2, jpk                               ! Second recurrence : Lk = RHSk - Lk / Dk-1 * Lk-1
          DO jj = 2, jpjm1
             DO ji = fs_2, fs_jpim1    ! vector opt.
                zd_lw(ji,jj,jk) = psi(ji,jj,jk) - zd_lw(ji,jj,jk) / zdiag(ji,jj,jk-1) * zd_lw(ji,jj,jk-1)
             END DO
          END DO
       END DO
-      DO jk = jpkm1, 2, -1                         ! Third recurrence : Ek = ( Lk - Uk * Ek+1 ) / Dk
+      DO jk = jpk-1, 2, -1                         ! Third recurrence : Ek = ( Lk - Uk * Ek+1 ) / Dk
          DO jj = 2, jpjm1
             DO ji = fs_2, fs_jpim1    ! vector opt.
                psi(ji,jj,jk) = ( zd_lw(ji,jj,jk) - zd_up(ji,jj,jk) * psi(ji,jj,jk+1) ) / zdiag(ji,jj,jk)
@@ -868,10 +855,10 @@ CONTAINS
       INTEGER ::   ios   ! Local integer output status for namelist read
       REAL(wp)::   zcr   ! local scalar
       !!
-      NAMELIST/namzdf_gls/rn_emin, rn_epsmin, ln_length_lim,       &
-         &            rn_clim_galp, ln_sigpsi, rn_hsro, rn_hsri,   &
-         &            rn_crban, rn_charn, rn_frac_hs,              &
-         &            nn_bc_surf, nn_bc_bot, nn_z0_met, nn_z0_ice, &
+      NAMELIST/namzdf_gls/rn_emin, rn_epsmin, ln_length_lim, &
+         &            rn_clim_galp, ln_sigpsi, rn_hsro,      &
+         &            rn_crban, rn_charn, rn_frac_hs,        &
+         &            nn_bc_surf, nn_bc_bot, nn_z0_met,      &
          &            nn_stab_func, nn_clos
       !!----------------------------------------------------------
       !
@@ -899,20 +886,10 @@ CONTAINS
          WRITE(numout,*) '      Craig and Banner coefficient                  rn_crban       = ', rn_crban
          WRITE(numout,*) '      Charnock coefficient                          rn_charn       = ', rn_charn
          WRITE(numout,*) '      Surface roughness formula                     nn_z0_met      = ', nn_z0_met
-         WRITE(numout,*) '      surface wave breaking under ice               nn_z0_ice      = ', nn_z0_ice
-         SELECT CASE( nn_z0_ice )
-         CASE( 0 )   ;   WRITE(numout,*) '   ==>>>   no impact of ice cover on surface wave breaking'
-         CASE( 1 )   ;   WRITE(numout,*) '   ==>>>   roughness uses rn_hsri and is weigthed by 1-TANH( fr_i(:,:) * 10 )'
-         CASE( 2 )   ;   WRITE(numout,*) '   ==>>>   roughness uses rn_hsri and is weighted by 1-fr_i(:,:)'
-         CASE( 3 )   ;   WRITE(numout,*) '   ==>>>   roughness uses rn_hsri and is weighted by 1-MIN( 1, 4 * fr_i(:,:) )'
-         CASE DEFAULT
-            CALL ctl_stop( 'zdf_gls_init: wrong value for nn_z0_ice, should be 0,1,2, or 3')
-         END SELECT
          WRITE(numout,*) '      Wave height frac. (used if nn_z0_met=2)       rn_frac_hs     = ', rn_frac_hs
          WRITE(numout,*) '      Stability functions                           nn_stab_func   = ', nn_stab_func
          WRITE(numout,*) '      Type of closure                               nn_clos        = ', nn_clos
          WRITE(numout,*) '      Surface roughness (m)                         rn_hsro        = ', rn_hsro
-         WRITE(numout,*) '      Ice-ocean roughness (used if nn_z0_ice/=0)    rn_hsri        = ', rn_hsri
          WRITE(numout,*)
          WRITE(numout,*) '   Namelist namdrg_top/_bot:   used values:'
          WRITE(numout,*) '      top    ocean cavity roughness (m)             rn_z0(_top)   = ', r_z0_top
@@ -924,12 +901,12 @@ CONTAINS
       IF( zdf_gls_alloc() /= 0 )   CALL ctl_stop( 'STOP', 'zdf_gls_init : unable to allocate arrays' )
 
       !                                !* Check of some namelist values
-      IF( nn_bc_surf < 0   .OR. nn_bc_surf   > 1 )              CALL ctl_stop( 'zdf_gls_init: bad flag: nn_bc_surf is 0 or 1' )
-      IF( nn_bc_surf < 0   .OR. nn_bc_surf   > 1 )              CALL ctl_stop( 'zdf_gls_init: bad flag: nn_bc_surf is 0 or 1' )
-      IF( nn_z0_met  < 0   .OR. nn_z0_met    > 3 )              CALL ctl_stop( 'zdf_gls_init: bad flag: nn_z0_met is 0, 1, 2 or 3' )
-      IF( nn_z0_met == 3  .AND. .NOT. (ln_wave .AND. ln_sdw ) ) CALL ctl_stop( 'zdf_gls_init: nn_z0_met=3 requires ln_wave=T and ln_sdw=T' )
-      IF( nn_stab_func < 0 .OR. nn_stab_func > 3 )              CALL ctl_stop( 'zdf_gls_init: bad flag: nn_stab_func is 0, 1, 2 and 3' )
-      IF( nn_clos      < 0 .OR. nn_clos      > 3 )              CALL ctl_stop( 'zdf_gls_init: bad flag: nn_clos is 0, 1, 2 or 3' )
+      IF( nn_bc_surf < 0   .OR. nn_bc_surf   > 1 )   CALL ctl_stop( 'zdf_gls_init: bad flag: nn_bc_surf is 0 or 1' )
+      IF( nn_bc_surf < 0   .OR. nn_bc_surf   > 1 )   CALL ctl_stop( 'zdf_gls_init: bad flag: nn_bc_surf is 0 or 1' )
+      IF( nn_z0_met  < 0   .OR. nn_z0_met    > 3 )   CALL ctl_stop( 'zdf_gls_init: bad flag: nn_z0_met is 0, 1, 2 or 3' )
+      IF( nn_z0_met == 3  .AND. .NOT.ln_wave     )   CALL ctl_stop( 'zdf_gls_init: nn_z0_met=3 requires ln_wave=T' )
+      IF( nn_stab_func < 0 .OR. nn_stab_func > 3 )   CALL ctl_stop( 'zdf_gls_init: bad flag: nn_stab_func is 0, 1, 2 and 3' )
+      IF( nn_clos      < 0 .OR. nn_clos      > 3 )   CALL ctl_stop( 'zdf_gls_init: bad flag: nn_clos is 0, 1, 2 or 3' )
 
       SELECT CASE ( nn_clos )          !* set the parameters for the chosen closure
       !
