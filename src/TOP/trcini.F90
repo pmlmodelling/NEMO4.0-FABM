@@ -172,7 +172,10 @@ CONTAINS
       IF( ln_c14         )   CALL trc_ini_c14        !  C14 model
       IF( ln_age         )   CALL trc_ini_age        !  AGE
       ! +++>>> FABM
-      IF( ln_fabm    )   CALL trc_ini_fabm       ! FABM tracers
+      IF( ln_fabm    ) THEN
+        CALL trc_nam_fabm_override(sn_tracer)
+        CALL trc_ini_fabm       ! FABM tracers
+      END IF
       ! FABM <<<+++
 
       !
@@ -229,7 +232,7 @@ CONTAINS
       !
       IF( ln_trcdta )   CALL trc_dta_ini( jptra )      ! set initial tracers values
       !
-      CALL trc_bc_ini ( jptra )      ! set tracers Boundary Conditions
+      IF( ln_my_trc )   CALL trc_bc_ini ( jptra )      ! set tracers Boundary Conditions
       !
       !
       IF( ln_rsttr ) THEN              ! restart from a file

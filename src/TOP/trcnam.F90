@@ -243,9 +243,6 @@ CONTAINS
         IF(lwm) CALL ctl_opn( numonr, 'output.namelist.trc', 'UNKNOWN', 'FORMATTED', 'SEQUENTIAL', -1, numout, .FALSE. )
         !
       ENDIF
-      ! +++>>> FABM
-      if (ln_fabm) CALL trc_nam_fabm_override(sn_tracer)
-      ! FABM <<<+++
    END SUBROUTINE trc_nam_trc
 
 

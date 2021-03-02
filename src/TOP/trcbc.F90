@@ -89,6 +89,7 @@ CONTAINS
          WRITE(numout,*) 'trc_bc_ini : Tracers Boundary Conditions (BC)'
          WRITE(numout,*) '~~~~~~~~~~~ '
       ENDIF
+
       !  Initialisation and local array allocation
       ierr0 = 0   ;   ierr1 = 0   ;   ierr2 = 0   ;   ierr3 = 0  
       ALLOCATE( slf_i(ntrc), STAT=ierr0 )

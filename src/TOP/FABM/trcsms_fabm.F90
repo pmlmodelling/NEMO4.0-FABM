@@ -338,10 +338,10 @@ CONTAINS
       !! ** Purpose :   routine to integrate 2d states in time
       !!
       !! ** Method  :   based on integration of 3D passive tracer fields
-      !!                implemented in TOP_SRC/TRP/trcnxt.F90, plus
-      !!                tra_nxt_fix in OPA_SRC/TRA/tranxt.F90. Similar to
+      !!                implemented in TOP/TRP/trcnxt.F90, plus
+      !!                tra_nxt_fix in OCE/TRA/tranxt.F90. Similar to
       !!                time integration of sea surface height in
-      !!                OPA_SRC/DYN/sshwzv.F90.
+      !!                OCE/DYN/sshwzv.F90.
       !!----------------------------------------------------------------------
       !
       INTEGER, INTENT(in) ::   kt   ! ocean time-step index
@@ -460,7 +460,7 @@ CONTAINS
       END DO
 
       ! Copy initial condition for interface-attached state variables to "previous" state field
-      ! NB NEMO does this itself for pelagic state variables (trb) in TOP_SRC/trcini.F90.
+      ! NB NEMO does this itself for pelagic state variables (trb) in TOP/trcini.F90.
       fabm_st2Db = fabm_st2Dn
 
    END FUNCTION trc_sms_fabm_alloc

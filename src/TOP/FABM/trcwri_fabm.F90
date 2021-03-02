@@ -109,17 +109,17 @@ CONTAINS
 
       ! write 3D diagnostics in the file
       ! ---------------------------------------
-      DO jn = 1, size(model%interior_diagnostic_variables)
-         IF (model%interior_diagnostic_variables(jn)%save) &
-             CALL iom_put( model%interior_diagnostic_variables(jn)%name, model%get_interior_diagnostic_data(jn))
-      END DO
+!      DO jn = 1, size(model%interior_diagnostic_variables)
+!         IF (model%interior_diagnostic_variables(jn)%save) &
+!             CALL iom_put( model%interior_diagnostic_variables(jn)%name, model%get_interior_diagnostic_data(jn))
+!      END DO
 
       ! write 2D diagnostics in the file
       ! ---------------------------------------
-      DO jn = 1, size(model%horizontal_diagnostic_variables)
-         IF (model%horizontal_diagnostic_variables(jn)%save) &
-             CALL iom_put( model%horizontal_diagnostic_variables(jn)%name, model%get_horizontal_diagnostic_data(jn))
-      END DO
+!      DO jn = 1, size(model%horizontal_diagnostic_variables)
+!         IF (model%horizontal_diagnostic_variables(jn)%save) &
+!             CALL iom_put( model%horizontal_diagnostic_variables(jn)%name, model%get_horizontal_diagnostic_data(jn))
+!      END DO
       !
 
       CALL trc_sms_fabm_check_mass
