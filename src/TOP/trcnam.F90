@@ -21,9 +21,6 @@ MODULE trcnam
    USE trc         ! passive tracers common variables
    USE trd_oce     !       
    USE trdtrc_oce  !
-   ! +++>>> FABM
-   USE trcnam_fabm       ! FABM SMS namelist
-   ! FABM <<<+++
    USE iom         ! I/O manager
 
 #if defined key_mpp_mpi

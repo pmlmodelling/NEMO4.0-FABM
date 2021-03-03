@@ -69,7 +69,7 @@ MODULE traqsr
    REAL(wp) ::   xsi0r   ! inverse of rn_si0
    REAL(wp) ::   xsi1r   ! inverse of rn_si1
    !
-   REAL(wp) , DIMENSION(3,61)           ::   rkrgb    ! tabulated attenuation coefficients for RGB absorption
+   REAL(wp) , PUBLIC, DIMENSION(3,61)           ::   rkrgb    ! tabulated attenuation coefficients for RGB absorption
    TYPE(FLD), ALLOCATABLE, DIMENSION(:) ::   sf_chl   ! structure of input Chl (file informations, fields read)
 !--- NB : KD490
    TYPE(FLD), ALLOCATABLE, DIMENSION(:) ::   sf_kd490 ! structure of input kd490 (file informations, fields read)

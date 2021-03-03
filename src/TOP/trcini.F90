@@ -28,6 +28,7 @@ MODULE trcini
    ! +++>>> FABM
    USE trcsms_fabm     ! FABM initialisation
    USE trcini_fabm     ! FABM initialisation
+   USE trcnam_fabm     ! FABM SMS namelist
    ! FABM <<<+++
  
    IMPLICIT NONE
