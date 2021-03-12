@@ -270,7 +270,6 @@ CONTAINS
           wndm=0._wp !uninitialised field at this point
           qsr=0._wp !uninitialised field at this point
           CALL trc_bc_ini(jptra)  ! initialise bdy data
-      !    CALL compute_fabm(kt) ! only needed to set-up diagnostics
       ENDIF
       ! FABM <<<+++
       tra(:,:,:,:) = 0._wp

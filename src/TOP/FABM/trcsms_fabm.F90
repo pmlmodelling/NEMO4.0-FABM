@@ -107,7 +107,7 @@ CONTAINS
       IF(lwp) WRITE(numout,*) ' ~~~~~~~~~~~~~~'
 
       IF (.NOT. started) CALL nemo_fabm_start
-
+      
       CALL update_inputs( kt )
 
       CALL compute_fabm( kt )
@@ -117,8 +117,8 @@ CONTAINS
       CALL st2d_fabm_nxt( kt )
 
       IF( l_trdtrc )  ztrfabm(:,:,:) = 0._wp
-      
-      CALL trc_bc       ( kt )       ! tracers: surface and lateral Boundary Conditions
+
+      !CALL trc_bc       ( kt )       ! tracers: surface and lateral Boundary Conditions
       CALL trc_rnf_fabm ( kt ) ! River forcings
 
       ! Send 3D diagnostics to output (these apply to time "n")
@@ -203,7 +203,6 @@ CONTAINS
 
       ! Compute the bottom stress (copied from diawri.F90)
       ! ------------------------------------
-
       IF (ALLOCATED(taubot)) THEN
          taubot(:,:) = 0._wp
          DO jj = 2, jpjm1
@@ -219,7 +218,7 @@ CONTAINS
          END DO
       END IF
 
-      CALL model%prepare_inputs(real(kt, wp),nyear,nmonth,nday,REAL(nsec_day,wp))
+      !CALL model%prepare_inputs(real(kt, wp),nyear,nmonth,nday,REAL(nsec_day,wp))
 
       ! Zero rate array of interface-attached state variables
       fabm_st2Da = 0._wp
@@ -266,8 +265,8 @@ CONTAINS
 
       exit_state%valid = .TRUE.
       exit_state%repaired =.FALSE.
-      DO jk=1,jpk
-         DO jj=1,jpj
+      DO jk=1,jpkm1
+         DO jj=2,jpjm1
             CALL model%check_interior_state(fs_2,fs_jpim1,jj,jk,repair,valid_int)
             IF (repair.AND..NOT.valid_int) THEN
                repair_interior_count = repair_interior_count + 1
@@ -276,7 +275,7 @@ CONTAINS
             IF (.NOT.(valid_int.OR.repair)) exit_state%valid = .FALSE.
          END DO
       END DO
-      DO jj=1,jpj
+      DO jj=2,jpjm1
          CALL model%check_surface_state(fs_2,fs_jpim1,jj,repair,valid_sf)
          IF (repair.AND..NOT.valid_sf) THEN
             repair_surface_count = repair_surface_count + 1
@@ -323,7 +322,7 @@ CONTAINS
       END DO
 
       !IF( lk_mpp ) CALL mpp_sum(total,SIZE(model%conserved_quantities))
-      IF( lk_mpp ) CALL mpp_sum('trcsms',total)
+      !IF( lk_mpp ) CALL mpp_sum('trcsms',total)
 
       DO jn=1,SIZE(model%conserved_quantities)
          IF(lwp) WRITE(numout,*) 'FABM '//TRIM(model%conserved_quantities(jn)%name),total(jn),TRIM(model%conserved_quantities(jn)%units)//'*m3'

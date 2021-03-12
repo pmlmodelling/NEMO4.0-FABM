@@ -125,9 +125,10 @@ MODULE trc
    LOGICAL , PUBLIC                                  ::   ln_rnf_ctl    !: remove runoff dilution on tracers
    REAL(wp), PUBLIC                                  ::   rn_bc_time    !: Time scaling factor for SBC and CBC data (seconds in a day)
    !
-   CHARACTER(len=20), PUBLIC, DIMENSION(jp_bdy) :: cn_trc_dflt   ! Default OBC condition for all tracers
-   CHARACTER(len=20), PUBLIC, DIMENSION(jp_bdy) :: cn_trc        ! Choice of boundary condition for tracers
-   INTEGER,           PUBLIC, DIMENSION(jp_bdy) :: nn_trcdmp_bdy !: =T Tracer damping
+   CHARACTER(len=20), PUBLIC, ALLOCATABLE, SAVE, DIMENSION(:) :: cn_trc_dflt   ! Default OBC condition for all tracers
+   CHARACTER(len=20), PUBLIC, ALLOCATABLE, SAVE, DIMENSION(:) :: cn_trc        ! Choice of boundary condition for tracers
+   INTEGER,           PUBLIC, ALLOCATABLE, SAVE, DIMENSION(:) :: nn_trcdmp_bdy !: =T Tracer damping
+   INTEGER,           PUBLIC, ALLOCATABLE, SAVE, DIMENSION(:) :: nb_trc_jpk_bdy !: =T Tracer bdy interpolation
    !
    ! Vertical axis used in the sediment module
    REAL(wp), PUBLIC, ALLOCATABLE, SAVE, DIMENSION(:) ::   profsed
@@ -166,7 +167,11 @@ CONTAINS
          &      ln_trc_sbc(jptra)     , ln_trc_cbc(jptra)     , ln_trc_obc(jptra)     ,       &
          &      STAT = ierr(1)  )
       !
-      IF( ln_bdy       )   ALLOCATE( trcdta_bdy(jptra, jp_bdy)  , STAT = ierr(2) )
+      IF ( ln_bdy ) THEN
+         ALLOCATE( cn_trc_dflt(nb_bdy)   , cn_trc(nb_bdy)     , nn_trcdmp_bdy(nb_bdy) ,       &
+         &       nb_trc_jpk_bdy(nb_bdy) , trcdta_bdy(jptra,nb_bdy)                    ,       &
+         &      STAT = ierr(2)  )
+      ENDIF
       !
       IF (jp_dia3d > 0 )   ALLOCATE( trc3d(jpi,jpj,jpk,jp_dia3d), STAT = ierr(3) )
       !

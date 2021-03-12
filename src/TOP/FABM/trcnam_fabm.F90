@@ -5,6 +5,7 @@ MODULE trcnam_fabm
    !!======================================================================
    !! History :   2.0  !  2007-12  (C. Ethe, G. Madec) Original code
    !!----------------------------------------------------------------------
+   USE trc             ! TOP variables
 #if defined key_fabm
    !!----------------------------------------------------------------------
    !!   'key_fabm'   :                                       FABM model
@@ -13,7 +14,6 @@ MODULE trcnam_fabm
    !!----------------------------------------------------------------------
    USE oce_trc         ! Ocean variables
    USE par_trc         ! TOP parameters
-   USE trc             ! TOP variables
 
    USE par_fabm
    USE trcsms_fabm
