@@ -1,0 +1,162 @@
+<field_definition level="1" prec="4" operation="average" enabled=".TRUE." default_value="1.e20" >
+ <field_group id="misc_T" grid_ref="grid_T_3D">
+  <field id="XAD_O3_c_e3t" long_name="dissolved inorganic carbon XAD trend cell depth integrated" unit="mg C/m^2/s" default_value="-.200E+21" > XAD_O3_c * e3t </field>
+  <field id="XAD_N1_p_e3t" long_name="phosphate XAD trend cell depth integrated" unit="mmol P/m^2/s" default_value="-.200E+21" > XAD_N1_p * e3t </field>
+  <field id="XAD_N3_n_e3t" long_name="nitrate XAD trend cell depth integrated" unit="mmol N/m^2/s" default_value="-.200E+21" > XAD_N3_n * e3t </field>
+  <field id="XAD_N4_n_e3t" long_name="ammonium XAD trend cell depth integrated" unit="mmol N/m^2/s" default_value="-.200E+21" > XAD_N4_n * e3t </field>
+  <field id="XAD_N5_s_e3t" long_name="silicate XAD trend cell depth integrated" unit="mmol Si/m^2/s" default_value="-.200E+21" > XAD_N5_s * e3t </field>
+  <field id="XAD_R1_n_e3t" long_name="labile dissolved organic matter nitrogen XAD trend cell depth integrated" unit="mmol N/m^2/s" default_value="-.200E+21" > XAD_R1_n * e3t </field>
+  <field id="XAD_R1_p_e3t" long_name="labile dissolved organic matter phosphorus XAD trend cell depth integrated" unit="mmol N/m^2/s" default_value="-.200E+21" > XAD_R1_p * e3t </field>
+  <field id="XAD_P1_s_e3t" long_name="diatoms silicate XAD trend cell depth integrated" unit="mmol Si/m^2/s" default_value="-.200E+21" > XAD_P1_s * e3t </field>
+  <field id="XAD_Phyto_c" long_name="phytoplankton carbon XAD trend" unit="mg C/m^3/s" default_value="-.200E+21" />
+  <field id="XAD_Phyto_c_e3t" long_name="phytoplankton carbon XAD trend cell depth integrated" unit="mg C/m^2/s" default_value="-.200E+21" > (XAD_P1_c + XAD_P2_c + XAD_P3_c + XAD_P4_c) * e3t </field>
+  <field id="XAD_Phyto_n" long_name="phytoplankton nitrogen XAD trend" unit="mmol N/m^3/s" default_value="-.200E+21" />
+  <field id="XAD_Phyto_n_e3t" long_name="phytoplankton nitrogen XAD trend depth integrated" unit="mmol N/m^2/s" default_value="-.200E+21" > (XAD_P1_n + XAD_P2_n + XAD_P3_n + XAD_P4_n) * e3t </field>
+  <field id="XAD_Phyto_p" long_name="phytoplankton phosphorus XAD trend" unit="mmol P/m^3/s" default_value="-.200E+21" />
+  <field id="XAD_Phyto_p_e3t" long_name="phytoplankton phosphorus XAD trend depth integrated" unit="mmol P/m^2/s" default_value="-.200E+21" > (XAD_P1_p + XAD_P2_p + XAD_P3_p + XAD_P4_p) * e3t </field>
+  <field id="XAD_Heterotrophs_c" long_name="zooplankton and bacteria carbon XAD trend" unit="mg C/m^3/s" default_value="-.200E+21" />
+  <field id="XAD_Heterotrophs_c_e3t" long_name="zooplankton and bacteria carbon XAD trend cell depth integrated" unit="mg C/m^2/s" default_value="-.200E+21" > (XAD_Z4_c + XAD_Z5_c + XAD_Z6_c + XAD_B1_c) * e3t </field>
+  <field id="XAD_Heterotrophs_n" long_name="zooplankton and bacteria nitrogen XAD trend" unit="mmol N/m^3/s" default_value="-.200E+21" />
+  <field id="XAD_Heterotrophs_n_e3t" long_name="zooplankton and bacteria nitrogen XAD trend cell depth integrated" unit="mmol P/m^2/s" default_value="-.200E+21" > (XAD_Z4_c * 0.0126 + XAD_Z5_n + XAD_Z6_n + XAD_B1_n) * e3t </field>
+  <field id="XAD_Heterotrophs_p" long_name="zooplankton and bacteria phosphorus XAD trend" unit="mmol P/m^3/s" default_value="-.200E+21" />
+  <field id="XAD_Heterotrophs_p_e3t" long_name="zooplankton and bacteria phosphorus XAD trend cell depth integrated" unit="mmol P/m^2/s" default_value="-.200E+21" > (XAD_Z4_c * 0.000786 + XAD_Z5_p + XAD_Z6_p + XAD_B1_p) * e3t </field>
+  <field id="XAD_PO_c" long_name="particulate organic carbon XAD trend" unit="mg C/m^3/s" default_value="-.200E+21" />
+  <field id="XAD_PO_c_e3t" long_name="particulate organic carbon XAD trend cell depth integrated" unit="mg C/m^2/s" default_value="-.200E+21" > (XAD_R4_c + XAD_R6_c + XAD_R8_c) * e3t </field>
+  <field id="XAD_PO_n" long_name="particulate organic nitrogen XAD trendd" unit="mmol N/m^3/s" default_value="-.200E+21" />
+  <field id="XAD_PO_n_e3t" long_name="particulate organic nitrogen XAD trend depth integrated" unit="mmol N/m^2/s" default_value="-.200E+21" > (XAD_R4_n + XAD_R6_n + XAD_R8_n) * e3t </field>
+  <field id="XAD_PO_p" long_name="particulate organic phosphorus XAD trend" unit="mmol P/m^3/s" default_value="-.200E+21" />
+  <field id="XAD_PO_p_e3t" long_name="particulate organic phosphorus XAD trend" unit="mmol P/m^2/s" default_value="-.200E+21" > (XAD_R4_p + XAD_R6_p + XAD_R8_p) * e3t </field>
+  <field id="XAD_PO_s" long_name="particulate organic silicate XAD trend" unit="mmol Si/m^3/s" default_value="-.200E+21" />
+  <field id="XAD_PO_s_e3t" long_name="particulate organic silicate XAD trend" unit="mmol Si/m^2/s" default_value="-.200E+21" > (XAD_R6_s + XAD_R8_s) * e3t </field>
+  <field id="XAD_DO_c" long_name="dissolved organic carbon XAD trend" unit="mg C/m^3/s" default_value="-.200E+21" />
+  <field id="XAD_DO_c_e3t" long_name="dissolved organic carbon XAD trend cell depth integrated" unit="mg C/m^2/s" default_value="-.200E+21" > (XAD_R1_c + XAD_R2_c + XAD_R3_c) * e3t </field>
+  <field id="YAD_O3_c_e3t" long_name="dissolved inorganic carbon YAD trend cell depth integrated" unit="mg C/m^2/s" default_value="-.200E+21" > YAD_O3_c * e3t </field>
+  <field id="YAD_N1_p_e3t" long_name="phosphate YAD trend cell depth integrated" unit="mmol P/m^2/s" default_value="-.200E+21" > YAD_N1_p * e3t </field>
+  <field id="YAD_N3_n_e3t" long_name="nitrate YAD trend cell depth integrated" unit="mmol N/m^2/s" default_value="-.200E+21" > YAD_N3_n * e3t </field>
+  <field id="YAD_N4_n_e3t" long_name="ammonium YAD trend cell depth integrated" unit="mmol N/m^2/s" default_value="-.200E+21" > YAD_N4_n * e3t </field>
+  <field id="YAD_N5_s_e3t" long_name="silicate YAD trend cell depth integrated" unit="mmol Si/m^2/s" default_value="-.200E+21" > YAD_N5_s * e3t </field>
+  <field id="YAD_R1_n_e3t" long_name="labile dissolved organic matter nitrogen YAD trend cell depth integrated" unit="mmol N/m^2/s" default_value="-.200E+21" > YAD_R1_n * e3t </field>
+  <field id="YAD_R1_p_e3t" long_name="labile dissolved organic matter phosphorus YAD trend cell depth integrated" unit="mmol N/m^2/s" default_value="-.200E+21" > YAD_R1_p * e3t </field>
+  <field id="YAD_P1_s_e3t" long_name="diatoms silicate YAD trend cell depth integrated" unit="mmol Si/m^2/s" default_value="-.200E+21" > YAD_P1_s * e3t </field>
+  <field id="YAD_Phyto_c" long_name="phytoplankton carbon YAD trend" unit="mg C/m^3/s" default_value="-.200E+21" />
+  <field id="YAD_Phyto_c_e3t" long_name="phytoplankton carbon YAD trend cell depth integrated" unit="mg C/m^2/s" default_value="-.200E+21" > (YAD_P1_c + YAD_P2_c + YAD_P3_c + YAD_P4_c) * e3t </field>
+  <field id="YAD_Phyto_n" long_name="phytoplankton nitrogen YAD trend" unit="mmol N/m^3/s" default_value="-.200E+21" />
+  <field id="YAD_Phyto_n_e3t" long_name="phytoplankton nitrogen YAD trend depth integrated" unit="mmol N/m^2/s" default_value="-.200E+21" > (YAD_P1_n + YAD_P2_n + YAD_P3_n + YAD_P4_n) * e3t </field>
+  <field id="YAD_Phyto_p" long_name="phytoplankton phosphorus YAD trend" unit="mmol P/m^3/s" default_value="-.200E+21" />
+  <field id="YAD_Phyto_p_e3t" long_name="phytoplankton phosphorus YAD trend depth integrated" unit="mmol P/m^2/s" default_value="-.200E+21" > (YAD_P1_p + YAD_P2_p + YAD_P3_p + YAD_P4_p) * e3t </field>
+  <field id="YAD_Heterotrophs_c" long_name="zooplankton and bacteria carbon YAD trend" unit="mg C/m^3/s" default_value="-.200E+21" />
+  <field id="YAD_Heterotrophs_c_e3t" long_name="zooplankton and bacteria carbon YAD trend cell depth integrated" unit="mg C/m^2/s" default_value="-.200E+21" > (YAD_Z4_c + YAD_Z5_c + YAD_Z6_c + YAD_B1_c) * e3t </field>
+  <field id="YAD_Heterotrophs_n" long_name="zooplankton and bacteria nitrogen YAD trend" unit="mmol N/m^3/s" default_value="-.200E+21" />
+  <field id="YAD_Heterotrophs_n_e3t" long_name="zooplankton and bacteria nitrogen YAD trend cell depth integrated" unit="mmol P/m^2/s" default_value="-.200E+21" > (YAD_Z4_c * 0.0126 + YAD_Z5_n + YAD_Z6_n + YAD_B1_n) * e3t </field>
+  <field id="YAD_Heterotrophs_p" long_name="zooplankton and bacteria phosphorus YAD trend" unit="mmol P/m^3/s" default_value="-.200E+21" />
+  <field id="YAD_Heterotrophs_p_e3t" long_name="zooplankton and bacteria phosphorus YAD trend cell depth integrated" unit="mmol P/m^2/s" default_value="-.200E+21" > (YAD_Z4_c * 0.000786 + YAD_Z5_p + YAD_Z6_p + YAD_B1_p) * e3t </field>
+  <field id="YAD_PO_c" long_name="particulate organic carbon YAD trend" unit="mg C/m^3/s" default_value="-.200E+21" />
+  <field id="YAD_PO_c_e3t" long_name="particulate organic carbon YAD trend cell depth integrated" unit="mg C/m^2/s" default_value="-.200E+21" > (YAD_R4_c + YAD_R6_c + YAD_R8_c) * e3t </field>
+  <field id="YAD_PO_n" long_name="particulate organic nitrogen YAD trendd" unit="mmol N/m^3/s" default_value="-.200E+21" />
+  <field id="YAD_PO_n_e3t" long_name="particulate organic nitrogen YAD trend depth integrated" unit="mmol N/m^2/s" default_value="-.200E+21" > (YAD_R4_n + YAD_R6_n + YAD_R8_n) * e3t </field>
+  <field id="YAD_PO_p" long_name="particulate organic phosphorus YAD trend" unit="mmol P/m^3/s" default_value="-.200E+21" />
+  <field id="YAD_PO_p_e3t" long_name="particulate organic phosphorus YAD trend" unit="mmol P/m^2/s" default_value="-.200E+21" > (YAD_R4_p + YAD_R6_p + YAD_R8_p) * e3t </field>
+  <field id="YAD_PO_s" long_name="particulate organic silicate YAD trend" unit="mmol Si/m^3/s" default_value="-.200E+21" />
+  <field id="YAD_PO_s_e3t" long_name="particulate organic silicate YAD trend" unit="mmol Si/m^2/s" default_value="-.200E+21" > (YAD_R6_s + YAD_R8_s) * e3t </field>
+  <field id="YAD_DO_c" long_name="dissolved organic carbon YAD trend" unit="mg C/m^3/s" default_value="-.200E+21" />
+  <field id="YAD_DO_c_e3t" long_name="dissolved organic carbon YAD trend cell depth integrated" unit="mg C/m^2/s" default_value="-.200E+21" > (YAD_R1_c + YAD_R2_c + YAD_R3_c) * e3t </field>
+  <field id="VMV_L2_c_e3t" long_name="calcite carbon VMV trend cell depth integrated" unit="mg C/m^2/s" default_value="-.200E+21" > VMV_L2_c * e3t </field>
+  <field id="VMV_PO_c" long_name="particulate organic carbon sinking trend" unit="mg C/m^3/s" default_value="-.200E+21" />
+  <field id="VMV_PO_c_e3t" long_name="particulate organic carbon sinking trend cell depth integrated" unit="mg C/m^2/s" default_value="-.200E+21" > (VMV_R4_c + VMV_R6_c + VMV_R8_c + VMV_P1_c + VMV_P4_c) * e3t </field>
+  <field id="P1_fO3PIc_e3t" long_name="diatom gross primary production cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > P1_fO3PIc * e3t </field>
+  <field id="P2_fO3PIc_e3t" long_name="nanophytoplankton gross primary production cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > P2_fO3PIc * e3t </field>
+  <field id="P3_fO3PIc_e3t" long_name="picophytoplankton gross primary production cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > P3_fO3PIc * e3t </field>
+  <field id="P4_fO3PIc_e3t" long_name="microphytoplankton gross primary production cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > P4_fO3PIc * e3t </field>
+  <field id="P1_fPIO3c_e3t" long_name="diatom respiration cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > P1_fPIO3c * e3t </field>
+  <field id="P2_fPIO3c_e3t" long_name="nanophytoplankton respiration cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > P2_fPIO3c * e3t </field>
+  <field id="P3_fPIO3c_e3t" long_name="picophytoplankton respiration cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > P3_fPIO3c * e3t </field>
+  <field id="P4_fPIO3c_e3t" long_name="microphytoplankton respiration cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > P4_fPIO3c * e3t </field>
+  <field id="P1_fPIRIc_result_e3t" long_name="diatom loss to organic carbon cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > P1_fPIRIc_result * e3t </field>
+  <field id="P2_fPIRIc_result_e3t" long_name="nanophytoplankton loss to organic carbon cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > P2_fPIRIc_result * e3t </field>
+  <field id="P3_fPIRIc_result_e3t" long_name="picophytoplankton loss to organic carbon cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > P3_fPIRIc_result * e3t </field>
+  <field id="P4_fPIRIc_result_e3t" long_name="microphytoplankton loss to organic carbon cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > P4_fPIRIc_result * e3t </field>
+  <field id="L2_L2O3c_e3t" long_name="calcite calcite dissolution rate cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > L2_L2O3c * e3t </field>
+  <field id="gross_calcification_rate_e3t" long_name="gross calcification rate cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > gross_calcification_rate_result * e3t </field>
+  <field id="phytoplankton_uptake_oxN_result_e3t" long_name="phytoplankton uptake of oxidized nitrogen cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > phytoplankton_uptake_oxN_result * e3t </field>
+  <field id="phytoplankton_uptake_redN_result_e3t" long_name="phytoplankton uptake of reduced nitrogen cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > phytoplankton_uptake_redN_result * e3t </field>
+  <field id="phytoplankton_uptake_DIP_result_e3t" long_name="phytoplankton uptake of dissolved inorganic phosphorus cell depth integrated" unit="mmol P/m^2/d" default_value="-.200E+21" > phytoplankton_uptake_DIP_result * e3t </field>
+  <field id="P1_fN5PIs_e3t" long_name="diatoms phytoplankton Si uptake cell depth integrated" unit="mmol Si/m^2/d" default_value="-.200E+21" > P1_fN5PIs * e3t </field>
+  <field id="phytoplankton_loss_to_labile_DOC_result_e3t" long_name="phytoplankton loss to labile dissolved organic carbon cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > phytoplankton_loss_to_labile_DOC_result * e3t </field>
+  <field id="phytoplankton_loss_to_labile_DON_result_e3t" long_name="phytoplankton loss to labile dissolved organic nitrogen cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > phytoplankton_loss_to_labile_DON_result * e3t </field>
+  <field id="phytoplankton_loss_to_labile_DOP_result_e3t" long_name="phytoplankton loss to labile dissolved organic phosphorus cell depth integrated" unit="mmol P/m^2/d" default_value="-.200E+21" > phytoplankton_loss_to_labile_DOP_result * e3t </field>
+  <field id="phytoplankton_loss_to_non_labile_DOC_result_e3t" long_name="phytoplankton loss to non-labile dissolved organic carbon cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > phytoplankton_loss_to_non_labile_DOC_result * e3t </field>
+  <field id="phytoplankton_loss_to_POC_result_e3t" long_name="phytoplankton loss to particulate organic carbon cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > phytoplankton_loss_to_POC_result * e3t </field>
+  <field id="phytoplankton_loss_to_PON_result_e3t" long_name="phytoplankton loss to particulate nitrogen cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > phytoplankton_loss_to_PON_result * e3t </field>
+  <field id="phytoplankton_loss_to_POP_result_e3t" long_name="phytoplankton loss to particulate phosphorus cell depth integrated" unit="mmol P/m^2/d" default_value="-.200E+21" > phytoplankton_loss_to_POP_result * e3t </field>
+  <field id="P1_fPIRPs_e3t" long_name="diatom loss to POSi cell depth integrated" unit="mmol Si/m^2/d" default_value="-.200E+21" > P1_fPIRPs * e3t </field>
+  <field id="B1_fB1O3c_e3t" long_name="bacteria respiration cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > B1_fB1O3c * e3t </field>
+  <field id="B1_fR1B1c_e3t" long_name="bacterial uptake of labile DOC cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > B1_fR1B1c * e3t </field>
+  <field id="B1_fR1B1n_e3t" long_name="bacterial DON uptake cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > B1_fR1B1n * e3t </field>
+  <field id="B1_fR1B1p_e3t" long_name="bacterial DOP uptake cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > B1_fR1B1n * e3t </field>
+  <field id="B1_fR2B1c_e3t" long_name="bacterial uptake of semi-labile DOC cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > B1_fR2B1c * e3t </field>
+  <field id="B1_fR3B1c_e3t" long_name="bacterial uptake of semi-refractory DOC cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > B1_fR3B1c * e3t </field>
+  <field id="B1_fB1R1c_e3t" long_name="bacterial release of labile DOC cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > B1_fB1R1c * e3t </field>
+  <field id="B1_fB1R1n_e3t" long_name="bacterial DON release cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > B1_fB1R1c * e3t </field>
+  <field id="B1_fB1R1p_e3t" long_name="bacterial DOP release cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > B1_fB1R1p * e3t </field>
+  <field id="B1_fB1R2c_e3t" long_name="bacterial release of semi-labile DOC cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > B1_fB1R2c * e3t </field>
+  <field id="B1_fB1R3c_e3t" long_name="bacterial release of semi-refractory DOC cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > B1_fB1R3c * e3t </field>
+  <field id="B1_fB1NIn_e3t" long_name="bacterial DIN release cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > B1_fB1NIn * e3t </field>
+  <field id="B1_fB1N1p_e3t" long_name="bacterial DIP release cell depth integrated" unit="mmol P/m^2/d" default_value="-.200E+21" > B1_fB1N1p * e3t </field>
+  <field id="Z4_fZIO3c_e3t" long_name="mesozooplankton respiration cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > Z4_fZIO3c * e3t </field>
+  <field id="Z4_fZIRPc_e3t" long_name="mesozooplankton loss to POC cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > Z4_fZIRPc * e3t </field>
+  <field id="Z4_fZIRPn_e3t" long_name="mesozooplankton loss to PON cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > Z4_fZIRPn * e3t </field>
+  <field id="Z4_fZIRPp_e3t" long_name="mesozooplankton loss to POP cell depth integrated" unit="mmol P/m^2/d" default_value="-.200E+21" > Z4_fZIRPp * e3t </field>
+  <field id="Z4_fZIRDc_e3t" long_name="mesozooplankton loss to DOC cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > Z4_fZIRDc * e3t </field>
+  <field id="Z4_fZIRDn_e3t" long_name="mesozooplankton loss to DON cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > Z4_fZIRDn * e3t </field>
+  <field id="Z4_fZIRDp_e3t" long_name="mesozooplankton loss to DOP cell depth integrated" unit="mmol P/m^2/d" default_value="-.200E+21" > Z4_fZIRDp * e3t </field>
+  <field id="Z4_fZINIn_e3t" long_name="mesozooplankton DIP release cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > Z4_fZINIn * e3t </field>
+  <field id="Z4_fZINIp_e3t" long_name="mesozooplankton DIP release cell depth integrated" unit="mmol P/m^2/d" default_value="-.200E+21" > Z4_fZINIp * e3t </field>
+  <field id="Z4_fphytoc_result_e3t" long_name="mesozooplankton grazing of phytoplankton carbon cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > Z4_fphytoc_result * e3t </field>
+  <field id="Z4_fphyton_result_e3t" long_name="mesozooplankton grazing of phytoplankton nitrogen cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > Z4_fphyton_result * e3t </field>
+  <field id="Z4_fphytop_result_e3t" long_name="Zmesozooplankton grazing of phytoplankton phosphorus cell depth integrated" unit="mmol P/m^2/d" default_value="-.200E+21" > Z4_fphytop_result * e3t </field>
+  <field id="Z4_fprey1s_e3t" long_name="mesozooplankton grazing of diatom silicon cell depth integrated" unit="mmol Si/m^2/d" default_value="-.200E+21" > Z4_fprey1s * e3t </field>
+  <field id="Z4_fzooc_result_e3t" long_name="mesozooplankton predation on zooplankton carbon cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > Z4_fzooc_result * e3t </field>
+  <field id="Z4_fzoon_result_e3t" long_name="mesozooplankton predation on zooplankton nitrogen cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > Z4_fzoon_result * e3t </field>
+  <field id="Z4_fzoop_result_e3t" long_name="mesozooplankton predation on zooplankton phosphorus cell depth integrated" unit="mmol P/m^2/d" default_value="-.200E+21" > Z4_fzoop_result * e3t </field>
+  <field id="Z4_fprey9c_e3t" long_name="mesozooplankton scavenging on particulate organic carbon cell depth integrated" unit="mg c/m^2/d" default_value="-.200E+21" > Z4_fprey9c * e3t </field>
+  <field id="Z4_fprey9n_e3t" long_name="mesozooplankton scavenging on particulate organic nitrogen cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > Z4_fprey9n * e3t </field>
+  <field id="Z4_fprey9p_e3t" long_name="mesozooplankton scavenging on particulate organic phosphorus cell depth integrated" unit="mmol P/m^2/d" default_value="-.200E+21" > Z4_fprey9p * e3t </field>
+  <field id="Z4_fprey9s_e3t" long_name="mesozooplankton scavenging on particulate organic silicon cell depth integrated" unit="mmol Si/m^2/d" default_value="-.200E+21" > Z4_fprey9s * e3t </field>
+  <field id="total_microzooplankton_respiration_result_e3t" long_name="total microzooplankton respiration cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > total_microzooplankton_respiration_result * e3t </field>
+  <field id="total_microzooplankton_loss_to_POC_result_e3t" long_name="total microzooplankton loss to particulate organic carbon cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > total_microzooplankton_loss_to_POC_result * e3t </field>
+  <field id="total_microzooplankton_loss_to_PON_result_e3t" long_name="total microzooplankton loss to particulate organic nitrogen cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > total_microzooplankton_loss_to_PON_result * e3t </field>
+  <field id="total_microzooplankton_loss_to_POP_result_e3t" long_name="total microzooplankton loss to particulate organic phosphorus cell depth integrated" unit="mmol P/m^2/d" default_value="-.200E+21" > total_microzooplankton_loss_to_POP_result * e3t </field>
+  <field id="total_microzooplankton_loss_to_DOC_result_e3t" long_name="total microzooplankton loss to dissolved organic carbon cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > total_microzooplankton_loss_to_DOC_result * e3t </field>
+  <field id="total_microzooplankton_loss_to_DON_result_e3t" long_name="total microzooplankton loss to dissolved organic nitrogen cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > total_microzooplankton_loss_to_DON_result * e3t </field>
+  <field id="total_microzooplankton_loss_to_DOP_result_e3t" long_name="total microzooplankton loss to dissolved organic phosphorus cell depth integrated" unit="mmol P/m^2/d" default_value="-.200E+21" > total_microzooplankton_loss_to_DOP_result * e3t </field>
+  <field id="total_microzooplankton_loss_to_DIN_result_e3t" long_name="total microzooplankton loss to dissolved inorganic nitrogen cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > total_microzooplankton_loss_to_DIN_result * e3t </field>
+  <field id="total_microzooplankton_loss_to_DIP_result_e3t" long_name="total microzooplankton loss to dissolved inorganic phosphorus cell depth integrated" unit="mmol P/m^2/d" default_value="-.200E+21" > total_microzooplankton_loss_to_DIP_result * e3t </field>
+  <field id="Z5_fphytoc_result_e3t" long_name="microzooplankton grazing on phytoplankton carbon cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > Z5_fphytoc_result * e3t </field>
+  <field id="Z5_fphyton_result_e3t" long_name="microzooplankton grazing on phytoplankton nitrogen cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > Z5_fphyton_result * e3t </field>
+  <field id="Z5_fphytop_result_e3t" long_name="microzooplankton grazing on phytoplankton phosphorus cell depth integrated" unit="mmol P/m^2/d" default_value="-.200E+21" > Z5_fphytop_result * e3t </field>
+  <field id="Z5_fprey2s_e3t" long_name="microzooplankton grazing on diatom silicon cell depth integrated" unit="mmol Si/m^2/d" default_value="-.200E+21" > Z5_fprey2s * e3t </field>
+  <field id="Z5_fprey1c_e3t" long_name="microzooplankton predation on bacteria carbon cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > Z5_fprey1c * e3t </field>
+  <field id="Z5_fprey1n_e3t" long_name="microzooplankton predation on bacteria nitrogen cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > Z5_fprey1n * e3t </field>
+  <field id="Z5_fprey1p_e3t" long_name="microzooplankton predation on bacteria phosphorus cell depth integrated" unit="mmol P/m^2/d" default_value="-.200E+21" > Z5_fprey1p * e3t </field>
+  <field id="Z5_fzooc_result_e3t" long_name="microzooplankton predation on zooplankton carbon cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > Z5_fzooc_result * e3t </field>
+  <field id="Z5_fzoon_result_e3t" long_name="microzooplankton predation on zooplankton nitrogen cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > Z5_fzoon_result * e3t </field>
+  <field id="Z5_fzoop_result_e3t" long_name="microzooplankton predation on zooplankton phosphorus cell depth integrated" unit="mmol P/m^2/d" default_value="-.200E+21" > Z5_fzoop_result * e3t </field>
+  <field id="Z6_fphytoc_result_e3t" long_name="heterotrophic flagellate grazing on phytoplankton carbon cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > Z6_fphytoc_result * e3t </field>
+  <field id="Z6_fphyton_result_e3t" long_name="heterotrophic flagellate grazing on phytoplankton nitrogen cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > Z6_fphyton_result * e3t </field>
+  <field id="Z6_fphytop_result_e3t" long_name="heterotrophic flagellate grazing on phytoplankton phosphorus cell depth integrated" unit="mmol P/m^2/d" default_value="-.200E+21" > Z6_fphytop_result * e3t </field>
+  <field id="Z6_fprey1c_e3t" long_name="heterotrophic flagellate predation on bacteria carbon cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > Z6_fprey1c * e3t </field>
+  <field id="Z6_fprey1n_e3t" long_name="heterotrophic flagellate predation on bacteria nitrogen cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > Z6_fprey1n * e3t </field>
+  <field id="Z6_fprey1p_e3t" long_name="heterotrophic flagellate predation on bacteria phosphorus cell depth integrated" unit="mmol P/m^2/d" default_value="-.200E+21" > Z6_fprey1p * e3t </field>
+  <field id="Z6_fprey4c_e3t" long_name="heterotrophic flagellate predation on zooplankton carbon cell depth integrated" unit="mg C/m^2/d" default_value="-.200E+21" > Z6_fprey4c * e3t </field>
+  <field id="Z6_fprey4n_e3t" long_name="heterotrophic flagellate predation on zooplankton nitrogen cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > Z6_fprey4n * e3t </field>
+  <field id="Z6_fprey4p_e3t" long_name="heterotrophic flagellate predation on zooplankton phosphorus cell depth integrated" unit="mmol P/m^2/d" default_value="-.200E+21" > Z6_fprey4p * e3t </field>
+  <field id="pel_nit_rate_e3t" long_name="pelagic nitrification rate cell depth integrated" unit="mmol N/m^2/d" default_value="-.200E+21" > pel_nit_rate * e3t </field>
+  <field id="INP_rodic_e3t" default_value="-.200E+21" > INP_rodic * e3t </field>
+  <field id="INP_rono3_e3t" default_value="-.200E+21" > INP_rono3 * e3t </field>
+  <field id="INP_ronh4_e3t" default_value="-.200E+21" > INP_ronh4 * e3t </field>
+  <field id="INP_rop_e3t" default_value="-.200E+21" > INP_rop * e3t </field>
+  <field id="INP_ronsio2_e3t" default_value="-.200E+21" > INP_rosio2 * e3t </field>
+  <field id="INP_roo_e3t" default_value="-.200E+21" > INP_roo * e3t </field>
+  <field id="INP_robioalk_e3t" default_value="-.200E+21" > INP_robioalk * e3t </field>
+ </field_group>
+</field_definition>

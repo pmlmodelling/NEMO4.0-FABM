@@ -1,0 +1,62 @@
+<field_definition level="1" prec="4" operation="average" enabled=".TRUE." default_value="1.e20" >
+ <field_group id="ptrc_T" grid_ref="grid_T_3D">
+  <field id="tracer1_c" long_name="tracer1 concentration" unit="mol m-3" default_value="-.200E+21" />
+  <field id="tracer2_c" long_name="tracer2 concentration" unit="mol m-3" default_value="-.200E+21" />
+  <field id="tracer3_c" long_name="tracer3 concentration" unit="mol m-3" default_value="-.200E+21" />
+ </field_group>
+ <field_group id="sf_T" grid_ref="grid_T_2D">
+ </field_group>
+ <field_group id="diad_T" grid_ref="grid_T_2D">
+  <field id="tracer1_c_sms" long_name="tracer1 concentration sources-sinks" unit="mol m-3/s" default_value="0.000E+00" grid_ref="grid_T_3D" />
+  <field id="tracer1_c_w" long_name="tracer1 concentration vertical velocity" unit="m/s" default_value="0.000E+00" grid_ref="grid_T_3D" />
+  <field id="tracer1__attenuation_coefficient_of_photosynthetic_radiative_flux" long_name="tracer1 light extinction contribution computed by get_light_extinction" unit="m-1" default_value="0.000E+00" grid_ref="grid_T_3D" />
+  <field id="tracer2_c_sms" long_name="tracer2 concentration sources-sinks" unit="mol m-3/s" default_value="0.000E+00" grid_ref="grid_T_3D" />
+  <field id="tracer2_c_w" long_name="tracer2 concentration vertical velocity" unit="m/s" default_value="0.000E+00" grid_ref="grid_T_3D" />
+  <field id="tracer2__attenuation_coefficient_of_photosynthetic_radiative_flux" long_name="tracer2 light extinction contribution computed by get_light_extinction" unit="m-1" default_value="0.000E+00" grid_ref="grid_T_3D" />
+  <field id="tracer3_c_sms" long_name="tracer3 concentration sources-sinks" unit="mol m-3/s" default_value="0.000E+00" grid_ref="grid_T_3D" />
+  <field id="tracer3_c_w" long_name="tracer3 concentration vertical velocity" unit="m/s" default_value="0.000E+00" grid_ref="grid_T_3D" />
+  <field id="tracer3__attenuation_coefficient_of_photosynthetic_radiative_flux" long_name="tracer3 light extinction contribution computed by get_light_extinction" unit="m-1" default_value="0.000E+00" grid_ref="grid_T_3D" />
+  <field id="zero" long_name="zero" unit="" default_value="0.000E+00" grid_ref="grid_T_3D" />
+  <field id="attenuation_coefficient_of_photosynthetic_radiative_flux_calculator_result" long_name="attenuation_coefficient_of_photosynthetic_radiative_flux_calculator result" unit="m-1" default_value="-.200E+21" grid_ref="grid_T_3D" />
+  <field id="zero_sms_tot" long_name="zero_sms_tot" unit="" default_value="0.000E+00" grid_ref="grid_T_3D" />
+  <field id="zero_w_tot" long_name="zero_w_tot" unit="" default_value="0.000E+00" grid_ref="grid_T_3D" />
+  <field id="tracer1_c_sfl" long_name="tracer1 concentration surface flux" unit="mol m-3*m/s" default_value="0.000E+00" />
+  <field id="tracer1_c_bfl" long_name="tracer1 concentration bottom flux" unit="mol m-3*m/s" default_value="0.000E+00" />
+  <field id="tracer1__surface_albedo" long_name="tracer1 albedo contribution computed by get_albedo" unit="-" default_value="0.000E+00" />
+  <field id="tracer1__surface_drag_coefficient_in_air" long_name="tracer1 surface drag contribution computed by get_drag" unit="-" default_value="0.000E+00" />
+  <field id="tracer2_c_sfl" long_name="tracer2 concentration surface flux" unit="mol m-3*m/s" default_value="0.000E+00" />
+  <field id="tracer2_c_bfl" long_name="tracer2 concentration bottom flux" unit="mol m-3*m/s" default_value="0.000E+00" />
+  <field id="tracer2__surface_albedo" long_name="tracer2 albedo contribution computed by get_albedo" unit="-" default_value="0.000E+00" />
+  <field id="tracer2__surface_drag_coefficient_in_air" long_name="tracer2 surface drag contribution computed by get_drag" unit="-" default_value="0.000E+00" />
+  <field id="tracer3_c_sfl" long_name="tracer3 concentration surface flux" unit="mol m-3*m/s" default_value="0.000E+00" />
+  <field id="tracer3_c_bfl" long_name="tracer3 concentration bottom flux" unit="mol m-3*m/s" default_value="0.000E+00" />
+  <field id="tracer3__surface_albedo" long_name="tracer3 albedo contribution computed by get_albedo" unit="-" default_value="0.000E+00" />
+  <field id="tracer3__surface_drag_coefficient_in_air" long_name="tracer3 surface drag contribution computed by get_drag" unit="-" default_value="0.000E+00" />
+  <field id="zero_hz" long_name="zero_hz" unit="" default_value="0.000E+00" />
+  <field id="surface_albedo_calculator_result" long_name="surface_albedo_calculator result" unit="1" default_value="-.200E+21" />
+  <field id="surface_drag_coefficient_in_air_calculator_result" long_name="surface_drag_coefficient_in_air_calculator result" unit="1" default_value="-.200E+21" />
+  <field id="zero_sfl_tot" long_name="zero_sfl_tot" unit="" default_value="0.000E+00" />
+  <field id="zero_bfl_tot" long_name="zero_bfl_tot" unit="" default_value="0.000E+00" />
+  <field id="zero_hz_sms_tot" long_name="zero_hz_sms_tot" unit="" default_value="0.000E+00" />
+  <field id="tracer1_c_VINT" long_name="depth-integrated tracer1 concentration" unit="mol m-3*m" default_value="0.0" />
+  <field id="tracer2_c_VINT" long_name="depth-integrated tracer2 concentration" unit="mol m-3*m" default_value="0.0" />
+  <field id="tracer3_c_VINT" long_name="depth-integrated tracer3 concentration" unit="mol m-3*m" default_value="0.0" />
+  <field id="tracer1_c_sms_VINT" long_name="depth-integrated                     tracer1 concentration sources-sinks" unit="mol m-3/s*m" default_value="0.0" />
+  <field id="tracer1_c_w_VINT" long_name="depth-integrated                     tracer1 concentration vertical velocity" unit="m/s*m" default_value="0.0" />
+  <field id="tracer1__attenuation_coefficient_of_photosynthetic_radiative_flux_VINT" long_name="depth-integrated                     tracer1 light extinction contribution computed by get_light_extinction" unit="m-1*m" default_value="0.0" />
+  <field id="tracer2_c_sms_VINT" long_name="depth-integrated                     tracer2 concentration sources-sinks" unit="mol m-3/s*m" default_value="0.0" />
+  <field id="tracer2_c_w_VINT" long_name="depth-integrated                     tracer2 concentration vertical velocity" unit="m/s*m" default_value="0.0" />
+  <field id="tracer2__attenuation_coefficient_of_photosynthetic_radiative_flux_VINT" long_name="depth-integrated                     tracer2 light extinction contribution computed by get_light_extinction" unit="m-1*m" default_value="0.0" />
+  <field id="tracer3_c_sms_VINT" long_name="depth-integrated                     tracer3 concentration sources-sinks" unit="mol m-3/s*m" default_value="0.0" />
+  <field id="tracer3_c_w_VINT" long_name="depth-integrated                     tracer3 concentration vertical velocity" unit="m/s*m" default_value="0.0" />
+  <field id="tracer3__attenuation_coefficient_of_photosynthetic_radiative_flux_VINT" long_name="depth-integrated                     tracer3 light extinction contribution computed by get_light_extinction" unit="m-1*m" default_value="0.0" />
+  <field id="zero_VINT" long_name="depth-integrated                     zero" unit="*m" default_value="0.0" />
+  <field id="attenuation_coefficient_of_photosynthetic_radiative_flux_calculator_result_VINT" long_name="depth-integrated                     attenuation_coefficient_of_photosynthetic_radiative_flux_calculator result" unit="m-1*m" default_value="0.0" />
+  <field id="zero_sms_tot_VINT" long_name="depth-integrated                     zero_sms_tot" unit="*m" default_value="0.0" />
+  <field id="zero_w_tot_VINT" long_name="depth-integrated                     zero_w_tot" unit="*m" default_value="0.0" />
+ </field_group>
+ <field_group id="fabm_scalar" grid_ref="grid_0">
+ </field_group>
+ <field_group id="fabm_input" grid_ref="grid_T_2D">
+ </field_group>
+</field_definition>

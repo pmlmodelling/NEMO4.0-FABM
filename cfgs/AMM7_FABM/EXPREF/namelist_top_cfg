@@ -1,0 +1,115 @@
+!!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+!! NEMO/TOP1 :   - tracer run information                (namtrc_run)
+!!               - tracer definition                     (namtrc    )
+!!               - tracer data initialisation            (namtrc_dta)
+!!               - tracer advection                      (namtrc_adv)
+!!               - tracer lateral diffusion              (namtrc_ldf)
+!!               - tracer vertical physics               (namtrc_zdf)
+!!               - tracer newtonian damping              (namtrc_dmp)
+!!               - dynamical tracer trends               (namtrc_trd)
+!!               - tracer output diagonstics             (namtrc_dia)
+!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+!-----------------------------------------------------------------------
+&namtrc_run     !   run information
+!-----------------------------------------------------------------------
+   nn_dttrc      =  1        !  time step frequency for passive sn_tracers
+   ln_top_euler  = .false.    !  use Euler time-stepping for TOP
+   ln_rsttr      = .false. ! start from a restart file (T) or not (F)
+   nn_rsttr      = 0       ! restart control = 0 initial time step is not compared to the restart file value
+                           !                  = 1 do not use the value in the restart file
+                           !                  = 2 calendar parameters read in the restart file
+   cn_trcrst_in  = "restart_trc"   !  suffix of pass. sn_tracer restart name (input)
+   cn_trcrst_out = "restart_trc"   !  suffix of pass. sn_tracer restart name (output)
+   cn_trcrst_indir   = "."   !  directory of ocean restart name (input)
+   cn_trcrst_outdir  = "."   !  directory of ocean restart name (output)
+/
+!-----------------------------------------------------------------------
+&namtrc     !   tracers definition
+!-----------------------------------------------------------------------
+  ln_fabm     = .true. 
+  jp_bgc      =   3          !  Number of passive tracers of the BGC model
+!                    sname       lname                                                 unit ,  init    ,  sbc     ,   cbc   ,  obc   ,  save
+   sn_tracer(1)   = 'tracer1_c' , 'tracer1_c',                        ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(2)   = 'tracer2_c' , 'tracer2_c',                        ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(3)   = 'tracer3_c' , 'tracer3_c',                        ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   ln_trcdta     =  .false.  !  Initialisation from data input file (T) or not (F)
+   ln_trcdmp     =  .false.  !  add a damping termn (T) or not (F)
+   ln_trcdmp_clo =  .false.  !  damping term (T) or not (F) on closed seas
+/
+!-----------------------------------------------------------------------
+&namtrc_dta      !    Initialisation from data input file
+!-----------------------------------------------------------------------
+!
+   cn_dir        =  './'      !  root directory for the location of the data files
+/
+!-----------------------------------------------------------------------
+&namtrc_adv    !   advection scheme for passive tracer
+!-----------------------------------------------------------------------
+   ln_trcadv_fct =  .true.   !  FCT scheme
+      nn_fct_h   =  2               !  =2/4, horizontal 2nd / 4th order
+      nn_fct_v   =  2               !  =2/4, vertical   2nd / COMPACT 4th order
+/
+!-----------------------------------------------------------------------
+&namtrc_ldf    !   lateral diffusion scheme for passive tracer
+!-----------------------------------------------------------------------
+   ln_trcldf_tra    =  .true. 
+/
+!-----------------------------------------------------------------------
+&namtrc_zdf        !   vertical physics
+!-----------------------------------------------------------------------
+   ln_trczdf_exp   =  .false.  !  split explicit (T) or implicit (F) time stepping
+   nn_trczdf_exp   =   3       !  number of sub-timestep for ln_trczdfexp=T
+/
+!-----------------------------------------------------------------------
+&namtrc_rad        !  treatment of negative concentrations
+!-----------------------------------------------------------------------
+   ln_trcrad   =  .true.  !  artificially correct negative concentrations (T) or not (F)  ! slwa .true.
+/
+!-----------------------------------------------------------------------
+&namtrc_dmp    !   passive tracer newtonian damping
+!-----------------------------------------------------------------------
+   nn_zdmp_tr  =    1      !  vertical   shape =0    damping throughout the water column
+                           !                   =1 no damping in the mixing layer (kz  criteria)
+                           !                   =2 no damping in the mixed  layer (rho crieria)
+   cn_resto_tr  = 'resto_tr.nc'    !  create a damping.coeff NetCDF file (=1) or not (=0)
+/
+!-----------------------------------------------------------------------
+&namtrc_trd       !   diagnostics on tracer trends        ('key_trdtrc')
+!                          or mixed-layer trends          ('key_trdmld_trc')
+!----------------------------------------------------------------------
+   nn_trd_trc  =   1     !  time step frequency and tracers trends
+   nn_ctls_trc =   50        !  control surface type in mixed-layer trends (0,1 or n<jpk)
+   rn_ucf_trc  =   1        !  unit conversion factor (=1 -> /seconds ; =86400. -> /day)
+   ln_trdmxl_trc_restart = .false.  !  restart for ML diagnostics
+   ln_trdmxl_trc_instant = .true.  !  flag to diagnose trends of instantantaneous or mean ML T/S
+/
+!-----------------------------------------------------------------------
+&namtrc_dia       !   parameters for passive tracer additional diagnostics
+!----------------------------------------------------------------------
+   ln_diatrc     =  .false.   !  save additional diag. (T) or not (F)
+   ln_diabio     =  .false.   !  output biological trends
+   nn_writedia   =  105120 ! 1440     !  time step frequency for diagnostics
+   nn_writebio   =  105120 ! 10     !: frequency of biological outputs
+/
+!----------------------------------------------------------------------
+&namtrc_bc       !   data for boundary conditions
+!-----------------------------------------------------------------------
+!
+   cn_dir_sbc        =  './'      !  root directory for the location of SURFACE data files
+   cn_dir_cbc        =  './'      !  root directory for the location of COASTAL data files
+   cn_dir_obc        =  '../INPUTS/BGC/'      !  root directory for the location of OPEN data files
+!          !  file name  ! frequency (hours) ! variable  ! time interp. !  clim  ! 'yearly'/ ! weights  ! rotation ! land/sea mask !
+!          !             !  (if <0  months)  !   name    !   (logical)  !  (T/F) ! 'monthly' ! filename ! pairing  ! filename      !
+/
+!----------------------------------------------------------------------
+&namtrc_bdy       !   Setup of tracer boundary conditions
+!-----------------------------------------------------------------------
+   cn_trc_dflt     =  'neumann','neumann'   !  OBC applied by default to all tracers
+   cn_trc          =  'frs','frs'   !  Boundary conditions appled to the active tracers (see namtrc)
+   nn_trcdmp_bdy   = 0,0     !  Use damping timescales defined in nambdy of namelist
+                           !  = 0 NO damping of tracers at open boudaries
+                           !  = 1 Only for tracers forced with external data
+                           !  = 2 Damping applied to all tracers   
+   nb_trc_jpk_bdy  = -1,-1  ! number of levels in the bdy data (set < 0 if consistent with planned run)
+
+/
