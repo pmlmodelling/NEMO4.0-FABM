@@ -102,7 +102,7 @@ MODULE inputs_fabm
            ! Get number of record in file (if there is only one, we will read data
            ! only at the very first time step)
            CALL fld_clopn( input_data%sf(1) )
-!           CALL iom_getszuld( input_data%sf(1)%num )
+           input_data%ntimes = iom_getszuld( input_data%sf(1)%num )
            CALL iom_close( input_data%sf(1)%num )
 
            ! Prepend new input variable to list.
@@ -110,7 +110,7 @@ MODULE inputs_fabm
            first_input_data => input_data
         END DO
 
-  98    CALL ctl_stop('STOP', 'inputs_fabm:initialize_inputs: unable to read namelist "riverdata"')
+  98    CALL ctl_stop('STOP', 'inputs_fabm:initialize_inputs: unable to read namelist "variable"')
 
   99    REWIND(nmlunit)
 
@@ -153,7 +153,7 @@ MODULE inputs_fabm
            ! Get number of record in file (if there is only one, we will read data
            ! only at the very first time step)
            CALL fld_clopn( river_data%sf(1) )
-           !CALL iom_getszuld( river_data%sf(1)%num )
+           river_data%ntimes = iom_getszuld( river_data%sf(1)%num )
            CALL iom_close( river_data%sf(1)%num )
 
            ! Prepend new input variable to list.

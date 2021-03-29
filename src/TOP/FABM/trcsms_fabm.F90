@@ -49,12 +49,12 @@ MODULE trcsms_fabm
    PUBLIC   compute_fabm ! Compute FABM sources, sinks and diagnostics
 
    REAL(wp), PUBLIC, ALLOCATABLE, SAVE, DIMENSION(:,:) :: flux    ! Cross-interface flux of pelagic variables (# m-2 s-1)
-   REAL(wp), ALLOCATABLE, SAVE, TARGET, DIMENSION(:,:)   :: current_total   ! Work array for mass aggregation
+   REAL(wp), ALLOCATABLE, SAVE, DIMENSION(:,:)   :: current_total   ! Work array for mass aggregation
 
    ! Arrays for environmental variables
    REAL(wp), PUBLIC, ALLOCATABLE, SAVE, TARGET, DIMENSION(:,:,:) :: prn,rho
    REAL(wp), PUBLIC, ALLOCATABLE, SAVE, TARGET, DIMENSION(:,:) :: taubot
-   REAL(wp), PUBLIC :: daynumber_in_year
+   REAL(wp), PUBLIC, TARGET :: daynumber_in_year
 
    ! state check type
    TYPE type_state
@@ -107,7 +107,7 @@ CONTAINS
       IF(lwp) WRITE(numout,*) ' ~~~~~~~~~~~~~~'
 
       IF (.NOT. started) CALL nemo_fabm_start
-      
+
       CALL update_inputs( kt )
 
       CALL compute_fabm( kt )
@@ -118,7 +118,7 @@ CONTAINS
 
       IF( l_trdtrc )  ztrfabm(:,:,:) = 0._wp
 
-      !CALL trc_bc       ( kt )       ! tracers: surface and lateral Boundary Conditions
+      !CALL trc_bc       ( kt )        from NEMO4 boundary conditions now called with TRP
       CALL trc_rnf_fabm ( kt ) ! River forcings
 
       ! Send 3D diagnostics to output (these apply to time "n")
@@ -218,15 +218,15 @@ CONTAINS
          END DO
       END IF
 
-      !CALL model%prepare_inputs(real(kt, wp),nyear,nmonth,nday,REAL(nsec_day,wp))
+      CALL model%prepare_inputs(real(kt, wp),nyear,nmonth,nday,REAL(nsec_day,wp))
 
       ! Zero rate array of interface-attached state variables
-      fabm_st2Da = 0._wp
+      fabm_st2Da(:,:,:) = 0._wp
 
       ! Compute interfacial source terms and fluxes
       DO jj=2,jpjm1
          ! Process bottom (get_bottom_sources increments rather than sets, so zero flux array first)
-         flux = 0._wp
+         flux(:,:) = 0._wp
          CALL model%get_bottom_sources(fs_2,fs_jpim1,jj,flux,fabm_st2Da(fs_2:fs_jpim1,jj,jp_fabm_surface+1:))
          DO jn=1,jp_fabm
             ! Divide bottom fluxes by height of bottom layer and add to source terms.
@@ -236,7 +236,7 @@ CONTAINS
          END DO
 
          ! Process surface (fabm_do_surface increments rather than sets, so zero flux array first)
-         flux = 0._wp
+         flux(:,:) = 0._wp
          CALL model%get_surface_sources(fs_2,fs_jpim1,jj,flux,fabm_st2Da(fs_2:fs_jpim1,jj,1:jp_fabm_surface))
          ! Divide surface fluxes by height of surface layer and add to source terms.
          DO jn=1,jp_fabm
@@ -254,6 +254,7 @@ CONTAINS
       END DO
 
       CALL model%finalize_outputs()
+
    END SUBROUTINE compute_fabm
 
    FUNCTION check_state(repair) RESULT(exit_state)
@@ -298,8 +299,11 @@ CONTAINS
       INTEGER :: ji,jk,jj,jn
 
       total = 0._wp
-
       IF (.NOT. started) CALL nemo_fabm_start
+
+      IF(lwp) WRITE(numout,*)
+      IF(lwp) WRITE(numout,*) ' trc_sms_fabm_check_mass:  Total conserved quantities'
+      IF(lwp) WRITE(numout,*) ' ~~~~~~~~~~~~~~'
 
       DO jk=1,jpkm1
          DO jj=2,jpjm1
@@ -321,8 +325,7 @@ CONTAINS
          END DO
       END DO
 
-      !IF( lk_mpp ) CALL mpp_sum(total,SIZE(model%conserved_quantities))
-      !IF( lk_mpp ) CALL mpp_sum('trcsms',total)
+      IF( lk_mpp ) CALL mpp_sum('trcsms_fabm',total)
 
       DO jn=1,SIZE(model%conserved_quantities)
          IF(lwp) WRITE(numout,*) 'FABM '//TRIM(model%conserved_quantities(jn)%name),total(jn),TRIM(model%conserved_quantities(jn)%units)//'*m3'
@@ -359,7 +362,7 @@ CONTAINS
       DO jn=1,jp_fabm_surface+jp_fabm_bottom
          fabm_st2Da(:,:,jn) = (fabm_st2db(:,:,jn) + z2dt * fabm_st2da(:,:,jn)) * tmask(:,:,1)
       ENDDO
-
+      
       IF( neuler == 0 .AND. kt == nittrc000 ) THEN        ! Euler time-stepping at first time-step
          !                                                ! (only swap)
          fabm_st2Dn(:,:,:) = fabm_st2Da(:,:,:)

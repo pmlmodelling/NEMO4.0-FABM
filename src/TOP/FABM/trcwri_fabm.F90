@@ -16,6 +16,7 @@ MODULE trcwri_fabm
    USE trcsms_fabm, only: trc_sms_fabm_check_mass
    USE par_fabm
    USE st2d_fabm
+   USE,INTRINSIC :: iso_fortran_env, only: output_unit
 
    IMPLICIT NONE
    PRIVATE
@@ -58,7 +59,7 @@ CONTAINS
          trpool(:,:,:) = 0.5 * ( trn(:,:,:,jp_fabm_m1+jn)*e3t_n_a(:,:,:) + &
                              tr_temp(:,:,:,jn)*e3t_n(:,:,:) )
          cltra = TRIM( model%interior_state_variables(jn)%name )//"_e3t"     ! depth integrated output
-         IF( kt == nittrc000 ) write(6,*)'output pool ',cltra
+         IF( kt == nittrc000 ) write(output_unit,*)'output pool ',cltra
          CALL iom_put( cltra, trpool)
         ENDIF
       END DO
