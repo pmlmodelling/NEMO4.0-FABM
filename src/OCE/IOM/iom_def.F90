@@ -29,7 +29,7 @@ MODULE iom_def
    INTEGER, PARAMETER, PUBLIC ::   jp_i2    = 203      !: write INTEGER(2)
    INTEGER, PARAMETER, PUBLIC ::   jp_i1    = 204      !: write INTEGER(1)
 
-   INTEGER, PARAMETER, PUBLIC ::   jpmax_files  = 100  !: maximum number of simultaneously opened file
+   INTEGER, PARAMETER, PUBLIC ::   jpmax_files  = 200  !: maximum number of simultaneously opened file
    INTEGER, PARAMETER, PUBLIC ::   jpmax_vars   = 1200 !: maximum number of variables in one file
    INTEGER, PARAMETER, PUBLIC ::   jpmax_dims   =  4   !: maximum number of dimensions for one variable
    INTEGER, PARAMETER, PUBLIC ::   jpmax_digits =  9   !: maximum number of digits for the cpu number in the file name
