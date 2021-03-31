@@ -43,7 +43,6 @@
 #OASIS_LIB           -L%OASIS_HOME/lib -lpsmile.MPI1 -lmct -lmpeu -lscrip
 
 %FABM_INC            -I%FABM_HOME/include
-#%FABM_LIB            -L%FABM_HOME/lib -lfabm
 %FABM_LIB            -L%FABM_HOME/lib -lfabm
 
 %CPP	             cpp
