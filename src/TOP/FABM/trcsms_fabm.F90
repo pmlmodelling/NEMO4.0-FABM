@@ -144,14 +144,13 @@ CONTAINS
          IF (model%horizontal_diagnostic_variables(jn)%save) &
              CALL iom_put( model%horizontal_diagnostic_variables(jn)%name, model%get_horizontal_diagnostic_data(jn))
       END DO
-
       IF( l_trdtrc ) THEN      ! Save the trends in the mixed layer
           DO jn = jp_fabm0, jp_fabm1
             ztrfabm(:,:,:) = tra(:,:,:,jn)
             CALL trd_trc( ztrfabm, jn, jptra_sms, kt )   ! save trends
           END DO
       END IF
-      !
+ 
       IF( ln_timing )  CALL timing_stop('trc_sms_fabm')
 
    END SUBROUTINE trc_sms_fabm
