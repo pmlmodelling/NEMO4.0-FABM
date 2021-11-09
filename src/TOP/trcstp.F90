@@ -79,9 +79,11 @@ CONTAINS
             cvol(:,:,jk) = e1e2t(:,:) * e3t_n(:,:,jk) * tmask(:,:,jk)
          END DO
          IF ( ll_trcstat .OR. kt == nitrst .OR. ( ln_check_mass .AND. kt == nitend )          &
+#ifndef key_fabm
             & .OR. iom_use( "pno3tot" ) .OR. iom_use( "ppo4tot" ) .OR. iom_use( "psiltot" )   &
-            & .OR. iom_use( "palktot" ) .OR. iom_use( "pfertot" ) )                           &
-            &     areatot = glob_sum( 'trcstp', cvol(:,:,:) )
+            & .OR. iom_use( "palktot" ) .OR. iom_use( "pfertot" )                             &
+#endif
+            & )   areatot = glob_sum( 'trcstp', cvol(:,:,:) )
       ENDIF
       !
       IF( l_trcdm2dc )   CALL trc_mean_qsr( kt )

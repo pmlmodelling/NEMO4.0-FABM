@@ -238,8 +238,10 @@ CONTAINS
          END DO  
       END DO  
       !
-      IF( PRESENT(l_mask) .AND. l_mask ) THEN
-         zqsrout(:,:) = float(imask_night(:,:))
+      IF( PRESENT(l_mask) ) THEN
+         IF( l_mask ) THEN
+            zqsrout(:,:) = float(imask_night(:,:))
+         ENDIF
       ENDIF
       !
    END FUNCTION sbc_dcy
