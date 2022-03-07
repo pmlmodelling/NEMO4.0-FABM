@@ -98,11 +98,13 @@ CONTAINS
       ENDIF
       !
       ! Assign namelist stuff
+#if defined key_pisces
       DO jn = 1, jptra
          trc_ice_ratio (jn) = sn_tri_tracer(jn)%trc_ratio
          trc_ice_prescr(jn) = sn_tri_tracer(jn)%trc_prescr
          cn_trc_o      (jn) = sn_tri_tracer(jn)%ctrc_o
       END DO
+#endif
       !
    END SUBROUTINE trc_nam_ice
 
