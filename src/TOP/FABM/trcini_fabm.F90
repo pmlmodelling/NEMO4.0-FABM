@@ -192,15 +192,15 @@ CONTAINS
       INTEGER :: number_dimensions,i
       CHARACTER(LEN=20) :: missing_value,string_dimensions
 #if defined key_tracer_budget
-      CHARACTER(LEN=3),DIMENSION(10),PARAMETER :: trd_tags = (/ &
+      CHARACTER(LEN=3),DIMENSION(11),PARAMETER :: trd_tags = (/ &
         'LDF','BBL','FOR','ZDF','DMP','SMS','ATF', &
-        'RDB','RDN','VMV' /)
+        'TOT','RDB','RDN','VMV' /)
       CHARACTER(LEN=3),DIMENSION(3),PARAMETER :: trd_e3t_tags = (/ &
         'XAD','YAD','ZAD' /)
 #else
-      CHARACTER(LEN=3),DIMENSION(13),PARAMETER :: trd_tags = (/ &
+      CHARACTER(LEN=3),DIMENSION(14),PARAMETER :: trd_tags = (/ &
         'XAD','YAD','ZAD','LDF','BBL','FOR','ZDF','DMP','SMS','ATF', &
-        'RDB','RDN','VMV' /)
+        'TOT','RDB','RDN','VMV' /)
 #endif
 
       ! Check variable dimension for grid_ref specificaiton.

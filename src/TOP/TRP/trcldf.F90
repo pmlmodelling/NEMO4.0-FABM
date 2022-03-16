@@ -104,6 +104,12 @@ CONTAINS
       IF( l_trdtrc )   THEN                    ! send the trends for further diagnostics
         DO jn = 1, jptra
            ztrtrd(:,:,:,jn) = tra(:,:,:,jn) - ztrtrd(:,:,:,jn)
+#if defined key_tracer_budget
+           DO jk = 1, jpkm1
+             ztrtrd(:,:,jk,jn) = ztrtrd(:,:,jk,jn) * e1t(:,:) * e2t(:,:) * e3t_n(:,:,jk)  ! slwa
+           END DO
+#endif
+
            CALL trd_tra( kt, 'TRC', jn, jptra_ldf, ztrtrd(:,:,:,jn) )
         END DO
         DEALLOCATE( ztrtrd )

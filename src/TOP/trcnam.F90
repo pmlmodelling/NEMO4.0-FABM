@@ -255,7 +255,7 @@ CONTAINS
       !!                 MY_TRC replaced with FABM in this verison
       !!---------------------------------------------------------------------
 #if defined key_trdmxl_trc  || defined key_trdtrc
-      INTEGER  ::   ios, ierr                 ! Local integer
+      INTEGER  ::   ios, ierr, jn                 ! Local integer
       !!
       NAMELIST/namtrc_trd/ nn_trd_trc, nn_ctls_trc, rn_ucf_trc, &
          &                ln_trdmxl_trc_restart, ln_trdmxl_trc_instant, &
@@ -267,7 +267,6 @@ CONTAINS
       IF(lwp) WRITE(numout,*) '~~~~~~~~~~~'
       !
       ! +++>>> FABM
-      !   ALLOCATE( ln_trdtrc(jptra) ) 
       ALLOCATE( ln_trdtrc(jpmaxtrc) )
       ! FABM <<<+++
       !

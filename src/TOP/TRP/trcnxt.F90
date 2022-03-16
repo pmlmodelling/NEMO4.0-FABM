@@ -32,6 +32,7 @@ MODULE trcnxt
    USE tranxt
    USE bdy_oce   , ONLY: ln_bdy
    USE trcbdy          ! BDY open boundaries
+   USE iom
 # if defined key_agrif
    USE agrif_top_interp
 # endif
@@ -83,6 +84,10 @@ CONTAINS
       REAL(wp) ::   zfact            ! temporary scalar
       CHARACTER (len=22) :: charout
       REAL(wp), ALLOCATABLE, DIMENSION(:,:,:,:) ::   ztrdt    ! 4D workspace
+#if defined key_tracer_budget
+      REAL(wp), ALLOCATABLE, SAVE, DIMENSION(:,:,:,:) ::  ztrdt_m1 ! slwa
+#endif
+
       !!----------------------------------------------------------------------
       !
       IF( ln_timing )   CALL timing_start('trc_nxt')
@@ -92,6 +97,21 @@ CONTAINS
          WRITE(numout,*) 'trc_nxt : time stepping on passive tracers'
       ENDIF
       !
+#if defined key_tracer_budget
+      IF( kt == nittrc000 .AND. l_trdtrc ) THEN
+         ALLOCATE( ztrdt_m1(jpi,jpj,jpk,jptra) )  ! slwa
+         IF( ln_rsttr .AND.    &                     ! Restart: read in restart  file
+            iom_varid( numrtr, 'atf_trend_'//TRIM(ctrcnm(1)), ldstop = .FALSE. ) > 0 ) THEN
+            IF(lwp) WRITE(numout,*) '          nittrc000-nn_dttrc ATF tracer trend read in the restart file'
+            DO jn = 1, jptra
+               CALL iom_get( numrtr, jpdom_autoglo, 'atf_trend_'//TRIM(ctrcnm(jn)), ztrdt_m1(:,:,:,jn) )   ! before tracer trend for atf
+            END DO
+         ELSE
+           ztrdt_m1=0.0
+         ENDIF
+      ENDIF
+#endif
+
 #if defined key_agrif
       CALL Agrif_trc                   ! AGRIF zoom boundaries
 #endif
@@ -125,9 +145,21 @@ CONTAINS
                END DO
             END DO
          ENDIF
+#if defined key_tracer_budget
+            DO jn = 1, jptra
+               DO jk = 1, jpkm1
+                 ztrdt(:,:,jk,jn) = ztrdt(:,:,jk,jn) * e1t(:,:) * e2t(:,:) * e3t_n(:,:,jk)  
+               END DO
+            END DO
+#endif
+
          !
          DO jn = 1, jptra
-            CALL trd_tra( kt, 'TRC', jn, jptra_tot, ztrdt(:,:,:,jn) )
+#if defined key_tracer_budget
+              CALL trd_tra( kt, 'TRC', jn, jptra_tot, ztrdt_m1(:,:,:,jn) )
+#else
+              CALL trd_tra( kt, 'TRC', jn, jptra_tot, ztrdt(:,:,:,jn) )
+#endif
          ENDDO
          !
          IF( ln_linssh ) THEN       ! linear sea surface height only
@@ -186,7 +218,26 @@ CONTAINS
             CALL trd_tra( kt, 'TRC', jn, jptra_atf, ztrdt(:,:,:,jn) )
          END DO
       END IF
+#if defined key_tracer_budget
+        ztrdt_m1(:,:,:,:) = ztrdt(:,:,:,:)    ! need previous time step for budget slwa
+#endif
       IF( l_trdtrc ) DEALLOCATE( ztrdt ) 
+#if defined key_tracer_budget
+      !                                           Write in the tracer restart file
+      !                                          *******************************
+      IF( lrst_trc ) THEN
+         IF(lwp) WRITE(numout,*)
+         IF(lwp) WRITE(numout,*) 'trc : ATF trend at last time step for tracer budget written in tracer restart file ',   &
+            &                    'at it= ', kt,' date= ', ndastp
+         IF(lwp) WRITE(numout,*) '~~~~'
+         DO jn = 1, jptra
+            CALL iom_rstput( kt, nitrst, numrtw, 'atf_trend_'//TRIM(ctrcnm(jn)), ztrdt_m1(:,:,:,jn) )
+         END DO
+      ENDIF
+#endif
+
+
+
       !
       IF(ln_ctl)   THEN  ! print mean trends (used for debugging)
          WRITE(charout, FMT="('nxt')")

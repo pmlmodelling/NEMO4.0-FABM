@@ -19,6 +19,10 @@ MODULE trcrad
    USE trdtra
    USE prtctl_trc          ! Print control for debbuging
    USE lib_fortran
+#if defined key_tracer_budget
+   USE iom
+#endif
+
 
    IMPLICIT NONE
    PRIVATE
@@ -152,9 +156,29 @@ CONTAINS
       REAL(wp)::   zcoef, zs2rdt, ztotmass
       REAL(wp), ALLOCATABLE, DIMENSION(:,:,:) ::   ztrneg, ztrpos
       REAL(wp), ALLOCATABLE, DIMENSION(:,:,:) ::   ztrtrd   ! workspace arrays
+#if defined key_tracer_budget
+      REAL(wp), ALLOCATABLE, SAVE, DIMENSION(:,:,:,:) ::  ztrneg_m1 ! slwa
+#endif
+
       !!----------------------------------------------------------------------
       !
       IF( l_trdtrc )   ALLOCATE( ztrtrd(jpi,jpj,jpk) )
+#if defined key_tracer_budget
+      IF( kt == nittrc000 .AND. l_trdtrc) THEN
+         IF (.not. ALLOCATED(ztrneg_m1)) ALLOCATE( ztrneg_m1(jpi,jpj,jpk,jptra) )  ! slwa
+            DO jn = jp_sms0, jp_sms1
+               IF( ln_rsttr .AND.    &                     ! Restart: read in restart  file
+                  iom_varid( numrtr, 'rdb_trend_'//TRIM(ctrcnm(jn)), ldstop = .FALSE. ) > 0 ) THEN
+                  IF(lwp) WRITE(numout,*) '          nittrc000-nn_dttrc RDB tracer trend read for',TRIM(ctrcnm(jn))
+                  CALL iom_get( numrtr, jpdom_autoglo, 'rdb_trend_'//TRIM(ctrcnm(jn)), ztrneg_m1(:,:,:,jn) )   ! before tracer trend for rdb
+               ELSE
+                  IF(lwp) WRITE(numout,*) '          no nittrc000-nn_dttrc RDB tracer trend for',TRIM(ctrcnm(jn)),', setting to 0.'
+                  ztrneg_m1(:,:,:,jn)=0.0
+               ENDIF
+            END DO
+      ENDIF
+#endif
+
       zs2rdt = 1. / ( 2. * rdt * REAL( nn_dttrc, wp ) )
       !
       IF( PRESENT( cpreserv )  ) THEN     !==  total tracer concentration is preserved  ==!
@@ -195,7 +219,17 @@ CONTAINS
             !
             IF( l_trdtrc ) THEN
                ztrtrd(:,:,:) = ( ptrb(:,:,:,jn) - ztrtrd(:,:,:) ) * zs2rdt
+#if defined key_tracer_budget
+! slwa budget code
+               DO jk = 1, jpkm1
+                  ztrtrd(:,:,jk) = ztrtrd(:,:,jk) * e1t(:,:) * e2t(:,:) * e3t_n(:,:,jk)
+               END DO
+               CALL trd_tra( kt, 'TRC', jn, jptra_radb, ztrneg_m1(:,:,:,jn) )
+               ztrneg_m1(:,:,:,jn)=ztrtrd(:,:,:)
+#else
                CALL trd_tra( kt, 'TRC', jn, jptra_radb, ztrtrd )       ! Asselin-like trend handling
+#endif
+
             ENDIF
             !
          END DO
@@ -245,6 +279,12 @@ CONTAINS
             !
             IF( l_trdtrc ) THEN
                ztrtrd(:,:,:) = ( ptrn(:,:,:,jn) - ztrtrd(:,:,:) ) * zs2rdt
+#if defined key_tracer_budget
+! slwa budget code
+               DO jk = 1, jpkm1
+                  ztrtrd(:,:,jk) = ztrtrd(:,:,jk) * e1t(:,:) * e2t(:,:) * e3t_n(:,:,jk)
+               END DO
+#endif
                CALL trd_tra( kt, 'TRC', jn, jptra_radn, ztrtrd )       ! standard     trend handling
             ENDIF
             !
@@ -273,6 +313,16 @@ CONTAINS
             !
             IF( l_trdtrc ) THEN
                ztrtrd(:,:,:) = ( ptrb(:,:,:,jn) - ztrtrd(:,:,:) ) * zs2rdt
+#if defined key_tracer_budget
+               DO jk = 1, jpkm1
+                  ztrtrd(:,:,jk) = ztrtrd(:,:,jk) * e1t(:,:) * e2t(:,:) * e3t_n(:,:,jk)
+               END DO
+               CALL trd_tra( kt, 'TRC', jn, jptra_radb, ztrneg_m1(:,:,:,jn) )
+               ztrneg_m1(:,:,:,jn)=ztrtrd(:,:,:)
+#else
+               CALL trd_tra( kt, 'TRC', jn, jptra_radb, ztrtrd )       ! Asselin-like trend handling
+#endif
+
                CALL trd_tra( kt, 'TRC', jn, jptra_radb, ztrtrd )       ! Asselin-like trend handling
             ENDIF
             !
@@ -282,6 +332,12 @@ CONTAINS
             !
             IF( l_trdtrc ) THEN
                ztrtrd(:,:,:) = ( ptrn(:,:,:,jn) - ztrtrd(:,:,:) ) * zs2rdt
+#if defined key_tracer_budget
+               DO jk = 1, jpkm1
+                  ztrtrd(:,:,jk) = ztrtrd(:,:,jk) * e1t(:,:) * e2t(:,:) * e3t_n(:,:,jk)
+               END DO
+#endif
+
                CALL trd_tra( kt, 'TRC', jn, jptra_radn, ztrtrd )       ! standard     trend handling
             ENDIF
             !
@@ -289,6 +345,20 @@ CONTAINS
          !
       ENDIF
       !
+#if defined key_tracer_budget
+      !                                           Write in the tracer restart file
+      !                                          *******************************
+      IF( lrst_trc ) THEN
+         IF(lwp) WRITE(numout,*)
+         IF(lwp) WRITE(numout,*) 'trc : RDB trend at last time step for tracer budget written in tracer restart file ',   &
+            &                    'at it= ', kt,' date= ', ndastp
+         IF(lwp) WRITE(numout,*) '~~~~'
+         DO jn = jp_sms0, jp_sms1
+            CALL iom_rstput( kt, nitrst, numrtw, 'rdb_trend_'//TRIM(ctrcnm(jn)), ztrneg_m1(:,:,:,jn) )
+         END DO
+      ENDIF
+#endif
+
       IF( l_trdtrc )  DEALLOCATE( ztrtrd )
       !
    END SUBROUTINE trc_rad_sms

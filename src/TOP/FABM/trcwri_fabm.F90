@@ -48,6 +48,7 @@ CONTAINS
       CHARACTER (len=20)   :: cltra
       REAL(wp), DIMENSION(jpi,jpj,jpk)    :: trpool !temporary storage pool 3D
       REAL(wp), DIMENSION(jpi,jpj)    :: st2dpool !temporary storage pool 2D
+      LOGICAL, DIMENSION(jpmaxtrc) :: ln_trdtrc
       !!---------------------------------------------------------------------
 
       ! write the tracer concentrations in the file
@@ -56,7 +57,7 @@ CONTAINS
 ! for strict budgetting write this out at end of timestep as an average between 'now' and 'after' at kt
       DO jn = 1, jp_fabm
         IF(ln_trdtrc (jp_fabm_m1+jn))THEN
-         trpool(:,:,:) = 0.5 * ( trn(:,:,:,jp_fabm_m1+jn)*e3t_n_a(:,:,:) + &
+         trpool(:,:,:) = 0.5 * ( trn(:,:,:,jp_fabm_m1+jn)*e3t_a(:,:,:) + &
                              tr_temp(:,:,:,jn)*e3t_n(:,:,:) )
          cltra = TRIM( model%interior_state_variables(jn)%name )//"_e3t"     ! depth integrated output
          IF( kt == nittrc000 ) write(output_unit,*)'output pool ',cltra

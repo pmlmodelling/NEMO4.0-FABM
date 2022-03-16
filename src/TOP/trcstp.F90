@@ -110,6 +110,10 @@ CONTAINS
          ENDIF
          IF( lrst_trc )            CALL trc_rst_wri  ( kt )       ! write tracer restart file
          IF( lk_trdmxl_trc  )      CALL trd_mxl_trc  ( kt )       ! trends: Mixed-layer
+#if defined key_tracer_budget
+!slwa tracer budget
+         CALL trc_wri (kt, 2)
+#endif
          !
          IF( nn_dttrc /= 1   )     CALL trc_sub_reset( kt )       ! resetting physical variables when sub-stepping
          !
