@@ -147,8 +147,13 @@ CONTAINS
       !!---------------------------------------------------------------------
       INTEGER ::   ios, ierr, icfc       ! Local integer
       !!
+#if defined key_fabm
       NAMELIST/namtrc/jp_bgc, ln_pisces, ln_my_trc, ln_fabm, ln_age, ln_cfc11, ln_cfc12, ln_sf6, ln_c14, & ! +++ FABM ln_fabm added
          &            sn_tracer, ln_trcdta, ln_trcdmp, ln_trcdmp_clo, jp_dia3d, jp_dia2d, jp_diabio
+#else
+      NAMELIST/namtrc/jp_bgc, ln_pisces, ln_my_trc, ln_age, ln_cfc11, ln_cfc12, ln_sf6, ln_c14, &
+         &            sn_tracer, ln_trcdta, ln_trcdmp, ln_trcdmp_clo, jp_dia3d, jp_dia2d, jp_diabio
+#endif
       !!---------------------------------------------------------------------
       ! Dummy settings to fill tracers data structure
       !                  !   name   !   title   !   unit   !   init  !   sbc   !   cbc   !   obc  !
