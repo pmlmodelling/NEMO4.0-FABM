@@ -1,0 +1,134 @@
+!!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+!! NEMO/TOP1 :   - tracer run information                (namtrc_run)
+!!               - tracer definition                     (namtrc    )
+!!               - tracer data initialisation            (namtrc_dta)
+!!               - tracer advection                      (namtrc_adv)
+!!               - tracer lateral diffusion              (namtrc_ldf)
+!!               - tracer vertical physics               (namtrc_zdf)
+!!               - tracer newtonian damping              (namtrc_dmp)
+!!               - dynamical tracer trends               (namtrc_trd)
+!!               - tracer output diagonstics             (namtrc_dia)
+!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+!-----------------------------------------------------------------------
+&namtrc_run     !   run information
+!-----------------------------------------------------------------------
+   nn_dttrc      =  1        !  time step frequency for passive sn_tracers
+   ln_top_euler  = .false.    !  use Euler time-stepping for TOP
+   ln_rsttr      = .false. ! start from a restart file (T) or not (F)
+   nn_rsttr      = 0       ! restart control = 0 initial time step is not compared to the restart file value
+                           !                  = 1 do not use the value in the restart file
+                           !                  = 2 calendar parameters read in the restart file
+   cn_trcrst_in  = "restart_trc"   !  suffix of pass. sn_tracer restart name (input)
+   cn_trcrst_out = "restart_trc"   !  suffix of pass. sn_tracer restart name (output)
+   cn_trcrst_indir   = "."   !  directory of ocean restart name (input)
+   cn_trcrst_outdir  = "."   !  directory of ocean restart name (output)
+/
+!-----------------------------------------------------------------------
+&namtrc     !   tracers definition
+!-----------------------------------------------------------------------
+  ln_fabm     = .true. 
+  jp_bgc      =   52          !  Number of passive tracers of the BGC model
+!                    sname       lname                                                 unit ,  init    ,  sbc     ,   cbc   ,  obc   ,  save
+   sn_tracer(1)   = 'light_ADY' , 'light gelbstoff absorption',                        ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(2)   = 'N1_p     ' , 'phosphate  ',                                       ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(3)   = 'N3_n     ' , 'oxidised nitrogen  ',                               ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(4)   = 'N4_n     ' , 'ammonium nitrogen',                                 ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(5)   = 'N5_s     ' , 'silicate  ',                                        ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(6)   = 'O2_o     ' , 'oxygen     ',                                       ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(7)   = 'O3_c     ' , 'dissolved inorganic carbon  ',                      ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(8)   = 'O3_TA    ' , 'total alkalinity  '      ,                          ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(9)  = 'R1_c     ' , 'labile dissolved organic matter carbon '     ,      ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(10)  = 'R1_n     ' , 'labile dissolved organic matter nitrogen '   ,      ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(11)  = 'R1_p     ' , 'labile dissolved organic matter phosphorus ' ,      ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(12)  = 'R2_c     ' , 'semi-labile dissolved organic matter carbon ',      ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(13)  = 'R3_c     ' , 'semi-refractory dissolved organic matter carbon ',  ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(14)   = 'R4_c     ' , 'small particulate carbon  ',                       ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(15)   = 'R4_n     ' , 'small particulate nitrogen  ',                     ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(16)   = 'R4_p     ' , 'small particulate phosphorus  ',                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(17)   = 'R6_c     ' , 'medium particulate carbon  ',                      ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(18)   = 'R6_n     ' , 'medium particulate nitrogen  ',                    ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(19)   = 'R6_p     ' , 'medium particulate phosphorus  ',                  ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(20)   = 'R6_s     ' , 'medium particulate silicate  ',                    ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(21)   = 'R8_c     ' , 'large particulate carbon  ',                       ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(22)   = 'R8_n     ' , 'large particulate nitrogen  ',                     ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(23)   = 'R8_p     ' , 'large particulate phosphorus  ',                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(24)   = 'R8_s     ' , 'large particulate silicate  ',                     ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(25)   = 'B1_c     ' , 'bacteria carbon          '      ,                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(26)  = 'B1_n     ' , 'bacteria nitrogen        '      ,                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(27)  = 'B1_p     ' , 'bacteria phosphorus      '      ,                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(28)  = 'P1_c     ' , 'diatom carbon  '                ,                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(29)  = 'P1_n     ' , 'diatom nitrogen  '              ,                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(30)  = 'P1_p     ' , 'diatom phosphorus  '            ,                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(31)  = 'P1_Chl   ' , 'diatom chlorophyll  '           ,                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(32)  = 'P1_s     ' , 'diatom silicate  '              ,                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(33)  = 'P2_c     ' , 'nanophytoplankton carbon  '     ,                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(34)  = 'P2_n     ' , 'nanophytoplankton nitrogen  '   ,                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(35)  = 'P2_p     ' , 'nanophytoplankton phosphorus  ' ,                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(36)  = 'P2_Chl   ' , 'nanophytoplankton chlorophyll  ',                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(37)  = 'P3_c     ' , 'picophytoplankton carbon  '     ,                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(38)  = 'P3_n     ' , 'picophytoplankton nitrogen  '   ,                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(39)  = 'P3_p     ' , 'picophytoplankton phosphorus  ' ,                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(40)  = 'P3_Chl   ' , 'picophytoplankton chlorophyll  ',                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(41)  = 'P4_c     ' , 'picrophytoplankton carbon  '    ,                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(42)  = 'P4_n     ' , 'picrophytoplankton nitrogen  '  ,                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(43)  = 'P4_p     ' , 'picrophytoplankton phosphorus  ',                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(44)  = 'P4_Chl   ' , 'picrophytoplankton chlorophyll ',                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(45)  = 'Z4_c     ' , 'mesozooplankton carbon         ',                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(46)  = 'Z5_c     ' , 'microzooplankton carbon        ',                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(47)  = 'Z5_n     ' , 'microzooplankton nitrogen      ',                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(48)  = 'Z5_p     ' , 'microzooplankton phosphorus    ',                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(49)  = 'Z6_c     ' , 'nanoflagellates carbon         ',                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(50)  = 'Z6_n     ' , 'nanoflagellates nitrogen       ',                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(51)  = 'Z6_p     ' , 'nanoflagellates phosphorus     ',                   ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   sn_tracer(52)   = 'L2_c     ' , 'Calcite  ',                      ' '  , .false.  ,  .false. , .false. , .false. , .false.
+   ln_trcdta     =  .false.  !  Initialisation from data input file (T) or not (F)
+   ln_trcdmp     =  .false.  !  add a damping termn (T) or not (F)
+   ln_trcdmp_clo =  .false.  !  damping term (T) or not (F) on closed seas
+/
+!-----------------------------------------------------------------------
+&namtrc_dta      !    Initialisation from data input file
+!-----------------------------------------------------------------------
+!
+   cn_dir        =  './'      !  root directory for the location of the data files
+/
+!-----------------------------------------------------------------------
+&namtrc_adv    !   advection scheme for passive tracer
+!-----------------------------------------------------------------------
+   ln_trcadv_fct =  .true.   !  FCT scheme
+      nn_fct_h   =  2               !  =2/4, horizontal 2nd / 4th order
+      nn_fct_v   =  2               !  =2/4, vertical   2nd / COMPACT 4th order
+/
+!-----------------------------------------------------------------------
+&namtrc_ldf    !   lateral diffusion scheme for passive tracer
+!-----------------------------------------------------------------------
+   ln_trcldf_tra    =  .true.
+/
+!-----------------------------------------------------------------------
+&namtrc_rad        !  treatment of negative concentrations
+!-----------------------------------------------------------------------
+   ln_trcrad   =  .true.  !  artificially correct negative concentrations (T) or not (F)  ! slwa .true.
+/
+!-----------------------------------------------------------------------
+&namtrc_dmp    !   passive tracer newtonian damping
+!-----------------------------------------------------------------------
+/
+!-----------------------------------------------------------------------
+&namtrc_trd       !   diagnostics on tracer trends        ('key_trdtrc')
+!                          or mixed-layer trends          ('key_trdmld_trc')
+!----------------------------------------------------------------------
+/
+!-----------------------------------------------------------------------
+&namtrc_dia       !   parameters for passive tracer additional diagnostics
+!----------------------------------------------------------------------
+/
+!----------------------------------------------------------------------
+&namtrc_bc       !   data for boundary conditions
+!-----------------------------------------------------------------------
+/
+!----------------------------------------------------------------------
+&namtrc_bdy       !   Setup of tracer boundary conditions
+!-----------------------------------------------------------------------
+cn_trc_dflt = 'none'
+cn_trc = 'none'
+nn_trcdmp_bdy = 0
+/

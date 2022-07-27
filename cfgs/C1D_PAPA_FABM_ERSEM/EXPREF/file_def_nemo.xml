@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+
+    <!-- 
+============================================================================================================
+=                                           output files definition                                        =
+=                                            Define your own files                                         =
+=                                         put the variables you want...                                    =
+============================================================================================================
+    -->
+    
+    <file_definition type="one_file" name="@expname@_@freq@_@startdate@_@enddate@" sync_freq="1d" min_digits="4">
+      <file_group id="1ts" output_freq="1ts"  output_level="10" enabled=".TRUE."/> <!-- 1 time step files -->
+      <file_group id="1h" output_freq="1h"  output_level="10" enabled=".TRUE."/> <!-- 1h files -->
+      <file_group id="2h" output_freq="2h"  output_level="10" enabled=".TRUE."/> <!-- 2h files -->
+      <file_group id="3h" output_freq="3h"  output_level="10" enabled=".TRUE."/> <!-- 3h files -->     
+      <file_group id="4h" output_freq="4h"  output_level="10" enabled=".TRUE."/> <!-- 4h files -->
+      <file_group id="6h" output_freq="6h"  output_level="10" enabled=".TRUE."/> <!-- 6h files -->     
+      <file_group id="1d" output_freq="1d"  output_level="10" enabled=".TRUE."> <!-- 1d files -->
+      <file id="file59" name_suffix="_ptrc_T" description="tracer variables">
+          <field field_ref="N1_p" operation="average" />
+          <field field_ref="N3_n" operation="average" />
+	  <field field_ref="N4_n" operation="average" />
+	  <field field_ref="N5_s" operation="average" />
+	  <field field_ref="O3_c" operation="average" /> 
+	  <field field_ref="pel_nit_rate" operation="average"/>
+	  <field field_ref="O3_TA" operation="average" />
+          <field field_ref="O3_pH" operation="average" />
+	  <field field_ref="O3_pCO2" operation="average" />
+          <field field_ref="O3_Om_arg" operation="average" />
+          <field field_ref="O2_o" operation="average" />
+          <field field_ref="P1_Chl" operation="average" />
+          <field field_ref="P2_Chl" operation="average" />
+          <field field_ref="P3_Chl" operation="average" />
+          <field field_ref="P4_Chl" operation="average" />
+          <field field_ref="P1_c" operation="average" />
+          <field field_ref="P2_c" operation="average" />
+          <field field_ref="P3_c" operation="average" />
+          <field field_ref="P4_c" operation="average" />
+          <field field_ref="B1_c" operation="average" />
+          <field field_ref="Z4_c" operation="average" />
+          <field field_ref="Z5_c" operation="average" />
+          <field field_ref="Z6_c" operation="average" />
+          <field field_ref="R4_c" operation="average" />
+          <field field_ref="R6_c" operation="average" />
+          <field field_ref="R8_c" operation="average" />
+          <field field_ref="R1_c" operation="average" />
+          <field field_ref="R2_c" operation="average" />
+          <field field_ref="R3_c" operation="average" />
+          <field field_ref="L2_c" operation="average" />
+	  <field field_ref="P1_fO3PIc" operation="instant" freq_op="1d"> @P1_fO3PIc_e3t / @e3t </field>
+          <field field_ref="P2_fO3PIc" operation="instant" freq_op="1d"> @P2_fO3PIc_e3t / @e3t </field>
+          <field field_ref="P3_fO3PIc" operation="instant" freq_op="1d"> @P3_fO3PIc_e3t / @e3t </field>
+          <field field_ref="P4_fO3PIc" operation="instant" freq_op="1d"> @P4_fO3PIc_e3t / @e3t </field>
+          <field field_ref="P1_fPIO3c" operation="instant" freq_op="1d"> @P1_fPIO3c_e3t / @e3t </field>
+          <field field_ref="P2_fPIO3c" operation="instant" freq_op="1d"> @P2_fPIO3c_e3t / @e3t </field>
+          <field field_ref="P3_fPIO3c" operation="instant" freq_op="1d"> @P3_fPIO3c_e3t / @e3t </field>
+          <field field_ref="P4_fPIO3c" operation="instant" freq_op="1d"> @P4_fPIO3c_e3t / @e3t </field>
+          <field field_ref="L2_L2O3c" operation="instant" freq_op="1d"> @L2_L2O3c / @e3t </field>
+          <field field_ref="bL2_c"  operation="average" />
+          <field field_ref="Q1_c" operation="average" />
+          <field field_ref="Q6_c" operation="average" />
+          <field field_ref="Q7_c" operation="average" />
+          <field field_ref="Q17_c"  operation="average" />
+          <field field_ref="H1_c" operation="average" />
+          <field field_ref="H2_c" operation="average" />
+          <field field_ref="Y2_c" operation="average" />
+          <field field_ref="Y3_c" operation="average" />
+          <field field_ref="Y4_c" operation="average" />
+          <field field_ref="ben_col_D1m" operation="average" />
+          <field field_ref="ben_col_D2m" operation="average" />
+          <field field_ref="Q6_pen_depth_c" operation="average" />
+          <field field_ref="Q7_pen_depth_c" operation="average" />
+          <field field_ref="K1_p" operation="average" />
+          <field field_ref="K3_n" operation="average" />
+          <field field_ref="K4_n" operation="average" />
+          <field field_ref="K5_s" operation="average" />
+          <field field_ref="G2_o" operation="average" />
+          <field field_ref="G3_c" operation="average" />
+          <field field_ref="G3_c_pb_flux" operation="average" />
+          <field field_ref="K1_p_pb_flux" operation="average" />
+          <field field_ref="K3_n_pb_flux" operation="average" />
+          <field field_ref="K4_n_pb_flux" operation="average" />
+          <field field_ref="K5_s_pb_flux" operation="average" />
+	  <field field_ref="G2_o_pb_flux" operation="average" />
+	  <field field_ref="bL2_dissolution" operation="average" />
+          <field field_ref="e3t"      operation="average" />
+	  <field field_ref="light_xEPS" operation="average"/>
+          <field field_ref="O3_wind" operation="average" />
+	  <field field_ref="O3_fair" operation="average" />
+  </file>
+          <file id="file60" name_suffix="_grid_T" description="tracer variables">
+          <field field_ref="toce" name="votemper"        operation="average"      long_name="sea_water_potential_temperature"                     />
+          <field field_ref="soce" name="vosaline"        operation="average"      long_name="sea_water_salinity"                                  />
+	  <field field_ref="avt" name="nutracer"        operation="average"      long_name="tracer vertical eddy diffusivity"                                  />
+          <field field_ref="empmr"        operation="average"      long_name="water_flux_into_sea_water"                />
+          <field field_ref="mldr10_1"     operation="average"/>
+          <field field_ref="qsr"    operation="average"      long_name="surface_net_downward_shortwave_flux"           />
+      	  <field field_ref="qt"     operation="average"      long_name="surface_net_downward_total_heat_flux"          />
+	  <field field_ref="e3t"      operation="instant" />
+        </file>
+	 <file id="file2" name_suffix="_grid_U" description="ocean U grid variables" >
+          <field field_ref="uoce"         name="uo"       operation="instant" freq_op="1d" > @uoce_e3u / @e3u </field>
+          <field field_ref="utau"         name="tauuo"    />
+        </file>
+
+       <file id="file3" name_suffix="_grid_V" description="ocean V grid variables" >
+          <field field_ref="voce"         name="vo"       operation="instant" freq_op="1d" > @voce_e3v / @e3v </field>
+          <field field_ref="vtau"         name="tauvo"    />
+        </file>
+
+        <file id="file4" name_suffix="_grid_W" description="ocean W grid variables" >
+          <field field_ref="woce"         name="wo"       />
+        </file>
+    </file_group> 
+      
+      <file_group id="3d" output_freq="3d"  output_level="10" enabled=".TRUE."/> <!-- 3d files -->
+      <file_group id="5d" output_freq="5d"  output_level="10" enabled=".TRUE."/> <!-- 5d files -->   
+      <file_group id="1m" output_freq="1mo" output_level="10" enabled=".TRUE."> <!-- real monthly files -->
+	<file id="file21" name_suffix="_grid_T" description="ocean T grid variables" >
+          <field field_ref="toce" name="votemper" operation="average" long_name="sea_water_potential_temperature" />
+          <field field_ref="soce" name="vosaline" operation="average" long_name="sea_water_salinity" />
+	  <field field_ref="taubot" name="avtaubot" operation="average" />
+          <field field_ref="taubot" name="maxtaubot" operation="maximum" />
+        </file>
+
+      <file id="file25" name_suffix="_grid_W" description="ocean W grid variables" >
+          <field field_ref="e3w"  />
+          <field field_ref="avt"          name="difvho"  operation="maximum" long_name="ocean_vertical_heat_diffusivity" />
+	</file> 
+     </file_group>  
+
+     <file_group id="2y"  output_freq="2y" output_level="10" enabled=".TRUE."/> <!-- real 2y files -->
+      <file_group id="5y"  output_freq="5y" output_level="10" enabled=".TRUE."/> <!-- real 5y files -->
+      <file_group id="10y" output_freq="10y" output_level="10" enabled=".TRUE."/> <!-- real 10y files -->
+
+   </file_definition>    
