@@ -240,8 +240,8 @@ MODULE inputs_fabm
                     tra(ji,jj,jk,river_data%jp_pos) = tra(ji,jj,jk,river_data%jp_pos) + river_data%sf(1)%fnow(ji,jj,1)*zcoef
                   else
                     !this is for the no river dilution option, where we give the runoff as riverload and we multiply by the current concentration
-                    ! no need to use the full zcoeff because the run off is already surface specific, 1000. is to convert kg freshwater to m3
-                    tra(ji,jj,jk,river_data%jp_pos) = tra(ji,jj,jk,river_data%jp_pos) + (river_data%sf(1)%fnow(ji,jj,1)/1000._wp) * trn(ji,jj,jk,river_data%jp_pos) / h_rnf(ji,jj)
+                    ! no need to use the full zcoeff because the run off is already surface specific, 1026. is to convert kg freshwater to m3
+                    tra(ji,jj,jk,river_data%jp_pos) = tra(ji,jj,jk,river_data%jp_pos) + (river_data%sf(1)%fnow(ji,jj,1)/1026._wp) * trn(ji,jj,jk,river_data%jp_pos) / h_rnf(ji,jj)
                   endif
 #if defined key_trdtrc && defined key_iomput
                   tr_inp(ji,jj,jk) = river_data%sf(1)%fnow(ji,jj,1)*zcoef
