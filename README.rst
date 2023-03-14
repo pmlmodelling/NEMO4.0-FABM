@@ -14,3 +14,12 @@ Details of the changes made, along with an example compilation can be seen on th
 NEMO relies on `XIOS <https://forge.ipsl.jussieu.fr/ioserver>`_ to provide input/output. A brief overview of 
 the format of XIOS xml files is available `here <https://github.com/pmlmodelling/NEMO4.0-FABM/wiki/Using-XIOS>`_.
 
+Optimisation
+========
+
+As part of the ARCHER2 eCSE programme an extensive report has been produced on optimisation of the NEMO4.0-FABM codebase. This report examines the scalability of the code, both through a change in core count and a change in the number of tracers, and assesses the functions with the largest overhead when making these changes. There are a number of recommendations for node placement and I/O environment settings when running on ARCHER2 that may be relevant elsewhere. 
+
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.7732984.svg
+   :target: https://doi.org/10.5281/zenodo.7732984
+
+
