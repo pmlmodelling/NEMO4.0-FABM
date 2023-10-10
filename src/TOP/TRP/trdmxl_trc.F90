@@ -47,6 +47,10 @@ MODULE trdmxl_trc
    LOGICAL :: llwarn  = .TRUE.                                    ! this should always be .TRUE.
    LOGICAL :: lldebug = .TRUE.
 
+   LOGICAL , PUBLIC ::   ln_trcldf_iso       !: iso-neutral direction
+   LOGICAL , PUBLIC ::   ln_trcadv_muscl     ! MUSCL scheme flag
+   LOGICAL , PUBLIC ::   ln_trcadv_muscl2    ! MUSCL2 scheme flag
+
    REAL(wp), ALLOCATABLE, SAVE, DIMENSION(:,:,:,:) ::  ztmltrd2   !
 
    !!----------------------------------------------------------------------

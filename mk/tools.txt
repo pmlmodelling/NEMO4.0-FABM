@@ -1,1 +1,1 @@
-DOMAINcfg 
+WEIGHTS 

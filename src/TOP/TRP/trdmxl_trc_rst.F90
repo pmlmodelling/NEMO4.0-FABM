@@ -11,7 +11,8 @@ MODULE trdmxl_trc_rst
    USE in_out_manager  ! I/O manager
    USE iom             ! I/O module
    USE trc             ! for nn_dttrc ctrcnm
-   USE trdmxl_trc_oce  ! for lk_trdmxl_trc
+   USE trdtrc_oce  ! for lk_trdmxl_trc
+   !USE trdmxl_trc_oce  ! for lk_trdmxl_trc
 
    IMPLICIT NONE
    PRIVATE
@@ -52,7 +53,7 @@ CONTAINS
          clname = TRIM(cexper)//"_"//TRIM(ADJUSTL(clkt))//"_"//TRIM(cn_trdrst_trc_out)
          clpath = TRIM(cn_trcrst_outdir)
          IF( clpath(LEN_TRIM(clpath):) /= '/' ) clpath = TRIM(clpath) // '/'
-         IF(lwp) WRITE(numout,*) '             open ocean restart_mld_trc NetCDF  'TRIM(clpath)//TRIM(clname)
+         IF(lwp) WRITE(numout,*) '             open ocean restart_mld_trc NetCDF  '//TRIM(clpath)//TRIM(clname)
          CALL iom_open( TRIM(clpath)//TRIM(clname), nummldw_trc, ldwrt = .TRUE. )
       ENDIF
 
