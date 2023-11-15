@@ -26,6 +26,7 @@ MODULE restart
    !
    USE in_out_manager  ! I/O manager
    USE iom             ! I/O module
+   USE ioipsl, ONLY : ju2ymds
    USE diurnal_bulk
    USE lib_mpp         ! distribued memory computing library
 
@@ -57,6 +58,9 @@ CONTAINS
       !!              + define lrst_oce to .TRUE. when we need to define or write the restart
       !!----------------------------------------------------------------------
       INTEGER, INTENT(in) ::   kt     ! ocean time-step
+      INTEGER             ::   iyear, imonth, iday
+      REAL (wp)           ::   zsec
+      REAL (wp)           ::   zfjulday
       !!
       CHARACTER(LEN=20)   ::   clkt     ! ocean time-step deine as a character
       CHARACTER(LEN=50)   ::   clname   ! ocean output restart file name
@@ -87,10 +91,17 @@ CONTAINS
       ! we open and define the ocean restart file one time step before writing the data (-> at nitrst - 1)
       ! except if we write ocean restart files every time step or if an ocean restart file was writen at nitend - 1
       IF( kt == nitrst - 1 .OR. nn_stock == 1 .OR. ( kt == nitend .AND. .NOT. lrst_oce ) ) THEN
-         IF( nitrst <= nitend .AND. nitrst > 0 ) THEN 
-            ! beware of the format used to write kt (default is i8.8, that should be large enough...)
-            IF( nitrst > 999999999 ) THEN   ;   WRITE(clkt, *       ) nitrst
-            ELSE                            ;   WRITE(clkt, '(i8.8)') nitrst
+         IF( nitrst <= nitend .AND. nitrst > 0 ) THEN
+            IF ( ln_rstdate ) THEN
+              zfjulday = fjulday + rdt / rday
+              IF( ABS(zfjulday - REAL(NINT(zfjulday),wp)) < 0.1 / rday )   zfjulday = REAL(NINT(zfjulday),wp)   ! avoid truncation error
+              CALL ju2ymds( zfjulday, iyear, imonth, iday, zsec )           
+              WRITE(clkt, '(i4.4,2i2.2)') iyear, imonth, iday
+            ELSE
+               ! beware of the format used to write kt (default is i8.8, that should be large enough...)
+               IF( nitrst > 999999999 ) THEN   ;   WRITE(clkt, *       ) nitrst
+               ELSE                            ;   WRITE(clkt, '(i8.8)') nitrst
+               ENDIF
             ENDIF
             ! create the file
             clname = TRIM(cexper)//"_"//TRIM(ADJUSTL(clkt))//"_"//TRIM(cn_ocerst_out)

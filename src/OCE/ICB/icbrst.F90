@@ -24,6 +24,7 @@ MODULE icbrst
    USE lib_mpp        ! NEMO MPI library, lk_mpp in particular
    USE netcdf         ! netcdf routines for IO
    USE iom
+   USE ioipsl, ONLY : ju2ymds    ! for calendar
    USE icb_oce        ! define iceberg arrays
    USE icbutl         ! iceberg utility routines
 
@@ -190,6 +191,9 @@ CONTAINS
       INTEGER ::   jn   ! dummy loop index
       INTEGER ::   idg  ! number of digits
       INTEGER ::   ix_dim, iy_dim, ik_dim, in_dim
+      INTEGER             ::   iyear, imonth, iday
+      REAL (wp)           ::   zsec
+      REAL (wp)           ::   zfjulday
       CHARACTER(len=256)     :: cl_path
       CHARACTER(len=256)     :: cl_filename
       CHARACTER(len=8  )     :: cl_kt
@@ -208,7 +212,16 @@ CONTAINS
          ! Assume we write iceberg restarts to same directory as ocean restarts.
          cl_path = TRIM(cn_ocerst_outdir)
          IF( cl_path(LEN_TRIM(cl_path):) /= '/' ) cl_path = TRIM(cl_path) // '/'
-         WRITE(cl_kt, '(i8.8)') kt
+         IF ( ln_rstdate ) THEN
+            zfjulday = fjulday + rdt / rday
+            IF( ABS(zfjulday - REAL(NINT(zfjulday),wp)) < 0.1 / rday )   zfjulday = REAL(NINT(zfjulday),wp)   ! avoid truncation error
+            CALL ju2ymds( zfjulday, iyear, imonth, iday, zsec )
+            WRITE(cl_kt, '(i4.4,2i2.2)') iyear, imonth, iday
+         ELSE
+            IF( kt > 999999999 ) THEN   ;   WRITE(cl_kt, *       ) kt
+            ELSE                        ;   WRITE(cl_kt, '(i8.8)') kt
+            ENDIF
+         ENDIF
          cl_filename = TRIM(cexper)//"_icebergs_"//cl_kt//"_restart"
          IF( lk_mpp ) THEN
             idg = MAX( INT(LOG10(REAL(MAX(1,jpnij-1),wp))) + 1, 4 )          ! how many digits to we need to write? min=4, max=9

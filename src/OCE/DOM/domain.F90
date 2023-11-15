@@ -291,7 +291,7 @@ CONTAINS
          &             nn_no   , cn_exp   , cn_ocerst_in, cn_ocerst_out, ln_rstart , nn_rstctl ,     &
          &             nn_it000, nn_itend , nn_date0    , nn_time0     , nn_leapy  , nn_istate ,     &
          &             nn_stock, nn_write , ln_mskland  , ln_clobber   , nn_chunksz, nn_euler  ,     &
-         &             ln_cfmeta, ln_iscpl, ln_xios_read, nn_wxios
+         &             ln_cfmeta, ln_iscpl, ln_xios_read, nn_wxios, ln_rstdate
       NAMELIST/namdom/ ln_linssh, rn_isfhmin, rn_rdt, rn_atfp, ln_crs, ln_meshmask
 #if defined key_netcdf4
       NAMELIST/namnc4/ nn_nchunks_i, nn_nchunks_j, nn_nchunks_k, ln_nc4zip
@@ -339,6 +339,7 @@ CONTAINS
          WRITE(numout,*) '      frequency of output file        nn_write        = ', nn_write
 #endif
          WRITE(numout,*) '      mask land points                ln_mskland      = ', ln_mskland
+         WRITE(numout,*) '      date-stamp restart files        ln_rstdate = ', ln_rstdate
          WRITE(numout,*) '      additional CF standard metadata ln_cfmeta       = ', ln_cfmeta
          WRITE(numout,*) '      overwrite an existing file      ln_clobber      = ', ln_clobber
          WRITE(numout,*) '      NetCDF chunksize (bytes)        nn_chunksz      = ', nn_chunksz

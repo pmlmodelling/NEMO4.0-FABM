@@ -19,8 +19,12 @@ MODULE trcrst
    !!   trc_rst_wri    : write restart file
    !!----------------------------------------------------------------------
    USE oce_trc
+   USE dom_oce,        ONLY : fjulday
+   USE phycst, ONLY: rday
    USE trc
    USE iom
+   USE ioipsl,         ONLY : ju2ymds     ! for calendar
+   USE in_out_manager, ONLY : ln_rstdate  ! I/O manager 
    USE daymod
    ! +++>>> FABM
    USE trcrst_fabm
@@ -49,6 +53,9 @@ CONTAINS
       !! ** purpose  :   output of sea-trc variable in a netcdf file
       !!----------------------------------------------------------------------
       INTEGER, INTENT(in) ::   kt       ! number of iteration
+      INTEGER             ::   iyear, imonth, iday 
+      REAL (wp)           ::   zsec 
+      REAL (wp)           ::   zfjulday 
       !
       CHARACTER(LEN=20)   ::   clkt     ! ocean time-step define as a character
       CHARACTER(LEN=50)   ::   clname   ! trc output restart file name
@@ -80,10 +87,17 @@ CONTAINS
       ! to get better performances with NetCDF format:
       ! we open and define the tracer restart file one tracer time step before writing the data (-> at nitrst - 2*nn_dttrc + 1)
       ! except if we write tracer restart files every tracer time step or if a tracer restart file was writen at nitend - 2*nn_dttrc + 1
-      IF( kt == nitrst - 2*nn_dttrc .OR. nn_stock == nn_dttrc .OR. ( kt == nitend - nn_dttrc .AND. .NOT. lrst_trc ) ) THEN
-         ! beware of the format used to write kt (default is i8.8, that should be large enough)
-         IF( nitrst > 1.0e9 ) THEN   ;   WRITE(clkt,*       ) nitrst
-         ELSE                        ;   WRITE(clkt,'(i8.8)') nitrst
+      IF( kt == nitrst - 2*nn_dttrc + 1 .OR. nn_stock == nn_dttrc .OR. ( kt == nitend - nn_dttrc .AND. .NOT. lrst_trc ) ) THEN
+         IF ( ln_rstdate ) THEN 
+            zfjulday = fjulday + rdttrc / rday 
+            IF( ABS(zfjulday - REAL(NINT(zfjulday),wp)) < 0.1 / rday )   zfjulday = REAL(NINT(zfjulday),wp)   ! avoid truncation error 
+            CALL ju2ymds( zfjulday, iyear, imonth, iday, zsec ) 
+            WRITE(clkt, '(i4.4,2i2.2)') iyear, imonth, iday 
+         ELSE 
+            ! beware of the format used to write kt (default is i8.8, that should be large enough...) 
+            IF( nitrst > 999999999 ) THEN   ;   WRITE(clkt, *       ) nitrst 
+            ELSE                            ;   WRITE(clkt, '(i8.8)') nitrst 
+            ENDIF 
          ENDIF
          ! create the file
          IF(lwp) WRITE(numout,*)
