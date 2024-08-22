@@ -94,7 +94,9 @@ MODULE vertical_movement_fabm
                   ! Compute change (per volume) due to vertical movement per layer
                   IF (method == 1) THEN
                      CALL advect_1(k_floor, trn(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, dc(1:k_floor))
-                  ELSE
+                 ELSE IF (method == 2) THEN
+                     CALL semi_lagrangian(k_floor, trb(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, dc(1:k_floor))
+                 ELSE IF (method == 3) THEN
                      CALL advect_3(k_floor, trb(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, dc(1:k_floor))
                   END IF
 
@@ -273,6 +275,144 @@ MODULE vertical_movement_fabm
       ! Estimate rate of change from pseudo state updates (source splitting):
       trend = (c - c_old) / dt
    END SUBROUTINE
+
+   SUBROUTINE semi_lagrangian(nk, c_old, w, h, dt, trend)
+        INTEGER,  INTENT(IN)  :: nk
+        REAL(wp), INTENT(IN)  :: c_old(1:nk)
+        REAL(wp), INTENT(IN)  :: w(1:nk-1)
+        REAL(wp), INTENT(IN)  :: h(1:nk)
+        REAL(wp), INTENT(IN)  :: dt
+        REAL(wp), INTENT(OUT) :: trend(1:nk)
+
+        REAL(wp) :: zcff, zcu, zcffL, zcffR, zdltL, zdltR
+        REAL(wp) :: zHz_inv, zHz_inv2, zHz_inv3
+        REAL(wp), DIMENSION(1:nk) :: zFC, zqR, zqL, zWR, zWL
+        INTEGER, DIMENSION(1:nk) :: ksource
+        INTEGER :: jk
+
+        ! Initialize variables
+        zFC = 0._wp
+        zqR = 0._wp
+        zqL = 0._wp
+        zWR = 0._wp
+        zWL = 0._wp
+
+        !-----------------------------------------------------------------------
+        ! Vertical sinking of particle concentration
+        !-----------------------------------------------------------------------
+
+        ! Loop over the vertical levels
+        DO jk = 2, nk-1
+            ! Compute semi-Lagrangian flux due to sinking
+            zHz_inv2 = 1._wp / (h(jk) + h(jk-1))
+            zFC(jk) = (c_old(jk-1) - c_old(jk)) * zHz_inv2
+
+            ! Apply PPM monotonicity constraint
+            zdltR = h(jk) * zFC(jk)
+            zdltL = h(jk) * zFC(jk+1)
+            zcff = h(jk+1) + 2._wp * h(jk) + h(jk-1)
+            zcffR = zcff * zFC(jk)
+            zcffL = zcff * zFC(jk+1)
+            !  Apply PPM monotonicity constraint to prevent oscillations within the grid box.
+            IF (zdltR * zdltL <= 0._wp) THEN
+                zdltR = 0._wp
+                zdltL = 0._wp
+            ELSE IF (ABS(zdltR) >= zcffL) THEN
+                zdltR = zcffL
+            ELSE IF (ABS(zdltL) > ABS(zcffR)) THEN
+                zdltL = zcffR
+            ENDIF
+            !
+            !  Compute right and left side values (qR,qL) of parabolic segments
+            !  within grid box Hz(k); (WR,WL) are measures of quadratic variations.
+            !
+            !  NOTE: Although each parabolic segment is monotonic within its grid
+            !        box, monotonicity of the whole profile is not guaranteed,
+            !        because qL(k+1)-qR(k) may still have different sign than
+            !        tr(k+1)-tr(k).  This possibility is excluded, after qL and qR
+            !        are reconciled using WENO procedure.
+            !
+            zHz_inv3 = 1._wp / (h(jk) + h(jk-1) + h(jk+1))
+            zcff = (zdltR - zdltL) * zHz_inv3
+            zdltR = zdltR - zcff * h(jk-1)
+            zdltL = zdltL + zcff * h(jk+1)
+            zqR(jk) = c_old(jk) + zdltR
+            zqL(jk) = c_old(jk) - zdltL
+            zWR(jk) = (2._wp * zdltR - zdltL)**2
+            zWL(jk) = (zdltR - 2._wp * zdltL)**2
+        END DO
+        zHz_inv2 = 1._wp / (h(nk) + h(nk-1))
+        zFC(nk) = (c_old(nk-1) - c_old(nk)) * zHz_inv2
+
+        ! Boundary conditions
+        zFC(1) = 0._wp
+        zFC(nk) = 0._wp
+        zqR(1) = c_old(1)
+        zqL(1) = c_old(1)
+        zqR(nk) = c_old(nk)
+        zqL(nk) = c_old(nk)
+
+        !  Apply monotonicity constraint again, since the reconciled interfacial
+        !  values may cause a non-monotonic behavior of the parabolic segments
+        !  inside the grid box.
+        DO jk = 2, nk-1
+            zdltR = zqR(jk) - c_old(jk)
+            zdltL = c_old(jk) - zqL(jk)
+            zcffR = 2._wp * zdltR
+            zcffL = 2._wp * zdltL
+            IF (zdltR * zdltL < 0._wp) THEN
+                zdltR = 0._wp
+                zdltL = 0._wp
+            ELSE IF (ABS(zdltR) > ABS(zcffL)) THEN
+                zdltR = zcffL
+            ELSE IF (ABS(zdltL) > ABS(zcffR)) THEN
+                zdltL = zcffR
+            ENDIF
+            zqR(jk) = c_old(jk) + zdltR
+            zqL(jk) = c_old(jk) - zdltL
+        END DO
+        !  After this moment reconstruction is considered complete. The next
+        !  stage is to compute vertical advective fluxes, FC. It is expected
+        !  that sinking may occurs relatively fast, the algorithm is designed
+        !  to be free of CFL criterion, which is achieved by allowing
+        !  integration bounds for semi-Lagrangian advective flux to use as
+        !  many grid boxes in upstream direction as necessary.
+
+        !  In the two code segments below, WL is the z-coordinate of the
+        !  departure point for grid box interface z_w with the same indices;
+        !  FC is the finite volume flux; ksource(:,k) is index of vertical
+        !  grid box which contains the departure point (restricted by N(ng)).
+        !  During the search: also add in content of whole grid boxes
+        !  participating in FC.
+        DO jk = 2, nk-1
+            zcff = dt * ABS(w(jk)) / h(jk)
+            zFC(jk) = 0._wp
+            zWL(jk) = -zcff
+            zWR(jk) = h(jk) * c_old(jk)
+            ksource(jk) = jk
+        END DO
+
+        DO jk = 1, nk
+            DO ik = 2, jk
+                IF (zWL(jk) > -zcff) THEN
+                    ksource(jk) = ik - 1
+                    zFC(jk+1) = zFC(jk+1) + zWR(ik)
+                ENDIF
+            END DO
+        END DO
+
+        ! Finalize computation of flux and calculate trend
+        DO jk = 2, nk-1
+            zHz_inv = 1._wp / h(jk)
+            zcu = MIN(1._wp, zWL(jk) * zHz_inv)
+            zFC(jk+1) = zFC(jk+1) + h(jk) * zcu * (zqL(jk) + zcu * (0.5_wp * (zqR(jk) - zqL(jk)) - (1.5_wp - zcu) * (zqR(jk) + zqL(jk) - 2._wp * c_old(jk))))
+        END DO
+
+        DO jk = 2, nk-1
+            zHz_inv = 1._wp / h(jk)
+            trend(jk) = (zFC(jk) - zFC(jk+1)) * zHz_inv
+        END DO
+    END SUBROUTINE trc_sink2_slg
 
 
 #endif
