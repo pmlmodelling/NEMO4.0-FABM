@@ -288,7 +288,7 @@ MODULE vertical_movement_fabm
         REAL(wp) :: zHz_inv, zHz_inv2, zHz_inv3
         REAL(wp), DIMENSION(1:nk) :: zFC, zqR, zqL, zWR, zWL
         INTEGER, DIMENSION(1:nk) :: ksource
-        INTEGER :: jk
+        INTEGER :: ik, jk
 
         ! Initialize variables
         zFC = 0._wp
@@ -412,7 +412,7 @@ MODULE vertical_movement_fabm
             zHz_inv = 1._wp / h(jk)
             trend(jk) = (zFC(jk) - zFC(jk+1)) * zHz_inv
         END DO
-    END SUBROUTINE trc_sink2_slg
+    END SUBROUTINE semi_lagrangian
 
 
 #endif
