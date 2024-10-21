@@ -90,12 +90,14 @@ MODULE vertical_movement_fabm
 
                   ! Compute velocities at interfaces
                   w_if(1:k_floor-1) = zwgt_if(1:k_floor-1) * w_ct(ji,1:k_floor-1,jn) + (1._wp - zwgt_if(1:k_floor-1)) * w_ct(ji,2:k_floor,jn)
+                  
 
+                WRITE(numout,*) 'Vertical movement computed using method = ',method
                   ! Compute change (per volume) due to vertical movement per layer
                   IF (method == 1) THEN
                      CALL advect_1(k_floor, trn(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, dc(1:k_floor))
                  ELSE IF (method == 2) THEN
-                     CALL semi_lagrangian(k_floor, trb(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, dc(1:k_floor))
+                     CALL trc_sink2_slg(k_floor, trb(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, gdepw_0(ji,jj,1:k_floor), tmask(ji,jj,k_floor), dc(1:k_floor))
                  ELSE IF (method == 3) THEN
                      CALL advect_3(k_floor, trb(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, dc(1:k_floor))
                   END IF
@@ -121,6 +123,139 @@ MODULE vertical_movement_fabm
 #endif
 
    END SUBROUTINE compute_vertical_movement
+
+   SUBROUTINE trc_sink2_slg(nk, c_old, w, h, dt, gdepw1, tmask1, trend)
+        !!---------------------------------------------------------------------
+        !!                     ***  ROUTINE trc_sink2_slg  ***
+        !!
+        !! ** Purpose :   Compute the sedimentation terms for the various sinking particles.
+        !!                The scheme used to compute the trends is based on
+        !!                a semi-Lagrangian advective flux algorithm
+        !!
+        !!---------------------------------------------------------------------
+
+        INTEGER,  INTENT(IN)  :: nk               ! Number of vertical levels
+        REAL(wp), INTENT(IN)  :: c_old(1:nk)      ! Old concentration
+        REAL(wp), INTENT(IN)  :: w(1:nk-1)        ! Sinking velocities (between layers)
+        REAL(wp), INTENT(IN)  :: h(1:nk)          ! Layer thicknesses
+        REAL(wp), INTENT(IN)  :: dt               ! Time step
+        REAL(wp), INTENT(IN) :: gdepw1(1:nk)      ! Trend/output flux due to sinking
+        REAL(wp), INTENT(IN) :: tmask1(1:nk)      ! Trend/output flux due to sinking
+        REAL(wp), INTENT(OUT) :: trend(1:nk)      ! Trend/output flux due to sinking
+        !
+        INTEGER  :: k
+        REAL(wp) :: zcff, zcu, zdltL, zdltR, zflx, zcffR, zcffL, ik
+        REAL(wp) :: zWR, zWL, zHz_inv, zHz_inv2, zHz_inv3
+        REAL(wp) :: zFC(nk), zWL_arr(nk), zWR_arr(nk), zqR(nk), zqL(nk)
+        INTEGER :: ksource(nk)
+        !---------------------------------------------------------------------
+        ! Initialize the trend and intermediate variables
+        trend(:) = 0._wp
+        zFC(:) = 0._wp
+        zWL_arr(:) = 0._wp
+        zWR_arr(:) = 0._wp
+        ksource(:) = 0
+
+        !-----------------------------------------------------------------------
+        !  Compute semi-Lagrangian flux due to vertical sinking.
+        !-----------------------------------------------------------------------
+
+        ! Step 1: Compute flux difference (zFC) between vertical layers
+        DO k = 2, nk-1
+            zHz_inv2 = 1._wp / (h(k) + h(k-1))
+            zFC(k) = (c_old(k-1) - c_old(k)) * zHz_inv2
+        END DO
+
+        ! Step 2: Apply parabolic reconstruction (PPM) to ensure monotonicity
+        DO k = 2, nk-1
+            zdltR = h(k) * zFC(k)
+            zdltL = h(k) * zFC(k+1)
+            zcff  = h(k+1) + 2. * h(k) + h(k-1)
+            zcffR = zcff * zFC(k)
+            zcffL = zcff * zFC(k+1)
+
+
+            IF (zdltR * zdltL <= 0._wp) THEN
+                zdltR = 0._wp
+                zdltL = 0._wp
+            ELSE IF (ABS(zdltR) >= zcffL) THEN
+                zdltR = zdltL
+            ELSE IF (ABS(zdltL) > ABS(zcffR)) THEN
+                zdltL = zcffR
+            END IF
+
+            zHz_inv3 = 1._wp / (h(k) + h(k-1) + h(k+1))
+            zcff = (zdltR - zdltL) * zHz_inv3
+            zdltR = zdltR - zcff * h(k-1)
+            zdltL = zdltL + zcff * h(k+1)
+
+            zqR(k) = c_old(k) + zdltR
+            zqL(k) = c_old(k) - zdltL
+            zWR = (2._wp * zdltR - zdltL)**2
+            zWL = (zdltR - 2._wp * zdltL)**2
+
+            zWR_arr(k) = zWR
+            zWL_arr(k) = zWL
+        END DO
+
+
+        ! Step 3: Reconcile parabolic segments for monotonicity
+        zcff = 1.e-14
+        DO k = 2, nk-2
+            zdltL = MAX(zcff, zWL_arr(k))
+            zdltR = MAX(zcff, zWR_arr(k-1))
+            zqR(k) = (zdltR * zqR(k) + zdltL * zqL(k-1)) / (zdltR + zdltL)
+            zqL(k-1) = zqR(k)
+        END DO
+
+        DO k = 1, nk
+            zdltR = zqR(k) - c_old(k)
+            zdltL = c_old(k) - zqL(k)
+            zcffR = 2._wp * zdltR
+            zcffL = 2._wp * zdltL
+            IF( zdltR * zdltL < 0._wp ) THEN
+               zdltR = 0._wp
+               zdltL = 0._wp
+            ELSE IF( ABS( zdltR ) > ABS( zcffL ) ) THEN
+               zdltR = zcffL
+            ELSE IF( ABS( zdltL ) > ABS( zcffR ) ) THEN
+               zdltL = zcffR
+            ENDIF
+            zqR(k) = c_old(k)+ zdltR
+            zqL(k) = c_old(k)- zdltL
+        END DO 
+
+        ! Step 4: Finalize flux computation using semi-Lagrangian approach
+        DO k = 2, nk-1
+            zcff = dt * ABS(w(k)) / rday * tmask1(k)
+            zFC(k+1)   = 0._wp
+            zWL_arr(k) = -gdepw1(k+1) + zcff
+            zWR_arr(k) = h(k) * c_old(k)
+            ksource(k) = k
+        END DO
+        DO k = 1, nk
+            IF( zWL_arr(k) > -gdepw1(k) ) THEN
+               ksource(k) = k - 1
+               zFC(k+1) = zFC(k+1) + zWR_arr(k)
+            ENDIF
+        END DO
+
+        ! Step 5: Compute final trend (sinking flux)
+        DO k = 2, nk
+            ik = ksource(k)
+            zHz_inv = 1._wp / h(k)
+            zcu = MIN(1._wp, (zWL_arr(k) + gdepw1(ik)) * zHz_inv)
+            zFC(k) = zFC(k) + h(k) * zcu * (zqL(ik) + zcu * (0.5_wp * (zqR(ik) - zqL(ik)) - (1.5_wp - zcu) * (zqR(ik) + zqL(ik) - 2._wp * c_old(ik))))
+        END DO
+
+        ! Step 6: Compute the final trend and update the output array
+        DO k = 1, nk
+            zHz_inv = 1._wp / h(k)
+            zflx = (zFC(k) - zFC(k+1)) * zHz_inv
+            trend(k) = trend(k) + zflx
+            write(numout,*),'trend(',k,') = ', trend(k)
+        END DO
+    END SUBROUTINE trc_sink2_slg
 
    SUBROUTINE advect_1(nk, c, w, h, dt, trend)
       INTEGER,  INTENT(IN)  :: nk
@@ -296,7 +431,7 @@ MODULE vertical_movement_fabm
         zqL = 0._wp
         zWR = 0._wp
         zWL = 0._wp
-
+         
         !-----------------------------------------------------------------------
         ! Vertical sinking of particle concentration
         !-----------------------------------------------------------------------
