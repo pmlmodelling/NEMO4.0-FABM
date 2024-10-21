@@ -176,6 +176,7 @@ CONTAINS
       IF( ln_fabm    ) THEN
         CALL trc_nam_fabm_override(sn_tracer)
         CALL trc_ini_fabm       ! FABM tracers
+        CALL trc_nam_fabm
       END IF
       ! FABM <<<+++
 
