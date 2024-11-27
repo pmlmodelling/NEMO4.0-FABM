@@ -99,13 +99,13 @@ MODULE vertical_movement_fabm
                   IF (method == 1) THEN
                      CALL advect_1(k_floor, trn(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, dc(1:k_floor))
                  ELSE IF (method == 2) THEN
-                    CALL semi_lagrangian_sedimentation(k_floor, trn(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, gdepw_n(ji,jj,1:k_floor), tmask(ji,jj,k_floor), dc(1:k_floor))
+                    CALL semi_lagrangian_sedimentation(k_floor, tra(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, gdepw_n(ji,jj,1:k_floor), tmask(ji,jj,k_floor), dc(1:k_floor))
                  ELSE IF (method == 3) THEN
                      CALL advect_3(k_floor, trb(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, dc(1:k_floor))
                   END IF
 
                   ! Incorporate change due to vertical movement in sources-sinks
-                  tra(ji,jj,1:k_floor,jp_fabm_m1+jn) = ABS(tra(ji,jj,1:k_floor,jp_fabm_m1+jn) + dc(1:k_floor))
+                  tra(ji,jj,1:k_floor,jp_fabm_m1+jn) = tra(ji,jj,1:k_floor,jp_fabm_m1+jn) + dc(1:k_floor)
                   !print tra(ji,jj,k_floor,jp_fabm_m1+jn)
 
 #if defined key_trdtrc && defined key_iomput
@@ -255,6 +255,8 @@ MODULE vertical_movement_fabm
         trend(jk) = zflx
       END DO
       trend(nk) = -SUM(trend)
+
+      trend(:) = trend(:) / dt
 
 
     END SUBROUTINE semi_lagrangian_sedimentation
