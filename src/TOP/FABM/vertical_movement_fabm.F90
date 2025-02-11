@@ -94,7 +94,7 @@ MODULE vertical_movement_fabm
                   w_if(1:k_floor-1) = zwgt_if(1:k_floor-1) * w_ct(ji,1:k_floor-1,jn) + (1._wp - zwgt_if(1:k_floor-1)) * w_ct(ji,2:k_floor,jn)
                   
 
-                WRITE(numout,*) 'Vertical movement computed using method = ',method
+               ! WRITE(numout,*) 'Vertical movement computed using method = ',method
                   ! Compute change (per volume) due to vertical movement per layer
                   IF (method == 1) THEN
                      CALL advect_1(k_floor, trn(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, dc(1:k_floor))
