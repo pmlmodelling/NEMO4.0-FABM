@@ -79,7 +79,7 @@ MODULE dynspg_ts
    REAL(wp), ALLOCATABLE, SAVE, DIMENSION(:,:) ::   zwz                ! ff_f/h at F points
    REAL(wp), ALLOCATABLE, SAVE, DIMENSION(:,:) ::   ftnw, ftne         ! triad of coriolis parameter
    REAL(wp), ALLOCATABLE, SAVE, DIMENSION(:,:) ::   ftsw, ftse         ! (only used with een vorticity scheme)
-   
+
    REAL(wp) ::   r1_12 = 1._wp / 12._wp   ! local ratios
    REAL(wp) ::   r1_8  = 0.125_wp         !
    REAL(wp) ::   r1_4  = 0.25_wp          !
@@ -112,9 +112,6 @@ CONTAINS
       !
       CALL mpp_sum( 'dynspg_ts', dyn_spg_ts_alloc )
       IF( dyn_spg_ts_alloc /= 0 )   CALL ctl_stop( 'STOP', 'dyn_spg_ts_alloc: failed to allocate arrays' )
-
-      IF( ln_wd_dl ) ALLOCATE( ztwdmask(jpi,jpj), zuwdmask(jpi,jpj), zvwdmask(jpi,jpj))
-
       !
    END FUNCTION dyn_spg_ts_alloc
 
@@ -168,13 +165,13 @@ CONTAINS
 
       REAL(wp) ::   zepsilon, zgamma            !   -      -
       REAL(wp), ALLOCATABLE, DIMENSION(:,:) :: zcpx, zcpy   ! Wetting/Dying gravity filter coef.
+      REAL(wp), ALLOCATABLE, DIMENSION(:,:) :: ztwdmask, zuwdmask, zvwdmask ! ROMS wetting and drying masks at t,u,v points
       REAL(wp), ALLOCATABLE, DIMENSION(:,:) :: zuwdav2, zvwdav2    ! averages over the sub-steps of zuwdmask and zvwdmask
       !!----------------------------------------------------------------------
       !
       IF( ln_wd_il ) ALLOCATE( zcpx(jpi,jpj), zcpy(jpi,jpj) )
       !                                         !* Allocate temporary arrays
-      !IF( ln_wd_dl ) ALLOCATE( ztwdmask(jpi,jpj), zuwdmask(jpi,jpj), zvwdmask(jpi,jpj), zuwdav2(jpi,jpj), zvwdav2(jpi,jpj))
-      IF( ln_wd_dl ) ALLOCATE(zuwdav2(jpi,jpj), zvwdav2(jpi,jpj))
+      IF( ln_wd_dl ) ALLOCATE( ztwdmask(jpi,jpj), zuwdmask(jpi,jpj), zvwdmask(jpi,jpj), zuwdav2(jpi,jpj), zvwdav2(jpi,jpj))
       !
       zwdramp = r_rn_wdmin1               ! simplest ramp 
 !     zwdramp = 1._wp / (rn_wdmin2 - rn_wdmin1) ! more general ramp
@@ -453,8 +450,9 @@ CONTAINS
             zsshp2_e(:,:) = za1 * sshn_e(:,:)  + za2 * sshb_e(:,:) + za3 * sshbb_e(:,:)
             
             ! set wetting & drying mask at tracer points for this barotropic mid-step
-            IF( ln_wd_dl )   CALL wad_tmsk( zsshp2_e, ztwdmask )
-
+            IF( ln_wd_dl )  then
+                    CALL wad_tmsk( zsshp2_e, ztwdmask )
+            endif
             !
             !                          ! ocean t-depth at mid-step
             zhtp2_e(:,:) = ht_0(:,:) + zsshp2_e(:,:)
@@ -516,7 +514,7 @@ CONTAINS
             ENDIF
          ENDIF
 #endif
-         IF( ln_wd_il )   CALL wad_lmt_bt(zhU, zhV, sshn_e, zssh_frc, rdtbt)    !!gm wad_lmt_bt use of lbc_lnk on zhU, zhV
+         IF( ln_wd_il )  CALL wad_lmt_bt(zhU, zhV, sshn_e, zssh_frc, rdtbt)    !!gm wad_lmt_bt use of lbc_lnk on zhU, zhV
 
          IF( ln_wd_dl ) THEN           ! un_e and vn_e are set to zero at faces where 
             !                          ! the direction of the flow is from dry cells
@@ -835,15 +833,7 @@ CONTAINS
       IF( lrst_oce .AND.ln_bt_fw )   CALL ts_rst( kt, 'WRITE' )
       !
       IF( ln_wd_il )   DEALLOCATE( zcpx, zcpy )
-      ! 2025_03_05 YA: commented this because the masks are now global
-      !IF( ln_wd_dl )   DEALLOCATE( ztwdmask, zuwdmask, zvwdmask, zuwdav2, zvwdav2 )
-      if ( ln_wd_dl ) then
-              CALL iom_put( "ztwdmask" , ztwdmask )  ! WD T mask
-              CALL iom_put( "zuwdmask" , zuwdmask )  ! WD U mask
-              CALL iom_put( "zvwdmask" , zvwdmask )  ! WD V mask
-      endif
-
-      IF( ln_wd_dl )   DEALLOCATE( zuwdav2, zvwdav2 )
+      IF( ln_wd_dl )   DEALLOCATE( ztwdmask, zuwdmask, zvwdmask, zuwdav2, zvwdav2 )
       !
       CALL iom_put( "baro_u" , un_b )  ! Barotropic  U Velocity
       CALL iom_put( "baro_v" , vn_b )  ! Barotropic  V Velocity
