@@ -117,6 +117,7 @@ CONTAINS
          ALLOCATE( wdramp(jpi,jpj), wdrampu(jpi,jpj), wdrampv(jpi,jpj), STAT=ierr ) 
          IF( ierr /= 0 ) CALL ctl_stop('STOP', 'wad_init : Array allocation error')
       ENDIF
+      IF( ln_wd_dl ) ALLOCATE( ztwdmask(jpi,jpj), zuwdmask(jpi,jpj), zvwdmask(jpi,jpj))
       !
    END SUBROUTINE wad_init
 

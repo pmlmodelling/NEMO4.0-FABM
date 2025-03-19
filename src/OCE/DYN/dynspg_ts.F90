@@ -165,13 +165,14 @@ CONTAINS
 
       REAL(wp) ::   zepsilon, zgamma            !   -      -
       REAL(wp), ALLOCATABLE, DIMENSION(:,:) :: zcpx, zcpy   ! Wetting/Dying gravity filter coef.
-      REAL(wp), ALLOCATABLE, DIMENSION(:,:) :: ztwdmask, zuwdmask, zvwdmask ! ROMS wetting and drying masks at t,u,v points
+      !REAL(wp), ALLOCATABLE, DIMENSION(:,:) :: ztwdmask, zuwdmask, zvwdmask ! ROMS wetting and drying masks at t,u,v points
       REAL(wp), ALLOCATABLE, DIMENSION(:,:) :: zuwdav2, zvwdav2    ! averages over the sub-steps of zuwdmask and zvwdmask
       !!----------------------------------------------------------------------
       !
       IF( ln_wd_il ) ALLOCATE( zcpx(jpi,jpj), zcpy(jpi,jpj) )
       !                                         !* Allocate temporary arrays
-      IF( ln_wd_dl ) ALLOCATE( ztwdmask(jpi,jpj), zuwdmask(jpi,jpj), zvwdmask(jpi,jpj), zuwdav2(jpi,jpj), zvwdav2(jpi,jpj))
+      !IF( ln_wd_dl ) ALLOCATE( ztwdmask(jpi,jpj), zuwdmask(jpi,jpj), zvwdmask(jpi,jpj), zuwdav2(jpi,jpj), zvwdav2(jpi,jpj))
+      IF( ln_wd_dl ) ALLOCATE( zuwdav2(jpi,jpj), zvwdav2(jpi,jpj))
       !
       zwdramp = r_rn_wdmin1               ! simplest ramp 
 !     zwdramp = 1._wp / (rn_wdmin2 - rn_wdmin1) ! more general ramp
@@ -833,10 +834,16 @@ CONTAINS
       IF( lrst_oce .AND.ln_bt_fw )   CALL ts_rst( kt, 'WRITE' )
       !
       IF( ln_wd_il )   DEALLOCATE( zcpx, zcpy )
-      IF( ln_wd_dl )   DEALLOCATE( ztwdmask, zuwdmask, zvwdmask, zuwdav2, zvwdav2 )
+      ! IF( ln_wd_dl )   DEALLOCATE( ztwdmask, zuwdmask, zvwdmask, zuwdav2, zvwdav2 )
+      IF( ln_wd_dl )   DEALLOCATE( zuwdav2, zvwdav2 )
       !
       CALL iom_put( "baro_u" , un_b )  ! Barotropic  U Velocity
       CALL iom_put( "baro_v" , vn_b )  ! Barotropic  V Velocity
+      IF( ln_wd_dl ) then
+              CALL iom_put( "ztwdmask" , ztwdmask )
+              CALL iom_put( "zuwdmask" , zuwdmask )
+              CALL iom_put( "zvwdmask" , zvwdmask )
+      endif
       !
    END SUBROUTINE dyn_spg_ts
 
