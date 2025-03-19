@@ -22,7 +22,8 @@ MODULE trcsms_fabm
    USE trdtrc_oce
 #endif
 
-   USE oce, only: tsn  ! Needed?
+   USE wet_dry, only: ln_wd_dl
+   USE oce, only: tsn,ztwdmask  ! Needed?
    USE sbc_oce, only: lk_oasis,fr_i
    USE dom_oce
    USE zdf_oce
@@ -52,7 +53,7 @@ MODULE trcsms_fabm
    REAL(wp), ALLOCATABLE, SAVE, DIMENSION(:,:)   :: current_total   ! Work array for mass aggregation
 
    ! Arrays for environmental variables
-   REAL(wp), PUBLIC, ALLOCATABLE, SAVE, TARGET, DIMENSION(:,:,:) :: prn,rho
+   REAL(wp), PUBLIC, ALLOCATABLE, SAVE, TARGET, DIMENSION(:,:,:) :: prn,rho,fabm_wdmask
    REAL(wp), PUBLIC, ALLOCATABLE, SAVE, TARGET, DIMENSION(:,:) :: taubot
    REAL(wp), PUBLIC, TARGET :: daynumber_in_year
 
@@ -91,7 +92,7 @@ CONTAINS
       !!----------------------------------------------------------------------
       !
       INTEGER, INTENT(in) ::   kt   ! ocean time-step index
-      INTEGER :: jn, jk
+      INTEGER :: jn, jk,jj,ji
       REAL(wp), DIMENSION(jpi,jpj,jpk) :: ztrfabm
       REAL(wp), POINTER, DIMENSION(:,:,:) :: pdat
       REAL(wp), DIMENSION(jpi,jpj)    :: vint
@@ -109,6 +110,24 @@ CONTAINS
       IF (.NOT. started) CALL nemo_fabm_start
 
       CALL update_inputs( kt )
+
+      ! update W&D mask
+      if (ln_wd_dl) then
+            do ji=1,jpi
+               do jj=1,jpj
+                    if (ztwdmask(ji,jj)<1._wp) then
+!                            write(numout,*) 'IN'
+                        fabm_wdmask(ji,jj,:)=0._wp
+                    else
+                        fabm_wdmask(ji,jj,:)=tmask(ji,jj,:)
+                    endif
+               enddo
+            enddo
+            call model%set_mask(fabm_wdmask,fabm_wdmask(:,:,1)) ! NB tmask extents should match dimension lengths provided to model%set_domain
+      else
+           call model%set_mask(tmask,tmask(:,:,1)) ! NB tmask extents should match dimension lengths provided to model%set_domain
+      endif
+
 
       CALL compute_fabm( kt )
 
@@ -376,7 +395,7 @@ CONTAINS
    END SUBROUTINE st2d_fabm_nxt
 
    INTEGER FUNCTION trc_sms_fabm_alloc()
-      INTEGER :: jn
+      INTEGER :: jn,jj,ji
       !!----------------------------------------------------------------------
       !!              ***  ROUTINE trc_sms_fabm_alloc  ***
       !!----------------------------------------------------------------------
@@ -386,6 +405,7 @@ CONTAINS
       IF (model%variable_needs_values(fabm_standard_variables%pressure)) ALLOCATE(prn(jpi, jpj, jpk))
       IF (ALLOCATED(prn) .or. model%variable_needs_values(fabm_standard_variables%density)) ALLOCATE(rho(jpi, jpj, jpk))
       IF (model%variable_needs_values(fabm_standard_variables%bottom_stress)) ALLOCATE(taubot(jpi, jpj))
+      if (ln_wd_dl) allocate (fabm_wdmask(jpi,jpj,jpk))
 
       ! Allocate arrays to hold state for surface-attached and bottom-attached state variables
       ALLOCATE(fabm_st2Dn(jpi, jpj, jp_fabm_surface+jp_fabm_bottom))
@@ -415,7 +435,20 @@ CONTAINS
 
       ! Provide FABM with the vertical indices of the surface and bottom, and the land-sea mask.
       call model%set_bottom_index(mbkt)  ! NB mbkt extents should match dimension lengths provided to model%set_domain
-      call model%set_mask(tmask,tmask(:,:,1)) ! NB tmask extents should match dimension lengths provided to model%set_domain
+      if (ln_wd_dl) then
+            do ji=1,jpi
+               do jj=1,jpj
+                    if (ztwdmask(ji,jj)<1) then
+                        fabm_wdmask(ji,jj,:)=0
+                    else
+                        fabm_wdmask(ji,jj,:)=tmask(ji,jj,:)
+                    endif
+               enddo
+            enddo
+            call model%set_mask(fabm_wdmask,fabm_wdmask(:,:,1)) ! NB tmask extents should match dimension lengths provided to model%set_domain
+      else
+           call model%set_mask(tmask,tmask(:,:,1)) ! NB tmask extents should match dimension lengths provided to model%set_domain
+      endif
 
       ! Send pointers to state data to FABM
       do jn=1,jp_fabm
