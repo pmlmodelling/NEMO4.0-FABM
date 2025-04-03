@@ -52,8 +52,9 @@ MODULE vertical_movement_fabm
       INTEGER, INTENT(in) ::   kt   ! ocean time-step index
       INTEGER, INTENT(in) ::   method ! advection method (1: 1st order upstream, 3: 3rd order TVD with QUICKEST limiter)
 
-      INTEGER :: ji,jj,jk,jn,k_floor,k
-      REAL(wp) :: zwgt_if(1:jpkm1-1), dc(1:jpkm1), w_if(1:jpkm1-1), z2dt, h(1:jpkm1), hb(1:jpkm1)
+      INTEGER :: ji,jj,jk,jn,k_floor,k,i
+      REAL(wp) :: zwgt_if(1:jpkm1-1), dc(1:jpkm1), w_if(1:jpkm1-1), z2dt, h(1:jpkm1), hb(1:jpkm1), dc_advect(1:jpkm1)
+      REAL(wp) :: zmax, zfact, total_mass
 #if defined key_trdtrc
       CHARACTER (len=20) :: cltra
 #endif
@@ -94,23 +95,22 @@ MODULE vertical_movement_fabm
                   w_if(1:k_floor-1) = zwgt_if(1:k_floor-1) * w_ct(ji,1:k_floor-1,jn) + (1._wp - zwgt_if(1:k_floor-1)) * w_ct(ji,2:k_floor,jn)
                   
 
-               ! WRITE(numout,*) 'Vertical movement computed using method = ',method
                   ! Compute change (per volume) due to vertical movement per layer
                   IF (method == 1) THEN
                      CALL advect_1(k_floor, trn(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, dc(1:k_floor))
                  ELSE IF (method == 2) THEN
-                    CALL semi_lagrangian_sedimentation(k_floor, trn(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, gdepw_n(ji,jj,1:k_floor), tmask(ji,jj,k_floor), dc(1:k_floor))
+                     dc = 0._wp
+                    CALL semi_lagrangian_sedimentation(k_floor, trn(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, gdepw_n(ji,jj,1:k_floor), tmask(ji,jj,1:k_floor), dc(1:k_floor))
                  ELSE IF (method == 3) THEN
                      CALL advect_3(k_floor, trb(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, dc(1:k_floor))
                   END IF
-
                   ! Incorporate change due to vertical movement in sources-sinks
                   tra(ji,jj,1:k_floor,jp_fabm_m1+jn) = tra(ji,jj,1:k_floor,jp_fabm_m1+jn) + dc(1:k_floor)
                   !print tra(ji,jj,k_floor,jp_fabm_m1+jn)
 
 #if defined key_trdtrc && defined key_iomput
                   ! Store change due to vertical movement as diagnostic
-                  IF( lk_trdtrc .AND. ln_trdtrc( jp_fabm_m1+jn)) tr_vmv(ji,jj,1:k_floor,jn) = dc(1:k_floor)
+                    IF( lk_trdtrc .AND. ln_trdtrc( jp_fabm_m1+jn)) tr_vmv(ji,jj,1:k_floor,jn) = dc(1:k_floor)
 #endif
               END DO ! State loop
             END IF ! Level check
@@ -127,22 +127,22 @@ MODULE vertical_movement_fabm
 
    END SUBROUTINE compute_vertical_movement
 
-   SUBROUTINE semi_lagrangian_sedimentation(nk, c_old, w, h, dt, gdepw1, tmask1, trend)
+   SUBROUTINE semi_lagrangian_sedimentation(nk, c_old, w, h, dt, gdepw1, tmask1, trend_out)
       IMPLICIT NONE
       INTEGER, INTENT(IN) :: nk                   ! Number of vertical levels
-      REAL(wp), INTENT(IN) :: c_old(1:nk)         ! Old concentration
-      REAL(wp), INTENT(IN) :: w(1:nk-1)           ! Sinking velocities (between layers)
-      REAL(wp), INTENT(IN) :: h(1:nk)             ! Layer thicknesses
+      REAL(wp), INTENT(IN) :: c_old(1:jpk)         ! Old concentration
+      REAL(wp), INTENT(IN) :: w(1:jpk-1)           ! Sijpking velocities (between layers)
+      REAL(wp), INTENT(IN) :: h(1:jpk)             ! Layer thicknesses
       REAL(wp), INTENT(IN) :: dt                  ! Time step
-      REAL(wp), INTENT(IN) :: gdepw1(1:nk)        ! Depth of each grid point
-      REAL(wp), INTENT(IN) :: tmask1(1:nk)        ! Mask indicating water presence
-      REAL(wp), INTENT(OUT) :: trend(1:nk)        ! Trend/output flux due to sinking
+      REAL(wp), INTENT(IN) :: gdepw1(1:jpk)        ! Depth of each grid point
+      REAL(wp), INTENT(IN) :: tmask1(1:jpk)        ! Mask indicating water presence
+      REAL(wp), INTENT(OUT) :: trend_out(1:nk)        ! Trend/output flux due to sinking
 
       ! Local variables
-      REAL(wp) :: zqR(nk), zqL(nk), zWR(nk), zWL(nk), zFC(nk+1)
-      REAL(wp) :: zdltR, zdltL, zcff, zHz_inv2, zHz_inv3, zcu, zflx
+      REAL(wp) :: zqR(jpk), zqL(jpk), zWR(jpk), zWL(jpk), zFC(jpk+1), trend(nk)
+      REAL(wp) :: zdltR, zdltL, zcff, zHz_inv2, zHz_inv3, zcu, zflx, zcu_temp
       REAL(wp) :: zcffL, zcffR
-      INTEGER :: jk, ik, ksource(nk)
+      INTEGER :: jk, ik, ksource(jpk)
 
       ! Initialize variables
       zqR = 0.0_wp
@@ -150,16 +150,17 @@ MODULE vertical_movement_fabm
       zWR = 0.0_wp
       zWL = 0.0_wp
       zFC = 0.0_wp
+      trend = 0.0_wp
       ksource = 0
 
       ! Semi-Lagrangian flux computation
-      DO jk = 2, nk
+      DO jk = 2, jpk
         zHz_inv2 = 1.0_wp / (h(jk) + h(jk-1))
         zFC(jk) = (c_old(jk-1) - c_old(jk)) * zHz_inv2
       END DO
 
       ! Apply PPM and WENO constraints
-      DO jk = 2, nk-1
+      DO jk = 2, jpk-1
         zdltR = h(jk) * zFC(jk)
         zdltL = h(jk) * zFC(jk+1)
         zcff = h(jk+1) + 2.0_wp * h(jk) + h(jk-1)
@@ -170,10 +171,11 @@ MODULE vertical_movement_fabm
         IF (zdltR * zdltL <= 0.0_wp) THEN
           zdltR = 0.0_wp
           zdltL = 0.0_wp
-        ELSE
-          zdltR = MIN(ABS(zdltR), ABS(zcffL)) * SIGN(1.0_wp, zdltR)
-          zdltL = MIN(ABS(zdltL), ABS(zcffR)) * SIGN(1.0_wp, zdltL)
-        END IF
+        ELSE IF( ABS( zdltR ) >= zcffL ) THEN
+            zdltR = zcffL
+        ELSE IF( ABS( zdltL ) > ABS( zcffR ) ) THEN
+            zdltL = zcffR
+        ENDIF
 
         ! Reconstruct right (zqR) and left (zqL) sides
         zHz_inv3 = 1.0_wp / (h(jk) + h(jk-1) + h(jk+1))
@@ -187,7 +189,7 @@ MODULE vertical_movement_fabm
       END DO
 
       ! Reconciliation of parabolic profiles using WENO procedure
-      DO jk = 2, nk-2
+      DO jk = 2, jpk-2
         zdltL = MAX(1.0e-14_wp, zWL(jk))
         zdltR = MAX(1.0e-14_wp, zWR(jk-1))
         zqR(jk) = (zdltR * zqR(jk) + zdltL * zqL(jk-1)) / (zdltR + zdltL)
@@ -195,14 +197,22 @@ MODULE vertical_movement_fabm
       END DO
 
       ! Boundary conditions
-      zFC(1) = 0.0_wp
-      zqL(1) = zqR(2)
-      zqR(1) = 2.0_wp * c_old(1) - zqL(1)
-      zqR(nk) = zqL(nk-1)
-      zqL(nk) = 2.0_wp * c_old(nk) - zqR(nk)
+      !zFC(1) = 0.0_wp
+      !zqL(1) = zqR(2)
+      !zqR(1) = 2.0_wp * c_old(1) - zqL(1)
+      !zqR(nk) = zqL(nk-1)
+      !zqL(nk) = 2.0_wp * c_old(nk) - zqR(nk)
+      zFC(1)=0.0_wp
+      zqR(1) = c_old(1)         ! default strictly monotonic
+      zqL(1) = c_old(1)         ! conditions
+      zqR(2) = c_old(1)
+
+      zqR(nk) = c_old(nk)
+      zqL(nk-1) = c_old(nk)  ! bottom grid boxes are re-assumed to be piecewise constant.
+      zqL(nk) = c_old(nk)
 
       ! Reapply monotonicity constraint
-      DO jk = 1, nk
+      DO jk = 1, jpk
         zdltR = zqR(jk) - c_old(jk)
         zdltL = c_old(jk) - zqL(jk)
         zcffR = 2.0_wp * zdltR
@@ -217,20 +227,22 @@ MODULE vertical_movement_fabm
           zdltL = zcffR
         END IF
 
+!
         zqR(jk) = c_old(jk) + zdltR
         zqL(jk) = c_old(jk) - zdltL
       END DO
 
       ! Compute the semi-Lagrangian advective flux
-      DO jk = 1, nk-1
-        zcff = dt * ABS(w(jk)) / rday * tmask1(jk)
+      DO jk = 1, jpk-1
+        !zcff = dt * ABS(w(jk)) / rday * tmask1(jk)
+        ! FABM has already converted sijpking rate to m/s
+        zcff = dt * ABS(w(jk)) * tmask1(jk)
         zFC(jk+1) = 0.0_wp
         zWL(jk) = -gdepw1(jk+1) + zcff
         zWR(jk) = h(jk) * c_old(jk)
         ksource(jk) = jk
       END DO
-
-      DO jk = 1, nk
+      DO jk = 1, jpk
         DO ik = 2, jk
           IF (zWL(jk) > -gdepw1(ik)) THEN
             ksource(jk) = ik - 1
@@ -240,24 +252,30 @@ MODULE vertical_movement_fabm
       END DO
 
       ! Finalize flux computation
-      DO jk = 1, nk-1
+      DO jk = 1, jpk - 1
         ik = ksource(jk)
         zHz_inv2 = 1.0_wp / h(jk)
+        zcu_temp = (zWL(jk) + gdepw1(ik+1))* zHz_inv2
         zcu = MIN(1.0_wp, (zWL(jk) + gdepw1(ik+1)) * zHz_inv2)
-        zFC(jk+1) = zFC(jk+1) + h(ik) * zcu * (zqL(ik) + zcu * (0.5_wp * (zqR(ik) - zqL(ik)) - &
-                            (1.5_wp - zcu) * (zqR(ik) + zqL(ik) - 2.0_wp * c_old(ik))))
-      END DO
+        !zFC(jk+1) = zFC(jk+1) + h(ik) * zcu * (zqL(ik) + zcu * (0.5_wp * (zqR(ik) - zqL(ik)) - &
+        !                    (1.5_wp - zcu) * (zqR(ik) + zqL(ik) - 2.0_wp * c_old(ik))))
 
+        zFC(jk+1) = zFC(jk+1)                                           &
+               &         + h(ik) * zcu                                  &
+               &         * ( zqL(ik) + zcu                              &
+               &               * ( 0.5_wp * ( zqR(ik) - zqL(ik) )       &
+               &                    - ( 1.5_wp - zcu ) * ( zqR(ik) + zqL(ik) - 2._wp * c_old(ik) ) ) )
+      END DO
       ! Update tracer concentration based on fluxes
-      DO jk = 1, nk-1
+      ! There is no flux out or in at the bottom level 
+      zFC(nk+1) = 0.0_wp
+      DO jk = 1, jpk-1
         zHz_inv2 = 1.0_wp / h(jk)
         zflx = (zFC(jk) - zFC(jk+1)) * zHz_inv2
         trend(jk) = zflx
       END DO
-      trend(nk) = trend(nk) - SUM(trend)
-
-      trend(:) = trend(:) / dt
-
+      trend(:) = trend(:) /dt
+      trend_out = trend(1:nk)
 
     END SUBROUTINE semi_lagrangian_sedimentation
 
