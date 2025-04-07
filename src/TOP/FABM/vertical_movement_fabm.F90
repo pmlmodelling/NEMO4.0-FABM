@@ -54,6 +54,7 @@ MODULE vertical_movement_fabm
 
       INTEGER :: ji,jj,jk,jn,k_floor,k,i
       REAL(wp) :: zwgt_if(1:jpkm1-1), dc(1:jpkm1), w_if(1:jpkm1-1), z2dt, h(1:jpkm1), hb(1:jpkm1), dc_advect(1:jpkm1)
+      REAL(wp) :: zwgt_if_sl(1:jpk-1), w_if_sl(1:jpk-1), h_sl(1:jpk)
       REAL(wp) :: zmax, zfact, total_mass
 #if defined key_trdtrc
       CHARACTER (len=20) :: cltra
@@ -100,7 +101,10 @@ MODULE vertical_movement_fabm
                      CALL advect_1(k_floor, trn(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, dc(1:k_floor))
                  ELSE IF (method == 2) THEN
                      dc = 0._wp
-                    CALL semi_lagrangian_sedimentation(k_floor, trn(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, gdepw_n(ji,jj,1:k_floor), tmask(ji,jj,1:k_floor), dc(1:k_floor))
+                    h_sl(1:jpk) = e3t_n(ji,jj,1:jpk)
+                    zwgt_if_sl(1:jpk-1) = h_sl(2:jpk) / (h_sl(1:jpk-1) + h_sl(2:jpk))
+                    w_if_sl(1:jpk-1) = zwgt_if_sl(1:jpk-1) * w_ct(ji,1:jpk-1,jn) + (1._wp - zwgt_if_sl(1:jpk-1)) * w_ct(ji,2:jpk,jn)
+                    CALL semi_lagrangian_sedimentation(k_floor, trn(ji,jj,1:jpk,jp_fabm_m1+jn), w_if_sl(1:jpk-1), h_sl(1:jpk), z2dt, gdepw_n(ji,jj,1:jpk), tmask(ji,jj,1:jpk), dc(1:k_floor))
                  ELSE IF (method == 3) THEN
                      CALL advect_3(k_floor, trb(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, dc(1:k_floor))
                   END IF
@@ -139,7 +143,7 @@ MODULE vertical_movement_fabm
       REAL(wp), INTENT(OUT) :: trend_out(1:nk)        ! Trend/output flux due to sinking
 
       ! Local variables
-      REAL(wp) :: zqR(jpk), zqL(jpk), zWR(jpk), zWL(jpk), zFC(jpk+1), trend(nk)
+      REAL(wp) :: zqR(jpk), zqL(jpk), zWR(jpk), zWL(jpk), zFC(jpk+1), trend(jpk)
       REAL(wp) :: zdltR, zdltL, zcff, zHz_inv2, zHz_inv3, zcu, zflx, zcu_temp
       REAL(wp) :: zcffL, zcffR
       INTEGER :: jk, ik, ksource(jpk)
