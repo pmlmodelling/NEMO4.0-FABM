@@ -66,3 +66,4 @@
 
 %CC                  cc
 %CFLAGS              -O0
+bld::tool::fc_modsearch -J
