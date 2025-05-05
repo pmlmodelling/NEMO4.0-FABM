@@ -52,7 +52,7 @@ CONTAINS
          READ(nmlunit, nml=namfabm, iostat=ios)
          IF( ios /= 0 ) CALL ctl_nam ( ios , 'namfabm in namelist_fabm_cfg')
       END IF
-      IF (nn_adv /= 1 .and. nn_adv /= 3) CALL ctl_stop( 'STOP', 'trc_ini_fabm: nn_adv must be 1 or 3.' )
+      IF (nn_adv /= 1 .and. nn_adv /= 2 .and. nn_adv /= 3) CALL ctl_stop( 'STOP', 'trc_ini_fabm: nn_adv must be 1, 2 or 3.' )
    END SUBROUTINE trc_nam_fabm
 
    SUBROUTINE trc_nam_fabm_override(sn_tracer)
