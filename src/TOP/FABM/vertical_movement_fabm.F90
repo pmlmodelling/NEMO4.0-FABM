@@ -104,7 +104,7 @@ MODULE vertical_movement_fabm
                     h_sl(1:jpk) = e3t_n(ji,jj,1:jpk)
                     zwgt_if_sl(1:jpk-1) = h_sl(2:jpk) / (h_sl(1:jpk-1) + h_sl(2:jpk))
                     w_if_sl(1:jpk-1) = zwgt_if_sl(1:jpk-1) * w_ct(ji,1:jpk-1,jn) + (1._wp - zwgt_if_sl(1:jpk-1)) * w_ct(ji,2:jpk,jn)
-                    CALL semi_lagrangian_sedimentation(k_floor, trn(ji,jj,1:jpk,jp_fabm_m1+jn), w_if_sl(1:jpk-1), h_sl(1:jpk), z2dt, gdepw_n(ji,jj,1:jpk), tmask(ji,jj,1:jpk), dc(1:k_floor))
+                    CALL semi_lagrangian_sedimentation(k_floor, trb(ji,jj,1:jpk,jp_fabm_m1+jn), w_if_sl(1:jpk-1), h_sl(1:jpk), z2dt, gdepw_n(ji,jj,1:jpk), tmask(ji,jj,1:jpk), dc(1:k_floor))
                  ELSE IF (method == 3) THEN
                      CALL advect_3(k_floor, trb(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, dc(1:k_floor))
                   END IF
