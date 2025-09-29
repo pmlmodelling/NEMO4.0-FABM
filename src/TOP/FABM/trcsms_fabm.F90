@@ -69,7 +69,7 @@ MODULE trcsms_fabm
 
    ! Coupler parameters
    INTEGER, PUBLIC :: nn_adv  ! Vertical advection scheme for sinking/floating/movement
-                              ! (1: 1st order upwind, 3: 3rd order TVD)
+                              ! (1: 1st order upwind, 2: semi-lagrangian 3: 3rd order TVD)
 
    ! Flag indicating whether model%start has been called (will be done on-demand)
    LOGICAL, SAVE :: started = .false.
