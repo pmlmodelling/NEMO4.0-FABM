@@ -33,7 +33,7 @@
 %NCDF_HOME           $NETCDF_DIR
 %HDF5_HOME           $HDF5_DIR
 %XIOS_HOME           $XIOS_HOME
-%FABM_HOME           $FABM_HOME
+#%FABM_HOME           $FABM_HOME
 #OASIS_HOME          
 
 %NCDF_INC            -I%NCDF_HOME/include -I%HDF5_HOME/include
@@ -43,8 +43,8 @@
 #OASIS_INC           -I%OASIS_HOME/build/lib/mct -I%OASIS_HOME/build/lib/psmile.MPI1
 #OASIS_LIB           -L%OASIS_HOME/lib -lpsmile.MPI1 -lmct -lmpeu -lscrip
 
-%FABM_INC            -I%FABM_HOME/include -I%FABM_HOME/include/yaml
-%FABM_LIB            -L%FABM_HOME/lib64 -lfabm
+#%FABM_INC            -I%FABM_HOME/include -I%FABM_HOME/include/yaml
+#%FABM_LIB            -L%FABM_HOME/lib64 -lfabm
 
 %CPP	             cpp
 %FC                  mpif90
@@ -58,8 +58,10 @@
 %AR                  ar 
 %ARFLAGS             -r
 %MK                  gmake
-%USER_INC            %XIOS_INC %NCDF_INC %FABM_INC
-%USER_LIB            %XIOS_LIB %NCDF_LIB %FABM_LIB
+#%USER_INC            %XIOS_INC %NCDF_INC %FABM_INC
+#%USER_LIB            %XIOS_LIB %NCDF_LIB %FABM_LIB
+%USER_INC            %XIOS_INC %NCDF_INC
+%USER_LIB            %XIOS_LIB %NCDF_LIB
 #USER_INC            %XIOS_INC %OASIS_INC %NCDF_INC
 #USER_LIB            %XIOS_LIB %OASIS_LIB %NCDF_LIB
 
