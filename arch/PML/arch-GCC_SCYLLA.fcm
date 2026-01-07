@@ -33,39 +33,26 @@
 %NCDF_HOME           $NETCDF_DIR
 %HDF5_HOME           $HDF5_DIR
 %XIOS_HOME           $XIOS_HOME
-#%FABM_HOME           $FABM_HOME
-#OASIS_HOME          
 
 %NCDF_INC            -I%NCDF_HOME/include -I%HDF5_HOME/include
 %NCDF_LIB            -L%HDF5_HOME/lib -L%NCDF_HOME/lib -lnetcdff -lnetcdf -lhdf5_hl -lhdf5 -lz
 %XIOS_INC            -I%XIOS_HOME/inc 
 %XIOS_LIB            -L%XIOS_HOME/lib -lxios
-#OASIS_INC           -I%OASIS_HOME/build/lib/mct -I%OASIS_HOME/build/lib/psmile.MPI1
-#OASIS_LIB           -L%OASIS_HOME/lib -lpsmile.MPI1 -lmct -lmpeu -lscrip
-
-#%FABM_INC            -I%FABM_HOME/include -I%FABM_HOME/include/yaml
-#%FABM_LIB            -L%FABM_HOME/lib64 -lfabm
 
 %CPP	             cpp
 %FC                  mpif90
-#works %FCFLAGS             -fdefault-real-8 -O1 -funroll-all-loops -fcray-pointer -cpp -ffree-line-length-none -fallow-argument-mismatch
-#fails %FCFLAGS             -fdefault-real-8 -O3 -march=znver3 -funroll-all-loops -fcray-pointer -cpp -ffree-line-length-none -fallow-argument-mismatch
 %FCFLAGS             -fdefault-real-8 -O2 -march=znver3 -funroll-all-loops -fcray-pointer -cpp -ffree-line-length-none -fallow-argument-mismatch
 %FFLAGS              %FCFLAGS
 %LD                  %FC
-%FPPFLAGS            -P -C -nostdinc -Dkey_nosignedzero %FABM_INC 
+%FPPFLAGS            -P -C -nostdinc -Dkey_nosignedzero  
 %LDFLAGS             -lstdc++ 
 %AR                  ar 
 %ARFLAGS             -r
 %MK                  gmake
-#%USER_INC            %XIOS_INC %NCDF_INC %FABM_INC
-#%USER_LIB            %XIOS_LIB %NCDF_LIB %FABM_LIB
 %USER_INC            %XIOS_INC %NCDF_INC
 %USER_LIB            %XIOS_LIB %NCDF_LIB
 #USER_INC            %XIOS_INC %OASIS_INC %NCDF_INC
 #USER_LIB            %XIOS_LIB %OASIS_LIB %NCDF_LIB
 
 %CC                  gcc
-#works %CFLAGS              -O0
-#fails %CFLAGS              -O3 -march=znver3
 %CFLAGS              -O2 -march=znver3
