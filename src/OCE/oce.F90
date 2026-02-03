@@ -68,6 +68,11 @@ MODULE oce
    !! Energy budget of the leads (open water embedded in sea ice)
    REAL(wp), PUBLIC, ALLOCATABLE, SAVE, DIMENSION(:,:)   ::   fraqsr_1lev        !: fraction of solar net radiation absorbed in the first ocean level [-]
 
+   !! YA: 2025_03_05 MOVED the WAD MASK here to make them shareable across modules
+   !! allocation still happens in dnspg_ts
+   REAL(wp), public, ALLOCATABLE, DIMENSION(:,:) :: ztwdmask, zuwdmask, zvwdmask ! ROMS wetting and drying masks at t,u,v points
+
+
    !!----------------------------------------------------------------------
    !! NEMO/OCE 4.0 , NEMO Consortium (2018)
    !! $Id: oce.F90 10425 2018-12-19 21:54:16Z smasson $ 
