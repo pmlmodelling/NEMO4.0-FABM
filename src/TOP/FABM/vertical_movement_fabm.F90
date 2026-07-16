@@ -50,11 +50,11 @@ MODULE vertical_movement_fabm
       !!----------------------------------------------------------------------
       !
       INTEGER, INTENT(in) ::   kt   ! ocean time-step index
-      INTEGER, INTENT(in) ::   method ! advection method (1: 1st order upstream, 3: 3rd order TVD with QUICKEST limiter)
+      INTEGER, INTENT(in) ::   method ! advection method (1: upstream, 2: semi-Lagrangian, 3: TVD QUICKEST)
 
       INTEGER :: ji,jj,jk,jn,k_floor,k,i
       REAL(wp) :: zwgt_if(1:jpkm1-1), dc(1:jpkm1), w_if(1:jpkm1-1), z2dt, h(1:jpkm1), hb(1:jpkm1), dc_advect(1:jpkm1)
-      REAL(wp) :: zwgt_if_sl(1:jpk-1), w_if_sl(1:jpk-1), h_sl(1:jpk)
+      REAL(wp) :: zwgt_if_sl(1:jpk-1), w_if_sl(1:jpk-1), h_sl(1:jpk), w_ct_sl(1:jpk)
       REAL(wp) :: zmax, zfact, total_mass
 #if defined key_trdtrc
       CHARACTER (len=20) :: cltra
@@ -102,8 +102,11 @@ MODULE vertical_movement_fabm
                  ELSE IF (method == 2) THEN
                      dc = 0._wp
                     h_sl(1:jpk) = e3t_n(ji,jj,1:jpk)
+                    w_ct_sl(1:jpkm1) = w_ct(ji,1:jpkm1,jn)
+                    w_ct_sl(jpk) = 0._wp
                     zwgt_if_sl(1:jpk-1) = h_sl(2:jpk) / (h_sl(1:jpk-1) + h_sl(2:jpk))
-                    w_if_sl(1:jpk-1) = zwgt_if_sl(1:jpk-1) * w_ct(ji,1:jpk-1,jn) + (1._wp - zwgt_if_sl(1:jpk-1)) * w_ct(ji,2:jpk,jn)
+                    w_if_sl(1:jpk-1) = zwgt_if_sl(1:jpk-1) * w_ct_sl(1:jpk-1) &
+                       & + (1._wp - zwgt_if_sl(1:jpk-1)) * w_ct_sl(2:jpk)
                     CALL semi_lagrangian_sedimentation(k_floor, trb(ji,jj,1:jpk,jp_fabm_m1+jn), w_if_sl(1:jpk-1), h_sl(1:jpk), z2dt, gdepw_n(ji,jj,1:jpk), tmask(ji,jj,1:jpk), dc(1:k_floor))
                  ELSE IF (method == 3) THEN
                      CALL advect_3(k_floor, trb(ji,jj,1:k_floor,jp_fabm_m1+jn), w_if(1:k_floor-1), h(1:k_floor), z2dt, dc(1:k_floor))
@@ -175,7 +178,7 @@ MODULE vertical_movement_fabm
         IF (zdltR * zdltL <= 0.0_wp) THEN
           zdltR = 0.0_wp
           zdltL = 0.0_wp
-        ELSE IF( ABS( zdltR ) >= zcffL ) THEN
+        ELSE IF( ABS( zdltR ) >= ABS( zcffL ) ) THEN
             zdltR = zcffL
         ELSE IF( ABS( zdltL ) > ABS( zcffR ) ) THEN
             zdltL = zcffR
@@ -258,9 +261,9 @@ MODULE vertical_movement_fabm
       ! Finalize flux computation
       DO jk = 1, jpk - 1
         ik = ksource(jk)
-        zHz_inv2 = 1.0_wp / h(jk)
-        zcu_temp = (zWL(jk) + gdepw1(ik+1))* zHz_inv2
-        zcu = MIN(1.0_wp, (zWL(jk) + gdepw1(ik+1)) * zHz_inv2)
+        zHz_inv2 = 1.0_wp / h(ik)
+        zcu_temp = (zWL(jk) + gdepw1(ik+1)) * zHz_inv2
+        zcu = MAX(0.0_wp, MIN(1.0_wp, zcu_temp))
         !zFC(jk+1) = zFC(jk+1) + h(ik) * zcu * (zqL(ik) + zcu * (0.5_wp * (zqR(ik) - zqL(ik)) - &
         !                    (1.5_wp - zcu) * (zqR(ik) + zqL(ik) - 2.0_wp * c_old(ik))))
 
